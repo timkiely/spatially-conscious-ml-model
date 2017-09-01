@@ -2,7 +2,7 @@
 
 library(tidyverse)
 
-sale_augmented <- read_rds("data/sales_augmented.rds")
+sale_augmented <- read_rds("data/sales_with_pluto.rds")
 pluto_lean <- read_rds("data/pluto_lean.rds")
 
 pluto_lean$Year %>% table()

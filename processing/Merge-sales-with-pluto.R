@@ -1,15 +1,18 @@
 
+rm(list = ls()[!ls()%in%c("pad_bbl_expanded","pluto_lean")])
 
-rm(list=ls())
 library(tidyverse)
-library(lubridate)
+# This script takes NYC's 2017 Property Address Directory (PAD) file and
+# maps each address to PLUTO.
 
 
-# function to quickly glimpse BBL
-lookat <- function(boro= 1,blck = 829,lt = 16,data = nyc_sales_clean_1) data %>% filter(BOROUGH == boro, BLOCK == as.numeric(blck), LOT == as.numeric(lt)) %>% arrange(desc(SALE_DATE)) %>% glimpse()
-lookhead <- function(boro= 1,blck = 829,lt = 16,data = nyc_sales_clean_1) data %>% filter(BOROUGH == boro, BLOCK == blck, LOT == lt)
+lookat <- function(boro= 1,blck = 829,lt = 16,data = pluto_lean) data %>% filter(BOROUGH == boro, Block == as.numeric(blck), Lot == as.numeric(lt)) %>% arrange(desc(SALE_DATE)) %>% glimpse()
+lookhead <- function(boro= 1,blck = 829,lt = 16,data = pluto_lean) data %>% filter(BOROUGH == boro, Block == blck, Lot == lt)
 
 
+# pad_bbl_expanded was created by adding a unique
+# row for every row in PAD that had a range of lots for
+# a single BBL. These were mostly condos
 
 # Load the data -----------------------------------------------------------
 if(!exists("pad_bbl_expanded")){
@@ -40,32 +43,6 @@ if(!exists("nyc_sales_clean_1")){
     mutate(BOROUGH = as.integer(BOROUGH)) %>% 
     mutate(bbl = paste(BOROUGH,as.numeric(BLOCK),as.numeric(LOT),sep="_"))
 }
-
-
-# we have sales from every year 2006 to 2016
-nyc_sales_clean_1$SALE_YEAR %>% table()
-
-
-# WHY ARE THERE SO MANY TRANSACTIONS ON THE SAME DAY FOR 1 BBL???
-# ANSWER: THese tansactions are "Timeshare Deeds" related to hotels. 
-# Solution: map in ACRIS data and filter out "timeshare deeds"
-nyc_sales_clean_1 %>% 
-  filter("26  OTHER HOTELS")
-  group_by_at(vars(BOROUGH:BUILDING.CLASS.AT.TIME.OF.SALE,SALE_DATE,SALE_YEAR)) %>%
-  summarise(count = n()
-            ,top_class = head(BUILDING.CLASS.AT.PRESENT,1)) %>% 
-  ungroup() %>% 
-  select(BOROUGH,BLOCK,LOT,count,top_class) %>% 
-  arrange(-count) 
-
-# here's a hotel with almost 300 transactions on the same day in 2016:
-# a hotel with timeshare deeds:
-lookat(1,1009,37)
-
-# condo hotels
-lookat(1,1006,1303) 
-
-
 
 
 # map lat and lon to sales transactions ----------------------------------------------------
@@ -113,20 +90,11 @@ sales_with_location_write <-
   select(-BOROUGH.y, -PLUTO_DISTINCT_FLAG
          ,-loboro,-loblock,-lolot,-lobblscc,-hiboro,-hiblock,-hilot,-hibblscc
          ,-row_Id, -contains("new_"), -contains("billing_")
-  ) %>% 
+         ) %>% 
   rename("BOROUGH" = BOROUGH.x)
 
 
-acris <- read_csv("/Users/timkiely/Dropbox (hodgeswardelliott)/hodgeswardelliott Team Folder/Teams/Data/Tim_Kiely/ACRIS/data/ACRIS_Real_Property_Master.csv")
-
-acris %>%
-  mutate(`DOC. DATE` = as.Date(`DOC. DATE`,format = '%m/%d/%Y')) %>% 
-  filter(`DOC. DATE`>as.Date("1950-01-01")) %>%
-  ggplot(aes(x = `DOC. DATE`))+geom_histogram()
-  
-
-# write to compressed rds file --------------------------------------------
-write_rds(sales_with_location_write, "data/sales_augmented.rds")
+write_rds(sales_with_location_write, 'data/sales_with_pluto.rds', compress = 'gz')
 
 
 

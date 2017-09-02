@@ -5,7 +5,7 @@ library(tidyverse)
 library(lubridate)
 
 
-# function to quickly glimpse BBL
+# function to quickly glimpse BBL, defauly to 31 West 27th St
 lookat <- function(boro= 1,blck = 829,lt = 16,data = nyc_sales_clean_1) data %>% filter(BOROUGH == boro, BLOCK == as.numeric(blck), LOT == as.numeric(lt)) %>% arrange(desc(SALE_DATE)) %>% glimpse()
 lookhead <- function(boro= 1,blck = 829,lt = 16,data = nyc_sales_clean_1) data %>% filter(BOROUGH == boro, BLOCK == blck, LOT == lt)
 
@@ -40,10 +40,6 @@ if(!exists("nyc_sales_clean_1")){
     mutate(BOROUGH = as.integer(BOROUGH)) %>% 
     mutate(bbl = paste(BOROUGH,as.numeric(BLOCK),as.numeric(LOT),sep="_"))
 }
-
-
-# we have sales from every year 2006 to 2016
-nyc_sales_clean_1$SALE_YEAR %>% table()
 
 
 # WHY ARE THERE SO MANY TRANSACTIONS ON THE SAME DAY FOR 1 BBL???
@@ -92,8 +88,10 @@ pad_with_latlon_2 <-
             , by = c("billing_bbl"="bbl"))%>% 
   filter(!is.na(PLUTO_DISTINCT_FLAG))
 
-# combined the mapped files
-pad_with_latlon <- bind_rows(pad_with_latlon_1,pad_with_latlon_2)
+# combined the mapped files and de-dupe on new_bbl
+pad_with_latlon <- 
+  bind_rows(pad_with_latlon_1,pad_with_latlon_2) %>% 
+  distinct(new_bbl, .keep_all = T)
 
 # join sales to location data
 sales_with_location <-
@@ -102,12 +100,14 @@ sales_with_location <-
             , by = c("bbl"="new_bbl")
   )
 
-# duplicates? close to a rounding error
+# duplicates? none
 nrow(sales_with_location)/nrow(nyc_sales_clean_1)
 
-# how many sales mapped unsuccessfully?
+# how many sales mapped unsuccessfully? approx. 2.13%
 scales::percent(nrow(filter(sales_with_location,is.na(PLUTO_DISTINCT_FLAG)))/nrow(sales_with_location))
 
+
+# write sales data to compressed rds file --------------------------------------------
 sales_with_location_write <- 
   sales_with_location %>% 
   select(-BOROUGH.y, -PLUTO_DISTINCT_FLAG
@@ -116,16 +116,6 @@ sales_with_location_write <-
   ) %>% 
   rename("BOROUGH" = BOROUGH.x)
 
-
-acris <- read_csv("/Users/timkiely/Dropbox (hodgeswardelliott)/hodgeswardelliott Team Folder/Teams/Data/Tim_Kiely/ACRIS/data/ACRIS_Real_Property_Master.csv")
-
-acris %>%
-  mutate(`DOC. DATE` = as.Date(`DOC. DATE`,format = '%m/%d/%Y')) %>% 
-  filter(`DOC. DATE`>as.Date("1950-01-01")) %>%
-  ggplot(aes(x = `DOC. DATE`))+geom_histogram()
-  
-
-# write to compressed rds file --------------------------------------------
 write_rds(sales_with_location_write, "data/sales_augmented.rds")
 
 

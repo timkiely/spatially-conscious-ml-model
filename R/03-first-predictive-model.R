@@ -1,34 +1,42 @@
 
-
+rm(list=ls()[!ls()%in%c("sale_augmented")])
 library(tidyverse)
 
-sale_augmented <- read_rds("data/sales_with_pluto.rds")
-pluto_lean <- read_rds("data/pluto_lean.rds")
 
-pluto_lean$Year %>% table()
-sale_augmented$SALE_YEAR %>% table()
-
-
-all_sales <-
-  left_join(pluto_lean,sale_augmented
-            ,by = c(
-              'Year'='SALE_YEAR'
-              ,'BOROUGH'='BOROUGH'
-              ,'Block'='BLOCK'
-              ,'Lot'='LOT')
-            )
-
-all_sales <- 
-  all_sales %>% 
-  mutate(sold = ifelse(!is.na(SALE_DATE),1,0))
-
-all_sales %>% group_by(sold) %>% count() %>% mutate(perc = n/sum(n))
-  ggplot()+aes(x = sold, y = n) + geom_col()
+# sales data ------------------------------------------------------------------
+if(!exists("sale_augmented")){
+  sale_augmented <- read_rds("data/sales_augmented.rds")
+}
 
 
+sale_modeling <- 
+  sale_augmented %>% 
+  filter(SALE.PRICE>0) %>% 
+  filter(!BUILDING.CLASS.AT.TIME.OF.SALE%in%c("H3","H1")) %>% 
+  select(BOROUGH:BUILDING.CLASS.AT.PRESENT,-ADDRESS,-BBL_derive
+  )
+
+# frequency of transactions -----------------------------------------------
+# all_sales <- 
+#   sale_augmented %>% 
+#   filter(SALE.PRICE>0) %>% 
+#   mutate(sold = ifelse(!is.na(SALE.PRICE),1,0))
+# 
+# all_sales %>% group_by(sold) %>% count() %>% mutate(perc = n/sum(n)) %>% 
+#   ggplot()+aes(x = sold, y = n) + geom_col()
+
+
+
+
+# sale price --------------------------------------------------------------
 library(xgboost)
-f1 <- as.formula(sold~.)
 
-f1_glm <- glm(f1, data  = all_sales)
+num_vars <- names(sapply(all_sales,is.numeric))
+
+f1 <- as.formula(SALE.PRICE~.)
+
+
+
+f1_glm <- glm(f1, data  = all_sales %>% select_if(.predicate=is.numeric))
 summary(f1_glm)
 

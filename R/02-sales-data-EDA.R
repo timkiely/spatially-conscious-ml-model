@@ -1,4 +1,4 @@
-
+ 
 rm(list=ls())
 library(tidyverse)
 library(sf)
@@ -8,7 +8,9 @@ library(modelr)
 
 
 # sales data ------------------------------------------------------------------
-sale_augmented <- read_rds("data/sales_with_pluto.rds")
+if(!exists("sale_augmented")){
+  sale_augmented <- read_rds("data/sales_augmented.rds")
+}
 
 # function to quickly glimpse BBL
 lookat <- function(boro= 1,blck = 829,lt = 16) sale_augmented %>% filter(BOROUGH == boro, BLOCK == blck, LOT == lt) %>% arrange(desc(SALE_DATE)) %>% glimpse()
@@ -36,14 +38,14 @@ sale_augmented %>%
 
 # apply linear model over grouped dataframes:
 group_model <- function(df, formula = "AssessTotal~SALE.PRICE") {
-  formula = as.formula(formula)
+  formula <- as.formula(formula)
   lm(formula, data = df)
 }
 
 extract_coef <- function(model, coef = "SALE.PRICE") coef(model)[coef]
 
 # the most linearly model-able property types appear to be Lofts (office), Office, 
-# two-family dwellings, 
+# two-family dwellings and elevator apartments
 by_group<-
 sale_augmented %>% 
   filter(SALE.PRICE>0) %>% 
@@ -66,7 +68,7 @@ sale_augmented %>%
     
     
 # how many sales per year, and how many years do we have?
-sale_augmented$SALE_YEAR %>% table() # %>% plot()
+sale_augmented$SALE_YEAR %>% table()
 
 # how many times do certain BBL's appear in the data?
 sale_augmented %>% 

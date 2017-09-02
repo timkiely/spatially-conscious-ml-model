@@ -1,0 +1,11 @@
+---
+title: "Analysis of NYC Sales Data"
+output: github_document
+---
+
+A model to predict NYC sales amounts and frequencies. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+

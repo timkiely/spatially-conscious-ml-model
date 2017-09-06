@@ -17,11 +17,11 @@ sale_modeling <-
   )
 
 # frequency of transactions -----------------------------------------------
-# all_sales <- 
-#   sale_augmented %>% 
-#   filter(SALE.PRICE>0) %>% 
-#   mutate(sold = ifelse(!is.na(SALE.PRICE),1,0))
-# 
+all_sales <-
+  sale_augmented %>%
+  filter(SALE.PRICE>0) 
+
+
 # all_sales %>% group_by(sold) %>% count() %>% mutate(perc = n/sum(n)) %>% 
 #   ggplot()+aes(x = sold, y = n) + geom_col()
 
@@ -31,12 +31,12 @@ sale_modeling <-
 # sale price --------------------------------------------------------------
 library(xgboost)
 
+
 num_vars <- names(sapply(all_sales,is.numeric))
 
 f1 <- as.formula(SALE.PRICE~.)
 
-
-
 f1_glm <- glm(f1, data  = all_sales %>% select_if(.predicate=is.numeric))
 summary(f1_glm)
 
+xgboost()

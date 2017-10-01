@@ -1,10 +1,6 @@
  
-rm(list=ls())
-library(tidyverse)
-library(sf)
-library(stringr)
-library(modelr)
-
+rm(list=ls()[!ls()%in%c("sale_augmented")])
+source("R/00aa-load-packages.R")
 
 
 # sales data ------------------------------------------------------------------
@@ -72,10 +68,20 @@ sale_augmented$SALE_YEAR %>% table()
 
 # how many times do certain BBL's appear in the data?
 sale_augmented %>% 
-  group_by(BOROUGH,BLOCK,LOT) %>% 
+  group_by(BUILDING.CLASS.CATEGORY,BOROUGH,BLOCK,LOT) %>% 
   count() %>% 
   arrange(-n) %>% 
   filter(n>1, n<2000)
+
+
+
+# how many sales by year?
+sale_augmented %>% 
+  filter(SALE.PRICE>0) %>% 
+  filter(!BUILDING.CLASS.CATEGORY%in%c("25  LUXURY HOTELS","CONDO HOTELS")) %>% 
+  group_by(SALE_YEAR) %>% 
+  count()
+
 
 
 

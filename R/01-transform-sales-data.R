@@ -1,8 +1,7 @@
 
 
 rm(list=ls())
-library(tidyverse)
-library(lubridate)
+source("R/00aa-load-packages.R")
 
 
 # function to quickly glimpse BBL, defauly to 31 West 27th St
@@ -46,12 +45,12 @@ if(!exists("nyc_sales_clean_1")){
 # ANSWER: THese tansactions are "Timeshare Deeds" related to hotels. 
 # Solution: map in ACRIS data and filter out "timeshare deeds"
 nyc_sales_clean_1 %>% 
-  filter("26  OTHER HOTELS")
+  filter(!BUILDING.CLASS.CATEGORY%in%c("26  OTHER HOTELS")) %>% 
   group_by_at(vars(BOROUGH:BUILDING.CLASS.AT.TIME.OF.SALE,SALE_DATE,SALE_YEAR)) %>%
   summarise(count = n()
-            ,top_class = head(BUILDING.CLASS.AT.PRESENT,1)) %>% 
+            ,top_class = head(BUILDING.CLASS.CATEGORY,1)) %>% 
   ungroup() %>% 
-  select(BOROUGH,BLOCK,LOT,count,top_class) %>% 
+  select(SALE_DATE,BOROUGH,BLOCK,LOT,count,top_class) %>% 
   arrange(-count) 
 
 # here's a hotel with almost 300 transactions on the same day in 2016:

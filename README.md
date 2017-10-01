@@ -9,9 +9,12 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 
 ### Done:
 
--   Mapped PLUTO to the sales data. This involved first mapping PAD (expanded) to PLUTO in order to get an ehaustive list of bbls (including condos), then mapping the resultant data back to SALES via BBL.
+-   Raw data downloaded and processed
+-   Modeling data EDA done
+-   Three scripts all functioning: Processing, model objects and model training
 
 ### To do:
 
--   Map in ACRIS data in order to filter out useless transactions data (e,g. Timeshare Deeds)
--   Create the baseline predictive model. This will involve the usual steps of EDA, transformation, pre-processing, and modeling.
+-   Baseline R Squared is relatively low (0.4 on test runs with 1,000 rows of data)
+-   Feature processing and tuning. Model selection
+-   Radial metrics

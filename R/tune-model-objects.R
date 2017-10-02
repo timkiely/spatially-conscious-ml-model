@@ -6,8 +6,13 @@
 
 # Linear Regression -------------------------------------------------------
 
-linearRegModel <- function(X, Y, idx) {
-  p$tick()$print()
+linearRegModel <- function(X, Y) {
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "Linear Regression Model"))
+  }
+  
   ctrl <- trainControl(
     ## 5-fold CV
     method = "repeatedcv", 
@@ -21,7 +26,11 @@ linearRegModel <- function(X, Y, idx) {
     preProc = c('center', 'scale')
     
   )
+  
+  
 }
+
+
 
 
 # LASSO regreession -------------------------------------------------------
@@ -58,7 +67,12 @@ linearRegModel <- function(X, Y, idx) {
 
 # RPART -------------------------------------------------------------------
 rpartModel <- function(X, Y) {
-  p$tick()$print()
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "Rpart Model"))
+  }
+  
   ctrl <- trainControl(
     ## 5-fold CV
     method = "repeatedcv", 
@@ -73,6 +87,8 @@ rpartModel <- function(X, Y) {
     preProc = c('center', 'scale')
     
   )
+  
+  
 }
 
 
@@ -80,7 +96,11 @@ rpartModel <- function(X, Y) {
 
 # XGBoost -----------------------------------------------------------------
 xgbTreeModel <- function(X, Y){
-  p$tick()$print()
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "XGBoost Model"))
+  }
+  
   ctrl <- trainControl(
     ## 5-fold CV
     method = "repeatedcv", 
@@ -91,23 +111,59 @@ xgbTreeModel <- function(X, Y){
     y=Y,
     method = 'xgbTree',
     trControl = ctrl,
-    tuneGrid = expand.grid(nrounds = c(100,300,500), 
-                           max_depth = c(2,4,6) ,
+    tuneGrid = expand.grid(nrounds = 300, 
+                           max_depth = 4,
                            eta = 0.1,
                            gamma = 1, 
                            colsample_bytree = 1, 
                            min_child_weight = 1, 
-                           subsample = 1),
-    preProc = c('center', 'scale')
+                           subsample = 1)
+    , preProc = c('center', 'scale')
     
   )
+  
 }
 
+
+# XGBoost Linear -----------------------------------------------------------------
+xgbLinearModel <- function(X, Y){
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "XGBoost Linear Model"))
+  }
+  
+  ctrl <- trainControl(
+    ## 5-fold CV
+    method = "repeatedcv", 
+    number = 5
+  )
+  train(
+    x=X,
+    y=Y,
+    method = 'xgbTree',
+    trControl = ctrl,
+    tuneGrid = expand.grid(nrounds = 300, 
+                           max_depth = 4,
+                           eta = 0.1, 
+                           gamma = 1,
+                           colsample_bytree = 1, 
+                           min_child_weight = 1, 
+                           subsample = 1),
+    preProc = c('center', 'scale'),
+    allowParallel = FALSE
+    
+  )
+  
+}
 
 
 # Random Forrest ----------------------------------------------------------
 RFModel <- function(X, Y){
-  p$tick()$print()
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "Random Forrest Model"))
+  }
+  
   ctrl <- trainControl(
     method = "repeatedcv",
     number = 5
@@ -122,6 +178,7 @@ RFModel <- function(X, Y){
     preProc = c('center', 'scale')
     
   )
+  
 }
 
 
@@ -132,10 +189,11 @@ RFModel <- function(X, Y){
 model_list <- list(
   rpartModel = rpartModel
   , xgbModel = xgbTreeModel
+  , xgbLinearModel = xgbLinearModel
   , RFModel = RFModel
   , linearRegModel = linearRegModel
   
-  ) %>%
+) %>%
   enframe(name = 'modelName',value = 'model')
 
 write_rds(model_list, 'data/model-list.rds')

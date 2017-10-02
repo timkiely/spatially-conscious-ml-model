@@ -3,12 +3,14 @@
 rm(list=ls()[!ls()%in%c("model_data_list","sale_augmented")])
 source("R/00aa-load-packages.R")
 
-if(!exists("model_data_list")){
+# if(!exists("model_data_list")){
   model_data_list <- read_rds("data/processed-modeling-data.rds")
   
   # for dev purposes:
-  # model_data_list <- map(model_data_list, .f = ~{head(.x,1000)})
-}
+  set.seed(1987)
+  model_data_list <- map(model_data_list, .f = ~{sample_n(.x,2000)})
+  
+# }
 
 
 # turn model data list into a tidy data frame ---------------------------
@@ -55,16 +57,22 @@ train_df <-
 
 # TRAIN THE MODELS --------------------------------------------------------
 
-p <- progress_estimated(nrow(train_df))
-
 # speeds up model training with parallelization
-doMC::registerDoMC( cores = parallel::detectCores()-2 )
+# doMC::registerDoMC( cores = parallel::detectCores()-2 )
+
+
+# progress bar (pb$tick() is built into the model training functions)
+pb <- progress::progress_bar$new(
+  total = nrow(train_df)
+  ,format = "(:spin) running model # :current of :total :what :elapsed [:bar]"
+  )
+
+
 
 run_start <- Sys.time()
 
 train_out <- 
   train_df %>% 
-  #filter(modelName == "linearRegModel") %>% 
   mutate(params = map2(train.X, train.Y,  ~ list(X = .x, Y = .y))
          , modelFits = invoke_map(.f = model, .x = params)
   )
@@ -72,6 +80,8 @@ train_out <-
 run_end <- Sys.time()
 
 message("Trained ",nrow(train_df)," models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+
+
 
 
 
@@ -84,20 +94,45 @@ train_out <-
     RMSESD = map_dbl(modelFits, ~max(.x$results$RMSESD)),
     Rsq = map_dbl(modelFits, ~max(.x$results$Rsquared)),
     bestTune = map(modelFits, ~.x$bestTune)
-  )
+  ) %>% 
+  mutate(y_hat = map2(.x = test, .y = modelFits, ~predict(.y, newdata = .x))) %>% 
+  mutate(test_y = map(test, ~.x$SALE.PRICE)) %>% 
+  mutate(Eval_RMSE = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
+         , Eval_Rsq = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
+         , Eval_Spearmans = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
+         )
+
+
+train_out %>% select(id,modelName,contains("Eval")) %>% arrange(-Eval_Spearmans)
+
+
 
 lattice::dotplot(Rsq~id|modelName,train_out)
 
-
-train_df %>% 
+train_out %>% 
+  filter(modelName!="linearRegModel") %>% 
   ggplot()+
   aes(x=id,color=modelName)+
   geom_point(aes(y=RMSE),size=2)+
-  geom_errorbar(aes(ymin = RMSE-RMSESD,ymax= RMSE+RMSESD),size=.5,width=.15)
+  geom_errorbar(aes(ymin = RMSE-RMSESD,ymax= RMSE+RMSESD),size=.5,width=.15)+
+  facet_wrap(~modelName)
+
+train_out %>% 
+  filter(id == 'vtreated', modelName == "xgbLinearModel") %>% 
+  select(test,Preds) %>% 
+  mutate(test = map(test, ~.x$SALE.PRICE)) %>% 
+  summarise(caret::RMSE(Preds,test))
+  unnest() %>% 
+  ggplot()+
+  aes(x = test, y = Preds)+
+  geom_point()+
+  geom_smooth()
 
 
 # plot(train_df$modelFits[train_df$modelName=='linearRegModel' & train_df$id=='train_treated'][[1]])
-varImp(train_df$modelFits[train_df$modelName=='linearRegModel' & train_df$id=='train_treated'][[1]])
+varImp(train_out$modelFits[train_out$modelName=='xgbModel' & train_out$id=='vtreated'][[1]])
+
+
 
 
 

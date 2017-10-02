@@ -63,7 +63,7 @@ num_test_component <- test %>% select_if(.predicate = is.numeric) %>% as.data.fr
 pprocess_num_train_component <- preProcess(num_train_component %>% select(-SALE.PRICE), method = c("ica"), n.comp = 10)
 
 num_train_component <- predict(pprocess_num_train_component, num_train_component) %>% filter(!is.na(ICA1))
-num_test_component <- predict(pprocess_num_train_component, num_test_component)
+num_test_component <- predict(pprocess_num_train_component, num_test_component) %>% filter(!is.na(ICA1))
 
 
 # VTREAT ------------------------------------------------------------------

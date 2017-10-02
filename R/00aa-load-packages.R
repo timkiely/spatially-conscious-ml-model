@@ -22,7 +22,10 @@ p_load(
   , Matrix
   , doMC
   , parallel
+  , foreach
+  , doParallel
   , vtreat
   , xgboost
   , randomForest
+  , progress
 )

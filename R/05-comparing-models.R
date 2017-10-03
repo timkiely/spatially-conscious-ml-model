@@ -2,15 +2,15 @@
 
 rm(list=ls()[!ls()%in%c("model_data_list","sale_augmented")])
 source("R/00aa-load-packages.R")
+source("tune-model-objects.R")
 
-# if(!exists("model_data_list")){
-  model_data_list <- read_rds("data/processed-modeling-data.rds")
-  
-  # for dev purposes:
-  set.seed(1987)
-  model_data_list <- map(model_data_list, .f = ~{sample_n(.x,2000)})
-  
-# }
+
+model_data_list <- read_rds("data/processed-modeling-data.rds")
+# for dev purposes:
+set.seed(1987)
+model_data_list <- map(model_data_list, .f = ~{sample_n(.x,1000)})
+
+
 
 
 # turn model data list into a tidy data frame ---------------------------
@@ -43,6 +43,7 @@ model_list <- read_rds('data/model-list.rds')
 
 
 # build modeling tibble ---------------------------------------------------
+
 train_df <- starter_df[rep(1:nrow(starter_df),nrow(model_list)),]
 
 train_df <- 
@@ -58,13 +59,14 @@ train_df <-
 # TRAIN THE MODELS --------------------------------------------------------
 
 # speeds up model training with parallelization
-# doMC::registerDoMC( cores = parallel::detectCores()-2 )
+doMC::registerDoMC( cores = parallel::detectCores()-2 )
 
 
 # progress bar (pb$tick() is built into the model training functions)
 pb <- progress::progress_bar$new(
   total = nrow(train_df)
-  ,format = "(:spin) running model # :current of :total :what :elapsed [:bar]"
+  , format = "(:spin) running model #:current of :total :what :elapsed [:bar]"
+  , clear = FALSE
   )
 
 
@@ -85,7 +87,6 @@ message("Trained ",nrow(train_df)," models with 5 fold-CV in ",round(difftime(ru
 
 
 
-
 # Evaluate ----------------------------------------------------------------
 train_out <- 
   train_out %>% 
@@ -99,13 +100,10 @@ train_out <-
   mutate(test_y = map(test, ~.x$SALE.PRICE)) %>% 
   mutate(Eval_RMSE = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
          , Eval_Rsq = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
-         , Eval_Spearmans = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
+         , Eval_Spearman = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
          )
 
-
-train_out %>% select(id,modelName,contains("Eval")) %>% arrange(-Eval_Spearmans)
-
-
+train_out %>% select(id,modelName,contains("Eval")) %>% arrange(Eval_RMSE)
 
 lattice::dotplot(Rsq~id|modelName,train_out)
 

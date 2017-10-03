@@ -111,10 +111,11 @@ xgbTreeModel <- function(X, Y){
     y=Y,
     method = 'xgbTree',
     trControl = ctrl,
-    tuneGrid = expand.grid(nrounds = 300, 
-                           max_depth = 4,
+    #objective = "reg:linear",
+    tuneGrid = expand.grid(nrounds = 500, 
+                           max_depth = 6,
                            eta = 0.1,
-                           gamma = 1, 
+                           gamma = 0, 
                            colsample_bytree = 1, 
                            min_child_weight = 1, 
                            subsample = 1)
@@ -140,17 +141,15 @@ xgbLinearModel <- function(X, Y){
   train(
     x=X,
     y=Y,
-    method = 'xgbTree',
+    method = 'xgbLinear',
     trControl = ctrl,
-    tuneGrid = expand.grid(nrounds = 300, 
-                           max_depth = 4,
-                           eta = 0.1, 
-                           gamma = 1,
-                           colsample_bytree = 1, 
-                           min_child_weight = 1, 
-                           subsample = 1),
+    #objective = "reg:linear",
+    tuneGrid = expand.grid(nrounds = 500, 
+                           lambda = 1, 
+                           alpha = 0, 
+                           eta = 0.1),
     preProc = c('center', 'scale'),
-    allowParallel = FALSE
+    allowParallel = TRUE
     
   )
   

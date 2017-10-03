@@ -59,7 +59,7 @@ train_df <-
 # TRAIN THE MODELS --------------------------------------------------------
 
 # speeds up model training with parallelization
-doMC::registerDoMC( cores = parallel::detectCores()-2 )
+# doMC::registerDoMC( cores = parallel::detectCores()-2 )
 
 
 # progress bar (pb$tick() is built into the model training functions)
@@ -67,19 +67,35 @@ pb <- progress::progress_bar$new(
   total = nrow(train_df)
   , format = "(:spin) running model #:current of :total :what :elapsed [:bar]"
   , clear = FALSE
-  )
+)
 
-
+num_cores <- parallel::detectCores()-2
+cl <- makeCluster(num_cores, outfile = "")
+registerDoParallel(cl)
 
 run_start <- Sys.time()
 
-train_out <- 
-  train_df %>% 
-  mutate(params = map2(train.X, train.Y,  ~ list(X = .x, Y = .y))
-         , modelFits = invoke_map(.f = model, .x = params)
-  )
+train_out <- foreach(i = 1:nrow(train_df)
+                     , .export = "pb"
+                     , .verbose = TRUE
+                     #, .combine = list
+                     , .errorhandling = "pass"
+                     ) %dopar% {
+                       source("R/00aa-load-packages.R")
+                       out <-   
+                         train_df %>% 
+                         filter(row_number()==i) %>% 
+                         mutate(params = map2(train.X, train.Y,  ~ list(X = .x, Y = .y))
+                                , modelFits = invoke_map(.f = model, .x = params)
+                         )
+                       
+                       return(out)
+                       
+                     }
 
 run_end <- Sys.time()
+stopCluster(cl)
+stopImplicitCluster()
 
 message("Trained ",nrow(train_df)," models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
 
@@ -101,7 +117,7 @@ train_out <-
   mutate(Eval_RMSE = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
          , Eval_Rsq = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
          , Eval_Spearman = map2_dbl(.x = y_hat, .y = test_y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
-         )
+  )
 
 train_out %>% select(id,modelName,contains("Eval")) %>% arrange(Eval_RMSE)
 
@@ -120,7 +136,7 @@ train_out %>%
   select(test,Preds) %>% 
   mutate(test = map(test, ~.x$SALE.PRICE)) %>% 
   summarise(caret::RMSE(Preds,test))
-  unnest() %>% 
+unnest() %>% 
   ggplot()+
   aes(x = test, y = Preds)+
   geom_point()+

@@ -125,6 +125,36 @@ xgbTreeModel <- function(X, Y){
   
 }
 
+xgbTreeModel2 <- function(X, Y){
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "XGBoost2 Model"))
+  }
+  
+  ctrl <- trainControl(
+    ## 5-fold CV
+    method = "repeatedcv", 
+    number = 5
+  )
+  train(
+    x=X,
+    y=Y,
+    method = 'xgbTree',
+    trControl = ctrl,
+    #objective = "reg:linear",
+    tuneGrid = expand.grid(nrounds = 500, 
+                           max_depth = 6,
+                           eta = 0.1,
+                           gamma = 0, 
+                           colsample_bytree = 1, 
+                           min_child_weight = 1, 
+                           subsample = 1)
+    , preProc = c('center', 'scale')
+    
+  )
+  
+}
+
 
 # XGBoost Linear -----------------------------------------------------------------
 xgbLinearModel <- function(X, Y){
@@ -145,7 +175,7 @@ xgbLinearModel <- function(X, Y){
     trControl = ctrl,
     #objective = "reg:linear",
     tuneGrid = expand.grid(nrounds = 500, 
-                           lambda = 1, 
+                           lambda = 0, 
                            alpha = 0, 
                            eta = 0.1),
     preProc = c('center', 'scale'),

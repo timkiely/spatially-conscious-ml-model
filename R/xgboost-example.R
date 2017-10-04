@@ -1,16 +1,14 @@
 
 
-rm(list=ls()[!ls()%in%c("model_data_list","sale_augmented")])
+
+rm(list=ls()[!ls()%in%c("sale_augmented")])
 source("R/00aa-load-packages.R")
-source("R/tune-model-objects.R")
 
 
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
 set.seed(1987)
-model_data_list <- map(model_data_list, .f = ~{sample_n(.x,5000)})
-
-
+model_data_list <- map(model_data_list, .f = ~{sample_n(.x,2000)})
 
 
 # turn model data list into a tidy data frame ---------------------------
@@ -55,58 +53,49 @@ train_df <-
   mutate(idx=1:n())
 
 
+train.x <- train_df %>% filter(idx == 17) %>% select(train.X) %>% unnest() %>% as.matrix()
+train.y <- train_df %>% filter(idx == 17) %>% select(train.Y) %>% unnest() %>% as.matrix() %>% as.numeric()
+test.x <- train_df %>% filter(idx == 17) %>% select(test) %>% unnest() %>% as.matrix()
+test.y <- train_df %>% filter(idx == 17) %>% select(test) %>% transmute(test_y = map(test, ~.x$SALE.PRICE)) %>% unnest() %>% as.matrix() %>% as.numeric()
 
-# TRAIN THE MODELS --------------------------------------------------------
-
-# speeds up model training with parallelization
-# doMC::registerDoMC( cores = parallel::detectCores()-2 )
-
-
-# progress bar (pb$tick() is built into the model training functions)
-pb <- progress::progress_bar$new(
-  total = nrow(train_df)
-  , format = "running model #:current of :total :elapsed"
-  , clear = FALSE
+library(xgboost)
+library(Matrix)
+params <- list(
+  "objective"           = "reg:linear",
+  "eval_metric"         = "mae", #"rmse"
+  "eta"                 = 0.1,
+  "max_depth"           = 6,
+  "min_child_weight"    = 2,
+  "gamma"               = 0.70,
+  "subsample"           = 0.77,
+  "colsample_bytree"    = 0.95,
+  "alpha"               = 2e-05,
+  "lambda"              = 10
 )
 
-progress <- function(n) pb$tick(token = list("current"=n))
 
+dtrain <- xgb.DMatrix(data = data.matrix(train.x), label = train.y)
+dtest <- xgb.DMatrix(data = data.matrix(test.x), label= test.y)
 
-# cores for parallel
-num_cores <- parallel::detectCores()-2
-cl <- makeSOCKcluster(num_cores)
-registerDoSNOW(cl)
-opts <- list(progress=progress)
+watchlist <- list(train=dtrain, test=dtest)
 
-run_start <- Sys.time()
+start_time <- Sys.time()
+bst <- xgb.train(data = dtrain
+                 , booster = "gbtree" #gblinear
+                 , params = params
+                 , tree_method="gpu_hist"
+                 , watchlist = watchlist
+                 , nrounds = 500
+                 , early_stopping_rounds = 50
+                 , nthread = parallel::detectCores()-2)
 
-train_out <- foreach(i = 1:nrow(train_df)
-                     , .export = "pb"
-                     , .verbose = TRUE
-                     #, .combine = list
-                     , .errorhandling = "pass"
-                     , .options.snow = opts
-                     ) %dopar% {
-                       source("R/00aa-load-packages.R")
-                       out <-   
-                         train_df %>% 
-                         filter(row_number()==i) %>% 
-                         mutate(params = map2(train.X, train.Y,  ~ list(X = .x, Y = .y))
-                                , modelFits = invoke_map(.f = model, .x = params)
-                         )
-                       
-                       return(out)
-                       
-                     }
+end_time <- Sys.time()
 
-run_end <- Sys.time()
-stopCluster(cl)
-stopImplicitCluster()
+cat("Model trained in ",round(difftime(end_time, start_time),3),units(difftime(end_time, start_time)))
 
-message("Trained ",nrow(train_df)," models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+( importance <- xgb.importance(colnames(dtrain), model = bst) )
 
-
-
+# xgb.ggplot.importance(importance)
 
 
 # Evaluate ----------------------------------------------------------------
@@ -151,6 +140,7 @@ unnest() %>%
 
 # plot(train_df$modelFits[train_df$modelName=='linearRegModel' & train_df$id=='train_treated'][[1]])
 varImp(train_out$modelFits[train_out$modelName=='xgbModel' & train_out$id=='vtreated'][[1]])
+
 
 
 

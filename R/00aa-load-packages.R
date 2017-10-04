@@ -23,6 +23,7 @@ p_load(
   , doMC
   , parallel
   , foreach
+  , doSNOW
   , doParallel
   , vtreat
   , xgboost

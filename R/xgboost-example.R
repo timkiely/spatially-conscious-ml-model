@@ -81,10 +81,9 @@ watchlist <- list(train=dtrain, test=dtest)
 
 start_time <- Sys.time()
 bst <- xgb.train(data = dtrain
-                 , booster = "gbtree" #gblinear
                  , params = params
-                 , tree_method="gpu_hist"
                  , watchlist = watchlist
+                 , booster = "gbtree" #gblinear
                  , nrounds = 500
                  , early_stopping_rounds = 50
                  , nthread = parallel::detectCores()-2)

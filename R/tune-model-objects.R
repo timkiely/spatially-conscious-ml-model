@@ -125,35 +125,39 @@ xgbTreeModel <- function(X, Y){
   
 }
 
-xgbTreeModel2 <- function(X, Y){
+
+
+# native implementation of xgboost with early stopping
+xgbTreeModel2 <- function(X, watchlist){
+  
   # tick the progress bar forward
   if(exists("pb",envir = globalenv())){
     pb$tick(tokens = list(what = "XGBoost2 Model"))
   }
   
-  ctrl <- trainControl(
-    ## 5-fold CV
-    method = "repeatedcv", 
-    number = 5
-  )
-  train(
-    x=X,
-    y=Y,
-    method = 'xgbTree',
-    trControl = ctrl,
-    #objective = "reg:linear",
-    tuneGrid = expand.grid(nrounds = 500, 
-                           max_depth = 6,
-                           eta = 0.1,
-                           gamma = 0, 
-                           colsample_bytree = 1, 
-                           min_child_weight = 1, 
-                           subsample = 1)
-    , preProc = c('center', 'scale')
-    
+  ctrl <- list(
+    "objective"           = "reg:linear",
+    "eval_metric"         = "rmse", #"mae"
+    "eta"                 = 0.1,
+    "max_depth"           = 6,
+    "min_child_weight"    = 2,
+    "gamma"               = 0.70,
+    "subsample"           = 0.77,
+    "colsample_bytree"    = 0.95,
+    "alpha"               = 2e-05,
+    "lambda"              = 10
   )
   
-}
+  bst <- xgb.train(data = X
+                   , params = ctrl
+                   , watchlist = watchlist
+                   , booster = "gbtree" #gblinear
+                   , nrounds = 500
+                   , early_stopping_rounds = 50
+                   , verbose = 0
+                   #, nthread = 1
+                   )
+  }
 
 
 # XGBoost Linear -----------------------------------------------------------------
@@ -218,6 +222,7 @@ RFModel <- function(X, Y){
 model_list <- list(
   rpartModel = rpartModel
   , xgbModel = xgbTreeModel
+  , xgbTreeModel2 = xgbTreeModel2
   , xgbLinearModel = xgbLinearModel
   , RFModel = RFModel
   , linearRegModel = linearRegModel

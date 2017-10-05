@@ -1,6 +1,7 @@
 
 
 rm(list=ls()[!ls()%in%c("model_data_list","sale_augmented")])
+start_global <- Sys.time()
 source("R/00aa-load-packages.R")
 source("R/tune-model-objects.R")
 options(tibble.print_max = 25)
@@ -8,7 +9,7 @@ options(tibble.print_max = 25)
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
 set.seed(1987)
-model_data_list <- map(model_data_list, .f = ~{sample_n(.x,2000)})
+model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.05)})
 
 
 
@@ -62,13 +63,13 @@ train_df <-
 
 # split in to xgboost and the rest ----------------------------------------
 train_df_xgb <- train_df %>% filter(grepl("xgb",modelName))
-train_df_other <- anti_join(train_df,train_df_xgb, by = "idx")
+train_df_caret <- anti_join(train_df,train_df_xgb, by = "idx")
 
 # TRAIN THE MODELS --------------------------------------------------------
 
 # progress bar (pb$tick() is built into the model training functions)
 pb <- progress::progress_bar$new(
-  total = nrow(train_df_other)
+  total = nrow(train_df_caret)
   , format = "running model #:current of :total :elapsed :what [:bar]"
   , clear = FALSE
 )
@@ -76,28 +77,28 @@ pb <- progress::progress_bar$new(
 
 
 
-# train non-xgbost models -------------------------------------------------
+# train caret models -------------------------------------------------
 # cores for parallel
 num_cores <- parallel::detectCores()-2
 cl <- makeSOCKcluster(num_cores)
 registerDoSNOW(cl)
-iter_model_list <- train_df_other$modelName
+iter_model_list <- train_df_caret$modelName
 opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = iter_model_list[n])))
 
 
 run_start <- Sys.time()
-train_out_other <- foreach(i = 1:nrow(train_df_other)
-                           , .export = c("pb","iter_model_list")
-                           , .verbose = FALSE
-                           #, .combine = list
-                           , .errorhandling = "pass"
-                           , .options.snow = opts
+train_df_caret <- foreach(i = 1:nrow(train_df_caret)
+                          , .export = c("pb","iter_model_list")
+                          , .verbose = FALSE
+                          #, .combine = list
+                          , .errorhandling = "pass"
+                          , .options.snow = opts
 ) %dopar% {
   
   source("R/00aa-load-packages.R")
   
   out <-   
-    train_df_other %>% 
+    train_df_caret %>% 
     filter(row_number()==i) %>% 
     mutate(modelFits = invoke_map(.f = model, .x = params))
   
@@ -109,7 +110,7 @@ run_end <- Sys.time()
 stopCluster(cl)
 stopImplicitCluster()
 
-message("Trained ",nrow(train_df_other)," models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+message("Trained ",nrow(train_df_caret)," models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
 
 
 
@@ -126,13 +127,12 @@ pb <- progress::progress_bar$new(
 )
 
 
-# cores for parallel
-# speed up model training with parallelization
+# xgboost has parellelization built in, so best to run them in sequence
 registerDoSEQ()
 iter_model_list <- train_df_xgb$modelName
 opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = iter_model_list[n])))
 
-run_start <- Sys.time()
+run_start_2 <- Sys.time()
 
 train_out_xgb <- foreach(i = 1:nrow(train_df_xgb)
                          , .export = c("pb","iter_model_list")
@@ -153,38 +153,36 @@ train_out_xgb <- foreach(i = 1:nrow(train_df_xgb)
   
 }
 
-run_end <- Sys.time()
+run_end_2 <- Sys.time()
 stopImplicitCluster()
 
 
 
 
-message("Trained ",nrow(train_df_xgb)," models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+message("Trained ",nrow(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+message("Trained ",nrow(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)))
 
 
 
 
 # Combine results ---------------------------------------------------------
 
-train_out <- bind_rows(train_out_other,train_out_xgb) %>% mutate(model_class = map_chr(modelFits, ~as.character(class(.x))))
+train_out <- bind_rows(train_df_caret,train_out_xgb) %>% mutate(model_class = map_chr(modelFits, ~as.character(class(.x))))
 train_out_1 <- train_out %>% filter(model_class == "train")
 train_out_2 <- train_out %>% filter(model_class == "xgb.Booster")
 
 
-# Evaluate ----------------------------------------------------------------
+# Calculate Evaluation metrics -------------------------------------------
 train_out_1 <- 
   train_out_1 %>% 
   mutate(data_fit = map2(.x = train.X, .y = modelFits, ~as.numeric(predict(.y, newdata = .x)))) %>% 
-  mutate(
-    RMSE = map_dbl(modelFits, ~max(.x$results$RMSE)),
-    RMSESD = map_dbl(modelFits, ~max(.x$results$RMSESD)),
-    Rsq = map_dbl(modelFits, ~max(.x$results$Rsquared)),
-    bestTune = map(modelFits, ~.x$bestTune)
-  ) %>% 
+  mutate(RMSE = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
+         , Rsq = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
+         , Spearman = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))) %>%
   mutate(y_hat = map2(.x = test.X, .y = modelFits, ~predict(.y, newdata = .x))) %>% 
-  mutate(Eval_RMSE = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
-         , Eval_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
-         , Eval_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
+  mutate(Test_RMSE = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
+         , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
+         , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
   )
 
 train_out_2 <- 
@@ -193,39 +191,81 @@ train_out_2 <-
   mutate(RMSE = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
          , Rsq = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
          , Spearman = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
+  ) %>% 
+  mutate(y_hat = map2(.x = test.X, .y = modelFits, ~predict(.y, newdata = data.matrix(.x)))) %>% 
+  mutate(Test_RMSE = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
+         , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
+         , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
   )
+
+train_out <- bind_rows(train_out_1, train_out_2)
+
+# send completion email ---------------------------------------------------
+
+
+sample_out_frame <- 
+  train_out %>% 
+  mutate(train.X = map_dbl(train.X, ~nrow(.x))) %>% 
+  select(Test_Rsq, Test_RMSE, modelName, id, "rows" = train.X, idx,Test_Spearman) %>% 
+  arrange(-Test_Rsq) %>% 
+  mutate_if(.predicate = is.numeric, .f = ~round(.,3)) %>% 
+  as.data.frame()
   
-  
+
+
+msg_out_1 <- paste0("Trained ",nrow(train_df_caret)," caret models in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+msg_out_2 <- paste0("Trained ",nrow(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)))
+rich_template <- paste("Your models have finished training"
+                       ,paste0("Script run started ",start_global-14400)
+                       , msg_out_1
+                       , msg_out_2
+                       ,"Summary of y actual:"
+                       , pander::pandoc.table.return(round(as.matrix(summary(model_data_list$test_vtreated$SALE.PRICE)),2), style = "grid")
+                       ,"Summary of best model yhat:"
+                       , pander::pandoc.table.return(
+                         round(
+                           train_out %>% 
+                             arrange(-Test_Rsq) %>% 
+                             head(1) %>% 
+                             select(y_hat) %>% 
+                             unnest() %>% 
+                             as.matrix() %>% 
+                             as.numeric() %>% 
+                             summary() %>% 
+                             as.matrix()
+                           ,2)
+                        , style = "grid")
+                       ,"Summary of results:"
+                       , pander::pandoc.table.return(sample_out_frame, style = "grid")
+                       , "This is a friendly email from me."
+                       , sep = "\n\n")
 
 
 
-lattice::dotplot(Rsq~id|modelName,train_out_1)
 
-train_out %>% 
-  filter(modelName!="linearRegModel") %>% 
-  ggplot()+
-  aes(x=id,color=modelName)+
-  geom_point(aes(y=RMSE),size=2)+
-  geom_errorbar(aes(ymin = RMSE-RMSESD,ymax= RMSE+RMSESD),size=.5,width=.15)+
-  facet_wrap(~modelName)
+# 1) if Java is not installed, install it: https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
+# 2) install rJava, then mailR
+# 3) if library(rJava) returns an error, do:
+#    $ sudo rstudio-server stop
+#    $ export LD_LIBRARY_PATH=/usr/lib/jvm/jre/lib/amd64:/usr/lib/jvm/jre/lib/amd64/default
+#    $ sudo rstudio-server start
 
-train_out %>% 
-  filter(id == 'vtreated', modelName == "xgbLinearModel") %>% 
-  select(test,Preds) %>% 
-  mutate(test = map(test, ~.x$SALE.PRICE)) %>% 
-  summarise(caret::RMSE(Preds,test))
-unnest() %>% 
-  ggplot()+
-  aes(x = test, y = Preds)+
-  geom_point()+
-  geom_smooth()
+current_time <- Sys.time()-14400 
 
-
-# plot(train_df$modelFits[train_df$modelName=='linearRegModel' & train_df$id=='train_treated'][[1]])
-varImp(train_out$modelFits[train_out$modelName=='xgbModel' & train_out$id=='vtreated'][[1]])
+library(mailR)
+sender <- "timothy.j.kiely@gmail.com"
+recipients <- c("timothy.j.kiely@gmail.com", "tkiely@hodgeswardelliott.com")
+send.mail(from = sender,
+          to = recipients,
+          subject= paste0("Model Training Finished ",format(Sys.time()-14400, "%a %b %d %X %Y")),#14,400 seconds in 4 hours, which offsets Zulu to EST
+          body = rich_template,
+          smtp = list(host.name = "smtp.gmail.com", port = 465, 
+                      user.name="timothy.j.kiely@gmail.com", passwd="Cestina2017!", ssl=TRUE),
+          authenticate = TRUE,
+          send = TRUE)
 
 
-
-
+message("Trained ",nrow(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+message("Trained ",nrow(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)))
 
 

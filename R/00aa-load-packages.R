@@ -1,4 +1,7 @@
 
+if(!"ponyexpress"%in%installed.packages()){
+  stop("You must install ponyexpress with devtools::install_github('ropenscilabs/ponyexpress')")
+}
 
 # load packages
 if(!"pacman"%in%installed.packages()){
@@ -29,4 +32,8 @@ p_load(
   , xgboost
   , randomForest
   , progress
+  , knitr
+  , ponyexpress
+  , htmlTable
+  , pander
 )

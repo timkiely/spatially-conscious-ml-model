@@ -5,3 +5,4 @@ PLUTO_ARCHIVES/*
 .Rapp.history
 .DS_Store
 .Rhistory
+.httr-oauth

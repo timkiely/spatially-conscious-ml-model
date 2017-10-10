@@ -11,7 +11,7 @@ if(!exists("sale_augmented")){
 
 sale_modeling <- 
   sale_augmented %>% 
-  filter(SALE.PRICE>0) %>% 
+  filter(SALE.PRICE>=10000) %>% 
   filter(GROSS.SQUARE.FEET>500) %>% 
   filter(Building_Type%in%c("A","B","C","D","F","L","O")) %>% 
   select(BOROUGH:BUILDING.CLASS.AT.PRESENT,-ADDRESS,-BBL_derive

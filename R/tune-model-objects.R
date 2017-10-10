@@ -112,7 +112,7 @@ xgbTreeModel <- function(X, Y){
     method = 'xgbTree',
     trControl = ctrl,
     #objective = "reg:linear",
-    tuneGrid = expand.grid(nrounds = c(20,100,300), 
+    tuneGrid = expand.grid(nrounds = c(50,100,200), 
                            max_depth = 6,
                            eta = 0.1,
                            gamma = 0, 
@@ -153,11 +153,11 @@ xgbTreeModel2 <- function(X, watchlist){
                    , watchlist = watchlist
                    , booster = "gbtree" #gblinear
                    , nrounds = 500
-                   , early_stopping_rounds = 50
+                   , early_stopping_rounds = 100
                    , verbose = 0
                    #, nthread = 1
-                   )
-  }
+  )
+}
 
 
 # XGBoost Linear -----------------------------------------------------------------
@@ -178,9 +178,9 @@ xgbLinearModel <- function(X, Y){
     method = 'xgbLinear',
     trControl = ctrl,
     #objective = "reg:linear",
-    tuneGrid = expand.grid(nrounds = c(20,100,300),  
-                           lambda = 0, 
-                           alpha = 0, 
+    tuneGrid = expand.grid(nrounds = c(50,100,200),  
+                           lambda = c(0,0.5,1), 
+                           alpha = c(0,0.5,1), 
                            eta = 0.1),
     preProc = c('center', 'scale'),
     allowParallel = TRUE
@@ -216,6 +216,26 @@ RFModel <- function(X, Y){
 
 
 
+# native implementation of xgboost with early stopping
+xgbRFmodel <- function(X, Y){
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "XGBoost RF Model"))
+  }
+  
+  bst <- xgboost(data = X
+                 , label = Y
+                 , max_depth = 10
+                 , num_parallel_tree = 10000
+                 , subsample = 0.2
+                 , colsample_bytree = 0.2
+                 , nrounds = 1
+                 , objective = "reg:linear"
+                 , eta = 0.01
+                 , verbose = 0)
+  bst
+}
 
 
 # Model List --------------------------------------------------------------
@@ -225,6 +245,7 @@ model_list <- list(
   , xgbTreeModel2 = xgbTreeModel2
   , xgbLinearModel = xgbLinearModel
   , RFModel = RFModel
+  , xgbRFmodel = xgbRFmodel
   , linearRegModel = linearRegModel
   
 ) %>%

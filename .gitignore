@@ -6,3 +6,4 @@ PLUTO_ARCHIVES/*
 .DS_Store
 .Rhistory
 .httr-oauth
+xgboost.model

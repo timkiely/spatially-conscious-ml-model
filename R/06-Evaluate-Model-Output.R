@@ -18,7 +18,7 @@ train_out %>%
   coord_cartesian(xlim = c(0,4000), ylim = c(0,4000))
 
 
-varImp(train_out$modelFits[train_out$modelName=='xgbModel' & train_out$id=='vtreated'][[1]])
+caret::varImp(train_out$modelFits[train_out$idx==6][[1]])
 
 
 train_out %>% select(idx, id, modelName, contains("Test_")) %>% arrange(Test_RMSE)

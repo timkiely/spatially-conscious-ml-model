@@ -33,35 +33,119 @@ linearRegModel <- function(X, Y) {
 
 
 
-# LASSO regreession -------------------------------------------------------
+# LASSO regression -------------------------------------------------------
 
-
-
-
-# CHAID -------------------------------------------------------------------
-
+lassoRegModel <- function(X, Y) {
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "Lasso Regression Model"))
+  }
+  
+  ctrl <- trainControl(
+    ## 5-fold CV
+    method = "repeatedcv", 
+    number = 5
+  )
+  train(
+    x = X,
+    y = Y,
+    method = 'lasso',
+    trControl = ctrl,
+    tuneGrid = expand.grid(fraction =0.9),
+    preProc = c('center', 'scale')
+    
+  )
+  
+  
+}
 
 
 
 # KNN mean ----------------------------------------------------------------
 
 
-
-
-# KNN median --------------------------------------------------------------
-
-
+KNNModel <- function(X, Y) {
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "KNN Model"))
+  }
+  
+  ctrl <- trainControl(
+    ## 5-fold CV
+    method = "repeatedcv", 
+    number = 5
+  )
+  train(
+    x = X,
+    y = Y,
+    method = 'knn',
+    trControl = ctrl,
+    tuneGrid = expand.grid(k = c(5,10,15,20)),
+    preProc = c('center', 'scale')
+    
+  )
+  
+  
+}
 
 
 # MLP ---------------------------------------------------------------------
 
+MLPModel <- function(X, Y) {
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "MLP Model"))
+  }
+  
+  ctrl <- trainControl(
+    ## 5-fold CV
+    method = "repeatedcv", 
+    number = 5
+  )
+  train(
+    x = X,
+    y = Y,
+    method = 'mlp',
+    trControl = ctrl,
+    tuneGrid = expand.grid(size = c(1,3,5,7)),
+    preProc = c('center', 'scale')
+    
+  )
+  
+  
+}
 
 
 
 # RBP ---------------------------------------------------------------------
 
-
-
+RBPModel <- function(X, Y) {
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "Radial Basis Function Netowrk Model"))
+  }
+  
+  ctrl <- trainControl(
+    ## 5-fold CV
+    method = "repeatedcv", 
+    number = 5
+  )
+  train(
+    x = X,
+    y = Y,
+    method = 'rbf',
+    trControl = ctrl,
+    tuneGrid = expand.grid(size = c(3)),
+    preProc = c('center', 'scale')
+    
+  )
+  
+  
+}
 
 
 
@@ -112,7 +196,7 @@ xgbTreeModel <- function(X, Y){
     method = 'xgbTree',
     trControl = ctrl,
     #objective = "reg:linear",
-    tuneGrid = expand.grid(nrounds = c(50,100,200), 
+    tuneGrid = expand.grid(nrounds = c(150), 
                            max_depth = 6,
                            eta = 0.1,
                            gamma = 0, 
@@ -178,9 +262,9 @@ xgbLinearModel <- function(X, Y){
     method = 'xgbLinear',
     trControl = ctrl,
     #objective = "reg:linear",
-    tuneGrid = expand.grid(nrounds = c(50,100,200),  
-                           lambda = c(0,0.5,1), 
-                           alpha = c(0,0.5,1), 
+    tuneGrid = expand.grid(nrounds = c(150),  
+                           lambda = c(0.5), 
+                           alpha = c(0.5), 
                            eta = 0.1),
     preProc = c('center', 'scale'),
     allowParallel = TRUE
@@ -239,16 +323,22 @@ xgbRFmodel <- function(X, Y){
 
 
 # Model List --------------------------------------------------------------
-model_list <- list(
-  rpartModel = rpartModel
-  , xgbModel = xgbTreeModel
-  , xgbTreeModel2 = xgbTreeModel2
-  , xgbLinearModel = xgbLinearModel
-  , RFModel = RFModel
-  , xgbRFmodel = xgbRFmodel
-  , linearRegModel = linearRegModel
-  
-) %>%
-  enframe(name = 'modelName',value = 'model')
+model_list <- 
+  tibble::enframe(
+    list(
+      rpartModel = rpartModel
+      , xgbModel = xgbTreeModel
+      , xgbTreeModel2 = xgbTreeModel2
+      , xgbLinearModel = xgbLinearModel
+      , RFModel = RFModel
+      , xgbRFmodel = xgbRFmodel
+      , linearRegModel = linearRegModel
+      , lassoRegModel = lassoRegModel
+      , KNNModel = KNNModel
+      , MLPModel = MLPModel
+      #, RBPModel = RBPModel 
+      
+    ) 
+    ,name = 'modelName',value = 'model')
 
-write_rds(model_list, 'data/model-list.rds')
+readr::write_rds(model_list, 'data/model-list.rds')

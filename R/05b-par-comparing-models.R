@@ -9,7 +9,7 @@ options(tibble.print_max = 25)
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
 set.seed(1987)
-# model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.01)})
+model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.1)})
 
 
 
@@ -53,6 +53,7 @@ train_df <-
   train_df %>%
   bind_cols(model_list[rep(1:nrow(model_list),nrow(starter_df)),] %>% arrange(modelName)) %>%
   mutate(params = map2(train.X, train.Y,  ~ list(X = .x, Y = .y))) %>% 
+  mutate(params = ifelse(modelName == "xgbRFmodel", map2(train.X, train.Y,  ~ list(X = data.matrix(.x), Y = data.matrix(.y))), params)) %>% 
   mutate(dtrain =  ifelse(modelName %in% c("xgbTreeModel2"),  map2(train.X, train.Y,  ~ xgb.DMatrix(data = data.matrix(.x), label = .y)), NA)) %>% 
   mutate(dtest =  ifelse(modelName %in% c("xgbTreeModel2"),  map2(test.X, test.Y,  ~ xgb.DMatrix(data = data.matrix(.x), label = .y)), NA)) %>% 
   mutate(watchlist = ifelse(modelName %in% c("xgbTreeModel2"), map2(dtrain, dtest, ~ list(train = .x, test = .y)),NA)) %>% 
@@ -62,8 +63,11 @@ train_df <-
 
 
 # split in to xgboost and the rest ----------------------------------------
-train_df_xgb <- train_df %>% filter(grepl("xgb",modelName))
+train_df_xgb <- train_df %>% filter(grepl("xgb|lassoRegModel",modelName))
 train_df_caret <- anti_join(train_df,train_df_xgb, by = "idx")
+
+
+
 
 # TRAIN THE MODELS --------------------------------------------------------
 
@@ -81,7 +85,8 @@ pb <- progress::progress_bar$new(
 # cores for parallel
 num_cores <- parallel::detectCores()-2
 cl <- makeSOCKcluster(num_cores)
-registerDoSNOW(cl)
+#registerDoSNOW(cl)
+registerDoSEQ()
 iter_model_list <- train_df_caret$modelName
 opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = iter_model_list[n])))
 
@@ -158,14 +163,34 @@ stopImplicitCluster()
 
 
 
+# Checking the results for errors ----------------------------------------
+caret_error_vec <- map(.x = train_df_caret, .f = ~class(.x)[[1]]=="tbl_df") %>% unlist()
+xgb_error_vec <- map(.x = train_df_xgb, .f = ~class(.x)[[1]]=="tbl_df") %>% unlist()
 
-message("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
-message("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)))
+
+xgb_errors <- train_df_xgb[!xgb_error_vec]
+if(length(xgb_errors)==0) xgb_errors <- "no caret errors"
+
+caret_errors <- train_df_caret[!caret_error_vec]
+if(length(caret_errors)==0) caret_errors <- "no caret errors"
+
+train_df_caret <- train_df_caret[caret_error_vec]
+train_df_xgb <- train_df_xgb[xgb_error_vec]
+
+
+  
+
+message("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
+message("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
+
+
 
 
 
 
 # Combine results ---------------------------------------------------------
+
+
 
 train_out <- bind_rows(train_df_caret,train_df_xgb) %>% mutate(model_class = map_chr(modelFits, ~as.character(class(.x))))
 train_out_1 <- train_out %>% filter(model_class == "train")
@@ -209,7 +234,7 @@ train_out <- bind_rows(train_out_1, train_out_2)
 # send completion email ---------------------------------------------------
 # 1) if Java is not installed, install it: https://www.digitalocean.com/community/tutorials/how-to-install-java-on-ubuntu-with-apt-get
 # 2) install rJava, then mailR
-# 3) if library(rJava) returns an error, do:
+# 3) if Sys.setenv(JAVA_HOME='/Library/Java/JavaVirtualMachines/jdk1.8.0_131.jdk/Contents/Home') returns an error, do:
 #    $ sudo rstudio-server stop
 #    $ export LD_LIBRARY_PATH=/usr/lib/jvm/jre/lib/amd64:/usr/lib/jvm/jre/lib/amd64/default
 #    $ sudo rstudio-server start
@@ -236,19 +261,23 @@ rich_template <- paste("Your models have finished training"
                        ,"Summary of best model yhat:"
                        , pander::pandoc.table.return(
                          round(
-                           train_out %>% 
-                             arrange(-Test_Rsq) %>% 
-                             head(1) %>% 
-                             select(y_hat) %>% 
-                             unnest() %>% 
-                             as.matrix() %>% 
-                             as.numeric() %>% 
-                             summary() %>% 
+                           train_out %>%
+                             arrange(-Test_Rsq) %>%
+                             head(1) %>%
+                             select(y_hat) %>%
+                             unnest() %>%
+                             as.matrix() %>%
+                             as.numeric() %>%
+                             summary() %>%
                              as.matrix()
                            ,2)
                         , style = "grid")
                        ,"Summary of results:"
                        , pander::pandoc.table.return(sample_out_frame, style = "grid")
+                       , "Errors from caret:"
+                       , pander::pandoc.table.return(caret_errors, style = "grid")
+                       , "Errors from xgb:"
+                       , pander::pandoc.table.return(xgb_errors, style = "grid")
                        , "This is a friendly email from me."
                        , sep = "\n\n")
 
@@ -266,7 +295,7 @@ send.mail(from = sender,
           send = TRUE)
 
 
-message("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
-message("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)))
+message("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
+message("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
 
 

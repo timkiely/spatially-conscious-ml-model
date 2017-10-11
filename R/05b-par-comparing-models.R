@@ -17,7 +17,7 @@ options(tibble.print_max = 25)
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
 set.seed(1987)
-model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.01)})
+# model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.01)})
 
 
 
@@ -233,6 +233,8 @@ train_out <-
   ) %>% 
   arrange(-Test_Rsq)
 
+train_out_log <- train_out %>% select(-train.X,-train.Y,-test.X,-test.Y,-model,-params,-modelFits,-data_fit,-y_hat)
+write_rds(train_out_log, paste0("log/train-out-",Sys.time()), compress = "gz")
 
 
 # LOGGER ------------------------------------------------------------------

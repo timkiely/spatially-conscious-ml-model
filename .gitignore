@@ -7,3 +7,5 @@ PLUTO_ARCHIVES/*
 .Rhistory
 .httr-oauth
 xgboost.model
+pwrd.txt
+log/*

@@ -1,16 +1,23 @@
 
 
+
+
+# init --------------------------------------------------------------------
 rm(list=ls()[!ls()%in%c("model_data_list","sale_augmented")])
-start_global <- Sys.time()
+start_global <- Sys.time()-14400; message("Starting run at ",start_global)
 source("R/00aa-load-packages.R")
 source("R/tune-model-objects.R")
+if(!dir.exists("log")) dir.create("log")
 options(tibble.print_max = 25)
 
+
+
+
+# our main modeling data --------------------------------------------------
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
 set.seed(1987)
-model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.1)})
-
+model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.01)})
 
 
 
@@ -81,12 +88,12 @@ pb <- progress::progress_bar$new(
 
 
 
-# train caret models -------------------------------------------------
-# cores for parallel
+# TRAIN CARET MODELS -------------------------------------------------
+
+# parallel:
 num_cores <- parallel::detectCores()-2
 cl <- makeSOCKcluster(num_cores)
-#registerDoSNOW(cl)
-registerDoSEQ()
+registerDoSNOW(cl)
 iter_model_list <- train_df_caret$modelName
 opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = iter_model_list[n])))
 
@@ -95,25 +102,35 @@ run_start <- Sys.time()
 train_df_caret <- foreach(i = 1:nrow(train_df_caret)
                           , .export = c("pb","iter_model_list")
                           , .verbose = FALSE
-                          #, .combine = list
                           , .errorhandling = "pass"
-                          , .options.snow = opts
-) %dopar% {
-  
-  source("R/00aa-load-packages.R")
-  
-  out <-   
-    train_df_caret %>% 
-    filter(row_number()==i) %>% 
-    mutate(modelFits = invoke_map(.f = model, .x = params))
-  
-  return(out)
-  
-}
+                          , .options.snow = opts ) %dopar% {
+                            
+                            source("R/00aa-load-packages.R")
+                            
+                            mod_interest <- train_df_caret %>% filter(row_number()==i)
+                            
+                            start_time <- Sys.time()-14400
+                            out <- mod_interest %>% mutate(modelFits = invoke_map(.f = model, .x = params))
+                            end_time <- Sys.time()-14400
+                            
+                            run_time <- round(as.numeric(end_time - start_time),2)
+                            run_time_units <- units(end_time - start_time)
+                            time_list <- data.frame("model" = paste0(mod_interest$modelName," : ",mod_interest$id)
+                                              ,"start_time" = start_time
+                                              ,"end_time"  = end_time
+                                              ,"run_time" = run_time
+                                              ,"run_time_units" = run_time_units)
+                            out <- bind_cols(out, nest(time_list, .key = "run_times_list"))
+                            out <- out %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
+                            
+                            return(out)
+                            
+                          }
 
 run_end <- Sys.time()
 stopCluster(cl)
 stopImplicitCluster()
+closeAllConnections()
 
 message("Trained ",length(train_df_caret)," models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
 
@@ -122,7 +139,7 @@ message("Trained ",length(train_df_caret)," models with 5 fold-CV in ",round(dif
 
 
 
-# train xgboost models ----------------------------------------------------
+# TRAIN XGBOOST MODELS ----------------------------------------------------
 
 # progress bar (pb$tick() is built into the model training functions)
 pb <- progress::progress_bar$new(
@@ -140,27 +157,37 @@ opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = 
 run_start_2 <- Sys.time()
 
 train_df_xgb <- foreach(i = 1:nrow(train_df_xgb)
-                         , .export = c("pb","iter_model_list")
-                         , .verbose = FALSE
-                         #, .combine = list
-                         , .errorhandling = "pass"
-                         , .options.snow = opts
-) %dopar% {
+                        , .export = c("pb","iter_model_list")
+                        , .verbose = FALSE
+                        #, .combine = list
+                        , .errorhandling = "pass"
+                        , .options.snow = opts
+) %do% {
   
   source("R/00aa-load-packages.R")
   
-  out <-   
-    train_df_xgb %>% 
-    filter(row_number()==i) %>% 
-    mutate(modelFits = invoke_map(.f = model, .x = params))
+  mod_interest <- train_df_xgb %>% filter(row_number()==i)
+  
+  start_time <- Sys.time()-14400
+  out <- mod_interest %>% mutate(modelFits = invoke_map(.f = model, .x = params))
+  end_time <- Sys.time()-14400
+  
+  run_time <- round(as.numeric(end_time - start_time),2)
+  run_time_units <- units(end_time - start_time)
+  time_list <- data.frame("model" = paste0(mod_interest$modelName," : ",mod_interest$id)
+                          ,"start_time" = start_time
+                          ,"end_time"  = end_time
+                          ,"run_time" = run_time
+                          ,"run_time_units" = run_time_units)
+  out <- bind_cols(out, nest(time_list, .key = "run_times_list"))
+  out <- out %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
   
   return(out)
-  
 }
 
 run_end_2 <- Sys.time()
 stopImplicitCluster()
-
+closeAllConnections()
 
 
 # Checking the results for errors ----------------------------------------
@@ -169,7 +196,7 @@ xgb_error_vec <- map(.x = train_df_xgb, .f = ~class(.x)[[1]]=="tbl_df") %>% unli
 
 
 xgb_errors <- train_df_xgb[!xgb_error_vec]
-if(length(xgb_errors)==0) xgb_errors <- "no caret errors"
+if(length(xgb_errors)==0) xgb_errors <- "no xgb errors"
 
 caret_errors <- train_df_caret[!caret_error_vec]
 if(length(caret_errors)==0) caret_errors <- "no caret errors"
@@ -178,7 +205,7 @@ train_df_caret <- train_df_caret[caret_error_vec]
 train_df_xgb <- train_df_xgb[xgb_error_vec]
 
 
-  
+
 
 message("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
 message("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
@@ -190,45 +217,44 @@ message("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",rou
 
 # Combine results ---------------------------------------------------------
 
-
-
 train_out <- bind_rows(train_df_caret,train_df_xgb) %>% mutate(model_class = map_chr(modelFits, ~as.character(class(.x))))
-train_out_1 <- train_out %>% filter(model_class == "train")
-train_out_2 <- train_out %>% filter(model_class == "xgb.Booster")
-
 
 # Calculate Evaluation metrics -------------------------------------------
-train_out_1 <- 
-  train_out_1 %>% 
-  mutate(data_fit = map2(.x = train.X, .y = modelFits, ~as.numeric(predict(.y, newdata = .x)))) %>% 
+train_out <- 
+  train_out %>% 
+  mutate(data_fit = map2(.x = train.X, .y = modelFits, ~as.numeric(predict(.y, newdata = data.matrix(.x))))) %>% 
   mutate(RMSE = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
          , Rsq = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
          , Spearman = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))) %>%
-  mutate(y_hat = map2(.x = test.X, .y = modelFits, ~predict(.y, newdata = .x))) %>% 
-  mutate(Test_RMSE = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
-         , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
-         , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
-  )
-
-train_out_2 <- 
-  train_out_2 %>% 
-  mutate(data_fit = map2(.x = train.X, .y = modelFits, ~predict(.y, newdata = data.matrix(.x)))) %>% 
-  mutate(RMSE = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
-         , Rsq = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
-         , Spearman = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
-  ) %>% 
   mutate(y_hat = map2(.x = test.X, .y = modelFits, ~predict(.y, newdata = data.matrix(.x)))) %>% 
   mutate(Test_RMSE = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
          , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
          , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
-  )
-
-train_out <- bind_rows(train_out_1, train_out_2)
-
+  ) %>% 
+  arrange(-Test_Rsq)
 
 
 
+# LOGGER ------------------------------------------------------------------
+logger                <- list()
+logger$Start_time     <- start_global
+logger$Top_model      <- train_out %>% head(1) %>% select(modelName, id) %>% transmute(paste0(modelName, " : ",id)) %>% as.character()
+logger$Best_Rsq       <- train_out %>% head(1) %>% select(Test_Rsq) %>% as.numeric() %>% round(3)
+logger$Best_RMSE      <- train_out %>% head(1) %>% select(Test_RMSE) %>% as.numeric() %>% round(3)
+logger$Sytem          <- as.character(Sys.info()["sysname"])
+logger$n_rows         <- scales::comma(nrow(model_data_list[[1]]))
+logger$data_versions  <- nrow(starter_df)
+logger$unique_models  <- nrow(model_list)
+logger$function_names <- as.character(paste0(model_list$modelName, collapse = " "))
+logger$total_models   <- nrow(train_df)
+logger$model_combos   <- as.character(paste0(train_df$modelName,":",train_df$id, collapse = " "))
+logger$all_funs       <- paste0(model_list$modelName,gsub("\n","",paste0(as.list(model_list$model))),collapse = " * ")
 
+if(!file.exists("log/logger.csv")){
+  write_csv(as.data.frame(logger), "log/logger.csv", append = FALSE)
+} else {
+  write_csv(as.data.frame(logger), "log/logger.csv", append = TRUE)
+}
 
 
 # send completion email ---------------------------------------------------
@@ -247,31 +273,23 @@ sample_out_frame <-
   arrange(-Test_Rsq) %>% 
   mutate_if(.predicate = is.numeric, .f = ~round(.,3)) %>% 
   as.data.frame()
-  
 
 
-msg_out_1 <- paste0("Trained ",length(train_df_caret)," caret models in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
-msg_out_2 <- paste0("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)))
+msg_out_1 <- paste0("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
+msg_out_2 <- paste0("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
 rich_template <- paste("Your models have finished training"
                        , paste0("Script run started ",format(start_global-14400, "%a %b %d %X %Y"))
                        , msg_out_1
                        , msg_out_2
+                       , paste0("system: ",as.character(Sys.info()["sysname"]))
                        ,"Summary of y actual:"
                        , pander::pandoc.table.return(round(as.matrix(summary(model_data_list$test_vtreated$SALE.PRICE)),2), style = "grid")
                        ,"Summary of best model yhat:"
                        , pander::pandoc.table.return(
-                         round(
-                           train_out %>%
-                             arrange(-Test_Rsq) %>%
-                             head(1) %>%
-                             select(y_hat) %>%
-                             unnest() %>%
-                             as.matrix() %>%
-                             as.numeric() %>%
-                             summary() %>%
-                             as.matrix()
-                           ,2)
-                        , style = "grid")
+                         round(train_out %>%arrange(-Test_Rsq) %>%head(1) %>%
+                             select(y_hat) %>%unnest() %>%as.matrix() %>%
+                             as.numeric() %>%summary() %>%as.matrix(),2)
+                         , style = "grid")
                        ,"Summary of results:"
                        , pander::pandoc.table.return(sample_out_frame, style = "grid")
                        , "Errors from caret:"
@@ -279,7 +297,7 @@ rich_template <- paste("Your models have finished training"
                        , "Errors from xgb:"
                        , pander::pandoc.table.return(xgb_errors, style = "grid")
                        , "This is a friendly email from me."
-                       , sep = "\n\n")
+                       , sep = "\n")
 
 current_time <- Sys.time()-14400 
 
@@ -287,12 +305,13 @@ sender <- "timothy.j.kiely@gmail.com"
 recipients <- c("timothy.j.kiely@gmail.com", "tkiely@hodgeswardelliott.com")
 send.mail(from = sender,
           to = recipients,
-          subject= paste0("Model Training Finished ",format(Sys.time()-14400, "%a %b %d %X %Y")),#14,400 seconds in 4 hours, which offsets Zulu to EST
+          subject = paste0("Model Training Finished ",format(Sys.time()-14400, "%a %b %d %X %Y")), #14,400 seconds in 4 hours, which offsets Zulu to EST
           body = rich_template,
           smtp = list(host.name = "smtp.gmail.com", port = 465, 
-                      user.name="timothy.j.kiely@gmail.com", passwd="Cestina2017!", ssl=TRUE),
+                      user.name="timothy.j.kiely@gmail.com", passwd=readLines('pwrd.txt'), ssl=TRUE),
           authenticate = TRUE,
           send = TRUE)
+
 
 
 message("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")

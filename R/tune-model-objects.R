@@ -126,7 +126,7 @@ RBPModel <- function(X, Y) {
   
   # tick the progress bar forward
   if(exists("pb",envir = globalenv())){
-    pb$tick(tokens = list(what = "Radial Basis Function Netowrk Model"))
+    pb$tick(tokens = list(what = "Radial Basis Function Network Model"))
   }
   
   ctrl <- trainControl(

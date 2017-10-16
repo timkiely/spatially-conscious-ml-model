@@ -16,7 +16,7 @@ options(tibble.print_max = 25)
 # our main modeling data --------------------------------------------------
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
-set.seed(1987)
+# set.seed(1987)
 # model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.01)})
 
 
@@ -280,7 +280,7 @@ sample_out_frame <-
 msg_out_1 <- paste0("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
 msg_out_2 <- paste0("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
 rich_template <- paste("Your models have finished training"
-                       , paste0("Script run started ",format(start_global-14400, "%a %b %d %X %Y"))
+                       , paste0("Script run started ",format(start_global, "%a %b %d %X %Y"))
                        , msg_out_1
                        , msg_out_2
                        , paste0("system: ",as.character(Sys.info()["sysname"]))

@@ -322,6 +322,30 @@ xgbRFmodel <- function(X, Y){
 }
 
 
+# h2o implementation of Radnom Forrest
+h2oRFmodel <- function(X, Y, training_frame, validation_frame){
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "h2o RF Model"))
+  }
+  
+  
+  
+  bst <- h2o.randomForest(x = X,
+                          y = Y,
+                          training_frame = training_frame,
+                          validation_frame = validation_frame, 
+                          model_id = "h2o_rf_fit",
+                          ntrees = 200,
+                          stopping_rounds = 5,
+                          seed = 1)
+  
+  bst
+}
+
+
+
 # Model List --------------------------------------------------------------
 model_list <- 
   tibble::enframe(
@@ -330,13 +354,14 @@ model_list <-
       , xgbModel = xgbTreeModel
       , xgbTreeModel2 = xgbTreeModel2
       , xgbLinearModel = xgbLinearModel
-      , RFModel = RFModel
+      #, RFModel = RFModel
       , xgbRFmodel = xgbRFmodel
       , linearRegModel = linearRegModel
       , lassoRegModel = lassoRegModel
       , KNNModel = KNNModel
       , MLPModel = MLPModel
       #, RBPModel = RBPModel 
+      , h2oRFmodel = h2oRFmodel
       
     ) 
     ,name = 'modelName',value = 'model')

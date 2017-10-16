@@ -9,3 +9,4 @@ PLUTO_ARCHIVES/*
 xgboost.model
 pwrd.txt
 log/*
+.RData

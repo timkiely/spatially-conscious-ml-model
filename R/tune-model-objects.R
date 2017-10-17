@@ -345,6 +345,31 @@ h2oRFmodel <- function(X, Y, training_frame, validation_frame){
 }
 
 
+# h2o implementation of GBM
+h2oGBMmodel <- function(X, Y, training_frame, validation_frame){
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "h2o GBM Model"))
+  }
+  
+  
+  
+  bst <- h2o.gbm(x = X,
+                 y = Y,
+                 training_frame = training_frame,
+                 validation_frame = validation_frame, 
+                 model_id = "h2o_gbm_fit",
+                 ntrees = 500,
+                 max_depth = 6, 
+                 stopping_rounds = 50,
+                 stopping_metric = "RMSE",
+                 learn_rate = 0.01, 
+                 seed = 1)
+  
+  bst
+}
+
 
 # Model List --------------------------------------------------------------
 model_list <- 
@@ -362,6 +387,7 @@ model_list <-
       , MLPModel = MLPModel
       #, RBPModel = RBPModel 
       , h2oRFmodel = h2oRFmodel
+      , h2oGBMmodel = h2oGBMmodel
       
     ) 
     ,name = 'modelName',value = 'model')

@@ -17,8 +17,7 @@ options(tibble.print_max = 50)
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
 # set.seed(1987)
-# model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.01)})
-
+# model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.1)})
 
 
 # turn model data list into a tidy data frame ---------------------------
@@ -55,14 +54,9 @@ model_list <- read_rds('data/model-list.rds')
 # build modeling tibble ---------------------------------------------------
 
 train_df <- starter_df[rep(1:nrow(starter_df),nrow(model_list)),]
-library(h2o)
-h2o.removeAll()
-
-
 train_df <- 
   train_df %>%
   bind_cols(model_list[rep(1:nrow(model_list),nrow(starter_df)),] %>% arrange(modelName)) %>%
-  #filter(modelName%in%c("h2oRFmodel")) %>% 
   
   # generic caret models:
   mutate(params = map2(train.X, train.Y,  ~ list(X = .x, Y = .y))) %>% 
@@ -76,38 +70,13 @@ train_df <-
   mutate(watchlist = ifelse(modelName %in% c("xgbTreeModel2"), map2(dtrain, dtest, ~ list(train = .x, test = .y)),NA)) %>% 
   mutate(params = ifelse(modelName %in% c("xgbTreeModel2"), map2(dtrain, watchlist,  ~ list(X = .x, watchlist = .y)), params)) %>% 
   select(-dtrain, -dtest, -watchlist) %>% 
-  
-  #for h2o:
-  # mutate(test_names = "SALE.PRICE") %>% 
-  # mutate(train_names = map2(.x = train.X, .y = test_names, .f = ~setdiff(names(.x),.y))) %>% 
-  # mutate(training_frame = map2(train.X, train.Y, .f = ~bind_cols(list(.x,data.frame("SALE.PRICE"=.y))))) %>% 
-  # mutate(validation_frame = ifelse(modelName%in%c("h2oRFmodel")
-  #                                  , map2(test.X, test.Y, .f = ~bind_cols(list(.x,data.frame("SALE.PRICE"=.y))))
-  #                                  , NA)
-  #        ) %>% 
-  # 
-  # mutate(training_frame = ifelse(modelName%in%c("h2oRFmodel")
-#                                , map(training_frame, ~as.h2o(.x, verbose = FALSE, showProgress = FALSE))
-#                                ,NA)
-#        ) %>% 
-# mutate(validation_frame = map(validation_frame, ~as.h2o(.x, verbose = FALSE, showProgress = FALSE))) %>% 
-# 
-# mutate(params = ifelse(modelName %in% c("h2oRFmodel"), map(train_names, test_names
-#                                                                  , training_frame, validation_frame
-#                                                             , .f = ~list("X" = ..1,"Y" = ..2
-#                                                                          ,"training_frame" = ..3
-#                                                                          ,"validation_frame" = ..4)
-#                                                             )
-# , params )) %>% 
-mutate(idx = 1:n())
+  mutate(idx = 1:n())
 
 
 # split in to xgboost and the rest ----------------------------------------
 train_df_xgb <- train_df %>% filter(grepl("xgb|lassoRegModel",modelName))
-train_df_h2o <- train_df %>% filter(grepl("h2oRFmodel", modelName))
+train_df_h2o <- train_df %>% filter(grepl("h2oRFmodel|h2oGBMmodel", modelName))
 train_df_caret <- anti_join(train_df,bind_rows(train_df_xgb,train_df_h2o), by = "idx")
-
-
 
 
 
@@ -226,7 +195,7 @@ closeAllConnections()
 
 
 
-# H2O Models --------------------------------------------------------------
+# TRAIN H2O Models ----------------------------------------------------------
 options("h2o.use.data.table"=TRUE)
 h2o.no_progress()
 h2o.init(nthreads = -1) #Number of threads -1 means use all cores on your machine
@@ -314,7 +283,6 @@ train_df_xgb <- train_df_xgb[xgb_error_vec]
 train_df_h2o <- train_df_h2o[h2o_error_vec]
 
 
-
 message("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
 message("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
 message("Trained ",length(train_df_h2o)," h2o models with 5 fold-CV in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)), " with ",length(h2o_error_vec[h2o_error_vec==FALSE]), " errors")
@@ -351,11 +319,18 @@ train_out_other <-
 
 train_out <- bind_rows(train_out_h2o, train_out_other)
 
-train_out_log <- train_out %>% select(-train.X,-train.Y,-test.X,-test.Y,-model,-params,-modelFits,-data_fit,-y_hat)
-write_rds(train_out_log, paste0("log/train-out-",Sys.time(),".rds"), compress = "gz")
-
 
 # LOGGER ------------------------------------------------------------------
+
+# log the model stats:
+train_out_log <- train_out %>% select(-train.X,-train.Y,-test.X,-test.Y,-model,-params,-modelFits,-data_fit,-y_hat)
+write_rds(train_out_log
+          , paste0("log/train-out-",Sys.time(),".rds"), compress = "gz")
+# keep the most recent model
+write_rds(train_out %>% select(-train.X,-train.Y,-test.X,-test.Y)
+          , "log/most-recent-model.rds", compress = "gz")
+
+# log runtime, model performance, etc. 
 logger                <- list()
 logger$Start_time     <- start_global
 logger$Top_model      <- train_out %>% head(1) %>% select(modelName, id) %>% transmute(paste0(modelName, " : ",id)) %>% as.character()

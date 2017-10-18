@@ -15,6 +15,6 @@ p_load(
   , parallel, foreach, doSNOW
   , doParallel, vtreat
   , xgboost, randomForest, elasticnet
-  , progress, knitr, h2o
-  , htmlTable, pander
+  , progress, knitr, h2o, data.table
+  , htmlTable, pander, rPython
 )

@@ -64,7 +64,6 @@ lassoRegModel <- function(X, Y) {
 
 # KNN mean ----------------------------------------------------------------
 
-
 KNNModel <- function(X, Y) {
   
   # tick the progress bar forward
@@ -73,16 +72,17 @@ KNNModel <- function(X, Y) {
   }
   
   ctrl <- trainControl(
-    ## 5-fold CV
-    method = "repeatedcv", 
-    number = 5
+    method = "none"
   )
   train(
     x = X,
     y = Y,
-    method = 'knn',
+    method = 'kknn',
     trControl = ctrl,
-    tuneGrid = expand.grid(k = c(5,10,15,20)),
+    tuneGrid = expand.grid(kmax = c(50)
+                           , distance = 2
+                           , kernel = "optimal"
+    ),
     preProc = c('center', 'scale')
     
   )
@@ -178,7 +178,7 @@ rpartModel <- function(X, Y) {
 
 
 
-# XGBoost -----------------------------------------------------------------
+# XGBoost (caret) -----------------------------------------------------------------
 xgbTreeModel <- function(X, Y){
   # tick the progress bar forward
   if(exists("pb",envir = globalenv())){
@@ -211,7 +211,9 @@ xgbTreeModel <- function(X, Y){
 
 
 
-# native implementation of xgboost with early stopping
+
+# XGBoost GBM -------------------------------------------------------------
+
 xgbTreeModel2 <- function(X, watchlist){
   
   # tick the progress bar forward
@@ -239,8 +241,34 @@ xgbTreeModel2 <- function(X, watchlist){
                    , nrounds = 500
                    , early_stopping_rounds = 100
                    , verbose = 0
-                   #, nthread = 1
   )
+}
+
+
+# H2O GBM -----------------------------------------------
+
+h2oGBMmodel <- function(X, Y, training_frame, validation_frame){
+  
+  # tick the progress bar forward
+  if(exists("pb",envir = globalenv())){
+    pb$tick(tokens = list(what = "h2o GBM Model"))
+  }
+  
+  
+  
+  bst <- h2o.gbm(x = X,
+                 y = Y,
+                 training_frame = training_frame,
+                 validation_frame = validation_frame, 
+                 model_id = "h2o_gbm_fit",
+                 ntrees = 500,
+                 max_depth = 6, 
+                 stopping_rounds = 50,
+                 stopping_metric = "RMSE",
+                 learn_rate = 0.01, 
+                 seed = 1)
+  
+  bst
 }
 
 
@@ -300,7 +328,8 @@ RFModel <- function(X, Y){
 
 
 
-# native implementation of xgboost with early stopping
+
+# XGBoost Random Forrest --------------------------------------------------
 xgbRFmodel <- function(X, Y){
   
   # tick the progress bar forward
@@ -322,7 +351,8 @@ xgbRFmodel <- function(X, Y){
 }
 
 
-# h2o implementation of Radnom Forrest
+
+# H2O Random Forrest ------------------------------------------------------
 h2oRFmodel <- function(X, Y, training_frame, validation_frame){
   
   # tick the progress bar forward
@@ -345,30 +375,7 @@ h2oRFmodel <- function(X, Y, training_frame, validation_frame){
 }
 
 
-# h2o implementation of GBM
-h2oGBMmodel <- function(X, Y, training_frame, validation_frame){
-  
-  # tick the progress bar forward
-  if(exists("pb",envir = globalenv())){
-    pb$tick(tokens = list(what = "h2o GBM Model"))
-  }
-  
-  
-  
-  bst <- h2o.gbm(x = X,
-                 y = Y,
-                 training_frame = training_frame,
-                 validation_frame = validation_frame, 
-                 model_id = "h2o_gbm_fit",
-                 ntrees = 500,
-                 max_depth = 6, 
-                 stopping_rounds = 50,
-                 stopping_metric = "RMSE",
-                 learn_rate = 0.01, 
-                 seed = 1)
-  
-  bst
-}
+
 
 
 # Model List --------------------------------------------------------------
@@ -385,7 +392,7 @@ model_list <-
       , lassoRegModel = lassoRegModel
       , KNNModel = KNNModel
       , MLPModel = MLPModel
-      #, RBPModel = RBPModel 
+      , RBPModel = RBPModel 
       , h2oRFmodel = h2oRFmodel
       , h2oGBMmodel = h2oGBMmodel
       

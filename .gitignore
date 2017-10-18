@@ -10,3 +10,4 @@ xgboost.model
 pwrd.txt
 log/*
 .RData
+.sink-output

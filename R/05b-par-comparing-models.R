@@ -16,8 +16,8 @@ options(tibble.print_max = 50)
 # our main modeling data --------------------------------------------------
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
-# set.seed(1987)
-# model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.1)})
+set.seed(1987)
+model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.1)})
 
 
 # turn model data list into a tidy data frame ---------------------------
@@ -74,7 +74,7 @@ train_df <-
 
 
 # split in to xgboost and the rest ----------------------------------------
-train_df_xgb <- train_df %>% filter(grepl("xgb|lassoRegModel",modelName))
+train_df_xgb <- train_df %>% filter(grepl("xgb|lassoRegModel|RBPModel",modelName))
 train_df_h2o <- train_df %>% filter(grepl("h2oRFmodel|h2oGBMmodel", modelName))
 train_df_caret <- anti_join(train_df,bind_rows(train_df_xgb,train_df_h2o), by = "idx")
 
@@ -136,7 +136,7 @@ stopCluster(cl)
 stopImplicitCluster()
 closeAllConnections()
 
-message("Trained ",length(train_df_caret)," models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+message("Trained ",length(train_df_caret)," models in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
 
 
 
@@ -165,29 +165,28 @@ train_df_xgb <- foreach(i = 1:nrow(train_df_xgb)
                         , .verbose = FALSE
                         #, .combine = list
                         , .errorhandling = "pass"
-                        , .options.snow = opts
-) %do% {
-  
-  source("R/00aa-load-packages.R")
-  
-  mod_interest <- train_df_xgb %>% filter(row_number()==i)
-  
-  start_time <- Sys.time()-14400
-  out <- mod_interest %>% mutate(modelFits = invoke_map(.f = model, .x = params))
-  end_time <- Sys.time()-14400
-  
-  run_time <- round(as.numeric(end_time - start_time),2)
-  run_time_units <- units(end_time - start_time)
-  time_list <- data.frame("model" = paste0(mod_interest$modelName," : ",mod_interest$id)
-                          ,"start_time" = start_time
-                          ,"end_time"  = end_time
-                          ,"run_time" = run_time
-                          ,"run_time_units" = run_time_units)
-  out <- bind_cols(out, nest(time_list, .key = "run_times_list"))
-  out <- out %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
-  
-  return(out)
-}
+                        , .options.snow = opts ) %do% {
+                          
+                          source("R/00aa-load-packages.R")
+                          
+                          mod_interest <- train_df_xgb %>% filter(row_number()==i)
+                          
+                          start_time <- Sys.time()-14400
+                          out <- mod_interest %>% mutate(modelFits = invoke_map(.f = model, .x = params))
+                          end_time <- Sys.time()-14400
+                          
+                          run_time <- round(as.numeric(end_time - start_time),2)
+                          run_time_units <- units(end_time - start_time)
+                          time_list <- data.frame("model" = paste0(mod_interest$modelName," : ",mod_interest$id)
+                                                  ,"start_time" = start_time
+                                                  ,"end_time"  = end_time
+                                                  ,"run_time" = run_time
+                                                  ,"run_time_units" = run_time_units)
+                          out <- bind_cols(out, nest(time_list, .key = "run_times_list"))
+                          out <- out %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
+                          
+                          return(out)
+                        }
 
 run_end_2 <- Sys.time()
 stopImplicitCluster()
@@ -196,10 +195,12 @@ closeAllConnections()
 
 
 # TRAIN H2O Models ----------------------------------------------------------
+sink(".sink-output")
+h2o.init(nthreads = -1) #Number of threads -1 means use all cores on your machine
 options("h2o.use.data.table"=TRUE)
 h2o.no_progress()
-h2o.init(nthreads = -1) #Number of threads -1 means use all cores on your machine
 h2o.removeAll()
+sink(NULL)
 
 
 
@@ -217,45 +218,52 @@ opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = 
 
 
 run_start_3 <- Sys.time()
-train_df_h2o <- 
-  foreach(i = 1:nrow(train_df_h2o)) %do% {
-    mod_interest <- train_df_h2o %>% filter(row_number()==i)
-    X <- mod_interest %>% select(train.X) %>% unnest()
-    X_names <- names(X)
-    Y <- mod_interest %>% select(train.Y) %>% unnest()
-    names(Y) <- Y_names <- "SALE.PRICE"
-    training_frame <- as.h2o(bind_cols(X,Y))
-    
-    X_val <- mod_interest %>% select(test.X) %>% unnest()
-    X_val_names <- names(X_val)
-    Y_val <- mod_interest %>% select(test.Y) %>% unnest()
-    names(Y_val) <- Y_val_names <- "SALE.PRICE"
-    validation_frame <- as.h2o(bind_cols(X_val,Y_val))
-    
-    start_time <- Sys.time()-14400
-    h2o_mod <- h2oRFmodel(X = X_names, Y = Y_names, training_frame=training_frame, validation_frame=validation_frame)
-    end_time <- Sys.time()-14400
-    
-    
-    run_time <- round(as.numeric(end_time - start_time),2)
-    run_time_units <- units(end_time - start_time)
-    time_list <- data.frame("model" = paste0(mod_interest$modelName," : ",mod_interest$id)
-                            ,"start_time" = start_time
-                            ,"end_time"  = end_time
-                            ,"run_time" = run_time
-                            ,"run_time_units" = run_time_units)
-    mod_interest <- mod_interest %>% mutate(modelFits = list(h2o_mod))
-    mod_interest <- bind_cols(mod_interest, nest(time_list, .key = "run_times_list"))
-    mod_interest <- mod_interest %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
-    data_fit <- tbl_df(predict(h2o_mod, newdata = training_frame))
-    y_hat <- tbl_df(predict(h2o_mod, newdata = validation_frame))
-    mod_interest <- mod_interest %>% 
-      mutate(data_fit = list(data_fit)
-             , y_hat = list(y_hat))
-    
-  }
+train_df_h2o <- foreach(i = 1:nrow(train_df_h2o)
+                        , .verbose = FALSE
+                        , .errorhandling = "pass") %do% {
+                          
+                          mod_interest <- train_df_h2o %>% filter(row_number()==i)
+                          
+                          X <- mod_interest %>% select(train.X) %>% unnest()
+                          X_names <- names(X)
+                          Y <- mod_interest %>% select(train.Y) %>% unnest()
+                          names(Y) <- Y_names <- "SALE.PRICE"
+                          training_frame <- as.h2o(bind_cols(X,Y))
+                          
+                          X_val <- mod_interest %>% select(test.X) %>% unnest()
+                          X_val_names <- names(X_val)
+                          Y_val <- mod_interest %>% select(test.Y) %>% unnest()
+                          names(Y_val) <- Y_val_names <- "SALE.PRICE"
+                          validation_frame <- as.h2o(bind_cols(X_val,Y_val))
+                          
+                          h2o_model <- mod_interest %>% select(model) %>% unlist() %>% .[[1]]
+                          
+                          start_time <- Sys.time()-14400
+                          h2o_mod <- h2o_model(X = X_names, Y = Y_names, training_frame=training_frame, validation_frame=validation_frame)
+                          end_time <- Sys.time()-14400
+                          
+                          
+                          run_time <- round(as.numeric(end_time - start_time),2)
+                          run_time_units <- units(end_time - start_time)
+                          time_list <- data.frame("model" = paste0(mod_interest$modelName," : ",mod_interest$id)
+                                                  ,"start_time" = start_time
+                                                  ,"end_time"  = end_time
+                                                  ,"run_time" = run_time
+                                                  ,"run_time_units" = run_time_units)
+                          mod_interest <- mod_interest %>% mutate(modelFits = list(h2o_mod))
+                          mod_interest <- bind_cols(mod_interest, nest(time_list, .key = "run_times_list"))
+                          mod_interest <- mod_interest %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
+                          data_fit <- tbl_df(predict(h2o_mod, newdata = training_frame))
+                          y_hat <- tbl_df(predict(h2o_mod, newdata = validation_frame))
+                          
+                          mod_interest <- 
+                            mod_interest %>% 
+                            mutate(data_fit = list(data_fit)
+                                   , y_hat = list(y_hat)
+                            )
+                          
+                        }
 run_end_3 <- Sys.time()
-
 closeAllConnections()
 
 message("Trained ",length(train_df_h2o)," h2o models in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)))
@@ -283,9 +291,10 @@ train_df_xgb <- train_df_xgb[xgb_error_vec]
 train_df_h2o <- train_df_h2o[h2o_error_vec]
 
 
-message("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
-message("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
-message("Trained ",length(train_df_h2o)," h2o models with 5 fold-CV in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)), " with ",length(h2o_error_vec[h2o_error_vec==FALSE]), " errors")
+message("Trained ",length(train_df_caret)," caret models in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors",
+        "\nTrained ",length(train_df_xgb)," xgboost models in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors",
+        "\nTrained ",length(train_df_h2o)," h2o models in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)), " with ",length(h2o_error_vec[h2o_error_vec==FALSE]), " errors"
+)
 
 
 # Calculate Evaluation metrics -------------------------------------------
@@ -302,6 +311,7 @@ train_out_h2o <-
          , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
   ) %>% 
   arrange(-Test_Rsq)
+
 
 
 train_out_other <- 
@@ -324,11 +334,13 @@ train_out <- bind_rows(train_out_h2o, train_out_other)
 
 # log the model stats:
 train_out_log <- train_out %>% select(-train.X,-train.Y,-test.X,-test.Y,-model,-params,-modelFits,-data_fit,-y_hat)
-write_rds(train_out_log
-          , paste0("log/train-out-",Sys.time(),".rds"), compress = "gz")
+train_out_log %>% 
+  write_rds(paste0("log/train-out-",Sys.time(),".rds"), compress = "gz")
+
 # keep the most recent model
-write_rds(train_out %>% select(-train.X,-train.Y,-test.X,-test.Y)
-          , "log/most-recent-model.rds", compress = "gz")
+train_out %>% 
+  select(-train.X,-train.Y,-test.X,-test.Y) %>% 
+  write_rds("log/most-recent-model.rds", compress = "gz")
 
 # log runtime, model performance, etc. 
 logger                <- list()
@@ -364,18 +376,21 @@ library(mailR)
 sample_out_frame <- 
   train_out %>% 
   mutate(train.X = map_dbl(train.X, ~nrow(.x))) %>% 
-  select(Test_Rsq, Test_RMSE, modelName, id, "rows" = train.X, idx,Test_Spearman) %>% 
+  select(Test_Rsq, Test_RMSE, modelName, run_time, id, "rows" = train.X, idx,Test_Spearman) %>% 
   arrange(-Test_Rsq) %>% 
   mutate_if(.predicate = is.numeric, .f = ~round(.,3)) %>% 
   as.data.frame()
 
 
-msg_out_1 <- paste0("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
-msg_out_2 <- paste0("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
+msg_out_1 <- paste0("Trained ",length(train_df_caret)," caret models in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
+msg_out_2 <- paste0("Trained ",length(train_df_xgb)," xgboost modelsin ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
+msg_out_3 <- paste0("Trained ",length(train_df_h2o)," h2o models in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)), " with ",length(h2o_error_vec[h2o_error_vec==FALSE]), " errors")
+
 rich_template <- paste("Your models have finished training"
                        , paste0("Script run started ",format(start_global, "%a %b %d %X %Y"))
                        , msg_out_1
                        , msg_out_2
+                       , msg_out_3
                        , paste0("system: ",as.character(Sys.info()["sysname"]))
                        ,"Summary of y actual:"
                        , pander::pandoc.table.return(round(as.matrix(summary(model_data_list$test_vtreated$SALE.PRICE)),2), style = "grid")
@@ -384,13 +399,13 @@ rich_template <- paste("Your models have finished training"
                          round(train_out %>%arrange(-Test_Rsq) %>%head(1) %>%
                                  select(y_hat) %>%unnest() %>%as.matrix() %>%
                                  as.numeric() %>%summary() %>%as.matrix(),2)
-                         , style = "grid")
+                         , style = "grid", split.tables = Inf)
                        ,"Summary of results:"
-                       , pander::pandoc.table.return(sample_out_frame, style = "grid")
+                       , pander::pandoc.table.return(sample_out_frame, style = "grid", split.tables = Inf)
                        , "Errors from caret:"
-                       , pander::pandoc.table.return(caret_errors, style = "grid")
+                       , pander::pandoc.table.return(caret_errors, style = "grid", split.tables = Inf)
                        , "Errors from xgb:"
-                       , pander::pandoc.table.return(xgb_errors, style = "grid")
+                       , pander::pandoc.table.return(xgb_errors, style = "grid", split.tables = Inf)
                        , "This is a friendly email from me."
                        , sep = "\n")
 
@@ -409,7 +424,8 @@ send.mail(from = sender,
 
 
 
-message("Trained ",length(train_df_caret)," caret models with 5 fold-CV in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors")
-message("Trained ",length(train_df_xgb)," xgboost models with 5 fold-CV in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors")
-message("Trained ",length(train_df_h2o)," h2o models with 5 fold-CV in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)), " with ",length(h2o_error_vec[h2o_error_vec==FALSE]), " errors")
+message("Trained ",length(train_df_caret)," caret models in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors",
+        "\nTrained ",length(train_df_xgb)," xgboost models in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors",
+        "\nTrained ",length(train_df_h2o)," h2o models in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)), " with ",length(h2o_error_vec[h2o_error_vec==FALSE]), " errors"
+        )
 

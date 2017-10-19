@@ -16,8 +16,8 @@ options(tibble.print_max = 50)
 # our main modeling data --------------------------------------------------
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
-set.seed(1987)
-model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.1)})
+# set.seed(1987)
+# model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.1)})
 
 
 # turn model data list into a tidy data frame ---------------------------

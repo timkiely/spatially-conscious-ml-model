@@ -16,8 +16,8 @@ options(tibble.print_max = 50)
 # our main modeling data --------------------------------------------------
 model_data_list <- read_rds("data/processed-modeling-data.rds")
 # for dev purposes:
-# set.seed(1987)
-# model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.1)})
+set.seed(1987)
+model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.01)})
 
 
 # turn model data list into a tidy data frame ---------------------------
@@ -127,9 +127,9 @@ train_df_caret <- foreach(i = 1:nrow(train_df_caret)
                             out <- bind_cols(out, nest(time_list, .key = "run_times_list"))
                             out <- out %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
                             
-                            return(out)
-                            
+                            return(out) 
                           }
+
 
 run_end <- Sys.time()
 stopCluster(cl)
@@ -303,13 +303,34 @@ train_out_other <- bind_rows(train_df_xgb, train_df_caret)
 
 train_out_h2o <- 
   train_out_h2o %>% 
+  mutate(y_hat = map(.x = y_hat, .f = ~as.numeric(unlist(.x)))) %>% 
+  mutate(Test_Errors = map2(.x = y_hat, .y = test.Y, .f = ~.y-.x))  %>% 
   mutate(RMSE = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
          , Rsq = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
-         , Spearman = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))) %>%
-  mutate(Test_RMSE = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
+         , Spearman = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))) %>% 
+  mutate(Test_RMSE = map_dbl(.x = Test_Errors, .f = ~as.numeric(sqrt(mean(.x^2))))
          , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
          , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
+         , Test_Percent_Error = map2(Test_Errors, test.Y, ~unlist(.x)/.y)
+         , Test_MAPE = map_dbl(.x = Test_Percent_Error, .f = ~as.numeric(mean(abs(unlist(.x)))))
   ) %>% 
+  mutate(Test_Sales_Ratios = map2(.x = y_hat, .y = test.Y, .f = ~as.numeric(.x /.y))  
+         , Test_Average_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(mean(.x)))
+         , Test_SD_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(sd(.x))) 
+         , Test_N_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(length(.x))) 
+         , Test_ERR_Sales_Ratio = qt(0.975, df=Test_N_Sales_Ratio-1)*Test_SD_Sales_Ratio/sqrt(Test_N_Sales_Ratio) 
+         , Test_SR_CI_Low = Test_Average_Sales_Ratio-Test_ERR_Sales_Ratio
+         , Test_SR_CI_Hi = Test_Average_Sales_Ratio+Test_ERR_Sales_Ratio
+  ) %>% 
+  mutate(Test_Median_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(median(.x)))
+         , COD_Step1 = map2(.x = Test_Sales_Ratios, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
+         , COD_Step2 = map(.x = COD_Step1, .f = ~abs(.x))
+         , COD_Step3 = map_dbl(.x = COD_Step2, .f = ~sum(.x))
+         , COD_Step4 = COD_Step3/Test_N_Sales_Ratio
+         , COD_Step5 = COD_Step4/Test_Median_Sales_Ratio
+         , Test_COD = COD_Step5*100
+  ) %>%
+  select(-Test_Percent_Error, -Test_Sales_Ratios, -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
   arrange(-Test_Rsq)
 
 
@@ -321,21 +342,41 @@ train_out_other <-
          , Rsq = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
          , Spearman = map2_dbl(.x = data_fit, .y = train.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))) %>%
   mutate(y_hat = map2(.x = test.X, .y = modelFits, ~predict(.y, newdata = data.matrix(.x)))) %>% 
+  mutate(y_hat = map(.x = y_hat, .f = ~as.numeric(unlist(.x)))) %>% 
+  mutate(Test_Errors = map2(.x = y_hat, .y = test.Y, .f = ~.y-.x))  %>% 
   mutate(Test_RMSE = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(sqrt(mean((.x - .y)^2))))
          , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
          , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
+         , Test_Percent_Error = map2(Test_Errors, test.Y, ~unlist(.x)/.y)
+         , Test_MAPE = map_dbl(.x = Test_Percent_Error, .f = ~as.numeric(mean(abs(unlist(.x)))))
   ) %>% 
+  mutate(Test_Sales_Ratios = map2(.x = y_hat, .y = test.Y, .f = ~as.numeric(.x /.y))  
+         , Test_Average_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(mean(.x)))
+         , Test_SD_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(sd(.x))) 
+         , Test_N_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(length(.x))) 
+         , Test_ERR_Sales_Ratio = qt(0.975, df=Test_N_Sales_Ratio-1)*Test_SD_Sales_Ratio/sqrt(Test_N_Sales_Ratio) 
+         , Test_SR_CI_Low = Test_Average_Sales_Ratio-Test_ERR_Sales_Ratio
+         , Test_SR_CI_Hi = Test_Average_Sales_Ratio+Test_ERR_Sales_Ratio
+  ) %>% 
+  mutate(Test_Median_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(median(.x)))
+         , COD_Step1 = map2(.x = Test_Sales_Ratios, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
+         , COD_Step2 = map(.x = COD_Step1, .f = ~abs(.x))
+         , COD_Step3 = map_dbl(.x = COD_Step2, .f = ~sum(.x))
+         , COD_Step4 = COD_Step3/Test_N_Sales_Ratio
+         , COD_Step5 = COD_Step4/Test_Median_Sales_Ratio
+         , Test_COD = COD_Step5*100
+  ) %>%
+  select(-Test_Percent_Error, -Test_Sales_Ratios, -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
   arrange(-Test_Rsq)
 
-train_out <- bind_rows(train_out_h2o, train_out_other)
+train_out <- bind_rows(train_out_h2o, train_out_other) %>% arrange(-Test_Rsq)
 
 
 # LOGGER ------------------------------------------------------------------
 
 # log the model stats:
 train_out_log <- train_out %>% select(-train.X,-train.Y,-test.X,-test.Y,-model,-params,-modelFits,-data_fit,-y_hat)
-train_out_log %>% 
-  write_rds(paste0("log/train-out-",Sys.time(),".rds"), compress = "gz")
+train_out_log %>% write_rds(paste0("log/train-out-",Sys.time(),".rds"), compress = "gz")
 
 # keep the most recent model
 train_out %>% 
@@ -348,6 +389,10 @@ logger$Start_time     <- start_global
 logger$Top_model      <- train_out %>% head(1) %>% select(modelName, id) %>% transmute(paste0(modelName, " : ",id)) %>% as.character()
 logger$Best_Rsq       <- train_out %>% head(1) %>% select(Test_Rsq) %>% as.numeric() %>% round(3)
 logger$Best_RMSE      <- train_out %>% head(1) %>% select(Test_RMSE) %>% as.numeric() %>% round(3)
+logger$Best_MAPE      <- train_out %>% head(1) %>% select(Test_MAPE) %>% as.numeric() %>% round(3)
+logger$Best_Av_SR     <- train_out %>% head(1) %>% select(Test_Average_Sales_Ratio) %>% as.numeric() %>% round(3)
+logger$Best_Med_SR    <- train_out %>% head(1) %>% select(Test_Median_Sales_Ratio) %>% as.numeric() %>% round(3)
+logger$Best_COD       <- train_out %>% head(1) %>% select(Test_COD) %>% as.numeric() %>% round(3)
 logger$Sytem          <- as.character(Sys.info()["sysname"])
 logger$n_rows         <- scales::comma(nrow(model_data_list[[1]]))
 logger$data_versions  <- nrow(starter_df)
@@ -373,6 +418,9 @@ if(!file.exists("log/logger.csv")){
 #    $ sudo rstudio-server start
 library(mailR)
 
+end_global <- Sys.time()-14400; message("Run ended at ",end_global)
+total_global <- paste0(round(as.numeric(end_global - start_global),3)," ",units((end_global - start_global)))
+
 sample_out_frame <- 
   train_out %>% 
   mutate(train.X = map_dbl(train.X, ~nrow(.x))) %>% 
@@ -388,6 +436,7 @@ msg_out_3 <- paste0("Trained ",length(train_df_h2o)," h2o models in ",round(diff
 
 rich_template <- paste("Your models have finished training"
                        , paste0("Script run started ",format(start_global, "%a %b %d %X %Y"))
+                       , paste0("Total run time: ", total_global)
                        , msg_out_1
                        , msg_out_2
                        , msg_out_3
@@ -427,5 +476,5 @@ send.mail(from = sender,
 message("Trained ",length(train_df_caret)," caret models in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)), " with ",length(caret_error_vec[caret_error_vec==FALSE]), " errors",
         "\nTrained ",length(train_df_xgb)," xgboost models in ",round(difftime(run_end_2,run_start_2),3)," ",units(difftime(run_end_2,run_start_2)), " with ",length(xgb_error_vec[xgb_error_vec==FALSE]), " errors",
         "\nTrained ",length(train_df_h2o)," h2o models in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)), " with ",length(h2o_error_vec[h2o_error_vec==FALSE]), " errors"
-        )
+)
 

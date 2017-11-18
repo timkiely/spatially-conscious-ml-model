@@ -14,13 +14,10 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 -   Three scripts all functioning: Processing, model objects and model training
 -   (10/13/2017) Added all models of interest and run first successful full trial. Run time took 1.6 days with Random Forrest models eating up considerable computation time.
 -   (10/18/2017) Optimized run time by swapping in modern algorithms for KNN and especially Random Forrest (using highly parallel h2o package which also boosts accuracy). Run time now completes in around 5 hours (down from 1.6 days)
+-   (11/18/2017) Added additonal evaluation metrics. Modeling: RMSE, MAPE, Spearman, Pearson, Rsq. AVM: Sales Ratio w/ CI's, COD
 
 ### To do:
 
--   Implement evaluation metrics to mimic Antipov, et. al. 2011.
-    -   *Sales Ratio* (Model Prediction / Actual). the 95% CI must overlap 0.9-1.1 range according to international standards
-    -   *Coefficient of dispersion* (COD). Average percentage deviation of Sales Ratio (SR) from it's median value. International stadnards states a COD of 5-20% is acceptable
-    -   *Mean Average Percentage Error* (MAPE) Easy to interpret and refelct accuracy of model
 -   Improve the baseline model with better pre-processing. Utilize categorical variables if possible.
 -   Proximity features, i.e., features that take into account geographic position
 

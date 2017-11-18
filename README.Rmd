@@ -25,6 +25,7 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
     - *Sales Ratio* (Model Prediction / Actual). the 95% CI must overlap 0.9-1.1 range according to international standards
     - *Coefficient of dispersion* (COD). Average percentage deviation of Sales Ratio (SR) from it's median value. International stadnards states a COD of 5-20% is acceptable
     - *Mean Average Percentage Error* (MAPE) Easy to interpret and refelct accuracy of model
+- Improve the baseline model with better pre-processing. Utilize categorical variables if possible. 
 - Proximity features, i.e., features that take into account geographic position
 
 # MODEL RUN LOG:

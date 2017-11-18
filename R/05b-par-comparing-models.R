@@ -467,7 +467,7 @@ send.mail(from = sender,
           subject = paste0("Model Training Finished ",format(Sys.time()-14400, "%a %b %d %X %Y")), #14,400 seconds in 4 hours, which offsets Zulu to EST
           body = rich_template,
           smtp = list(host.name = "smtp.gmail.com", port = 465, 
-                      user.name="timothy.j.kiely@gmail.com", passwd=readLines('pwrd.txt'), ssl=TRUE),
+                      user.name="timothy.j.kiely@gmail.com", passwd=readLines('pwrd.txt', warn = FALSE), ssl=TRUE),
           authenticate = TRUE,
           send = TRUE)
 

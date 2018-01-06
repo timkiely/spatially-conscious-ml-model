@@ -41,7 +41,9 @@ Steps
 4.  Combine PAD and Sales data (allows every transaction to be mapped to a BBL)
 5.  Create base modeling data by Left-joining Sales-PAD data to PLUTO
 
-<span style="color:darkred"> **OUTPUT: All years of PLUTO data with sales information (frequency, amt, etc)** </span>
+``` ruby
+OUTPUT: all years of PLUTO data with sales information (frequency, amt, etc)
+```
 
 #### B) feature engineering & data partitioning
 
@@ -52,7 +54,9 @@ Steps
     2.  Zipcode features
     3.  Radii features
 
-<span style="color:darkred"> **OUTPUT: 3 modeling data sets with differing features** </span>
+``` ruby
+OUTPUT: 3 modeling data sets with differing features
+```
 
 #### C) probability of sale model
 
@@ -60,7 +64,9 @@ Steps
 2.  Run models
 3.  Review and compare results
 
-<span style="color:darkred"> **OUTPUT: binary prediction modeling results** </span>
+``` ruby
+OUTPUT: binary prediction modeling results
+```
 
 #### D) sale price model
 
@@ -68,10 +74,8 @@ Steps
 2.  Run models
 3.  Review and compare results
 
-``` html
-<span style="color:darkred">
-**OUTPUT: regression prediction modeling results**
-</span>
+``` ruby
+OUTPUT: regression prediction modeling results
 ```
 
 MODEL RUN LOG:

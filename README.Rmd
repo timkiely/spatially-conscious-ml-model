@@ -42,9 +42,9 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 4) Combine PAD and Sales data (allows every transaction to be mapped to a BBL)
 5) Create base modeling data by Left-joining Sales-PAD data to PLUTO
 
-<span style="color:darkred">
-**OUTPUT: All years of PLUTO data with sales information (frequency, amt, etc)**
-</span>
+```ruby
+OUTPUT: all years of PLUTO data with sales information (frequency, amt, etc)
+```
 
 #### B) feature engineering & data partitioning
 1) Create radii-index & radii features
@@ -54,18 +54,18 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
     b) Zipcode features
     c) Radii features 
 
-<span style="color:darkred">
-**OUTPUT: 3 modeling data sets with differing features**
-</span>
+```ruby
+OUTPUT: 3 modeling data sets with differing features
+```
 
 #### C) probability of sale model
 1) Create data/modeling combos (use `purrr:::invoke()` technique)
 2) Run models
 3) Review and compare results
  
-<span style="color:darkred">
-**OUTPUT: binary prediction modeling results**
-</span>
+```ruby
+OUTPUT: binary prediction modeling results
+```
 
 #### D) sale price model
 1) Create data/modeling combos (use `purrr:::invoke()` technique)
@@ -73,10 +73,8 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 3) Review and compare results
  
 
-```html
-<span style="color:darkred">
-**OUTPUT: regression prediction modeling results**
-</span>
+```ruby
+OUTPUT: regression prediction modeling results
 ```
 
 

@@ -3,6 +3,7 @@
 
 rm(list=ls()[!ls()%in%c("sale_augmented")])
 source("R/00aa-load-packages.R")
+source("R/helper-functions.R")
 
 
 if(!exists("sale_augmented")){
@@ -11,14 +12,11 @@ if(!exists("sale_augmented")){
 
 sale_modeling <- 
   sale_augmented %>% 
-  filter(SALE.PRICE>=10000) %>% 
-  filter(GROSS.SQUARE.FEET>500) %>% 
-  filter(Building_Type%in%c("A","B","C","D","F","L","O")) %>% 
+  PROCESS_SALES_DATA() %>% 
   select(BOROUGH:BUILDING.CLASS.AT.PRESENT,-ADDRESS,-BBL_derive
          , ZIP.CODE:SALE_YEAR,condoflag, lat, lon, Building_Type
          , LotArea:ExemptTotal
   ) %>% 
-  mutate(SALE.PRICE = SALE.PRICE/GROSS.SQUARE.FEET) %>% 
   mutate(Id = 1:n())
 
 

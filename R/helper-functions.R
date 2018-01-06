@@ -34,3 +34,13 @@ check.get <- function(fun.url){
   }
   return(out)
 }
+
+
+# process sales data
+PROCESS_SALES_DATA <- function(sales_data){
+  sales_data %>% 
+  filter(SALE.PRICE>=10000) %>% 
+  filter(GROSS.SQUARE.FEET>500) %>% 
+  filter(Building_Type%in%c("A","B","C","D","F","L","O")) %>% 
+  mutate(SALE.PRICE = SALE.PRICE/GROSS.SQUARE.FEET)
+}

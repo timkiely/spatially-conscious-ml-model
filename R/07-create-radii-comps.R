@@ -4,7 +4,6 @@ library(tidyverse)
 library(sf)
 
 source("R/00aa-load-packages.R")
-source("R/tune-model-objects.R")
 
 if(!exists("sale_augmented")){
   sale_augmented <- tbl_df(read_rds("data/sales_augmented.rds")) %>% mutate(UID = 1:nrow(.))
@@ -58,6 +57,8 @@ Comps_uids <- foreach(ii = 1:nrow(sales_sf)
 run_end <- Sys.time()
 
 
+
+# Test results ------------------------------------------------------------
 
 boros <- read_sf("data/nyc_boroughs_shapefile.geojson.txt") %>% st_transform(crs = 32618)
 plot(boros$geometry)

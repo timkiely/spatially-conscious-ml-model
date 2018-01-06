@@ -68,7 +68,9 @@ Steps
 2.  Run models
 3.  Review and compare results
 
-<span style="color:darkred"> **OUTPUT: regression prediction modeling results** </span>
+``` ruby
+OUTPUT: 'regression prediction modeling results'
+```
 
 MODEL RUN LOG:
 ==============

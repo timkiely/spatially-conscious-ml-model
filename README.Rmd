@@ -72,16 +72,11 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 2) Run models
 3) Review and compare results
  
-<span style="color:darkred">
-**OUTPUT: regression prediction modeling results**
-</span>
- 
 
-\break
-\break
-\break
-\break
-\break
+```ruby
+OUTPUT: 'regression prediction modeling results'
+```
+
 
 # MODEL RUN LOG:
 

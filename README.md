@@ -3,9 +3,10 @@ Analysis of NYC Sales Data
 
 A model to predict NYC sales amounts and frequencies.
 
-### Objective
+Objective
+=========
 
-Create a modeling data set with NYC sales data. To enrich features, we want to map in PLUTO and ACRIS information. In particular, mapping in lat/lon coordinates from PLUTO will allow us to locate our observations in space, which, in turn, will enable geo-spatial analysis of the data set. ACRIS is primarily for filtering purposes, e.g., remove "Time Share Deed" transfers that bloat the data set with small frequent non-sale transactions.
+Create a modeling data set with NYC sales data. To enrich features, we want to map in PLUTO and PAD information. In particular, mapping in lat/lon coordinates from PLUTO will allow us to locate our observations in space, which, in turn, will enable geo-spatial analysis of the data set. PAD is primarily for adding geo-location data to condos and other BBLs not readily found in the PLUTO dataset.
 
 ### Done:
 
@@ -15,11 +16,59 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 -   (10/13/2017) Added all models of interest and run first successful full trial. Run time took 1.6 days with Random Forrest models eating up considerable computation time.
 -   (10/18/2017) Optimized run time by swapping in modern algorithms for KNN and especially Random Forrest (using highly parallel h2o package which also boosts accuracy). Run time now completes in around 5 hours (down from 1.6 days)
 -   (11/18/2017) Added additonal evaluation metrics. Modeling: RMSE, MAPE, Spearman, Pearson, Rsq. AVM: Sales Ratio w/ CI's, COD
+-   (01/06/2018) New game plan. Re-drew the steps of the procedure and am targeting 2 models: probability of sale & amount. Will have to step through the data processing steps once more and re-run the radii metrics calculations.
 
-### To do:
+### TODO:
 
--   Improve the baseline model with better pre-processing. Utilize categorical variables if possible.
--   Proximity features, i.e., features that take into account geographic position
+-   Run the data processing steps from scratch (inlude all years)
+-   Create features & data partitions
+-   Re-run models
+
+Steps
+=====
+
+#### A) data
+
+1.  Download & process all years of PLUTO data
+    -   <https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts%5Byear%5D=0>
+    -   at time of writing, 2002-2017 files available
+2.  Download & process all Property Address Directory data
+    -   <https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data>
+    -   at time of writing, only 2017 file available (not perfect, but sufficient)
+3.  Download & process all NYC rolling Sales data
+    -   <http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page>
+    -   at time of writing, 2003-2016 files available
+4.  Combine PAD and Sales data (allows every transaction to be mapped to a BBL)
+5.  Create base modeling data by Left-joining Sales-PAD data to PLUTO
+
+<span style="color:darkred"> **OUTPUT: All years of PLUTO data with sales information (frequency, amt, etc)** </span>
+
+#### B) feature engineering & data partitioning
+
+1.  Create radii-index & radii features
+2.  Create zip code features
+3.  Create 3 modleing data sets:
+    1.  Base
+    2.  Zipcode features
+    3.  Radii features
+
+<span style="color:darkred"> **OUTPUT: 3 modeling data sets with differing features** </span>
+
+#### C) probability of sale model
+
+1.  Create data/modeling combos (use `purrr:::invoke()` technique)
+2.  Run models
+3.  Review and compare results
+
+<span style="color:darkred"> **OUTPUT: binary prediction modeling results** </span>
+
+#### D) sale price model
+
+1.  Create data/modeling combos (use `purrr:::invoke()` technique)
+2.  Run models
+3.  Review and compare results
+
+<span style="color:darkred"> **OUTPUT: regression prediction modeling results** </span>
 
 MODEL RUN LOG:
 ==============

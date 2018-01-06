@@ -18,7 +18,7 @@ df_list <- list()
 name.vec <- vector()
 timer.vec <- vector()
 
-# there are multiple different versions of the download URL, so loop through each until the right file is found0
+# there are multiple different versions of the download URL, so loop through each until the right file is found
 ptm.outer <- proc.time()
 for(j in 1:length(years)){
   cat("begin outer loop ",j," out of ",length(years),"\n",sep="")

@@ -20,7 +20,7 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 - (10/13/2017) Added all models of interest and run first successful full trial. Run time took 1.6 days with Random Forrest models eating up considerable computation time.
 - (10/18/2017) Optimized run time by swapping in modern algorithms for KNN and especially Random Forrest (using highly parallel h2o package which also boosts accuracy). Run time now completes in around 5 hours (down from 1.6 days)
 - (11/18/2017) Added additonal evaluation metrics. Modeling: RMSE, MAPE, Spearman, Pearson, Rsq. AVM: Sales Ratio w/ CI's, COD
-- (01/06/2018) New game plan. Re-drew the steps of the procedure and am targeting 2 models: probability of sale & amount. Will have to step through the data processing steps once more and re-run the radii metrics calculations. 
+- (01/06/2018) New game plan. Re-drew the steps of the procedure and am targeting 2 models: probability of sale & amount. Will have to step through the data processing steps once more and re-run the radii metrics calculations. Overhauled the directory structure. Project now has a clearer process and goal.
 
 ### TODO: 
 - Run the data processing steps from scratch (inlude all years)

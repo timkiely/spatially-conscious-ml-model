@@ -73,8 +73,10 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 3) Review and compare results
  
 
-```ruby
-OUTPUT: 'regression prediction modeling results'
+```html
+<span style="color:darkred">
+**OUTPUT: regression prediction modeling results**
+</span>
 ```
 
 

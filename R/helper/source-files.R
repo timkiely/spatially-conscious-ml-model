@@ -1,10 +1,7 @@
 
 # source the requisite files
 
-message("loading packages at ", Sys.time())
-source("R/helper/load-packages.R")
 source("R/helper/helper-functions.R")
-
 message("creating data directory structure at ", Sys.time())
 project_makefile()
 

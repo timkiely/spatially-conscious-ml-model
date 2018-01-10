@@ -154,6 +154,7 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
            , 'Address'
            , 'BldgClass', 'Easements', 'OwnerType', 'OwnerName', 'LotArea'
            , 'BldgArea', 'ComArea', 'ResArea', 'OfficeArea', 'RetailArea'
+           , "ZoneDist1", "ZoneDist2"
            , 'GarageArea', 'StrgeArea', 'FactryArea', 'OtherArea'
            , 'NumBldgs', 'NumFloors', 'UnitsRes', 'UnitsTotal'
            , 'LotFront', 'LotDepth', 'BldgFront', 'BldgDepth', 'Ext', 'ProxCode'

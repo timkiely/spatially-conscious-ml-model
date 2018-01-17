@@ -19,22 +19,6 @@ comma.rem <- function(x){
   return(x)
 }
 
-## check if url exists and download if it does 
-check.get <- function(fun.url){ 
-  tmp <- url.exists(fun.url,.header=T)
-  
-  out <- NA
-  
-  if((tmp['status']=="200") | sum(tmp==T)>0){
-    tmp <- tempfile()
-    download.file(fun.url, 
-                  destfile=tmp, method="curl", quiet=T)
-    
-    out <- read.xls(tmp,sheet=1,pattern="BOROUGH",as.is=T)
-  }
-  return(out)
-}
-
 
 # process sales data
 PROCESS_SALES_DATA <- function(sales_data){
@@ -45,6 +29,8 @@ PROCESS_SALES_DATA <- function(sales_data){
     mutate(SALE.PRICE = SALE.PRICE/GROSS.SQUARE.FEET)
 }
 
+
+# checks for project directory structure and creates it if it doesn't exist
 project_makefile <- function() {
   if(!"data" %in% dir()){
     dir.create("data")

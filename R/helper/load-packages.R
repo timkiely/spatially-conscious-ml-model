@@ -17,7 +17,7 @@ message("loading packages...")
 
 # all the packages we need for this script:
 pacman::p_load(
-  caret, plyr, dplyr, tidyverse
+  gdata, caret, plyr, dplyr, tidyverse
   , magrittr, lubridate, stringr
   , purrr, modelr, sf
   , lubridate, Matrix, doMC
@@ -26,7 +26,7 @@ pacman::p_load(
   , xgboost, randomForest, elasticnet
   , progress, knitr, h2o, data.table
   , htmlTable, pander, rPython, kknn
-  , proj4
+  , proj4, httr, RCurl, rvest
 )
 
 message("packages loaded successfully")

@@ -18,7 +18,7 @@ download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/down
     unlink(tmp)
   }
   
-  bbl_dat <- suppressMessages(read_csv("data/aux data/pad17b/bobabbl.txt"))
+  bbl_dat <- suppressMessages(read_csv("data/aux data/pad17b/bobabbl.txt", progress = FALSE))
   
   # There are no block or lot ranges, only lot ranges
   test_ranges <- 
@@ -87,13 +87,15 @@ download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/down
       df_out
     }
   
+  stopCluster(cl); rm(cl)
   expander_end_time <- Sys.time()
   (tot_time <- expander_end_time - expander_start_time)
-  stopCluster(cl); rm(cl)
-  message("Cluster Expansion completed. ",nrow(bbl_ranges), " rows expanded to ", nrow(bbl_expanded))
+  message("Cluster Expansion completed. ",nrow(bbl_ranges), " rows expanded to ", nrow(bbl_expanded)," in ",round(tot_time,2)," ",units(tot_time))
+  
+  bbl_all <- bind_rows(bbl_not_ranges, bbl_expanded)
   
   message("Writing to disk...")
-  write_rds(bbl_expanded, save_file, compress = "gz")
+  write_rds(bbl_all, save_file, compress = "gz")
   message("PAD file downloaded and expanded. Processed file saved to: ", save_file)
 }
 

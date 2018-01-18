@@ -17,6 +17,7 @@ download_nyc_sales( save_file = "data/processing steps/p03_sales_raw.rds") # ste
 # processing --------------------------------------------------------------
 combine_sales_and_pad(sales_infile = "data/processing steps/p03_sales_raw.rds"
                       , pad_infile = "data/processing steps/p02_pad_raw.rds"
+                      , pluto_infile = "data/processing steps/p01_pluto_raw.rds"
                       , outfile = "data/processing steps/p04_sales_and_pad.rds")
 
 combine_pluto_with_sales(pluto_infile = "data/processing steps/p01_pluto_raw.rds"

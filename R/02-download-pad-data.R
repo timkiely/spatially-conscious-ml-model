@@ -20,15 +20,6 @@ download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/down
   
   bbl_dat <- suppressMessages(read_csv("data/aux data/pad17b/bobabbl.txt", progress = FALSE))
   
-  # There are no block or lot ranges, only lot ranges
-  test_ranges <- 
-    bbl_dat %>% 
-    select(loboro, loblock, lolot, hiboro, hiblock, hilot) %>% 
-    mutate(boro_range = as.numeric(hiboro)-as.numeric(loboro)
-           ,block_range = as.numeric(hiblock)-as.numeric(loblock)
-           ,lot_range = as.numeric(hilot)-as.numeric(lolot)) %>% 
-    summary()
-  
   bbl_ranges <- 
     bbl_dat %>% 
     mutate(lot_range = as.numeric(hilot)-as.numeric(lolot)) %>% 
@@ -43,29 +34,6 @@ download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/down
   # (bbl_ranges$lot_range %>% sum())+(nrow(bbl_dat)-nrow(bbl_ranges))
   
   
-  # function to expand a range:
-  unpack_rows <- function(low,hi) {
-    a_seq <- paste0(seq(as.numeric(low),as.numeric(hi)),collapse = ",")
-    a_seq[1]
-  }
-  # unpack_rows(1001,1052)
-  
-  ## Regular for loop:
-  # bbl_expanded <- data_frame()
-  # for(i in 1:nrow(bbl_dat)){
-  #   cat(i,"of",nrow(bbl_dat),"\n")
-  #   row <- bbl_dat %>% filter(row_number()==i)
-  #   row$Id <- i 
-  #   lo <- row$lolot
-  #   hi <- row$hilot
-  #   a_seq <- seq(as.numeric(lo),as.numeric(hi))
-  #   df <- tibble("new_lot"=a_seq)
-  #   df <- df %>% mutate(Id=row$Id)
-  #   df_out <- left_join(df,row, by = "Id")
-  #   bbl_expanded <- bind_rows(bbl_expanded,df_out)
-  # }
-  
-  
   ## Parallel loop:
   message("Initiating parallel cluster for BBL range expansion at ", Sys.time())
   cl <- makeCluster(detectCores()-2)
@@ -76,7 +44,7 @@ download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/down
     foreach(i = 1:nrow(bbl_ranges), .combine=bind_rows) %dopar% {
       
       library(tidyverse) # push packages to the individual clusters
-      row <- bbl_dat %>% filter(row_number()==i)
+      row <- bbl_ranges %>% filter(row_number()==i)
       row$Id <- i 
       lo <- row$lolot
       hi <- row$hilot

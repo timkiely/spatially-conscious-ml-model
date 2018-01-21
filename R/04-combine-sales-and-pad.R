@@ -11,9 +11,11 @@ combine_sales_and_pad <- function(sales_infile = "data/processing steps/p03_sale
   
   message("Loading and processing PAD data...")
   pad_bbl_expanded <- 
-      read_rds(pad_infile) %>% 
-      mutate(billing_bbl = paste(billboro,as.numeric(billblock),as.numeric(billlot),sep="_")
-             , new_bbl = paste(loboro,as.numeric(loblock),as.numeric(new_lot),sep="_"))
+    read_rds(pad_infile) %>% 
+    mutate(new_lot = ifelse(is.na(new_lot), as.numeric(lolot), new_lot)) %>% 
+    mutate(new_bbl = paste(loboro,as.numeric(loblock),as.numeric(new_lot),sep="_")) %>% 
+    mutate(pluto_bbl = paste(as.numeric(billboro), as.numeric(billblock), as.numeric(billlot), sep = "_")) %>% 
+    mutate(pluto_bbl = ifelse(is.na(billboro), new_bbl, pluto_bbl))
   message("     ...done")
   
   message("Loading and processing PLUTO data...")
@@ -33,40 +35,44 @@ combine_sales_and_pad <- function(sales_infile = "data/processing steps/p03_sale
              ) %>% 
       select(-`SALE DATE`,-SALE.DATE1,-SALE.DATE2) %>% 
       mutate(BOROUGH = as.integer(BOROUGH)) %>% 
-      mutate(bbl = paste(BOROUGH,as.numeric(BLOCK),as.numeric(LOT),sep="_"))
+      mutate(bbl = paste(BOROUGH,as.numeric(BLOCK),as.numeric(LOT),sep="_")) %>% 
+    mutate(pluto_bbl = bbl)
   message("     ...done")
   
   
-  
+  # we split the SALES data into records which can and cannot be mapped to PLUTO
+  # for those that cannot be mapped, we modify the pluto_bbl field by brining in PAD data
+  # overall mapping error rate drops to about 0.1%
+  sales_in_pluto <- semi_join(nyc_sales_raw, pluto_raw, by = c("pluto_bbl"="bbl"))
+  sales_not_in_pluto <- anti_join(nyc_sales_raw, pluto_raw, by = c("pluto_bbl"="bbl"))
+  first_error <- scales::percent( nrow(sales_not_in_pluto)/nrow(nyc_sales_raw))
 
-# Create exhaustive BBL lists ---------------------------------------------
-
-  pluto_distinct <- 
-    pluto_raw %>% 
-    filter(Year%in%c(2017)) %>% 
-    distinct(bbl,lat,lon, .keep_all = F) %>% 
-    mutate(PLUTO_DISTINCT_FLAG = 1)
-
-  #=========================>>> LEFT OFF
-  # TODO: new_lot in the PAD file is all NA, making a mtach impossible
-    
-  # non-condos can be mapped to pluto with "new bbl"
-  pad_with_latlon_1 <- 
-    left_join(pad_bbl_expanded 
-              , pluto_distinct
-              , by = c("new_bbl"="bbl")) %>% 
-    filter(!is.na(PLUTO_DISTINCT_FLAG))
+  # map PAD to the sales which cannot be mapped to PLUTO
+  pad_map_key <- pad_bbl_expanded %>% select(new_bbl, pluto_bbl)
+  sales_not_in_pluto <- sales_not_in_pluto %>% select(-pluto_bbl)
+  sales_not_in_pluto <- left_join(sales_not_in_pluto, pad_map_key, by = c("bbl"="new_bbl"))
   
-  # condos can be mapped to pluto with "billing bbl"
-  pad_with_latlon_2 <- 
-    left_join(pad_bbl_expanded
-              , pluto_distinct
-              , by = c("billing_bbl"="bbl"))%>% 
-    filter(!is.na(PLUTO_DISTINCT_FLAG))
+  # measure the error rate reduction:
+  sales_not_in_pluto_new <- anti_join(sales_not_in_pluto, pluto_raw, by = c("pluto_bbl"="bbl"))
+  second_error <- scales::percent( nrow(sales_not_in_pluto_new)/nrow(nyc_sales_raw))
   
-  pad_with_latlon_1
-  pad_with_latlon_2
+  # re-combine the sales data
+  sales_new <- bind_rows(sales_in_pluto, sales_not_in_pluto)
+  sales_new_not_in_pluto <- anti_join(sales_new, pluto_raw, by = c("pluto_bbl"="bbl"))
+  overall_error <- scales::percent( nrow(sales_new_not_in_pluto)/nrow(nyc_sales_raw))
   
+  message("Processing done. Overall mapping error rates by steps:")
+  message("     ...Sales maping error rate directly to PLUTO: ", first_error)
+  message("     ...Sales with PAD BBLs added mapping error rate: ", second_error)
+  message("     ...Final overall mapping error rate: ", overall_error)
   
-    message("TODO: function to combine SALES and PAD data")
+  write_rds(sales_new, outfile)
+  message("Done. Sales data combined with PAD. Outfile written to ", outfile)
 }
+
+
+
+
+
+
+

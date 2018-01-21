@@ -29,7 +29,7 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   
   while(length(files_not_downloaded)>0){
     
-    message("\nDownloading links: Starting from top of while loop...");message(Sys.time())
+    message("Downloading links: Starting from top of while loop...");message(Sys.time())
     file_list_short = file_list[!file_names%in%dir(pluto_archive_dir)]
     
     if (length(file_list_short)==0) break
@@ -79,10 +79,10 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   # we're indexing the data first to determine which files have variable names
   out_list <- list()
   for (j in 1:length(names_list_df)){
-    message("\n### Indexing Data: outer loop", j)
+    message("### Indexing Data: outer loop", j)
     dol_df <- names_list_df %>% select(j)
     for(nm in 1:nrow(dol_df)){
-      message("\n......inner loop",nm)
+      message("......inner loop",nm)
       out_idx <- paste0(j,nm)
       the_name <- names(dol_df)
       the_file <- paste0(pluto_archive_dir,"/",the_name,"/",dol_df[nm,])
@@ -105,10 +105,10 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   
   out_list_fin <- list()
   for (j in length(names_list_df):1){
-    message("\n### Setting names: outer loop ",length(names_list_df)-j+1," of ",length(names_list_df)," at ", Sys.time())
+    message("### Setting names: outer loop ",length(names_list_df)-j+1," of ",length(names_list_df)," at ", Sys.time())
     dol_df <- names_list_df %>% select(j)
     for(nm in nrow(dol_df):1){
-      message("\n......inner loop ",nrow(dol_df)-nm+1," of ",nrow(dol_df), " at ", Sys.time())
+      message("......inner loop ",nrow(dol_df)-nm+1," of ",nrow(dol_df), " at ", Sys.time())
       out_idx <- paste0(j,nm)
       the_name <- names(dol_df)
       the_file <- paste0("data/aux data/PLUTO_ARCHIVES/",the_name,"/",dol_df[nm,])

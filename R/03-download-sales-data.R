@@ -39,7 +39,7 @@ download_nyc_sales <- function(save_file = "data/processing steps/p03_sales_raw.
   
   
   # download files in parallel using xargs (Unix only)
-  message("Downloading files in parallel using xargs at ",Sys.time())
+  message("Downloading sales data files in parallel using xargs at ",Sys.time())
   system(paste0("cat 'data/aux data/raw_sales_data_urls.txt' | xargs -n 1 -P ", ceiling(parallel::detectCores()/2)," wget -c -P 'data/aux data/sales data raw'")
          , ignore.stdout = TRUE
          , ignore.stderr = TRUE

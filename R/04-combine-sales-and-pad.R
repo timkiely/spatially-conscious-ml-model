@@ -66,7 +66,7 @@ combine_sales_and_pad <- function(sales_infile = "data/processing steps/p03_sale
   message("     ...Sales with PAD BBLs added mapping error rate: ", second_error)
   message("     ...Final overall mapping error rate: ", overall_error)
   
-  write_rds(sales_new, outfile)
+  write_rds(sales_new, outfile, compress = 'gz')
   message("Done. Sales data combined with PAD. Outfile written to ", outfile)
 }
 

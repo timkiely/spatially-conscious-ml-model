@@ -13,3 +13,4 @@ log/*
 .sink-output
 xgboost.model
 nohuo.out
+nohup.out

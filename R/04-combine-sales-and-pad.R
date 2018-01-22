@@ -9,6 +9,7 @@ combine_sales_and_pad <- function(sales_infile = "data/processing steps/p03_sale
   
   # Load the data -----------------------------------------------------------
   
+  message("Combining Enhancing Sales data")
   message("Loading and processing PAD data...")
   pad_bbl_expanded <- 
     read_rds(pad_infile) %>% 

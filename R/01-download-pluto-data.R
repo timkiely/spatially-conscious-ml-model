@@ -79,10 +79,10 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   # we're indexing the data first to determine which files have variable names
   out_list <- list()
   for (j in 1:length(names_list_df)){
-    message("### Indexing Data: outer loop", j)
+    message("### Indexing PLUTO Data: outer loop", j," of ",length(names_list_df))
     dol_df <- names_list_df %>% select(j)
     for(nm in 1:nrow(dol_df)){
-      message("......inner loop",nm)
+      message("......inner loop ",nm, " of ",nrow(dol_df))
       out_idx <- paste0(j,nm)
       the_name <- names(dol_df)
       the_file <- paste0(pluto_archive_dir,"/",the_name,"/",dol_df[nm,])
@@ -105,10 +105,10 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   
   out_list_fin <- list()
   for (j in length(names_list_df):1){
-    message("### Setting names: outer loop ",length(names_list_df)-j+1," of ",length(names_list_df)," at ", Sys.time())
+    message("### Normalizing PLUTO names: outer loop ",length(names_list_df)-j+1," of ",length(names_list_df))
     dol_df <- names_list_df %>% select(j)
     for(nm in nrow(dol_df):1){
-      message("......inner loop ",nrow(dol_df)-nm+1," of ",nrow(dol_df), " at ", Sys.time())
+      message("......inner loop ",nrow(dol_df)-nm+1," of ",nrow(dol_df))
       out_idx <- paste0(j,nm)
       the_name <- names(dol_df)
       the_file <- paste0("data/aux data/PLUTO_ARCHIVES/",the_name,"/",dol_df[nm,])
@@ -121,7 +121,7 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   }
   
   
-  message("Binding rows...")
+  message("Binding PLUTO rows...")
   final_pluto_df <- bind_rows(out_list_fin)
   
   # add building ID and lat/lon
@@ -137,15 +137,15 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
     data <- data %>% mutate(lat = pj[,2],lon = pj[,1])
   }
   
-  message("Adding building class ID...")
+  message("Adding building class ID to PLUTO...")
   final_pluto_df <- final_pluto_df %>% mutate(Building_Type = substr(BldgClass,1,1))
-  message("Converting coordinates to lat/lon...")
+  message("Converting PLUTO coordinates to lat/lon...")
   final_pluto_df <- Convert_XY(final_pluto_df)
   
   
   
   # Write to disk -----------------------------------------------------------
-  message("Writing to disk 1 of 2...")
+  message("Writing PLUTO to disk 1 of 2...")
   write_rds(final_pluto_df,"data/aux data/pluto_all_compressed.rds", compress = "gz")
   
   pluto_lean <- 
@@ -166,7 +166,7 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
            , 'ExemptTotal', 'CornerLot', 'FAR', 'Building_Type', 'lat', 'lon'
     )
   
-  message("Writing to disk 2 of 2...")
+  message("Writing PLUTO to disk 2 of 2...")
   write_rds(pluto_lean, save_file, compress = "gz")
   
   message("pluto lean compressed written to ", save_file)

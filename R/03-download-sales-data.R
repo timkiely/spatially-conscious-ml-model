@@ -96,11 +96,11 @@ download_nyc_sales <- function(save_file = "data/processing steps/p03_sales_raw.
       sales_df_out[[j]] <- xl_file
       message("      ....done with: ", file_name_csv)
     }
-  }; message("Data downloaded and read into memory")
+  }; message("Sales data downloaded and read into memory")
   
   
   ## making column names consistent
-  message("Final processing of data...")
+  message("Final processing of sales data...")
   nms <- 
     names(sales_df_out[[1]]) %>% 
     str_replace("[.]$","") %>% 
@@ -136,8 +136,8 @@ download_nyc_sales <- function(save_file = "data/processing steps/p03_sales_raw.
     mutate_at(vars(`RESIDENTIAL UNITS`:`YEAR BUILT` ), as.numeric) %>% 
     mutate(`SALE YEAR` = lubridate::year(SALE_DATE))
   
-  message("Writing to disk...")
+  message("Writing sales data to disk...")
   write_rds(final_object, save_file)
-  message("Complete sales data stored at ",save_file)
+  message("Complete sales data written to ",save_file)
 }
 

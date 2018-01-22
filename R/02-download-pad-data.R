@@ -35,7 +35,7 @@ download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/down
   
   
   ## Parallel loop:
-  message("Initiating parallel cluster for BBL range expansion at ", Sys.time())
+  message("Initiating parallel cluster for PAD BBL range expansion at ", Sys.time())
   cl <- makeCluster(detectCores()-2)
   registerDoParallel(cl)
   
@@ -58,11 +58,11 @@ download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/down
   stopCluster(cl); rm(cl)
   expander_end_time <- Sys.time()
   (tot_time <- expander_end_time - expander_start_time)
-  message("Cluster Expansion completed. ",nrow(bbl_ranges), " rows expanded to ", nrow(bbl_expanded)," in ",round(tot_time,2)," ",units(tot_time))
+  message("PAD cluster BBL range expansion completed. ",nrow(bbl_ranges), " rows expanded to ", nrow(bbl_expanded)," in ",round(tot_time,2)," ",units(tot_time))
   
   bbl_all <- bind_rows(bbl_not_ranges, bbl_expanded)
   
-  message("Writing to disk...")
+  message("Writing Expanded PAD to disk...")
   write_rds(bbl_all, save_file, compress = "gz")
   message("PAD file downloaded and expanded. Processed file saved to: ", save_file)
 }

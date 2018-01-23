@@ -8,45 +8,46 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
   message("Loading PLUTO and SALES data...")  
   pluto_raw <- read_rds(pluto_infile) %>% mutate(bbl = paste(BoroCode,as.numeric(Block),as.numeric(Lot),sep="_"))
   sales_pad_raw <- read_rds(sales_pad_infile)
-
-  # functions for calculating various sales metrics:
-  mean_na <- function(x) mean(x, na.rm = TRUE)
-  min_na <- function(x) min(x, na.rm = TRUE)
-  max_na <- function(x) max(x, na.rm = TRUE)
-  median_na <- function(x) median(x, na.rm = TRUE)
-  Q3_na <- function(x) as.numeric(quantile(x, na.rm = TRUE, probs = 0.75))
   
+  # normalize sales that take place more than 1 per year:
+  message("Normalizing the sales data...")  
   
-  pluto <- pluto_raw 
-  
-  sales_more_than_one_per_year <- 
+  merge_time <- Sys.time()
+  sales <- 
     sales_pad_raw %>% 
     group_by(pluto_bbl, `SALE YEAR`) %>% 
-    mutate(annual_sales = n()) %>% 
-    filter(count>1)
+    summarise(`BUILDING CLASS CATEGORY` = head(`BUILDING CLASS CATEGORY`, 1)
+              ,`TAX CLASS AT PRESENT` = head(`TAX CLASS AT PRESENT`, 1)
+              , `BUILDING CLASS AT PRESENT` = head(`BUILDING CLASS AT PRESENT`, 1)
+              , `ZIP CODE` = head(`ZIP CODE`, 1)
+              , `RESIDENTIAL UNITS` = mean(`RESIDENTIAL UNITS`, na.rm = TRUE)
+              , `COMMERCIAL UNITS` = mean(`COMMERCIAL UNITS`, na.rm = TRUE)
+              , `TOTAL UNITS` = mean(`TOTAL UNITS`, na.rm = TRUE)
+              , `LAND SQUARE FEET` = mean(`LAND SQUARE FEET`, na.rm = TRUE)
+              , `GROSS SQUARE FEET` = mean(`GROSS SQUARE FEET`, na.rm = TRUE)
+              , `YEAR BUILT` = head(`YEAR BUILT`, 1)
+              , `TAX CLASS AT TIME OF SALE` = head(`TAX CLASS AT TIME OF SALE`, 1)
+              , `BUILDING CLASS AT TIME OF SALE` = head(`BUILDING CLASS AT TIME OF SALE`, 1)
+              , `SALE PRICE` = mean(`SALE PRICE`, na.rm = T)
+              , `TOTAL SALES` = sum(`SALE PRICE`, na.rm = T)
+              , Year = head(Year, 1)
+              , SALE_DATE = mean(SALE_DATE, na.rm = T)
+              , SALE_YEAR = head(SALE_YEAR, 1)
+              , bbl = head(bbl, 1)
+              , Annual_Sales = n()
+              ) %>% 
+    mutate(Sold = 1)
   
-  sales_more_than_one_per_year2 <- 
-    sales_more_than_one_per_year %>% 
-    ungroup() %>% 
-    group_by_if(.predicate = is.character) %>% 
-    summarise_all(.funs = mean, na.rm = T)
+  message("Merging sales data with PLUTO...")  
+  pluto_with_sales <- 
+    left_join(pluto_raw, sales, by = c("bbl"="pluto_bbl", "Year"="SALE YEAR")) %>% 
+    select(-contains(".y")) %>% rename("Year"=Year.x,"bbl"=bbl.y, ) %>% 
+    mutate(Sold = if_else(is.na(Sold),0,Sold))
+  merge_end <- Sys.time()
+  message("     ...done")  
+  message("Merge time: ", round(merge_end-merge_time, 2), units(merge_end-merge_time))
   
-  ## LEFT OFF: HOW TO COMBINE SALES WITH PLUTO EFFECTIVELY?
-  
-  sales_more_than_one_per_year %>% filter(pluto_bbl == "1_1274_7504") %>% glimpse()
-
-  
-  sales_one_per_year <- 
-    sales_pad_raw %>% 
-    group_by(pluto_bbl, `SALE YEAR`) %>% 
-    mutate(annual_sales = n()) %>% 
-    filter(annual_sales==1)
-  
-  sales_more_than_one_per_year
-  
-  message("Mergin sales data with PLUTO...")  
-  pluto_with_sales <- left_join(pluto, sales, by = c("bbl"="pluto_bbl", "Year"="SALE YEAR")) 
-    
-  
-  message("TODO: function to combine PLUTO with SALES&PAD data")
+  message("Writing plto with sales to disk...")  
+  write_rds(pluto_with_sales, outfile)
+  message("Done. Pluto combined with sales and written to ", outfile)  
 }

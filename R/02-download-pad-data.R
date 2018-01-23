@@ -36,7 +36,7 @@ download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/down
   
   ## Parallel loop:
   message("Initiating parallel cluster for PAD BBL range expansion at ", Sys.time())
-  cl <- makeCluster(detectCores()-2)
+  cl <- makeCluster(ceiling(detectCores()*0.75))
   registerDoParallel(cl)
   
   expander_start_time <- Sys.time()

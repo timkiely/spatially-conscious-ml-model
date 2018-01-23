@@ -5,7 +5,8 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
                                      , sales_pad_infile = "data/processing steps/p04_sales_and_pad.rds"
                                      , outfile = "data/processing steps/p05_pluto_with_sales.rds") {
   
-  message("Loading PLUTO and SALES data...")  
+  message("Combinging PLUTO with Sales data")
+  message("Loading data...")  
   pluto_raw <- read_rds(pluto_infile) %>% mutate(bbl = paste(BoroCode,as.numeric(Block),as.numeric(Lot),sep="_"))
   sales_pad_raw <- read_rds(sales_pad_infile)
   
@@ -41,8 +42,8 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
   message("Merging sales data with PLUTO...")  
   pluto_with_sales <- 
     left_join(pluto_raw, sales, by = c("bbl"="pluto_bbl", "Year"="SALE YEAR")) %>% 
-    select(-contains(".y")) %>% rename("Year"=Year.x,"bbl"=bbl.y, ) %>% 
-    mutate(Sold = if_else(is.na(Sold),0,Sold))
+    select(-contains(".y")) %>% mutate(Sold = if_else(is.na(Sold),0,Sold))
+  
   merge_end <- Sys.time()
   message("     ...done")  
   message("Merge time: ", round(merge_end-merge_time, 2), units(merge_end-merge_time))

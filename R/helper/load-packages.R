@@ -26,7 +26,7 @@ pacman::p_load(
   , xgboost, randomForest, elasticnet
   , progress, knitr, h2o, data.table
   , htmlTable, pander, rPython, kknn
-  , proj4, httr, RCurl, rvest
+  , proj4, httr, RCurl, rvest, TTR, zoo, RcppRoll
 )
 
 message("packages loaded successfully")

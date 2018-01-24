@@ -49,3 +49,9 @@ project_makefile <- function() {
   }
   
 }
+
+
+# calculate exponential moving average with RcppRoll::roll_mean()
+exp_roll_meanr <- function(x, exp = 0.9, n = 2, na.rm = TRUE, fill = NaN) {
+  roll_meanr(x, n = n, weights = (exp^(0:n)), na.rm = na.rm, fill = fill)
+} 

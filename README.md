@@ -18,6 +18,7 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 -   (11/18/2017) Added additonal evaluation metrics. Modeling: RMSE, MAPE, Spearman, Pearson, Rsq. AVM: Sales Ratio w/ CI's, COD
 -   (01/06/2018) New game plan. Re-drew the steps of the procedure and am targeting 2 models: probability of sale & amount. Will have to step through the data processing steps once more and re-run the radii metrics calculations. Overhauled the directory structure. Project now has a clearer process and goal.
 -   (01/23/2018) Progress update. scripts 00 through 06 all or nearly complete. Next tasks will be additional feature engineering and then modeling. Expecting the radii features to take significant time to sort out. I have some existing scripts which can be re-purposed for the modeling portion, so that should go quickly.
+-   (01/24/2018) Had to manually correct the 2006 PLUTO data. Was missing some newline characters and variable names. Uploaded the corrected version so S3 and gave it public access. Updated download script to account for new destination.
 
 ### TODO:
 

@@ -2,21 +2,40 @@
 
 run_probability_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
                                   , outfile = "data/processing steps/p12_sale_price_model_base.rds") {
+  message("Running the probability model on BASE data...")
   
-  base_data <- read_rds(model_data_infile)
-
-  partition_modeling_data <- function(data){
-    
-    train_data <- data %>% filter(Year %in% 2003:2016)
-    test_data <- data %>% filter(Year %in% 2017)
-    modeling_data <- list("train" = train_data
-                          ,"test" = test_data)
-    modeling_data
+  # check if modeling data exists
+  if(!file.exists(model_data_infile)){
+    message("TODO: function to run the probability model")
+    break
   }
-
-  modeling_data <- partition_modeling_data(base_data)
-
+  
+  # loading data ------------------------------------------------------------
+  message("Reading base data...")
+  base_data <- read_rds(model_data_infile)
+  message("     ...done.")
   
   
-  message("TODO: function to run the probability model")
+  # partition to test & train -----------------------------------------------
+  source("R/helper/partition-modeling-data.R")
+  message("Partitioning modeling data into train and test...")
+  modeling_data <- partition_modeling_data(base_data, train_years = 2003:2016, test_years = 2017)
+  message("     ...done.")
+  
+  
+  # pre-process steps -------------------------------------------------------
+  message("Running Preprocessing steps...")
+  source("R/helper/pre-process-modeling-data.R")
+  processed_data <- run_preprocessing_steps(modeling_data)
+  if(!is.null(processed_data)) message("SUCCESS! Processing done")
+  #message("TODO: function to run the probability model")
 }
+
+
+
+
+
+
+
+
+

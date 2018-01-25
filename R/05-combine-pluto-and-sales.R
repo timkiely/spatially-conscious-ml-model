@@ -30,7 +30,7 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
               , `TAX CLASS AT TIME OF SALE` = head(`TAX CLASS AT TIME OF SALE`, 1)
               , `BUILDING CLASS AT TIME OF SALE` = head(`BUILDING CLASS AT TIME OF SALE`, 1)
               , `SALE PRICE` = mean(`SALE PRICE`, na.rm = T)
-              , `TOTAL SALES` = sum(`SALE PRICE`, na.rm = T)
+              , TOTAL_SALES = sum(`SALE PRICE`, na.rm = T)
               , Year = head(Year, 1)
               , SALE_DATE = mean(SALE_DATE, na.rm = T)
               , SALE_YEAR = head(SALE_YEAR, 1)
@@ -46,7 +46,7 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
     
     # removing select variables which are redundant
     select(-BBL, -XCoord, -YCoord, -file, -`ZIP CODE`, -`RESIDENTIAL UNITS`, -`COMMERCIAL UNITS`
-           ,-`TOTAL UNITS`,-`LAND SQUARE FEET`, -`GROSS SQUARE FEET`, -`YEAR BUILT`, -Ext) %>% 
+           ,-`TOTAL UNITS`,-`LAND SQUARE FEET`, -`YEAR BUILT`, -Ext) %>% 
     
     # additional data munging
     mutate(AssessTotal = as.numeric(AssessTotal), ExemptTotal = as.numeric(ExemptTotal)
@@ -58,6 +58,7 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
            , FAR = as.numeric(FAR)
            , IrrLotCode = as.numeric(ifelse(IrrLotCode=="Y",1,0))
            , MaxAllwFAR = suppressWarnings(as.numeric(MaxAllwFAR))
+           , `GROSS SQUARE FEET` = as.numeric(`GROSS SQUARE FEET`)
     )
   
   merge_end <- Sys.time()

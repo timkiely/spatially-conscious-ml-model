@@ -9,11 +9,11 @@ create_base_features <- function(data){
     arrange(bbl, Year) %>% 
     
     # there are a number of micro-sales of 0.5 and 1. Removing those
-    mutate_at(vars(`SALE PRICE`, `TOTAL SALES`), .funs = function(x) if_else(x<10, NA_real_, x)) %>% 
+    mutate_at(vars(`SALE PRICE`, TOTAL_SALES), .funs = function(x) if_else(x<10, NA_real_, x)) %>% 
     
     # creating a running tally for moving average calculations
     mutate(Last_Sale_Price = na.locf(`SALE PRICE`, na.rm = FALSE)
-           , Last_Sale_Price_Total = na.locf(`TOTAL SALES`, na.rm = FALSE)
+           , Last_Sale_Price_Total = na.locf(TOTAL_SALES, na.rm = FALSE)
            , Last_Sale_Date = na.locf(SALE_DATE, na.rm = FALSE)
            , Years_Since_Last_Sale = Year-lubridate::year(Last_Sale_Date)
     ) %>% 

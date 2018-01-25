@@ -10,7 +10,11 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
     c('http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_03c.zip'
       , 'http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_04c.zip'
       , 'https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_05d.zip'
-      , 'http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_06c.zip'
+      
+      ## NOTE: 2006 file was corrupted. Corrected manually and uploaded fixed file to S3 (public bucket)
+      #, 'http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_06c.zip'
+      , 'https://s3-us-west-2.amazonaws.com/pluto.data/corrected-nyc_pluto_06c.zip'
+      
       , 'http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_07c.zip'
       , 'http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_09v2.zip'
       , 'http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_10v2.zip'
@@ -29,7 +33,7 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   
   while(length(files_not_downloaded)>0){
     
-    message("Downloading links: Starting from top of while loop...");message(Sys.time())
+    message("Downloading links: Starting from top of while loop at ",Sys.time())
     file_list_short = file_list[!file_names%in%dir(pluto_archive_dir)]
     
     if (length(file_list_short)==0) break
@@ -45,7 +49,7 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
       
       temp <- tempfile()
       download.file(fil, temp)
-      unzip(temp, exdir = paste0(pluto_archive_dir,"/",basename(gsub(".zip","",fil))))
+      unzip(temp, exdir = "data/aux data/PLUTO_ARCHIVES/")
       unlink(temp)
     }
     
@@ -57,6 +61,7 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   q_file.copy <- quietly(file.copy)
   for(.file in dir(pluto_archive_dir)){
     names_string <- dir(paste0(pluto_archive_dir,"/",.file))
+    names_string <- names_string[!grepl("__MACOSX",names_string)]
     
     if(length(names_string)==1){
       paste0(pluto_archive_dir,"/",.file,"/",names_string,"/",dir(paste0(pluto_archive_dir,"/",.file,"/",names_string))) %>% 

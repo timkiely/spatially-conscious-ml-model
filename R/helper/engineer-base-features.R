@@ -5,9 +5,6 @@
 create_base_features <- function(data){
   data <- 
   data %>% 
-    # removing select variables which are redundant
-    select(-BBL, -XCoord, -YCoord, -file, -`ZIP CODE`, -`RESIDENTIAL UNITS`, -`COMMERCIAL UNITS`
-           ,-`TOTAL UNITS`,-`LAND SQUARE FEET`, -`GROSS SQUARE FEET`, -`YEAR BUILT`) %>% 
     group_by(bbl) %>%
     arrange(bbl, Year) %>% 
     

@@ -42,13 +42,29 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
   message("Merging sales data with PLUTO...")  
   pluto_with_sales <- 
     left_join(pluto_raw, sales, by = c("bbl"="pluto_bbl", "Year"="SALE YEAR")) %>% 
-    select(-contains(".y")) %>% mutate(Sold = if_else(is.na(Sold),0,Sold))
+    select(-contains(".y")) %>% mutate(Sold = if_else(is.na(Sold),0,Sold)) %>% 
+    
+    # removing select variables which are redundant
+    select(-BBL, -XCoord, -YCoord, -file, -`ZIP CODE`, -`RESIDENTIAL UNITS`, -`COMMERCIAL UNITS`
+           ,-`TOTAL UNITS`,-`LAND SQUARE FEET`, -`GROSS SQUARE FEET`, -`YEAR BUILT`, -Ext) %>% 
+    
+    # additional data munging
+    mutate(AssessTotal = as.numeric(AssessTotal), ExemptTotal = as.numeric(ExemptTotal)
+           , AssessTot = ifelse(is.na(AssessTot), AssessTotal, AssessTot)
+           ,  ExemptTot = ifelse(is.na(ExemptTot), ExemptTotal, ExemptTot)
+    ) %>% 
+    select(-AssessTotal, -ExemptTotal) %>% 
+    mutate(CornerLot = as.numeric(ifelse(CornerLot=="Y",1,0))
+           , FAR = as.numeric(FAR)
+           , IrrLotCode = as.numeric(ifelse(IrrLotCode=="Y",1,0))
+           , MaxAllwFAR = suppressWarnings(as.numeric(MaxAllwFAR))
+    )
   
   merge_end <- Sys.time()
   message("     ...done")  
   message("Merge time: ", round(merge_end-merge_time, 2), units(merge_end-merge_time))
   
-  message("Writing plto with sales to disk...")  
+  message("Writing PLUTO with sales to disk...")  
   write_rds(pluto_with_sales, outfile)
   message("Done. Pluto combined with sales and written to ", outfile)  
 }

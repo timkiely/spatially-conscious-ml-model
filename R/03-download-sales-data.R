@@ -124,13 +124,18 @@ download_nyc_sales <- function(save_file = "data/processing steps/p03_sales_raw.
              , ADDRESS, `SALE DATE`, `SALE PRICE` 
              , `GROSS SQUARE FEET`, .keep_all = TRUE)
   
+  
+  # final munging, cleaning up dates, etc. 
   final_object <-
     final_object %>%
     mutate(
       `BUILDING CLASS CATEGORY` = trimws(`BUILDING CLASS CATEGORY`)
       , `ZIP CODE` = as.integer(`ZIP CODE`)
-      , SALE_DATE = as.Date(`SALE DATE`, format = "%Y-%m-%d")
+      , SALE_DATE = as.Date(`SALE DATE`, format = "%Y-%m-%d") 
+      , SALE_DATE_ALT = as.Date(`SALE DATE`, format = "%m/%d/%Y") 
+      , SALE_DATE = if_else(is.na(SALE_DATE), SALE_DATE_ALT, SALE_DATE)
     ) %>% 
+    select(-SALE_DATE_ALT) %>% 
     mutate(`SALE PRICE` = as.numeric(str_replace_all(`SALE PRICE`, "[$]|[,]|[-]",""))) %>% 
     mutate_at(vars(`RESIDENTIAL UNITS`:`GROSS SQUARE FEET`), str_replace_all, "[$]|[,]|[-]","") %>% 
     mutate_at(vars(`RESIDENTIAL UNITS`:`YEAR BUILT` ), as.numeric) %>% 

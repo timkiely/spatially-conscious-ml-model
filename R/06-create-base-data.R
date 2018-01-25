@@ -2,11 +2,11 @@
 
 create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
                              , outfile = "data/processing steps/p06_base_model_data.rds") {
+  
   message("Creating Base Modleing Data")
   message("Loading PLUTO...")
   pluto <- read_rds(pluto_with_sales_infile)
   
-
 # varibale seelction and some feature engineering -------------------------
 
   message("Partitioning PLUTO...")
@@ -27,13 +27,14 @@ create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p0
   
   pluto_model <- 
     pluto_with_sales %>% 
-    create_base_features()
+    create_base_features() %>% 
+    ungroup()
   
   message("     ...done. Input ", length(pluto_with_sales)," variables and output ", length(pluto_model), " variables")
   
   
   message("Re-combining PLUTO...")
-  final_data <- bind_rows(pluto_model, pluto_without_sales)
+  final_data <- bind_rows(pluto_model, pluto_without_sales) %>% ungroup()
   
   message("Writing base modeling data to disk...")
   write_rds(final_data, outfile, compress = "gz")

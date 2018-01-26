@@ -5,10 +5,8 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   message("Running the probability model on BASE data...")
   
   # check if modeling data exists
-  if(!file.exists(model_data_infile)){
-    message("TODO: function to run the probability model")
-    break
-  }
+  if(file.exists(model_data_infile)){
+  
   
   # loading data ------------------------------------------------------------
   message("Reading base data...")
@@ -92,6 +90,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   train_df_caret <- anti_join(train_df,bind_rows(train_df_xgb,train_df_h2o), by = "idx")
   
   
+  } else message("TODO: data not available yet") #remove this at the end
 }
 
 

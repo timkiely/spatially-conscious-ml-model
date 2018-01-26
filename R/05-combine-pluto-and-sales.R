@@ -59,7 +59,8 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
            , IrrLotCode = as.numeric(ifelse(IrrLotCode=="Y",1,0))
            , MaxAllwFAR = suppressWarnings(as.numeric(MaxAllwFAR))
            , `GROSS SQUARE FEET` = as.numeric(`GROSS SQUARE FEET`)
-    )
+    ) %>% 
+    mutate_at(vars(BldgArea:BldgDepth), function(x) ifelse(is.na(x),0,x))
   
   merge_end <- Sys.time()
   message("     ...done")  

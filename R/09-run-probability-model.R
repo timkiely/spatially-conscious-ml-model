@@ -7,8 +7,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   # check if modeling data exists
   if(file.exists(model_data_infile)){
   
-  
-    
+
   # loading data ------------------------------------------------------------
   message("Reading base data...")
   base_data <- read_rds(model_data_infile)

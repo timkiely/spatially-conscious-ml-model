@@ -10,7 +10,15 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
 
   # loading data ------------------------------------------------------------
   message("Reading base data...")
-  base_data <- read_rds(model_data_infile)
+  # base_data <- read_rds(model_data_infile)
+  
+  # FOR DEV PURPOSES
+  warning("You are taking a sample of the modeling data, for dev purposes. 09-run-probability-model.R")
+  # set.seed(1989)
+  # base_data_samp <- sample_frac(base_data, 0.2)
+  # write_rds(base_data_samp, "data/base-data-sample.rds")
+  base_data <- read_rds("data/base-data-sample.rds")
+
   message("     ...done.")
   
   
@@ -24,7 +32,16 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   # creating processing frame ------------------------------------------------
   message("Running Preprocessing steps...")
   source("R/helper/pre-process-modeling-data.R")
-  processed_data <- run_preprocessing_steps(modeling_data)
+  
+  ## some preprocessing steps can't handle variable names with spaces
+  # converting variable names to snake notation:
+  modeling_data <- modeling_data %>% map(function(x) {
+    names(x) <- gsub(" ","_",names(x))
+    return(x)
+  }
+  )
+  
+  processed_data <- run_preprocessing_steps(modeling_data, sample = 0.2)
   message("     ...processing done")
 
   # for dev purposes:

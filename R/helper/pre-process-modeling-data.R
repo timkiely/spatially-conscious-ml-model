@@ -1,11 +1,12 @@
 
 
-run_preprocessing_steps <- function(data) {
+run_preprocessing_steps <- function(data, sample = 0.25) {
   # function takes a list as input. List should be length 2
   # with named elements train and test. 
+  # default sample size for preprocessing is 0.25
   # Returns pre-processed data sets as enframed tidy tables. 
   
-  message("Running preprocessing...")
+  message("Running preprocessing function...")
   
   # ================== PROCESSING =======================
   processing_time <- Sys.time()
@@ -14,10 +15,10 @@ run_preprocessing_steps <- function(data) {
   test <- data$test
   
   id_cols <- train %>% select(Year, bbl, Address)
-  outcome_cols <- train %>% select(Sold, `SALE PRICE`)
+  outcome_cols <- train %>% select(Sold, SALE_PRICE)
   
   id_cols_test <- test %>% select(Year, bbl, Address)
-  outcome_cols_test <- test %>% select(Sold, `SALE PRICE`)
+  outcome_cols_test <- test %>% select(Sold, SALE_PRICE)
   
   
   # Numeric Columns ---------------------------------------------------------
@@ -31,9 +32,9 @@ run_preprocessing_steps <- function(data) {
     select_if(.predicate = is.numeric) %>% 
     as.data.frame()
   
-  # for dev purposes:
+  # sample the data for pre-processing
   set.seed(1989)
-  numeric_only_train_sample <- sample_frac(numeric_only_train,0.25)
+  numeric_only_train_sample <- sample_frac(numeric_only_train, sample)
   
   message("Treating with NZV and MedianImpute...")
   pprocess_num_only <- 
@@ -42,13 +43,22 @@ run_preprocessing_steps <- function(data) {
                , uniqueCut = 2, cutoff = 0.99)
   
   
-  num_train <- predict(pprocess_num_only, numeric_only_train)
-  num_train <- bind_cols(num_train, id_cols, outcome_cols)
+  message("Treating with center, scale, NZV and bagImpute")
+  pprocess_num_processed <- 
+    preProcess(numeric_only_train_sample, method = c("center", "scale", "nzv", "medianImpute")
+               , thresh = 0.99, numUnique = 2, freqCut = 98/2
+               , uniqueCut = 2, cutoff = 0.99)
   
-  num_test <- predict(pprocess_num_only, numeric_only_test)
-  num_test <- bind_cols(num_test, id_cols_test, outcome_cols_test)
+  message("Applying preprocessing to data and writing out...")
+  message("     ...1 of 2")
+  num_train <- predict(pprocess_num_only, numeric_only_train) %>% bind_cols(id_cols, outcome_cols)
+  num_test <- predict(pprocess_num_only, numeric_only_test) %>% bind_cols(id_cols_test, outcome_cols_test)
   
+  message("     ...2 of 2")
+  num_processed_train <- predict(pprocess_num_processed, numeric_only_train) %>% bind_cols(id_cols, outcome_cols)
+  num_processed_test <- predict(pprocess_num_processed, numeric_only_test) %>% bind_cols(id_cols_test, outcome_cols_test)
   
+  # record processing time:
   end_processing_time <- Sys.time()
   proc_time <- end_processing_time - processing_time
   message("     ...done.")
@@ -57,7 +67,10 @@ run_preprocessing_steps <- function(data) {
   modeling_data <- 
     list("train_numeric_only" = tbl_df(num_train)
          , "test_numeric_only" = tbl_df(num_test)
+         , "train_processed" = tbl_df(num_processed_train)
+         , "test_processed" = tbl_df(num_processed_test)
          )
+  
   return(modeling_data)
 }
 

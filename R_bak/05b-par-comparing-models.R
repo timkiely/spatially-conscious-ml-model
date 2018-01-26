@@ -376,12 +376,12 @@ train_out <- bind_rows(train_out_h2o, train_out_other) %>% arrange(-Test_Rsq)
 
 # log the model stats:
 train_out_log <- train_out %>% select(-train.X,-train.Y,-test.X,-test.Y,-model,-params,-modelFits,-data_fit,-y_hat)
-train_out_log %>% write_rds(paste0("log/train-out-",Sys.time(),".rds"), compress = "gz")
+train_out_log %>% write_rds(paste0("data/train-out-",Sys.time(),".rds"), compress = "gz")
 
 # keep the most recent model
 train_out %>% 
   select(-train.X,-train.Y,-test.X,-test.Y) %>% 
-  write_rds("log/most-recent-model.rds", compress = "gz")
+  write_rds("data/most-recent-model.rds", compress = "gz")
 
 # log runtime, model performance, etc. 
 logger                <- list()
@@ -402,10 +402,10 @@ logger$total_models   <- nrow(train_df)
 logger$model_combos   <- as.character(paste0(train_df$modelName,":",train_df$id, collapse = " "))
 logger$all_funs       <- paste0(model_list$modelName,gsub("\n","",paste0(as.list(model_list$model))),collapse = " * ")
 
-if(!file.exists("log/logger.csv")){
-  write_csv(as.data.frame(logger), "log/logger.csv", append = FALSE)
+if(!file.exists("data/logger.csv")){
+  write_csv(as.data.frame(logger), "data/logger.csv", append = FALSE)
 } else {
-  write_csv(as.data.frame(logger), "log/logger.csv", append = TRUE)
+  write_csv(as.data.frame(logger), "data/logger.csv", append = TRUE)
 }
 
 

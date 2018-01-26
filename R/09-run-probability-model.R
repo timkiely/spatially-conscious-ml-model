@@ -46,10 +46,10 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
 
   # for dev purposes:
   set.seed(1987)
-  model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,0.01)})
+  model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,0.1)})
   
   # turn model data list into a tidy data frame ---------------------------
-  starter_df <- 
+  train_test_data <- 
     model_data_list %>%
     enframe(name = 'id', value = 'rawdata') %>% 
     mutate(rawdata = map(.x = rawdata, .f = ~as.data.frame(.x))) %>% # caret doesn't play nice with tibbles
@@ -58,53 +58,97 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     select(-id) %>% 
     spread(train_test, rawdata) %>% 
     mutate(data_group = names(model_data_list)[str_detect(names(model_data_list),"train")] %>% str_replace("train_","")) %>% 
-    rename("id" = data_group)
-  
-  # Create X predictors and Y column
-  starter_df %<>% 
+    rename("id" = data_group) %>%   
     transmute(
       id
-      , train.X = map(Train,  ~ .x %>% select(-`SALE PRICE`))
-      , train.Y = map(Train, ~ .x$`SALE PRICE`)
-      , test.X = Test
-      , test.Y = map(test.X, ~.x %>% pull(`SALE PRICE`) %>% as.matrix() %>% as.numeric())
-      , test.X = map(test.X, ~.x %>% select(-`SALE PRICE`))
-    )
-  
-  
+      , train.X = map(Train,  ~ .x %>% select(-SALE_PRICE))
+      , train.Y = map(Train, ~ .x$SALE_PRICE)
+      , test.X = map(Test, ~.x %>% select(-SALE_PRICE))
+      , test.Y = map(Test, ~.x$SALE_PRICE)
+      )
   
   
   # Define Models -----------------------------------------------------------
   
   model_list <- read_rds('data/aux data/model-list.rds')
   
-  
   # build modeling tibble ---------------------------------------------------
-  
-  train_df <- starter_df[rep(1:nrow(starter_df),nrow(model_list)),]
-  train_df <- 
-    train_df %>%
-    bind_cols(model_list[rep(1:nrow(model_list),nrow(starter_df)),] %>% arrange(modelName)) %>%
-    
-    # generic caret models:
-    mutate(params = map2(train.X, train.Y,  ~ list(X = .x, Y = .y))) %>% 
-    
-    # xgb Random Forrest model
-    mutate(params = ifelse(modelName == "xgbRFmodel", map2(train.X, train.Y,  ~ list(X = data.matrix(.x), Y = data.matrix(.y))), params)) %>% 
-    
-    # for xgboost models:
-    mutate(dtrain =  ifelse(modelName %in% c("xgbTreeModel2"),  map2(train.X, train.Y,  ~ xgb.DMatrix(data = data.matrix(.x), label = .y)), NA)) %>% 
-    mutate(dtest =  ifelse(modelName %in% c("xgbTreeModel2"),  map2(test.X, test.Y,  ~ xgb.DMatrix(data = data.matrix(.x), label = .y)), NA)) %>% 
-    mutate(watchlist = ifelse(modelName %in% c("xgbTreeModel2"), map2(dtrain, dtest, ~ list(train = .x, test = .y)),NA)) %>% 
-    mutate(params = ifelse(modelName %in% c("xgbTreeModel2"), map2(dtrain, watchlist,  ~ list(X = .x, watchlist = .y)), params)) %>% 
-    select(-dtrain, -dtest, -watchlist) %>% 
-    mutate(idx = 1:n())
+  train_df <- model_list %>% arrange(modelName) %>%mutate(idx = 1:n())
   
   
   # split in to xgboost and the rest ----------------------------------------
   train_df_xgb <- train_df %>% filter(grepl("xgb|lassoRegModel|RBPModel",modelName))
   train_df_h2o <- train_df %>% filter(grepl("h2oRFmodel|h2oGBMmodel", modelName))
   train_df_caret <- anti_join(train_df,bind_rows(train_df_xgb,train_df_h2o), by = "idx")
+  
+  
+  
+  
+  # TRAIN THE MODELS --------------------------------------------------------
+  
+  # progress bar (pb$tick() is built into the model training functions)
+  pb <- progress::progress_bar$new(
+    total = nrow(train_df_caret)
+    , format = "running model #:current of :total :elapsed :what [:bar]"
+    , clear = FALSE
+  )
+  
+  
+  
+  
+  # TRAIN CARET MODELS -------------------------------------------------
+  
+  # parallel:
+  num_cores <- parallel::detectCores()-2
+  cl <- makeSOCKcluster(num_cores)
+  registerDoSNOW(cl)
+  iter_model_list <- train_df_caret$modelName
+  opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = iter_model_list[n])))
+  
+  
+  run_start <- Sys.time()
+  train_df_caret <- foreach(i = 1:nrow(train_df_caret)
+                            , .export = c("pb","iter_model_list", "train_test_data")
+                            , .verbose = FALSE
+                            , .errorhandling = "pass"
+                            , .options.snow = opts ) %dopar% {
+                              
+                              source("R/helper/load-packages.R")
+                              
+                              mod_interest <- 
+                                train_df_caret %>% 
+                                filter(row_number()==i) %>% 
+                                .[rep(seq_len(nrow(.)), each=2),] %>% 
+                                bind_cols(train_test_data) %>% 
+                                mutate(params = map2(train.X, train.Y,  ~ list(X = .x, Y = .y)))
+                              
+                              start_time <- Sys.time()-14400
+                              out <- mod_interest %>% mutate(modelFits = invoke_map(.f = model, .x = params))
+                              end_time <- Sys.time()-14400
+                              
+                              run_time <- round(as.numeric(end_time - start_time),2)
+                              run_time_units <- units(end_time - start_time)
+                              time_list <- data.frame("model" = paste0(mod_interest$modelName," : ",mod_interest$id)
+                                                      ,"start_time" = start_time
+                                                      ,"end_time"  = end_time
+                                                      ,"run_time" = run_time
+                                                      ,"run_time_units" = run_time_units)
+                              out <- bind_cols(out, nest(time_list, .key = "run_times_list"))
+                              out <- out %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
+                              
+                              return(out) 
+                            }
+  
+  
+  run_end <- Sys.time()
+  stopCluster(cl)
+  stopImplicitCluster()
+  closeAllConnections()
+  
+  message("Trained ",length(train_df_caret)," models in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+  
+  
+  
   
   
   } else message("TODO: data not available yet") #remove this at the end

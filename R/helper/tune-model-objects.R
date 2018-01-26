@@ -23,7 +23,8 @@ linearRegModel <- function(X, Y) {
     y = Y,
     method = 'lm',
     trControl = ctrl,
-    preProc = c('center', 'scale')
+    preProc = c('center', 'scale'), 
+    na.rm = TRUE
     
   )
   

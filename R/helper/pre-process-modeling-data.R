@@ -16,6 +16,10 @@ run_preprocessing_steps <- function(data) {
   id_cols <- train %>% select(Year, bbl, Address)
   outcome_cols <- train %>% select(Sold, `SALE PRICE`)
   
+  id_cols_test <- test %>% select(Year, bbl, Address)
+  outcome_cols_test <- test %>% select(Sold, `SALE PRICE`)
+  
+  
   # Numeric Columns ---------------------------------------------------------
   numeric_only_train <- 
     train %>% select(-one_of(c(names(id_cols), names(outcome_cols)))) %>% 
@@ -29,41 +33,21 @@ run_preprocessing_steps <- function(data) {
   
   # for dev purposes:
   set.seed(1989)
-  # numeric_only_train <- sample_frac(numeric_only_train,0.01)
-
+  numeric_only_train_sample <- sample_frac(numeric_only_train,0.25)
+  
   message("Treating with NZV and MedianImpute...")
   pprocess_num_only <- 
-    preProcess(numeric_only_train, method = c("nzv", "medianImpute")
+    preProcess(numeric_only_train_sample, method = c("nzv", "medianImpute")
                , thresh = 0.99, numUnique = 2, freqCut = 98/2
                , uniqueCut = 2, cutoff = 0.99)
   
+  
   num_train <- predict(pprocess_num_only, numeric_only_train)
+  num_train <- bind_cols(num_train, id_cols, outcome_cols)
+  
   num_test <- predict(pprocess_num_only, numeric_only_test)
+  num_test <- bind_cols(num_test, id_cols_test, outcome_cols_test)
   
-  
-  # Processed numeric columns -----------------------------------------------
-  num_train_processed <- 
-    train %>% select(-one_of(c(names(id_cols), names(outcome_cols)))) %>% 
-    select_if(.predicate = is.numeric) %>% 
-    as.data.frame()
-  
-  num_test_processed <- 
-    test %>% select(-one_of(c(names(id_cols), names(outcome_cols)))) %>% 
-    select_if(.predicate = is.numeric) %>% 
-    as.data.frame()
-  
-  # dev
-  set.seed(1989)
-  # num_train_processed <- sample_frac(num_train_processed, 0.01)
-  
-  message("Treating with BoxCox, Center, Scale, BagImpute and NZV...")
-  pprocess_num_train_processed <- 
-    preProcess(num_train_processed
-               , method = c("BoxCox", "center", "scale", "bagImpute", "nzv")
-               )
-  
-  num_train_processed <- predict(pprocess_num_train_processed, num_train_processed)
-  num_test_processed <- predict(pprocess_num_train_processed, num_test_processed)
   
   end_processing_time <- Sys.time()
   proc_time <- end_processing_time - processing_time
@@ -73,10 +57,8 @@ run_preprocessing_steps <- function(data) {
   modeling_data <- 
     list("train_numeric_only" = tbl_df(num_train)
          , "test_numeric_only" = tbl_df(num_test)
-         , "train_num_processed" = tbl_df(num_train_processed)
-         , "test_num_processed" = tbl_df(num_test_processed)
          )
-  retrun(modeling_data)
+  return(modeling_data)
 }
 
 

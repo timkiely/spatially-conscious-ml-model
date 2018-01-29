@@ -183,6 +183,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     end_prob_time <- Sys.time()
     total_prob_time <- end_prob_time - start_prob_time
     message("Done. Total base probability model time: ", round(total_prob_time, 2),units(total_prob_time))
+    message("Base modeling output written to ",outfile)
     
   } else warning("Following Input data not available: ", model_data_infile)
 }

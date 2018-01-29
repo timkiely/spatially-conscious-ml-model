@@ -58,6 +58,8 @@ run_preprocessing_steps <- function(data, sample = 0.25) {
   num_processed_train <- predict(pprocess_num_processed, numeric_only_train) %>% bind_cols(id_cols, outcome_cols)
   num_processed_test <- predict(pprocess_num_processed, numeric_only_test) %>% bind_cols(id_cols_test, outcome_cols_test)
   
+  #num_train <- num_train %>% filter_at(vars(SMA_Price_2_year:Percent_Change_EMA_5), any_vars(!is.nan(.)))
+  
   # record processing time:
   end_processing_time <- Sys.time()
   proc_time <- end_processing_time - processing_time

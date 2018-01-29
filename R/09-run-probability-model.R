@@ -46,7 +46,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
 
   # for dev purposes:
   set.seed(1987)
-  model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,0.1)})
+  model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,0.01)})
   
   # turn model data list into a tidy data frame ---------------------------
   train_test_data <- 
@@ -61,10 +61,10 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     rename("id" = data_group) %>%   
     transmute(
       id
-      , train.X = map(Train,  ~ .x %>% select(-SALE_PRICE))
-      , train.Y = map(Train, ~ .x$SALE_PRICE)
-      , test.X = map(Test, ~.x %>% select(-SALE_PRICE))
-      , test.Y = map(Test, ~.x$SALE_PRICE)
+      , train.X = map(Train,  ~ .x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address))
+      , train.Y = map(Train, ~ .x$Sold)
+      , test.X = map(Test, ~.x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address))
+      , test.Y = map(Test, ~.x$Sold)
       )
   
   
@@ -73,7 +73,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   model_list <- read_rds('data/aux data/model-list.rds')
   
   # build modeling tibble ---------------------------------------------------
-  train_df <- model_list %>% arrange(modelName) %>%mutate(idx = 1:n())
+  train_df <- model_list %>% arrange(modelName) %>% mutate(idx = 1:n())
   
   
   # split in to xgboost and the rest ----------------------------------------
@@ -86,66 +86,96 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   
   # TRAIN THE MODELS --------------------------------------------------------
   
+  
+  
+  
+  
+  # TRAIN H2O Models ----------------------------------------------------------
+  
+  ## NOTE: YOU MAY NEED TO INSTALL JAVA. > system("sudo apt-get install default-jre")
+  
+  # initialize h2o cluster
+  sink(".sink-output")
+  h2o.init(nthreads = -1) #Number of threads -1 means use all cores on your machine
+  options("h2o.use.data.table"=TRUE)
+  h2o.no_progress()
+  h2o.removeAll()
+  sink(NULL)
+  
+ 
+  
+  
+  # h2o has parellelization built in, so best to run them in sequence
+  registerDoSEQ()
+  iter_model_list <- train_df_h2o$modelName
+  opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = iter_model_list[n])))
+  
+  train_df_h2o_all <- train_df_h2o[rep(seq_len(nrow(train_df_h2o)), each = nrow(train_test_data)), ]
+  train_df_h2o_all$data_idx <- rep(1:nrow(train_test_data), nrow(train_df_h2o))
+  
+  
   # progress bar (pb$tick() is built into the model training functions)
   pb <- progress::progress_bar$new(
-    total = nrow(train_df_caret)
+    total = nrow(train_df_h2o_all)
     , format = "running model #:current of :total :elapsed :what [:bar]"
     , clear = FALSE
   )
   
-  
-  
-  
-  # TRAIN CARET MODELS -------------------------------------------------
-  
-  # parallel:
-  num_cores <- parallel::detectCores()-2
-  cl <- makeSOCKcluster(num_cores)
-  registerDoSNOW(cl)
-  iter_model_list <- train_df_caret$modelName
-  opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = iter_model_list[n])))
-  
-  
-  run_start <- Sys.time()
-  train_df_caret <- foreach(i = 1:nrow(train_df_caret)
-                            , .export = c("pb","iter_model_list", "train_test_data")
-                            , .verbose = FALSE
-                            , .errorhandling = "pass"
-                            , .options.snow = opts ) %dopar% {
-                              
-                              source("R/helper/load-packages.R")
-                              
-                              mod_interest <- 
-                                train_df_caret %>% 
-                                filter(row_number()==i) %>% 
-                                .[rep(seq_len(nrow(.)), each=2),] %>% 
-                                bind_cols(train_test_data) %>% 
-                                mutate(params = map2(train.X, train.Y,  ~ list(X = .x, Y = .y)))
-                              
-                              start_time <- Sys.time()-14400
-                              out <- mod_interest %>% mutate(modelFits = invoke_map(.f = model, .x = params))
-                              end_time <- Sys.time()-14400
-                              
-                              run_time <- round(as.numeric(end_time - start_time),2)
-                              run_time_units <- units(end_time - start_time)
-                              time_list <- data.frame("model" = paste0(mod_interest$modelName," : ",mod_interest$id)
-                                                      ,"start_time" = start_time
-                                                      ,"end_time"  = end_time
-                                                      ,"run_time" = run_time
-                                                      ,"run_time_units" = run_time_units)
-                              out <- bind_cols(out, nest(time_list, .key = "run_times_list"))
-                              out <- out %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
-                              
-                              return(out) 
-                            }
-  
-  
-  run_end <- Sys.time()
-  stopCluster(cl)
-  stopImplicitCluster()
+   
+  run_start_3 <- Sys.time()
+  train_out_h2o <- foreach(i = 1:nrow(train_df_h2o_all)
+                          , .verbose = FALSE
+                          , .errorhandling = "pass") %do% {
+                            
+                            mod_interest <- train_df_h2o_all %>% filter(row_number()==i)
+                            model_data <- train_test_data[mod_interest$data_idx,]
+                            
+                            X <- model_data %>% select(train.X) %>% unnest()
+                            X_names <- names(X)
+                            Y <- model_data %>% select(train.Y) %>% unnest()
+                            names(Y) <- Y_names <- "Sold"
+                            training_frame <- as.h2o(bind_cols(X,Y))
+                            
+                            X_val <- model_data %>% select(test.X) %>% unnest()
+                            X_val_names <- names(X_val)
+                            Y_val <- model_data %>% select(test.Y) %>% unnest()
+                            names(Y_val) <- Y_val_names <- "Sold"
+                            validation_frame <- as.h2o(bind_cols(X_val,Y_val))
+                            
+                            h2o_model <- mod_interest %>% select(model) %>% unlist() %>% .[[1]]
+                            
+                            start_time <- Sys.time()-14400
+                            h2o_mod <- h2o_model(X = X_names, Y = Y_names, training_frame=training_frame, validation_frame=validation_frame)
+                            end_time <- Sys.time()-14400
+                            
+                            
+                            run_time <- round(as.numeric(end_time - start_time),2)
+                            run_time_units <- units(end_time - start_time)
+                            time_list <- data.frame("model" = paste0(mod_interest$modelName," : ",mod_interest$idx)
+                                                    ,"start_time" = start_time
+                                                    ,"end_time"  = end_time
+                                                    ,"run_time" = run_time
+                                                    ,"run_time_units" = run_time_units)
+                            mod_interest <- mod_interest %>% mutate(modelFits = list(h2o_mod))
+                            mod_interest <- bind_cols(mod_interest, nest(time_list, .key = "run_times_list"))
+                            mod_interest <- mod_interest %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
+                            data_fit <- tbl_df(predict(h2o_mod, newdata = training_frame, type="prob"))
+                            y_hat <- tbl_df(predict(h2o_mod, newdata = validation_frame, type="prob"))
+                            
+                            mod_interest <- 
+                              mod_interest %>% 
+                              mutate(data_fit = list(data_fit)
+                                     , y_hat = list(y_hat)
+                              )
+                            
+                          }
+  run_end_3 <- Sys.time()
   closeAllConnections()
   
-  message("Trained ",length(train_df_caret)," models in ",round(difftime(run_end,run_start),3)," ",units(difftime(run_end,run_start)))
+  message("Trained ",length(train_out_h2o)," h2o models in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)))
+  
+  
+  
   
   
   

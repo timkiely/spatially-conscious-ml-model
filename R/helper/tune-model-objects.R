@@ -16,7 +16,7 @@ linearRegModel <- function(X, Y) {
   ctrl <- trainControl(
     ## 5-fold CV
     method = "repeatedcv", 
-    number = 5
+    number = 2
   )
   train(
     x = X,
@@ -385,15 +385,15 @@ model_list <-
     list(
       rpartModel = rpartModel
       , xgbModel = xgbTreeModel
-      , xgbTreeModel2 = xgbTreeModel2
-      , xgbLinearModel = xgbLinearModel
+      #, xgbTreeModel2 = xgbTreeModel2
+      #, xgbLinearModel = xgbLinearModel
       #, RFModel = RFModel
-      , xgbRFmodel = xgbRFmodel
+      #, xgbRFmodel = xgbRFmodel
       , linearRegModel = linearRegModel
       , lassoRegModel = lassoRegModel
-      , KNNModel = KNNModel
-      , MLPModel = MLPModel
-      , RBPModel = RBPModel 
+      #, KNNModel = KNNModel
+      #, MLPModel = MLPModel
+      #, RBPModel = RBPModel 
       , h2oRFmodel = h2oRFmodel
       , h2oGBMmodel = h2oGBMmodel
       

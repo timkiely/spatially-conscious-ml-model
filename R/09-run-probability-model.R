@@ -1,12 +1,10 @@
 # This function creates the RADII modeling data
 
 run_probability_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
-                                  , outfile = "data/processing steps/p12_sale_price_model_base.rds") {
+                                  , outfile = "data/processing steps/p12_sale_price_model_base.rds"
+                                  , preprocess_data = "Y") {
   message("Running the probability model on BASE data...")
-  
-  # check if modeling data exists
-  if(file.exists(model_data_infile)){
-  
+  start_prob_time <- Sys.time()
 
   # loading data ------------------------------------------------------------
   message("Reading base data...")
@@ -45,10 +43,14 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   message("     ...processing done")
 
   # for dev purposes:
+  message("Partitioning data")
   set.seed(1987)
-  model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,0.01)})
+  model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,1)})
+  message("     ...done.")
+  
   
   # turn model data list into a tidy data frame ---------------------------
+  message("Creating modeling frame...")
   train_test_data <- 
     model_data_list %>%
     enframe(name = 'id', value = 'rawdata') %>% 
@@ -66,15 +68,14 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
       , test.X = map(Test, ~.x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address))
       , test.Y = map(Test, ~.x$Sold)
       )
-  
-  
+  message("     ...done.")
+
   # Define Models -----------------------------------------------------------
-  
+  message("Initializing h2o models...")
   model_list <- read_rds('data/aux data/model-list.rds')
   
   # build modeling tibble ---------------------------------------------------
   train_df <- model_list %>% arrange(modelName) %>% mutate(idx = 1:n())
-  
   
   # split in to xgboost and the rest ----------------------------------------
   train_df_xgb <- train_df %>% filter(grepl("xgb|lassoRegModel|RBPModel",modelName))
@@ -85,10 +86,6 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   
   
   # TRAIN THE MODELS --------------------------------------------------------
-  
-  
-  
-  
   
   # TRAIN H2O Models ----------------------------------------------------------
   
@@ -102,26 +99,22 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   h2o.removeAll()
   sink(NULL)
   
- 
-  
-  
-  # h2o has parellelization built in, so best to run them in sequence
-  registerDoSEQ()
-  iter_model_list <- train_df_h2o$modelName
-  opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = iter_model_list[n])))
-  
   train_df_h2o_all <- train_df_h2o[rep(seq_len(nrow(train_df_h2o)), each = nrow(train_test_data)), ]
   train_df_h2o_all$data_idx <- rep(1:nrow(train_test_data), nrow(train_df_h2o))
   
+  # h2o has parellelization built in, so best to run them in sequence
+  registerDoSEQ()
+  iter_model_list <- train_df_h2o_all$modelName
   
   # progress bar (pb$tick() is built into the model training functions)
-  pb <- progress::progress_bar$new(
+  pb <<- progress::progress_bar$new(
     total = nrow(train_df_h2o_all)
     , format = "running model #:current of :total :elapsed :what [:bar]"
     , clear = FALSE
   )
-  
+  opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = iter_model_list[n])))
    
+  message("Starting h2o models...")
   run_start_3 <- Sys.time()
   train_out_h2o <- foreach(i = 1:nrow(train_df_h2o_all)
                           , .verbose = FALSE
@@ -171,17 +164,23 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
                           }
   run_end_3 <- Sys.time()
   closeAllConnections()
+  rm(pb, envir = globalenv())
   
   message("Trained ",length(train_out_h2o)," h2o models in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)))
   
   
   
+  message("Writing to disk...")
+  final_model_object <- bind_rows(train_out_h2o)
+  write_rds(final_model_object, outfile)
+  message("     ...done.")
   
   
+  # output time
+  end_prob_time <- Sys.time()
+  total_prob_time <- end_prob_time - start_prob_time
+  message("Done. Total base probability model time: ", round(total_prob_time, 2),units(total_prob_time))
   
-  
-  
-  } else message("TODO: data not available yet") #remove this at the end
 }
 
 

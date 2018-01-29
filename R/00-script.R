@@ -69,6 +69,12 @@ run_sales_model(model_data_infile = "data/processing steps/p08_radii_model_data.
                       , outfile = "data/processing steps/p14_sale_price_model_radii.rds")
 
 
+
+# Evaluate model output ---------------------------------------------------
+# evaluate_probability_models()
+# evalutate_sales_models()
+
+
 script_end <- Sys.time()
 message("Program Total Run Time: ", round(script_end - script_start,2), units(script_end - script_start))
 

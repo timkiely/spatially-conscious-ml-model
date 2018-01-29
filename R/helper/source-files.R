@@ -2,10 +2,10 @@
 # source the requisite files
 
 source("R/helper/helper-functions.R")
-message("creating data directory structure at ", Sys.time())
+message("runnning makefile... ")
 project_makefile()
 
-message("Sourcing project functions at ", Sys.time())
+message("Sourcing project functions...")
 source("R/01-download-pluto-data.R")
 source("R/02-download-pad-data.R")
 source("R/03-download-sales-data.R")

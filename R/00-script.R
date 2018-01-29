@@ -1,12 +1,11 @@
+script_start <- Sys.time()
+# run the entire analysis from this script file
 
 # script arguments:
 args <- commandArgs(TRUE)
 DL <- as.character(args[1])
 PP <- as.character(args[2])
 
-
-script_start <- Sys.time()
-# run the entire analysis from this script file
 
 # load packages and source the necessary scripting functions:
 message("Starting script at ", as.POSIXct(Sys.time(), tz = "EST"))
@@ -16,19 +15,18 @@ source("R/helper/source-files.R")
 
 
 # data --------------------------------------------------------------------
-if(tolower(DL) != "n"){
+if(tolower(DL) != "skip-dl"){
   download_nyc_pluto( save_file = "data/processing steps/p01_pluto_raw.rds")
   download_nyc_pad(   save_file = "data/processing steps/p02_pad_raw.rds") # steps 1 and 2 take 13.5 minutes
   download_nyc_sales( save_file = "data/processing steps/p03_sales_raw.rds") # steps 1, 2 and 3 take 55 mins (from scratch)
   
-} else message("=====> Bypassing download script")
+} else message("=====> Bypassing download function")
 
 
 
 
 # processing --------------------------------------------------------------
-if(tolower(PP) != "n"){
-  
+if(tolower(PP) != "skip-pp"){
   combine_sales_and_pad(sales_infile = "data/processing steps/p03_sales_raw.rds"
                         , pad_infile = "data/processing steps/p02_pad_raw.rds"
                         , pluto_infile = "data/processing steps/p01_pluto_raw.rds"
@@ -55,7 +53,7 @@ if(tolower(PP) != "n"){
   create_radii_data(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
                     , outfile = "data/processing steps/p08_radii_model_data.rds")
   
-} else message("=====> Bypassing preprocessing script")
+} else message("=====> Bypassing preprocessing function")
 
 
 # Prob of sale model ------------------------------------------------------

@@ -43,13 +43,13 @@ run_preprocessing_steps <- function(data, sample = 0.25) {
                , uniqueCut = 2, cutoff = 0.99)
   
   
-  message("Treating with center, scale, NZV and bagImpute")
+  message("Treating with center, scale, NZV and medianImpute")
   pprocess_num_processed <- 
     preProcess(numeric_only_train_sample, method = c("center", "scale", "nzv", "medianImpute")
                , thresh = 0.99, numUnique = 2, freqCut = 98/2
                , uniqueCut = 2, cutoff = 0.99)
   
-  message("Applying preprocessing to data and writing out...")
+  message("Applying preprocessing  model to full data...")
   message("     ...1 of 2")
   num_train <- predict(pprocess_num_only, numeric_only_train) %>% bind_cols(id_cols, outcome_cols)
   num_test <- predict(pprocess_num_only, numeric_only_test) %>% bind_cols(id_cols_test, outcome_cols_test)

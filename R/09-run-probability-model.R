@@ -42,11 +42,11 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     }
     )
     
+    # processing function:
     processed_data <- run_preprocessing_steps(modeling_data, sample = 0.2)
     message("     ...processing done")
     
     # for dev purposes:
-    message("Partitioning data")
     set.seed(1987)
     model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,1)})
     message("     ...done.")

@@ -43,7 +43,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     )
     
     # processing function:
-    processed_data <- run_preprocessing_steps(modeling_data, sample = 0.2)
+    processed_data <- run_preprocessing_steps(modeling_data, sample = 1)
     message("     ...processing done")
     
     # for dev purposes:
@@ -177,7 +177,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     
     message("Trained ",length(train_out_h2o)," h2o models in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)))
     
-    message("Writing to disk...")
+    message("Writing model results to disk...")
     final_model_object <- bind_rows(train_out_h2o)
     write_rds(final_model_object, outfile)
     message("     ...done.")

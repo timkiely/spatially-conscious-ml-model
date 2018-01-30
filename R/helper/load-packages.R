@@ -27,7 +27,7 @@ pacman::p_load(
   , progress, knitr, h2o, data.table
   , htmlTable, pander, rPython, kknn
   , proj4, httr, RCurl, rvest, TTR, zoo, RcppRoll
-  , e1071, progress
+  , e1071, progress, pROC
 )
 
 message("packages loaded successfully")

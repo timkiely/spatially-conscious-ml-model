@@ -4,8 +4,8 @@ script_start <- Sys.time()
 
 # script arguments:
 args <- commandArgs(TRUE)
-DL <- as.character(args[1]) # skip-dl
-PP <- as.character(args[2]) # skip-pp
+DL <- as.character(args[1]) # 'skip-dl' bypasses the download steps
+PP <- as.character(args[2]) # 'skip-pp' bypasses the pre-processing steps
 
 
 # load packages and source the necessary scripting functions:

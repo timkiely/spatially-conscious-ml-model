@@ -164,14 +164,18 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
                                         , y_hat = list(y_hat)
                                  )
                                
+                               
+                               # EVALUATION METRICS
+                               mod_interest <- 
+                                 mod_interest %>% 
+                                 mutate(test.Y = model_data$test.Y
+                                        , train.Y = model_data$train.Y)
                              }
     run_end_3 <- Sys.time()
     closeAllConnections()
     rm(pb, envir = globalenv())
     
     message("Trained ",length(train_out_h2o)," h2o models in ",round(difftime(run_end_3,run_start_3),3)," ",units(difftime(run_end_3,run_start_3)))
-    
-    
     
     message("Writing to disk...")
     final_model_object <- bind_rows(train_out_h2o)
@@ -183,7 +187,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     end_prob_time <- Sys.time()
     total_prob_time <- end_prob_time - start_prob_time
     message("Done. Total base probability model time: ", round(total_prob_time, 2),units(total_prob_time))
-    message("Base modeling output written to ",outfile)
+    message("Base modeling output written to ", outfile)
     
   } else warning("Following Input data not available: ", model_data_infile)
 }

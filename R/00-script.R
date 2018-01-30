@@ -1,20 +1,20 @@
+## run the entire analysis from this script file
+message("Starting script at ", as.POSIXct(Sys.time(), tz = "EST"))
 script_start <- Sys.time()
-# run the entire analysis from this script file
 
 # script arguments:
 args <- commandArgs(TRUE)
-DL <- as.character(args[1])
-PP <- as.character(args[2])
+DL <- as.character(args[1]) # skip-dl
+PP <- as.character(args[2]) # skip-pp
 
 
 # load packages and source the necessary scripting functions:
-message("Starting script at ", as.POSIXct(Sys.time(), tz = "EST"))
 source("R/helper/load-packages.R")
 source("R/helper/source-files.R")
 
 
-
 # data --------------------------------------------------------------------
+# approx. 5 minutes
 if(tolower(DL) != "skip-dl"){
   download_nyc_pluto( save_file = "data/processing steps/p01_pluto_raw.rds")
   download_nyc_pad(   save_file = "data/processing steps/p02_pad_raw.rds") # steps 1 and 2 take 13.5 minutes
@@ -23,9 +23,8 @@ if(tolower(DL) != "skip-dl"){
 } else message("=====> Bypassing download function")
 
 
-
-
 # processing --------------------------------------------------------------
+# approx. 30 minutes
 if(tolower(PP) != "skip-pp"){
   combine_sales_and_pad(sales_infile = "data/processing steps/p03_sales_raw.rds"
                         , pad_infile = "data/processing steps/p02_pad_raw.rds"

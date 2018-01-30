@@ -2,9 +2,8 @@
 
 run_probability_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
                                   , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds"
-                                  , dev = "N"
-) {
-      message("Running the probability model on BASE data...")
+                                  , dev = "N" ) {
+  message("Running the probability model on BASE data...")
   
   if(file.exists(model_data_infile)){
     start_prob_time <- Sys.time()
@@ -14,8 +13,8 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
       warning("You are taking a sample of the modeling data, for dev purposes. 09-run-probability-model.R")
       message("Using sample data to run models...")
       model_data_list <- read_rds("data/model_data_list-temp.rds")
-    
-      } else { 
+      
+    } else { 
       # loading data ------------------------------------------------------------
       message("Reading base data...")
       base_data <- read_rds(model_data_infile)

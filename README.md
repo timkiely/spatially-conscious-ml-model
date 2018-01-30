@@ -19,11 +19,15 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 -   (01/06/2018) New game plan. Re-drew the steps of the procedure and am targeting 2 models: probability of sale & amount. Will have to step through the data processing steps once more and re-run the radii metrics calculations. Overhauled the directory structure. Project now has a clearer process and goal.
 -   (01/23/2018) Progress update. scripts 00 through 06 all or nearly complete. Next tasks will be additional feature engineering and then modeling. Expecting the radii features to take significant time to sort out. I have some existing scripts which can be re-purposed for the modeling portion, so that should go quickly.
 -   (01/24/2018) Had to manually correct the 2006 PLUTO data. Was missing some newline characters and variable names. Uploaded the corrected version so S3 and gave it public access. Updated download script to account for new destination.
+-   (01/30/2018) Probability model now stable on base data. Working on evaluation script, then moving on to sales model, then zipcode + radii features.
 
 ### TODO:
 
--   Finsh creating zip level and radii level features
--   Run models and evaluate
+-   Finish evaluation scripts
+-   Finish sales model on base data
+-   Create zip level and radii level features
+-   Run all models on all data sets
+-   Wrap up
 
 Steps
 =====
@@ -78,6 +82,21 @@ OUTPUT: binary prediction modeling results
 ``` ruby
 OUTPUT: regression prediction modeling results
 ```
+
+TO RUN THE MODEL
+================
+
+The full script can be run from the command line (from inside the project directory) with the following command:
+
+`Rscript R/00-script.R`
+
+Additional arguments can be passed to the Rscript:
+
+`Rscript R/00-script.R skip-dl skip-pp run-dev`
+
+-   `skip-dl` skip the download script. Saves about 30 minutes
+-   `skip-pp` skip the processing script. Saves about 50 minutes
+-   `run-dev` run the probability model on base data with a 10% sample. Full model run takes ~2 minutes
 
 MODEL RUN LOG:
 ==============

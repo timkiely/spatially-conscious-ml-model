@@ -1,67 +1,59 @@
 # This function runs the BASE PROBABILITY model
 
-# run_probability_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
-#                                   , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds"
-#                                   ) {
-#   
-#   if(file.exists(model_data_infile)){
+run_probability_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
+                                  , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds"
+                                  , dev = "N"
+) {
+      message("Running the probability model on BASE data...")
+  
+  if(file.exists(model_data_infile)){
     start_prob_time <- Sys.time()
     
-    runPP <- "N"
-    if(runPP=="Y") {
-    message("Running the probability model on BASE data...")
     
-    # loading data ------------------------------------------------------------
-    message("Reading base data...")
-    # base_data <- read_rds(model_data_infile)
+    if(dev == "run-dev") {
+      warning("You are taking a sample of the modeling data, for dev purposes. 09-run-probability-model.R")
+      message("Using sample data to run models...")
+      model_data_list <- read_rds("data/model_data_list-temp.rds")
     
-    # FOR DEV PURPOSES
-    warning("You are taking a sample of the modeling data, for dev purposes. 09-run-probability-model.R")
-    # set.seed(1989)
-    # base_data_samp <- sample_frac(base_data, 0.1)
-    # write_rds(base_data_samp, "data/base-data-sample.rds")
-    base_data <- read_rds("data/base-data-sample.rds")
-    
-    message("     ...done.")
-    
-    
-    # partition to test & train -----------------------------------------------
-    source("R/helper/partition-modeling-data.R")
-    message("Partitioning modeling data into train and test...")
-    modeling_data <- partition_modeling_data(base_data, train_years = 2003:2016, test_years = 2017)
-    message("     ...done.")
-    
-    
-    # creating processing frame ------------------------------------------------
-    message("Running Preprocessing steps...")
-    
-    ## some preprocessing steps can't handle variable names with spaces
-    # converting variable names to snake notation:
-    modeling_data <- modeling_data %>% map(function(x) {
-      names(x) <- gsub(" ","_",names(x))
-      return(x)
+      } else { 
+      # loading data ------------------------------------------------------------
+      message("Reading base data...")
+      base_data <- read_rds(model_data_infile)
+      message("     ...done.")
+      
+      
+      # partition to test & train -----------------------------------------------
+      source("R/helper/partition-modeling-data.R")
+      message("Partitioning modeling data into train and test...")
+      modeling_data <- partition_modeling_data(base_data, train_years = 2003:2016, test_years = 2017)
+      message("     ...done.")
+      
+      
+      # creating processing frame ------------------------------------------------
+      message("Running Preprocessing steps...")
+      # some preprocessing steps can't handle variable names with spaces
+      # converting variable names to snake notation:
+      modeling_data <- modeling_data %>% map(function(x) {
+        names(x) <- gsub(" ","_",names(x))
+        return(x)
+      }
+      )
+      
+      # processing function:
+      source("R/helper/pre-process-modeling-data.R")
+      processed_data <- run_preprocessing_steps(modeling_data, sample = 0.2)
+      message("     ...processing done")
+      
+      # for dev purposes:
+      set.seed(1987)
+      model_data_list_samp <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,0.01)})
+      # write to temp file for development:
+      write_rds(model_data_list_samp, "data/model_data_list-temp.rds")
+      message("     ...done.")
+      
+      model_data_list <- processed_data
+      
     }
-    )
-    
-    # processing function:
-    source("R/helper/pre-process-modeling-data.R")
-    processed_data <- run_preprocessing_steps(modeling_data, sample = 0.2)
-    message("     ...processing done")
-    
-    
-    # filter data
-    source("R/helper/filter-modeling-data.R")
-    fitered_data <- filter_modleing_data(processed_data, sample = 0.2)
-    message("     ...processing done")
-    
-    # for dev purposes:
-    set.seed(1987)
-    model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,0.2)})
-    message("     ...done.")
-    
-    # write_rds(model_data_list, "data/model_data_list-temp.rds")
-    
-  } else model_data_list <- read_rds("data/model_data_list-temp.rds")
     
     
     # turn model data list into a tidy data frame ---------------------------
@@ -76,29 +68,22 @@
       spread(train_test, rawdata) %>% 
       mutate(data_group = names(model_data_list)[str_detect(names(model_data_list),"train")] %>% str_replace("train_","")) %>% 
       rename("id" = data_group) %>%   
-      head(1) %>% 
       transmute(
         id
-        , train.X = map(Train,  ~ .x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR))
+        , train.X = map(Train,  ~ .x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR, -TOTAL_SALES))
         , train.Y = map(Train, ~ .x$Sold)
-        , test.X = map(Test, ~.x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR))
+        , test.X = map(Test, ~.x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR, -TOTAL_SALES))
         , test.Y = map(Test, ~.x$Sold)
       )
     message("     ...done.")
     
     # Define Models -----------------------------------------------------------
-    message("Initializing h2o models...")
-    model_list <- read_rds('data/aux data/model-list.rds')
+    train_df <- read_rds('data/aux data/model-list.rds') %>% arrange(modelName) %>% mutate(idx = 1:n())
     
-    # build modeling tibble ---------------------------------------------------
-    train_df <- model_list %>% arrange(modelName) %>% mutate(idx = 1:n())
-    
-    # split in to xgboost and the rest ----------------------------------------
+    # split in to xgboost, h2o and the rest ------------------------------------
     train_df_xgb <- train_df %>% filter(grepl("xgb|lassoRegModel|RBPModel",modelName))
     train_df_h2o <- train_df %>% filter(grepl("h2oRFmodel|h2oGBMmodel", modelName))
     train_df_caret <- anti_join(train_df,bind_rows(train_df_xgb,train_df_h2o), by = "idx")
-    
-    train_df_h2o <- head(train_df_h2o, 1)
     
     # TRAIN H2O Models ----------------------------------------------------------
     
@@ -182,7 +167,6 @@
     
     message("Writing model results to disk...")
     final_model_object <- bind_rows(train_out_h2o)
-    outfile = "data/processing steps/p09_prob_of_sale_model_base.rds" # TODO REMOVE THIS
     write_rds(final_model_object, outfile)
     message("     ...done.")
     
@@ -194,8 +178,8 @@
     message("Done. Total base probability model time: ", round(total_prob_time, 2),units(total_prob_time))
     message("Base modeling output written to ", outfile)
     
-#   } else warning("Following Input data not available: ", model_data_infile)
-# }
+  } else warning("Following Input data not available: ", model_data_infile)
+}
 
 
 

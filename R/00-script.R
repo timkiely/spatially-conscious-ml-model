@@ -6,6 +6,7 @@ script_start <- Sys.time()
 args <- commandArgs(TRUE)
 DL <- as.character(args[1]) # 'skip-dl' bypasses the download steps
 PP <- as.character(args[2]) # 'skip-pp' bypasses the pre-processing steps
+dev <- as.character(args[3]) # # 'run-dev' run the probability model with sample data
 
 
 # load packages and source the necessary scripting functions:
@@ -59,7 +60,8 @@ if(tolower(PP) != "skip-pp"){
 
 # base data
 run_probability_model(model_data_infile = "data/processing steps/p06_base_model_data.rds"
-                      , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds")
+                      , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds"
+                      , dev = dev)
 
 # zipcode data
 run_probability_model(model_data_infile = "data/processing steps/p07_zipcode_model_data.rds"

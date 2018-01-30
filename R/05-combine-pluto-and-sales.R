@@ -61,7 +61,10 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
            , `GROSS SQUARE FEET` = as.numeric(`GROSS SQUARE FEET`)
     ) %>% 
     mutate_at(vars(BldgArea:BldgDepth), function(x) ifelse(is.na(x),0,x)) %>% 
-    filter(Building_Type%in%c("A","B","C","D","F","L","O"))
+    filter(Building_Type%in%c("A","B","C","D","F","L","O")) %>% 
+    filter(NumBldgs==1) %>% 
+    filter(SALE_PRICE>=10000) %>% 
+    filter(GROSS_SQUARE_FEET>500)
   
   merge_end <- Sys.time()
   message("     ...done")  

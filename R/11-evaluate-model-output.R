@@ -9,6 +9,8 @@ evaluate_probability_models <- function(base_data_inflie = "data/processing step
     base_model1 <- base_model[1,]
     pROC::auc(predictor = as.numeric(base_model1$y_hat[[1]]$predict>0.5), response = as.numeric(base_model1$test.Y[[1]]))
     table(as.numeric(base_model1$y_hat[[1]]$predict>0.5) == as.numeric(base_model1$test.Y[[1]]))
+    h2o::h2o.varimp(base_model1$modelFits[[1]])
+    base_model1$modelFits[[1]] %>% plot()
     
   } else message(base_data_inflie, " Not yet avaulable")
   

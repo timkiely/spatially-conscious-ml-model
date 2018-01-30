@@ -1,13 +1,15 @@
-# This function creates the RADII modeling data
+# This function runs the BASE PROBABILITY model
 
-run_probability_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
-                                  , outfile = "data/processing steps/p12_sale_price_model_base.rds"
-                                  , preprocess_data = "Y") {
-  
-  if(file.exists(model_data_infile)){
-    
-    message("Running the probability model on BASE data...")
+# run_probability_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
+#                                   , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds"
+#                                   ) {
+#   
+#   if(file.exists(model_data_infile)){
     start_prob_time <- Sys.time()
+    
+    runPP <- "N"
+    if(runPP=="Y") {
+    message("Running the probability model on BASE data...")
     
     # loading data ------------------------------------------------------------
     message("Reading base data...")
@@ -16,7 +18,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     # FOR DEV PURPOSES
     warning("You are taking a sample of the modeling data, for dev purposes. 09-run-probability-model.R")
     # set.seed(1989)
-    # base_data_samp <- sample_frac(base_data, 0.2)
+    # base_data_samp <- sample_frac(base_data, 0.1)
     # write_rds(base_data_samp, "data/base-data-sample.rds")
     base_data <- read_rds("data/base-data-sample.rds")
     
@@ -32,7 +34,6 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     
     # creating processing frame ------------------------------------------------
     message("Running Preprocessing steps...")
-    source("R/helper/pre-process-modeling-data.R")
     
     ## some preprocessing steps can't handle variable names with spaces
     # converting variable names to snake notation:
@@ -43,13 +44,24 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     )
     
     # processing function:
-    processed_data <- run_preprocessing_steps(modeling_data, sample = 1)
+    source("R/helper/pre-process-modeling-data.R")
+    processed_data <- run_preprocessing_steps(modeling_data, sample = 0.2)
+    message("     ...processing done")
+    
+    
+    # filter data
+    source("R/helper/filter-modeling-data.R")
+    fitered_data <- filter_modleing_data(processed_data, sample = 0.2)
     message("     ...processing done")
     
     # for dev purposes:
     set.seed(1987)
-    model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,1)})
+    model_data_list <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,0.2)})
     message("     ...done.")
+    
+    # write_rds(model_data_list, "data/model_data_list-temp.rds")
+    
+  } else model_data_list <- read_rds("data/model_data_list-temp.rds")
     
     
     # turn model data list into a tidy data frame ---------------------------
@@ -64,11 +76,12 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
       spread(train_test, rawdata) %>% 
       mutate(data_group = names(model_data_list)[str_detect(names(model_data_list),"train")] %>% str_replace("train_","")) %>% 
       rename("id" = data_group) %>%   
+      head(1) %>% 
       transmute(
         id
-        , train.X = map(Train,  ~ .x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address))
+        , train.X = map(Train,  ~ .x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR))
         , train.Y = map(Train, ~ .x$Sold)
-        , test.X = map(Test, ~.x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address))
+        , test.X = map(Test, ~.x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR))
         , test.Y = map(Test, ~.x$Sold)
       )
     message("     ...done.")
@@ -85,10 +98,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     train_df_h2o <- train_df %>% filter(grepl("h2oRFmodel|h2oGBMmodel", modelName))
     train_df_caret <- anti_join(train_df,bind_rows(train_df_xgb,train_df_h2o), by = "idx")
     
-    
-    
-    
-    # TRAIN THE MODELS --------------------------------------------------------
+    train_df_h2o <- head(train_df_h2o, 1)
     
     # TRAIN H2O Models ----------------------------------------------------------
     
@@ -157,18 +167,11 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
                                mod_interest <- mod_interest %>% mutate(run_time = paste0(round(time_list$run_time,2)," ",time_list$run_time_units))
                                data_fit <- tbl_df(predict(h2o_mod, newdata = training_frame, type="prob"))
                                y_hat <- tbl_df(predict(h2o_mod, newdata = validation_frame, type="prob"))
-                               
                                mod_interest <- 
                                  mod_interest %>% 
                                  mutate(data_fit = list(data_fit)
                                         , y_hat = list(y_hat)
-                                 )
-                               
-                               
-                               # EVALUATION METRICS
-                               mod_interest <- 
-                                 mod_interest %>% 
-                                 mutate(test.Y = model_data$test.Y
+                                        , test.Y = model_data$test.Y
                                         , train.Y = model_data$train.Y)
                              }
     run_end_3 <- Sys.time()
@@ -179,18 +182,20 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     
     message("Writing model results to disk...")
     final_model_object <- bind_rows(train_out_h2o)
+    outfile = "data/processing steps/p09_prob_of_sale_model_base.rds" # TODO REMOVE THIS
     write_rds(final_model_object, outfile)
     message("     ...done.")
     
-    
     # output time
     end_prob_time <- Sys.time()
+    
     total_prob_time <- end_prob_time - start_prob_time
+    
     message("Done. Total base probability model time: ", round(total_prob_time, 2),units(total_prob_time))
     message("Base modeling output written to ", outfile)
     
-  } else warning("Following Input data not available: ", model_data_infile)
-}
+#   } else warning("Following Input data not available: ", model_data_infile)
+# }
 
 
 

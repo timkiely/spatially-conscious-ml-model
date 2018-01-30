@@ -30,4 +30,7 @@ pacman::p_load(
   , e1071, progress, pROC
 )
 
+# dplyr::select tends to get masked unexpectedly, so making sure that doesn't happen:
+select <- dplyr::select
+
 message("packages loaded successfully")

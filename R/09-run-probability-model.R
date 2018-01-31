@@ -3,7 +3,8 @@
 run_probability_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
                                   , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds"
                                   , dev = "N" ) {
-  message("Running the probability model on BASE data...")
+  
+  message("Attempting to run the PROBABILITY model...")
   
   if(file.exists(model_data_infile)){
     start_prob_time <- Sys.time()

@@ -4,7 +4,7 @@ run_sales_model <- function(model_data_infile = "data/processing steps/p06_base_
                             , outfile = "data/processing steps/p12_sale_price_model_base.rds"
                             , dev = "N") {
   
-  message("Running the sales model on BASE data...")
+  message("Attempting to run the SALES model...")
   
   if(file.exists(model_data_infile)){
     start_prob_time <- Sys.time()

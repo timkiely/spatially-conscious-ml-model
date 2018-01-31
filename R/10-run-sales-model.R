@@ -9,7 +9,7 @@ run_sales_model <- function(model_data_infile = "data/processing steps/p06_base_
   if(file.exists(model_data_infile)){
     start_prob_time <- Sys.time()
     
-    
+    if(is.na(dev)) dev <- "N"
     if(dev == "run-dev") {
       warning("You are taking a sample of the modeling data, for dev purposes. 10-run-sales-model.R")
       message("Using sample data to run models...")

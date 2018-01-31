@@ -36,7 +36,7 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
               , SALE_YEAR = head(SALE_YEAR, 1)
               , bbl = head(bbl, 1)
               , Annual_Sales = n()
-              ) %>% 
+    ) %>% 
     mutate(Sold = 1)
   
   message("Merging sales data with PLUTO...")  
@@ -60,11 +60,29 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
            , MaxAllwFAR = suppressWarnings(as.numeric(MaxAllwFAR))
            , `GROSS SQUARE FEET` = as.numeric(`GROSS SQUARE FEET`)
     ) %>% 
-    mutate_at(vars(BldgArea:BldgDepth), function(x) ifelse(is.na(x),0,x)) %>% 
-    filter(Building_Type%in%c("A","B","C","D","F","L","O")) %>% 
-    filter(NumBldgs==1) %>% 
-    filter(SALE_PRICE>=10000) %>% 
-    filter(GROSS_SQUARE_FEET>500)
+    mutate_at(vars(BldgArea:BldgDepth), function(x) ifelse(is.na(x),0,x))
+  
+  # GLOBAL FILTERING
+  message("Applying global filtering to data...")
+  pluto_with_sales <-
+    pluto_with_sales %>%
+    
+    # remove problematic building classes, like hotel Time Share deeds
+    filter(Building_Type%in%c("A","B","C","D","F","L","O")) %>% # eliminates ~2 million records
+    
+    # remove any tax lots with >1 building (e.g, World Trade Center)
+    filter(NumBldgs==1) %>% # eliminates ~2 million records
+    
+    # there are a number of micro-sales of 0.5 and 1. Removing those
+    mutate_at(vars(`SALE PRICE`, TOTAL_SALES), .funs = function(x) if_else(x<10, NA_real_, x)) %>% 
+    
+    # remove micro transactions
+    filter(`SALE PRICE`>=10000|is.na(`SALE PRICE`)) %>% # eliminates small number of records
+    
+    # remove GSF of less than 500
+    filter(`GROSS SQUARE FEET`>500|is.na(`GROSS SQUARE FEET`)) # eliminates a small number of records
+    
+  
   
   merge_end <- Sys.time()
   message("     ...done")  

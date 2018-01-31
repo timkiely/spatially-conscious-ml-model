@@ -265,7 +265,7 @@ h2oGBMmodel <- function(X, Y, training_frame, validation_frame){
                  ntrees = 500,
                  max_depth = 6, 
                  stopping_rounds = 50,
-                 stopping_metric = "RMSE",
+                 stopping_metric = "AUTO",
                  learn_rate = 0.01, 
                  seed = 1)
   

@@ -69,11 +69,14 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
       rename("id" = data_group) %>%   
       transmute(
         id
-        , train.X = map(Train,  ~ .x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR, -TOTAL_SALES))
+        , train.X = map(Train,  ~ .x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR, -TOTAL_SALES, -GROSS_SQUARE_FEET))
         , train.Y = map(Train, ~ .x$Sold)
-        , test.X = map(Test, ~.x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR, -TOTAL_SALES))
+        , test.X = map(Test, ~.x %>% select(-SALE_PRICE, -Sold, -Annual_Sales, -bbl, -Address, -Years_Since_Last_Sale, -SALE_YEAR, -TOTAL_SALES, -GROSS_SQUARE_FEET))
         , test.Y = map(Test, ~.x$Sold)
       )
+    
+    # write to disk for later use:
+    write_rds(train_test_data, "data/aux data/train_test_data.rds")
     message("     ...done.")
     
     # Define Models -----------------------------------------------------------
@@ -156,7 +159,8 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
                                  mutate(data_fit = list(data_fit)
                                         , y_hat = list(y_hat)
                                         , test.Y = model_data$test.Y
-                                        , train.Y = model_data$train.Y)
+                                        , train.Y = model_data$train.Y
+                                        , data_id = model_data$id)
                              }
     run_end_3 <- Sys.time()
     closeAllConnections()

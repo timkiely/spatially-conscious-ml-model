@@ -90,8 +90,14 @@ run_sales_model(model_data_infile = "data/processing steps/p08_radii_model_data.
 
 
 # Evaluate model output ---------------------------------------------------
-# evaluate_probability_models()
-# evalutate_sales_models()
+evaluate_probability_models(base_data_inflie = "data/processing steps/p09_prob_of_sale_model_base.rds"
+                            , zip_data_infile = "data/processing steps/p10_prob_of_sale_model_zipcode.rds"
+                            , radii_data_infile = "data/processing steps/p11_prob_of_sale_model_radii.rds"
+                            , outfile = "data/processing steps/p15_prob_model_evaluations.rds")
+
+evalutate_sales_models(base_data_inflie = "data/processing steps/p12_sale_price_model_base.rds"
+                       , zip_data_infile = "data/processing steps/p13_sale_price_model_zipcode.rds"
+                       , radii_data_infile = "data/processing steps/p14_sale_price_model_radii.rds")
 
 
 script_end <- Sys.time()

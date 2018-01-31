@@ -41,8 +41,7 @@ run_sales_model <- function(model_data_infile = "data/processing steps/p06_base_
       
       # processing function:
       source("R/helper/pre-process-modeling-data.R")
-      processed_data <- 
-        run_preprocessing_steps(modeling_data, sample = 0.2)
+      processed_data <- run_preprocessing_steps(modeling_data, sample = 0.2)
       message("     ...processing done")
       
       # for dev purposes:

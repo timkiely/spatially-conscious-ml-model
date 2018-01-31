@@ -17,24 +17,24 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
   sales <- 
     sales_pad_raw %>% 
     group_by(pluto_bbl, `SALE YEAR`) %>% 
-    summarise(`BUILDING CLASS CATEGORY` = head(`BUILDING CLASS CATEGORY`, 1)
-              ,`TAX CLASS AT PRESENT` = head(`TAX CLASS AT PRESENT`, 1)
-              , `BUILDING CLASS AT PRESENT` = head(`BUILDING CLASS AT PRESENT`, 1)
-              , `ZIP CODE` = head(`ZIP CODE`, 1)
+    summarise(`BUILDING CLASS CATEGORY` = first(`BUILDING CLASS CATEGORY`)
+              ,`TAX CLASS AT PRESENT` = first(`TAX CLASS AT PRESENT`)
+              , `BUILDING CLASS AT PRESENT` = first(`BUILDING CLASS AT PRESENT`)
+              , `ZIP CODE` = first(`ZIP CODE`)
               , `RESIDENTIAL UNITS` = mean(`RESIDENTIAL UNITS`, na.rm = TRUE)
               , `COMMERCIAL UNITS` = mean(`COMMERCIAL UNITS`, na.rm = TRUE)
               , `TOTAL UNITS` = mean(`TOTAL UNITS`, na.rm = TRUE)
               , `LAND SQUARE FEET` = mean(`LAND SQUARE FEET`, na.rm = TRUE)
               , `GROSS SQUARE FEET` = mean(`GROSS SQUARE FEET`, na.rm = TRUE)
-              , `YEAR BUILT` = head(`YEAR BUILT`, 1)
-              , `TAX CLASS AT TIME OF SALE` = head(`TAX CLASS AT TIME OF SALE`, 1)
-              , `BUILDING CLASS AT TIME OF SALE` = head(`BUILDING CLASS AT TIME OF SALE`, 1)
+              , `YEAR BUILT` = first(`YEAR BUILT`)
+              , `TAX CLASS AT TIME OF SALE` = first(`TAX CLASS AT TIME OF SALE`)
+              , `BUILDING CLASS AT TIME OF SALE` = first(`BUILDING CLASS AT TIME OF SALE`)
               , `SALE PRICE` = mean(`SALE PRICE`, na.rm = T)
               , TOTAL_SALES = sum(`SALE PRICE`, na.rm = T)
-              , Year = head(Year, 1)
+              , Year = first(Year)
               , SALE_DATE = mean(SALE_DATE, na.rm = T)
-              , SALE_YEAR = head(SALE_YEAR, 1)
-              , bbl = head(bbl, 1)
+              , SALE_YEAR = first(SALE_YEAR)
+              , bbl = first(bbl)
               , Annual_Sales = n()
     ) %>% 
     mutate(Sold = 1)
@@ -59,6 +59,9 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
            , IrrLotCode = as.numeric(ifelse(IrrLotCode=="Y",1,0))
            , MaxAllwFAR = suppressWarnings(as.numeric(MaxAllwFAR))
            , `GROSS SQUARE FEET` = as.numeric(`GROSS SQUARE FEET`)) %>% 
+    
+    # there are a number of micro-sales of 0.5 and 1. Removing those
+    mutate_at(vars(`SALE PRICE`, TOTAL_SALES), .funs = function(x) if_else(x<2, NA_real_, x)) %>% 
     mutate(`SALE PRICE` = `SALE PRICE`/`GROSS SQUARE FEET`) %>% 
     mutate(`SALE PRICE` = ifelse(is.nan(`SALE PRICE`), NA, `SALE PRICE`)) %>% 
     mutate_at(vars(BldgArea:BldgDepth), function(x) ifelse(is.na(x),0,x))
@@ -74,16 +77,12 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
     # remove any tax lots with >1 building (e.g, World Trade Center)
     filter(NumBldgs==1) %>% # eliminates ~2 million records
     
-    # there are a number of micro-sales of 0.5 and 1. Removing those
-    mutate_at(vars(`SALE PRICE`, TOTAL_SALES), .funs = function(x) if_else(x<10, NA_real_, x)) %>% 
-    
     # remove micro transactions
-    filter(`SALE PRICE`>=10000|is.na(`SALE PRICE`)) %>% # eliminates small number of records
+    #filter(`SALE PRICE`>=10|is.na(`SALE PRICE`)) %>% # eliminates small number of records
     
     # remove GSF of less than 500
-    filter(`GROSS SQUARE FEET`>500|is.na(`GROSS SQUARE FEET`)) # eliminates a small number of records
+    filter(`GROSS SQUARE FEET`>=50|is.na(`GROSS SQUARE FEET`)) # eliminates a small number of records
     
-  
   
   merge_end <- Sys.time()
   message("     ...done")  

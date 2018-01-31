@@ -20,11 +20,10 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 -   (01/23/2018) Progress update. scripts 00 through 06 all or nearly complete. Next tasks will be additional feature engineering and then modeling. Expecting the radii features to take significant time to sort out. I have some existing scripts which can be re-purposed for the modeling portion, so that should go quickly.
 -   (01/24/2018) Had to manually correct the 2006 PLUTO data. Was missing some newline characters and variable names. Uploaded the corrected version so S3 and gave it public access. Updated download script to account for new destination.
 -   (01/30/2018) Probability model now stable on base data. Working on evaluation script, then moving on to sales model, then zipcode + radii features.
+-   (01/30/2018) UPDATE: SALES model now also stable on base data. The sales eval metrics are suspiciously too good; need to backtrack through the preocessing steps to see if I included the y variable in any of the training data ("Last Sale Amt" seems too good to be true). Evaluation scripts working for now, although could use some improvement. Last things to do is to create zip and radii features the wrap up
 
 ### TODO:
 
--   Finish evaluation scripts
--   Finish sales model on base data
 -   Create zip level and radii level features
 -   Run all models on all data sets
 -   Wrap up

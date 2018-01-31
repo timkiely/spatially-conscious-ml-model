@@ -6,7 +6,7 @@ script_start <- Sys.time()
 args <- commandArgs(TRUE)
 DL <- as.character(args[1]) # 'skip-dl' bypasses the download steps
 PP <- as.character(args[2]) # 'skip-pp' bypasses the pre-processing steps
-dev <- as.character(args[3]) # # 'run-dev' run the probability model with sample data
+dev <- as.character(args[3]) # 'run-dev' train the models with sample data, to go much faster
 
 
 # load packages and source the necessary scripting functions:
@@ -77,7 +77,8 @@ run_probability_model(model_data_infile = "data/processing steps/p08_radii_model
 
 # base data
 run_sales_model(model_data_infile = "data/processing steps/p06_base_model_data.rds"
-                , outfile = "data/processing steps/p12_sale_price_model_base.rds")
+                , outfile = "data/processing steps/p12_sale_price_model_base.rds"
+                , dev = dev)
 
 # zipcode data
 run_sales_model(model_data_infile = "data/processing steps/p07_zipcode_model_data.rds"
@@ -97,7 +98,8 @@ evaluate_probability_models(base_data_inflie = "data/processing steps/p09_prob_o
 
 evalutate_sales_models(base_data_inflie = "data/processing steps/p12_sale_price_model_base.rds"
                        , zip_data_infile = "data/processing steps/p13_sale_price_model_zipcode.rds"
-                       , radii_data_infile = "data/processing steps/p14_sale_price_model_radii.rds")
+                       , radii_data_infile = "data/processing steps/p14_sale_price_model_radii.rds"
+                       , outfile = "data/processing steps/p16_sales_model_evaluations.rds")
 
 
 script_end <- Sys.time()

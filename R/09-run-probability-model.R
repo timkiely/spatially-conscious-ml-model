@@ -76,7 +76,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
       )
     
     # write to disk for later use:
-    write_rds(train_test_data, "data/aux data/train_test_data.rds")
+    write_rds(train_test_data, "data/aux data/train_test_data_prob.rds")
     message("     ...done.")
     
     # Define Models -----------------------------------------------------------

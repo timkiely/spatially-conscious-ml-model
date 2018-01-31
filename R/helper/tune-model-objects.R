@@ -370,6 +370,7 @@ h2oRFmodel <- function(X, Y, training_frame, validation_frame){
                           model_id = "h2o_rf_fit",
                           ntrees = 200,
                           stopping_rounds = 5,
+                          stopping_metric = "AUTO",
                           seed = 1)
   
   bst

@@ -58,8 +58,9 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
            , FAR = as.numeric(FAR)
            , IrrLotCode = as.numeric(ifelse(IrrLotCode=="Y",1,0))
            , MaxAllwFAR = suppressWarnings(as.numeric(MaxAllwFAR))
-           , `GROSS SQUARE FEET` = as.numeric(`GROSS SQUARE FEET`)
-    ) %>% 
+           , `GROSS SQUARE FEET` = as.numeric(`GROSS SQUARE FEET`)) %>% 
+    mutate(`SALE PRICE` = `SALE PRICE`/`GROSS SQUARE FEET`) %>% 
+    mutate(`SALE PRICE` = ifelse(is.nan(`SALE PRICE`), NA, `SALE PRICE`)) %>% 
     mutate_at(vars(BldgArea:BldgDepth), function(x) ifelse(is.na(x),0,x))
   
   # GLOBAL FILTERING

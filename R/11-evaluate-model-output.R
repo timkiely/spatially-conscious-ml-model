@@ -94,13 +94,13 @@ evalutate_sales_models <- function(base_data_inflie = "data/processing steps/p12
     # base_model1 <- base_model[1,]
     # h2o::h2o.varimp(base_model1$modelFits[[1]])
     
-  } else message(base_data_inflie, " Not yet avaulable")
+  } else message(base_data_inflie, " Not yet available")
   
   
   # zip models --------------------------------------------------------------
   if(file.exists(zip_data_infile)){
     
-  } else message(zip_data_infile, " Not yet avaulable")
+  } else message(zip_data_infile, " Not yet available")
   
   
   
@@ -109,7 +109,7 @@ evalutate_sales_models <- function(base_data_inflie = "data/processing steps/p12
   
   if(file.exists(radii_data_infile)){
     
-  } else message(radii_data_infile, " Not yet avaulable")
+  } else message(radii_data_infile, " Not yet available")
   
   
   

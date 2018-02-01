@@ -3,17 +3,18 @@
 # function to create a standardized base feature creation.
 
 create_base_features <- function(data){
+  
   data <- 
   data %>% 
     group_by(bbl) %>%
     arrange(bbl, Year) %>% 
     
     # creating a running tally for moving average calculations
-    mutate(Last_Sale_Price = na.locf(`SALE PRICE`, na.rm = FALSE)
-           , Last_Sale_Price_Total = na.locf(TOTAL_SALES, na.rm = FALSE)
-           , Last_Sale_Date = na.locf(SALE_DATE, na.rm = FALSE)
-           , Years_Since_Last_Sale = Year-lubridate::year(lag(Last_Sale_Date,1))
-    ) %>% 
+    mutate(Last_Sale_Price = na.locf(lag(`SALE PRICE`,1), na.rm = FALSE)
+           , Last_Sale_Price_Total = na.locf(lag(TOTAL_SALES,1), na.rm = FALSE)
+           , Last_Sale_Date = na.locf(lag(SALE_DATE,1), na.rm = FALSE)
+           , Years_Since_Last_Sale = Year-lubridate::year(Last_Sale_Date)
+           ) %>% 
     
     # SMA VARS:
     mutate(SMA_Price_2_year = roll_meanr(lag(Last_Sale_Price,1), n = 2, na.rm = T, fill = NaN)

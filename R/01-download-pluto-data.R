@@ -105,8 +105,14 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   col_class_spec$cols$CB2000 <- col_character()
   
   
-  all_years <- rep(2003:2017, each = 5)
-  all_years <- all_years[-which(grepl("2008",all_years))]
+  all_years <-
+    names(names_list_df) %>% 
+    str_replace("v.","") %>% 
+    str_extract_all("[0-9]") %>% 
+    map(~paste0(.x, collapse = "")) %>% 
+    map(~as.numeric(paste0("20",.x))) %>% 
+    map(~rep(.x, each = nrow(names_list_df))) %>% 
+    unlist()
   
   out_list_fin <- list()
   for (j in length(names_list_df):1){
@@ -114,12 +120,19 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
     dol_df <- names_list_df %>% select(j)
     for(nm in nrow(dol_df):1){
       message("......inner loop ",nrow(dol_df)-nm+1," of ",nrow(dol_df))
+      
+      message("length of years: ",length(all_years))
+      message("year:",tail(all_years,1))
+      
       out_idx <- paste0(j,nm)
       the_name <- names(dol_df)
+      cat("FILE NAME: ",the_name)
+      
       the_file <- paste0("data/aux data/PLUTO_ARCHIVES/",the_name,"/",dol_df[nm,])
       readin <- suppressWarnings(suppressMessages(read_csv(the_file, col_names = T, progress = F, col_types = col_class_spec)))
       readin$file <- the_file
       readin$Year <- tail(all_years,1)
+      
       all_years <- head(all_years,length(all_years)-1)
       out_list_fin[[out_idx]] <- readin
     }

@@ -16,7 +16,7 @@ create_radii_comps <- function(pluto_model) {
     st_transform(32618)
   
   pb <- progress::progress_bar$new(total = nrow(unique_bbls_sf))
-  opts <- list(progress = function(n) pb$tick(token = list("current" = n,"what" = ii)))
+  opts <- list(progress = function(n) pb$tick(token = list("current" = n)))
   
   message("Starting radii indexing at ", Sys.time())
   run_start <- Sys.time()

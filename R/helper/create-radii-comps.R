@@ -2,6 +2,9 @@
 
 create_radii_comps <- function(pluto_model) {
   
+  # pluto_model_bak <- pluto_model
+  # pluto_model <- pluto_model_bak
+  pluto_model <- head(pluto_model,100000)
   unique_bbls <- distinct(pluto_model, bbl, lat, lon) %>% filter(!is.na(lat))
   
   unique_bbls_sf <- 
@@ -21,6 +24,8 @@ create_radii_comps <- function(pluto_model) {
   num_cores <- parallel::detectCores()-2
   cl <- makeSOCKcluster(num_cores)
   registerDoSNOW(cl)
+  on.exit(closeAllConnections())
+  on.exit(stopImplicitCluster())
   
   Comps_uids <- foreach(ii = 1:nrow(unique_bbls_sf)
                         , .verbose = FALSE
@@ -48,8 +53,11 @@ create_radii_comps <- function(pluto_model) {
                           return(comps)
                         }; closeAllConnections();stopImplicitCluster()
   
+  end_time <- Sys.time()
+  tot_time <- end_time-run_start
   
   message("     ...Finished RADII indexing at ", Sys.time())
+  message("     ...Total indexing time: ", round(tot_time,2),units(tot_time))
   Comps_uids
 }
 

@@ -1,25 +1,29 @@
 ## run the entire analysis from this script file
+
+message(
+  paste("PREDICTIVE MODELING USING NYC SALES DATA"
+         , "     Creates and evaluates 2 predictive"
+         , "     models across severl different feature"
+         , "     sets for comparrisson."
+         , ""
+         , "     timothy.j.kiely@gmail.com"
+         , sep = "\n"))
+
+
 message("Starting script at ", as.POSIXct(Sys.time(), tz = "EST"))
 script_start <- Sys.time()
-
-# script arguments:
-args <- commandArgs(TRUE)
-DL <- as.character(args[1]) # 'skip-dl' bypasses the download steps
-PP <- as.character(args[2]) # 'skip-pp' bypasses the pre-processing steps
-dev <- as.character(args[3]) # 'run-dev' train the models with sample data, to go much faster
-run_radii <- as.character(args[4]) # 'run-radii' re-runs the full radii indexing operation. Else, loads from disk
-
 
 # load packages and source the necessary scripting functions:
 source("R/helper/load-packages.R")
 source("R/helper/source-files.R")
 
+# parse command arguments:
+args <- parse_cmd_args()
 
 # data --------------------------------------------------------------------
 # approx. 5 minutes
-if(is.na(DL)) DL <- "N"
-if(tolower(DL) == "skip-dl"){
-  message("=====> Bypassing download function")
+if(args$`skip-dl` == TRUE){
+  message("=====> Bypassing download functions")
 } else {
   download_nyc_pluto( save_file = "data/processing steps/p01_pluto_raw.rds")
   download_nyc_pad(   save_file = "data/processing steps/p02_pad_raw.rds") # steps 1 and 2 take 13.5 minutes
@@ -29,9 +33,8 @@ if(tolower(DL) == "skip-dl"){
 
 # processing --------------------------------------------------------------
 # approx. 30 minutes
-if(is.na(PP)) PP <- "N"
-if(tolower(PP) == "skip-pp") {
-  message("=====> Bypassing preprocessing function")
+if(args$`skip-pp` == TRUE) {
+  message("=====> Bypassing preprocessing functions")
 } else {
   
   combine_sales_and_pad(sales_infile = "data/processing steps/p03_sales_raw.rds"
@@ -58,11 +61,19 @@ if(tolower(PP) == "skip-pp") {
   
 }
 
-if(is.na(run_radii)) run_radii <- "N"
-# radii data
-create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
-                  , outfile = "data/processing steps/p08_radii_model_data.rds"
-                  , run_radii = run_radii)
+
+# radii data --------------------------------------------------------------
+# Note: extremely time intensive
+
+if(args$`run-radii`==TRUE) {
+  create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
+                    , outfile = "data/processing steps/p08_radii_model_data.rds"
+                    , run_radii = TRUE)
+} else {
+  create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
+                    , outfile = "data/processing steps/p08_radii_model_data.rds"
+                    , run_radii = FALSE)
+}
 
 
 # Prob of sale model ------------------------------------------------------
@@ -70,15 +81,17 @@ create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.r
 # base data
 run_probability_model(model_data_infile = "data/processing steps/p06_base_model_data.rds"
                       , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds"
-                      , dev = dev)
+                      , dev = args$`run-sample`)
 
 # zipcode data
 run_probability_model(model_data_infile = "data/processing steps/p07_zipcode_model_data.rds"
-                      , outfile = "data/processing steps/p10_prob_of_sale_model_zipcode.rds")
+                      , outfile = "data/processing steps/p10_prob_of_sale_model_zipcode.rds"
+                      , dev = args$`run-sample`)
 
 # radii data
 run_probability_model(model_data_infile = "data/processing steps/p08_radii_model_data.rds"
-                      , outfile = "data/processing steps/p11_prob_of_sale_model_radii.rds")
+                      , outfile = "data/processing steps/p11_prob_of_sale_model_radii.rds"
+                      , dev = args$`run-sample`)
 
 
 
@@ -87,15 +100,17 @@ run_probability_model(model_data_infile = "data/processing steps/p08_radii_model
 # base data
 run_sales_model(model_data_infile = "data/processing steps/p06_base_model_data.rds"
                 , outfile = "data/processing steps/p12_sale_price_model_base.rds"
-                , dev = dev)
+                , dev = args$`run-sample`)
 
 # zipcode data
 run_sales_model(model_data_infile = "data/processing steps/p07_zipcode_model_data.rds"
-                , outfile = "data/processing steps/p13_sale_price_model_zipcode.rds")
+                , outfile = "data/processing steps/p13_sale_price_model_zipcode.rds"
+                , dev = args$`run-sample`)
 
 # radii data
 run_sales_model(model_data_infile = "data/processing steps/p08_radii_model_data.rds"
-                , outfile = "data/processing steps/p14_sale_price_model_radii.rds")
+                , outfile = "data/processing steps/p14_sale_price_model_radii.rds"
+                , dev = args$`run-sample`)
 
 
 

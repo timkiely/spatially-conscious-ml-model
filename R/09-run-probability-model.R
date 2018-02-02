@@ -2,15 +2,15 @@
 
 run_probability_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
                                   , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds"
-                                  , dev = "N" ) {
+                                  , dev = FALSE ) {
   
-  message("Attempting to run the PROBABILITY model...")
+  message("\n#============= PROBABILITY model =================#")
   
   if(file.exists(model_data_infile)){
     start_prob_time <- Sys.time()
     
-    if(is.na(dev)) dev <- "N"
-    if(dev == "run-dev") {
+    
+    if(dev == TRUE) {
       warning("You are taking a sample of the modeling data, for dev purposes. 09-run-probability-model.R")
       message("Using sample data to run models...")
       model_data_list <- read_rds("data/model_data_list-temp.rds")
@@ -93,12 +93,16 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     ## NOTE: YOU MAY NEED TO INSTALL JAVA. > system("sudo apt-get install default-jre")
     
     # initialize h2o cluster
-    sink(".sink-output")
-    h2o.init(nthreads = -1) #Number of threads -1 means use all cores on your machine
-    options("h2o.use.data.table"=TRUE)
-    h2o.no_progress()
-    h2o.removeAll()
-    sink(NULL)
+    suppressMessages({
+      suppressWarnings({
+        sink(".sink-output")
+        h2o.init(nthreads = -1) #Number of threads -1 means use all cores on your machine
+        options("h2o.use.data.table"=TRUE)
+        h2o.no_progress()
+        h2o.removeAll()
+        sink(NULL)
+      })
+    })
     
     train_df_h2o_all <- train_df_h2o[rep(seq_len(nrow(train_df_h2o)), each = nrow(train_test_data)), ]
     train_df_h2o_all$data_idx <- rep(1:nrow(train_test_data), nrow(train_df_h2o))
@@ -179,8 +183,8 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     
     total_prob_time <- end_prob_time - start_prob_time
     
-    message("Done. Total base probability model time: ", round(total_prob_time, 2),units(total_prob_time))
-    message("Base modeling output written to ", outfile)
+    message("Done. Total PROBABILITY model time: ", round(total_prob_time, 2),units(total_prob_time))
+    message("Probability modeling output written to ", outfile)
     
   } else warning("Following Input data not available: ", model_data_infile)
 }

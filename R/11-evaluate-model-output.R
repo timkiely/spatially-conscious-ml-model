@@ -8,7 +8,7 @@ evaluate_probability_models <- function(base_data_inflie = "data/processing step
                                         , outfile = "data/processing steps/p15_prob_model_evaluations.rds") {
 
   if(file.exists(base_data_inflie)){
-    message("Evaluating base PROBABILITY model...")
+    message("\nsEvaluating base PROBABILITY model...")
     base_model <- read_rds(base_data_inflie)
     
     base_model <- 

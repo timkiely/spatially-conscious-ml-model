@@ -56,14 +56,14 @@ if(tolower(PP) == "skip-pp") {
   create_zipcode_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
                       , outfile = "data/processing steps/p07_zipcode_model_data.rds")
   
-  
-  if(is.na(run_radii)) run_radii <- "N"
-  # radii data
-  create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
-                    , outfile = "data/processing steps/p08_radii_model_data.rds"
-                    , run_radii = run_radii)
-  
 }
+
+if(is.na(run_radii)) run_radii <- "N"
+# radii data
+create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
+                  , outfile = "data/processing steps/p08_radii_model_data.rds"
+                  , run_radii = run_radii)
+
 
 # Prob of sale model ------------------------------------------------------
 

@@ -2,10 +2,7 @@
 
 create_radii_comps <- function(pluto_model) {
   
-  pluto_model <- head(pluto_model,1000)
   unique_bbls <- distinct(pluto_model, bbl, lat, lon) %>% filter(!is.na(lat))
-  
-  
   
   unique_bbls_sf <- 
     unique_bbls %>% 

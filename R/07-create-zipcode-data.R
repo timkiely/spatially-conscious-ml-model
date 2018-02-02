@@ -14,7 +14,7 @@ create_zipcode_data <- function(base_model_data = "data/processing steps/p06_bas
   identity <- function(x) mean(x) # for naming purposes, will be removed
   zip_code_average <- function(x) mean(x, na.rm  = T) # for naming purposes, a simple average
   
-  pluto_model <- 
+  pluto_zip_features <- 
     pluto_model %>% 
     left_join(
       pluto_model %>% 
@@ -32,10 +32,10 @@ create_zipcode_data <- function(base_model_data = "data/processing steps/p06_bas
           , by = c("Year", "ZipCode"))
       , by = c("Year", "ZipCode"))
   
-  message("     ...Engineering done. Input ", length(pluto_model)," variables and output ", length(pluto_model), " variables")
+  message("     ...Engineering done. Input ", length(pluto_model)," variables and output ", length(pluto_zip_features), " variables")
 
   message("Writing ZIPCODE modeling data to disk...")
-  write_rds(pluto_model, outfile, compress = "gz")
+  write_rds(pluto_zip_features, outfile, compress = "gz")
   message("     ...done. ZIPCODE modeling data written to ", outfile)
 
 }

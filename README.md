@@ -21,6 +21,7 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 -   (01/24/2018) Had to manually correct the 2006 PLUTO data. Was missing some newline characters and variable names. Uploaded the corrected version so S3 and gave it public access. Updated download script to account for new destination.
 -   (01/30/2018) Probability model now stable on base data. Working on evaluation script, then moving on to sales model, then zipcode + radii features.
 -   (01/30/2018) UPDATE: SALES model now also stable on base data. The sales eval metrics are suspiciously too good; need to backtrack through the preocessing steps to see if I included the y variable in any of the training data ("Last Sale Amt" seems too good to be true). Evaluation scripts working for now, although could use some improvement. Last things to do is to create zip and radii features the wrap up
+-   (02/02/2018) Currently running the radii indexing script. Has been running ~12 hours straight and still working at 100% CPU. I also added optparse() for Rscript argument parsing flexibility. Added argument help to README file as well.
 
 ### TODO:
 
@@ -89,13 +90,31 @@ The full script can be run from the command line (from inside the project direct
 
 `Rscript R/00-script.R`
 
-Additional arguments can be passed to the Rscript:
+Additional arguments can be passed to the Rscript via the `optparse` package (use -h to see help menue):
 
-`Rscript R/00-script.R skip-dl skip-pp run-dev`
+``` bash
+Rscript R/00-script.R -h
 
--   `skip-dl` skip the download script. Saves about 30 minutes
--   `skip-pp` skip the processing script. Saves about 50 minutes
--   `run-dev` run the probability model on base data with a 10% sample. Full model run takes ~2 minutes
+Usage: R/00-script.R [options]
+
+Options:
+    -d, --skip-dl
+        Skip the download script to save time
+
+    -p, --skip-pp
+        Skip the pre-processing steps to same time
+
+    -r, --run-radii
+        Should the radii indexing be run? Default is not to run (very time intensive)
+
+    -s, --run-sample
+        Run the model on sample data
+
+    -h, --help
+        Show this help message and exit
+```
+
+Most of the options are used to speed up the development process. skip-dl, skip-pp and run-sample can only be run successfully once they have been run once and the data has been cached. run-radii by default does not run, because it is so time-intensive, however if has yet to be run successfully (or a sample of the data is not available) the script will throw an error.
 
 MODEL RUN LOG:
 ==============

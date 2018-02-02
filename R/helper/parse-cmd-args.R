@@ -21,7 +21,7 @@ parse_cmd_args <- function() {
                 help="Run the model on sample data")
   )
   
-  parser <- OptionParser(usage="%prog [options] file", option_list=option_list)
+  parser <- OptionParser(usage="%prog [options]", option_list=option_list)
   args <- parse_args(parser)
   args
 }

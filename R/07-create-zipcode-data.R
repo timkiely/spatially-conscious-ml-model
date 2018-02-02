@@ -1,42 +1,18 @@
 # This function creates the ZIPCODE modeling data
 
-create_zipcode_data <- function(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
+create_zipcode_data <- function(base_model_data = "data/processing steps/p06_base_model_data.rds"
                                 , outfile = "data/processing steps/p07_zipcode_model_data.rds") {
   
   message("Creating Zipcode Modeling Data")
-  message("Loading PLUTO...")
-  pluto <- read_rds(pluto_with_sales_infile)
+  message("Loading BASE modeling data...")
+  pluto_model <- read_rds(base_model_data)
   
   # varibale selection and some feature engineering -------------------------
-  
-  message("Partitioning PLUTO...")
-  
-  pluto_with_sales <- 
-    pluto %>% 
-    # filters out bbls that have no recorded sale in the dataset:
-    group_by(bbl) %>% mutate(sold_sum = sum(Sold, na.rm = T)) %>% 
-    ungroup() %>% filter(sold_sum>0) %>% select(-sold_sum)
-  
-  pluto_without_sales <- 
-    pluto %>% 
-    group_by(bbl) %>% mutate(sold_sum = sum(Sold, na.rm = T)) %>% 
-    ungroup() %>% filter(sold_sum==0) %>% select(-sold_sum)
-  
-  
-  message("Executing base feature engineering...")
-  source("R/helper/engineer-base-features.R")
-  # base features:
-  pluto_model <- 
-    pluto_with_sales %>% 
-    create_base_features() %>% 
-    ungroup()
-  message("     ...done.")
-  
-  
   # zip code level features:
   message("Executing ZIP feature engineering...")
-  identity <- function(x) mean(x)
-  zip_code_average <- function(x) mean(x, na.rm  = T)
+  
+  identity <- function(x) mean(x) # for naming purposes, will be removed
+  zip_code_average <- function(x) mean(x, na.rm  = T) # for naming purposes, a simple average
   
   pluto_model <- 
     pluto_model %>% 
@@ -56,15 +32,10 @@ create_zipcode_data <- function(pluto_with_sales_infile = "data/processing steps
           , by = c("Year", "ZipCode"))
       , by = c("Year", "ZipCode"))
   
-  message("     ...done.")
-  
-  message("     ...Engineering done. Input ", length(pluto_with_sales)," variables and output ", length(pluto_model), " variables")
+  message("     ...Engineering done. Input ", length(pluto_model)," variables and output ", length(pluto_model), " variables")
 
-  message("Re-combining PLUTO...")
-  final_data <- bind_rows(pluto_model, pluto_without_sales) %>% ungroup()
-  
-  message("Writing base modeling data to disk...")
-  write_rds(final_data, outfile, compress = "gz")
+  message("Writing ZIPCODE modeling data to disk...")
+  write_rds(pluto_model, outfile, compress = "gz")
   message("     ...done. ZIPCODE modeling data written to ", outfile)
 
 }

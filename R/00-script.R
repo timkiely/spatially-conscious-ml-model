@@ -7,6 +7,7 @@ args <- commandArgs(TRUE)
 DL <- as.character(args[1]) # 'skip-dl' bypasses the download steps
 PP <- as.character(args[2]) # 'skip-pp' bypasses the pre-processing steps
 dev <- as.character(args[3]) # 'run-dev' train the models with sample data, to go much faster
+run_radii <- as.character(args[4]) # 'run-radii' re-runs the full radii indexing operation. Else, loads from disk
 
 
 # load packages and source the necessary scripting functions:
@@ -52,12 +53,15 @@ if(tolower(PP) == "skip-pp") {
                    , outfile = "data/processing steps/p06_base_model_data.rds")
   
   # zipcode data
-  create_zipcode_data(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
+  create_zipcode_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
                       , outfile = "data/processing steps/p07_zipcode_model_data.rds")
   
+  
+  if(is.na(run_radii)) run_radii <- "N"
   # radii data
-  create_radii_data(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
-                    , outfile = "data/processing steps/p08_radii_model_data.rds")
+  create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
+                    , outfile = "data/processing steps/p08_radii_model_data.rds"
+                    , run_radii = run_radii)
   
 }
 

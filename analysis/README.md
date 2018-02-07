@@ -35,14 +35,22 @@ Predictive modeling using spatial dependence has been employed extensively in re
 2. Methodology
 --------------
 
+methodology
+
 3. Empirical Analysis
 ---------------------
+
+empirical analysis
 
 4. Results
 ----------
 
+results
+
 5. Conslusions and Future Research
 ----------------------------------
+
+conclusions
 
 6. References
 -------------

@@ -5,8 +5,6 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
                               , run_radii = FALSE) {
   
   message("Creating RADII Modeling Data")
-  message("Loading BASE model data...")
-  pluto_model <- read_rds(base_model_data)
   
   
   # create radii index set --------------------------------------------------
@@ -14,6 +12,8 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
   # PLUTO observation. We later use this to create radii metrics
   
   if(run_radii==TRUE){
+    message("Loading BASE model data...")
+    pluto_model <- read_rds(base_model_data)
     message("Creating radii comps...")
     source("R/helper/create-radii-comps.R")
     radii_comps <- create_radii_comps(pluto_model)
@@ -51,7 +51,7 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
     pluto_radii <- read_rds("data/aux data/radii-features.rds")
   }
   
-  message("     ...Engineering done. Input ", length(pluto_model)," variables and output ", length(radii_comps), " variables")
+  message("     ...Engineering done. Input ", length(pluto_model)," variables and output ", length(pluto_radii), " variables")
   
   message("Writing RADII modeling data to disk...")
   write_rds(pluto_radii, outfile, compress = "gz")

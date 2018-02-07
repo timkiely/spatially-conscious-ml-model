@@ -4,6 +4,8 @@
 download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/download/bc8t-ecyu/application%2Fzip"
                              , save_file = "data/processing steps/p02_pad_raw.rds"){
   
+  message("## Starting PAD download and processing...")
+  
   # parallel create an expanded list of Condo BBL's from PAD's bbl directory
   # Basic idea is that PAD gives you a low BBL and a high BBL, so in order to 
   # map to PLUTO and/or sales data, you need to expand the list to include all
@@ -12,6 +14,7 @@ download_nyc_pad <- function(download_path = "https://data.cityofnewyork.us/down
   # Note: run time on 10 cores was approximately 55 minutes
   
   if(!file.exists("data/aux data/pad17b/bobabbl.txt")){
+    message("PAD file not downloaded. Downloading from: ",download_path)
     tmp <- tempfile()
     download.file(download_path, destfile = tmp)
     unzip(tmp, exdir = "data/aux data/pad17b")

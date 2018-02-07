@@ -3,7 +3,7 @@
 create_zipcode_data <- function(base_model_data = "data/processing steps/p06_base_model_data.rds"
                                 , outfile = "data/processing steps/p07_zipcode_model_data.rds") {
   
-  message("Creating Zipcode Modeling Data")
+  message("## Creating Zipcode Modeling Data")
   message("Loading BASE modeling data...")
   pluto_model <- read_rds(base_model_data)
   

@@ -3,6 +3,8 @@
 
 download_nyc_sales <- function(save_file = "data/processing steps/p03_sales_raw.rds") {
   
+  message("## Download Sales Data Function")
+  
   # create a dest directory if not already exists 
   if(!dir.exists("data/aux data/sales data raw")){
     dir.create("data/aux data/sales data raw")

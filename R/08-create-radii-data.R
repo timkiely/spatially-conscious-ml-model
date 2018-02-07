@@ -4,7 +4,7 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
                               , outfile = "data/processing steps/p08_radii_model_data.rds"
                               , run_radii = FALSE) {
   
-  message("Creating RADII Modeling Data")
+  message("## Creating RADII Modeling Data")
   
   
   # create radii index set --------------------------------------------------

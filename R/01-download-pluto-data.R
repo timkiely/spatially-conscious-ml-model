@@ -3,6 +3,8 @@
 
 download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.rds"){
   
+  message("## Starting PLUTO download script...")
+  
   pluto_archive_dir <- "data/aux data/PLUTO_ARCHIVES"
   
   # manually adjust the file list:
@@ -12,7 +14,6 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
       , 'https://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_05d.zip'
       
       ## NOTE: 2006 file was corrupted. Corrected manually and uploaded fixed file to S3 (public bucket)
-      #, 'http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_06c.zip'
       , 'https://s3-us-west-2.amazonaws.com/pluto.data/corrected-nyc_pluto_06c.zip'
       
       , 'http://www1.nyc.gov/assets/planning/download/zip/data-maps/open-data/nyc_pluto_07c.zip'
@@ -84,7 +85,7 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   # we're indexing the data first to determine which files have variable names
   out_list <- list()
   for (j in 1:length(names_list_df)){
-    message("### Indexing PLUTO Data: outer loop", j," of ",length(names_list_df))
+    message("### Indexing PLUTO Data: outer loop ", j," of ",length(names_list_df))
     dol_df <- names_list_df %>% select(j)
     for(nm in 1:nrow(dol_df)){
       message("......inner loop ",nm, " of ",nrow(dol_df))
@@ -180,6 +181,6 @@ download_nyc_pluto <- function(save_file = "data/processing steps/p01_pluto_raw.
   message("Writing PLUTO to disk 2 of 2...")
   write_rds(pluto_lean, save_file, compress = "gz")
   
-  message("pluto lean compressed written to ", save_file)
+  message("pluto data cleansed and written to ", save_file)
 }
 

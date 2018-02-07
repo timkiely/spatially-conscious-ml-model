@@ -2,9 +2,11 @@
 
 run_sales_model <- function(model_data_infile = "data/processing steps/p06_base_model_data.rds"
                             , outfile = "data/processing steps/p12_sale_price_model_base.rds"
-                            , dev = FALSE) {
+                            , dev = FALSE
+                            , helper_title = NA) {
   
-  message("\n#============= SALES model =================#")
+  
+  message(paste0("\n#============= SALES model: ",helper_title," =================#"))
   
   if(file.exists(model_data_infile)){
     start_prob_time <- Sys.time()

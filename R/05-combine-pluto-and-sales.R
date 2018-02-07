@@ -5,8 +5,8 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
                                      , sales_pad_infile = "data/processing steps/p04_sales_and_pad.rds"
                                      , outfile = "data/processing steps/p05_pluto_with_sales.rds") {
   
-  message("Combinging PLUTO with Sales data")
-  message("Loading data...")  
+  message("## Combining PLUTO with Sales data")
+  message("Loading PLUTO, SALES+PAD data...")  
   pluto_raw <- read_rds(pluto_infile) %>% mutate(bbl = paste(BoroCode,as.numeric(Block),as.numeric(Lot),sep="_"))
   sales_pad_raw <- read_rds(sales_pad_infile)
   
@@ -78,7 +78,7 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
     filter(NumBldgs==1) %>% # eliminates ~2 million records
     
     # remove micro transactions
-    #filter(`SALE PRICE`>=10|is.na(`SALE PRICE`)) %>% # eliminates small number of records
+    # filter(`SALE PRICE`>1|is.na(`SALE PRICE`)) %>% # eliminates small number of records
     
     # remove GSF of less than 500
     filter(`GROSS SQUARE FEET`>=50|is.na(`GROSS SQUARE FEET`)) # eliminates a small number of records

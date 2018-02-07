@@ -4,7 +4,7 @@ create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p0
                              , outfile = "data/processing steps/p06_base_model_data.rds"
                              , manhattan_only = FALSE) {
   
-  message("Creating Base Modeling Data")
+  message("## Creating Base Modeling Data")
   message("Loading PLUTO...")
   pluto <- read_rds(pluto_with_sales_infile)
   

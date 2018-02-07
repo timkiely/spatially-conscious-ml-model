@@ -7,6 +7,7 @@ message(
          , "     sets for comparrisson."
          , ""
          , "     timothy.j.kiely@gmail.com"
+         , ""
          , sep = "\n"))
 
 
@@ -59,22 +60,23 @@ if(args$`skip-pp` == TRUE) {
   # zipcode data
   create_zipcode_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
                       , outfile = "data/processing steps/p07_zipcode_model_data.rds")
+
+  # radii data --------------------------------------------------------------
+  # Note: extremely time intensive
+  
+  if(args$`run-radii`==TRUE) {
+    create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
+                      , outfile = "data/processing steps/p08_radii_model_data.rds"
+                      , run_radii = TRUE)
+  } else {
+    create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
+                      , outfile = "data/processing steps/p08_radii_model_data.rds"
+                      , run_radii = FALSE)
+  }
   
 }
 
 
-# radii data --------------------------------------------------------------
-# Note: extremely time intensive
-
-if(args$`run-radii`==TRUE) {
-  create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
-                    , outfile = "data/processing steps/p08_radii_model_data.rds"
-                    , run_radii = TRUE)
-} else {
-  create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
-                    , outfile = "data/processing steps/p08_radii_model_data.rds"
-                    , run_radii = FALSE)
-}
 
 
 # Prob of sale model ------------------------------------------------------
@@ -82,17 +84,20 @@ if(args$`run-radii`==TRUE) {
 # base data
 run_probability_model(model_data_infile = "data/processing steps/p06_base_model_data.rds"
                       , outfile = "data/processing steps/p09_prob_of_sale_model_base.rds"
-                      , dev = args$`run-sample`)
+                      , dev = args$`run-sample`
+                      , helper_title = "BASE DATA")
 
 # zipcode data
 run_probability_model(model_data_infile = "data/processing steps/p07_zipcode_model_data.rds"
                       , outfile = "data/processing steps/p10_prob_of_sale_model_zipcode.rds"
-                      , dev = args$`run-sample`)
+                      , dev = args$`run-sample`
+                      , helper_title = "ZIPCODE DATA")
 
 # radii data
 run_probability_model(model_data_infile = "data/processing steps/p08_radii_model_data.rds"
                       , outfile = "data/processing steps/p11_prob_of_sale_model_radii.rds"
-                      , dev = args$`run-sample`)
+                      , dev = args$`run-sample`
+                      , helper_title = "RADII DATA")
 
 
 
@@ -101,17 +106,20 @@ run_probability_model(model_data_infile = "data/processing steps/p08_radii_model
 # base data
 run_sales_model(model_data_infile = "data/processing steps/p06_base_model_data.rds"
                 , outfile = "data/processing steps/p12_sale_price_model_base.rds"
-                , dev = args$`run-sample`)
+                , dev = args$`run-sample`
+                , helper_title = "BASE DATA")
 
 # zipcode data
 run_sales_model(model_data_infile = "data/processing steps/p07_zipcode_model_data.rds"
                 , outfile = "data/processing steps/p13_sale_price_model_zipcode.rds"
-                , dev = args$`run-sample`)
+                , dev = args$`run-sample`
+                , helper_title = "ZIPCODE DATA")
 
 # radii data
 run_sales_model(model_data_infile = "data/processing steps/p08_radii_model_data.rds"
                 , outfile = "data/processing steps/p14_sale_price_model_radii.rds"
-                , dev = args$`run-sample`)
+                , dev = args$`run-sample`
+                , helper_title = "RADII DATA")
 
 
 

@@ -9,7 +9,7 @@ combine_sales_and_pad <- function(sales_infile = "data/processing steps/p03_sale
   
   # Load the data -----------------------------------------------------------
   
-  message("Combining Enhancing Sales data")
+  message("## Starting combine_sales_and_pad function.")
   message("Loading and processing PAD data...")
   pad_bbl_expanded <- 
     read_rds(pad_infile) %>% 
@@ -62,7 +62,7 @@ combine_sales_and_pad <- function(sales_infile = "data/processing steps/p03_sale
   sales_new_not_in_pluto <- anti_join(sales_new, pluto_raw, by = c("pluto_bbl"="bbl"))
   overall_error <- scales::percent( nrow(sales_new_not_in_pluto)/nrow(nyc_sales_raw))
   
-  message("Processing done. Overall mapping error rates by steps:")
+  message("Processing done. Overall mapping error rates by processing step:")
   message("     ...Sales maping error rate directly to PLUTO: ", first_error)
   message("     ...Sales with PAD BBLs added mapping error rate: ", second_error)
   message("     ...Final overall mapping error rate: ", overall_error)

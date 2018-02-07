@@ -69,7 +69,7 @@ evaluate_probability_models <- function(base_data_infile = "data/processing step
   
   
   
- message("\nWriting probability model evaluations to ",outfile)
+ message("\n Writing probability model evaluations to ",outfile)
  all_evals <- bind_rows(base_model,zip_model,radii_model)
  write_rds(all_evals, outfile)
  

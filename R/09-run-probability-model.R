@@ -14,7 +14,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     if(dev == TRUE) {
       warning("You are taking a sample of the modeling data, for dev purposes. 09-run-probability-model.R")
       message("Using sample data to run models...")
-      model_data_list <- read_rds("data/model_data_list-temp.rds")
+      model_data_list <- read_rds("data/aux data/model_data_list-temp.rds")
       
     } else { 
       # loading data ------------------------------------------------------------
@@ -49,7 +49,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
       set.seed(1987)
       model_data_list_samp <- processed_data %>% map(model_data_list, .f = ~{sample_frac(.x,0.01)})
       # write to temp file for development:
-      write_rds(model_data_list_samp, "data/model_data_list-temp.rds")
+      write_rds(model_data_list_samp, "data/aux data/model_data_list-temp.rds")
       message("     ...done.")
       
       model_data_list <- processed_data

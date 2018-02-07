@@ -98,6 +98,7 @@ run_sales_model <- function(model_data_infile = "data/processing steps/p06_base_
     ## NOTE: YOU MAY NEED TO INSTALL JAVA. > system("sudo apt-get install default-jre")
     
     # initialize h2o cluster
+    message("Initiating h2o clusters...")
     suppressMessages({
       suppressWarnings({
         sink(".sink-output")

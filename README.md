@@ -22,11 +22,12 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 -   (01/30/2018) Probability model now stable on base data. Working on evaluation script, then moving on to sales model, then zipcode + radii features.
 -   (01/30/2018) UPDATE: SALES model now also stable on base data. The sales eval metrics are suspiciously too good; need to backtrack through the preocessing steps to see if I included the y variable in any of the training data ("Last Sale Amt" seems too good to be true). Evaluation scripts working for now, although could use some improvement. Last things to do is to create zip and radii features the wrap up
 -   (02/02/2018) Currently running the radii indexing script. Has been running ~12 hours straight and still working at 100% CPU. I also added optparse() for Rscript argument parsing flexibility. Added argument help to README file as well.
+-   (02/07/2018) By filtering the data to just Manhattan, have been able to successfully run all models. I also have a streategy for speeding up the radii calculations, which are the main bottelneck, but that may not be necessary for this project. Still to do: finsih the model evaluation script and possibly fine-tune the data processing to maximize results. Note that on &gt;60 cores, total program runtime with skip-dl and skip-pp enabled runs at just under 10 mins.
 
 ### TODO:
 
--   Create zip level and radii level features
--   Run all models on all data sets
+-   Finsih evaluation script
+-   POssibly fine-tune the data processing to maximize model efficacy
 -   Wrap up
 
 Steps

@@ -18,10 +18,10 @@ parse_cmd_args <- function() {
     make_option(c("-r", "--run-radii"), action="store_true", default=FALSE,
                 help="Should the radii indexing be run? Default is not to run (very time intensive)"),
     make_option(c("-s", "--run-sample"), action="store_true", default=FALSE,
-                help="Run the model on sample data")
+                help="Run the models on sample data to save time")
   )
   
-  parser <- OptionParser(usage="%prog [options]", option_list=option_list)
+  parser <- OptionParser(usage="\n\n %prog [options]", option_list=option_list)
   args <- parse_args(parser)
   args
 }

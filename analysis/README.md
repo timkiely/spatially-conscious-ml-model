@@ -15,8 +15,10 @@ You can also write an in-text citation, as follows:
 
 Antipov and Pokryshevskaya (2012) says blah.
 
+
 1. Introduction
 ===============
+
 
 1.1. Motivation
 ---------------

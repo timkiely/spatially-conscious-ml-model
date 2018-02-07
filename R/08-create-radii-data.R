@@ -48,13 +48,13 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
   } else {
     message("Bypassing radii features calculation, loading from disk...")
     if(!file.exists("data/aux data/radii-features.rds")) stop("file data/aux data/radii-comps.rds missing. Run create_radii_features() at least once to completion first")
-    radii_comps <- read_rds("data/aux data/radii-features.rds")
+    pluto_radii <- read_rds("data/aux data/radii-features.rds")
   }
   
   message("     ...Engineering done. Input ", length(pluto_model)," variables and output ", length(radii_comps), " variables")
   
   message("Writing RADII modeling data to disk...")
-  write_rds(radii_comps, outfile, compress = "gz")
+  write_rds(pluto_radii, outfile, compress = "gz")
   message("     ...done. RADII modeling data written to ", outfile)
   
 }

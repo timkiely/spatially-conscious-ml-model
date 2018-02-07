@@ -21,7 +21,7 @@ create_radii_comps <- function(pluto_model) {
   #
   # All rows 8.1MM = 2,536,241 unique bbls = XXmins?
   pluto_model <- pluto_model %>% filter(Borough=="MN")
-  unique_bbls <- distinct(pluto_model, bbl, round_lat, round_lon) %>% filter(!is.na(lat))
+  unique_bbls <- distinct(pluto_model, bbl, round_lat, round_lon) %>% filter(!is.na(round_lat))
   
   
   unique_bbls_sf <- 

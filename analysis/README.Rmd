@@ -21,38 +21,7 @@ You can also write an in-text citation, as follows:
 @antipov12 says blah.
 
 
-*table sample*
-
-\begin{table}
-\centering
-\caption{"A table"}
-\label{table-paramvalues}
-\begin{tabular}{ p{4cm} p{4cm} p{4cm} }
-\hline \\ [-1.5ex]
-colname &amp; colname &amp; colname \\ [1ex]
-\hline \\ [-1.5ex]
-Info & info & info \\ [1ex]
-Info & info & info \\ [1ex]
-Info & info & info \\ [1ex]
-\hline
-\end{tabular}
-\end{table}
-
-*another table*
-
-```{r}
-
-knitr::kable(head(iris))
-
-```
-
-
-
-
-
 # 1. Introduction
-
-
 
 ## 1.1. Motivation
 

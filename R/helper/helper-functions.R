@@ -19,7 +19,6 @@ comma.rem <- function(x){
   return(x)
 }
 
-
 # set of standard filters
 PROCESS_SALES_DATA <- function(sales_data){
   sales_data %>% 

@@ -3,7 +3,6 @@
 create_radii_comps <- function(pluto_model) {
   
   # lat/lons differ slightly from one year to next. Round lat/lons to compensate
-  
   pluto_model <- 
     pluto_model %>% 
     mutate(round_lat = round(lat, 3)
@@ -20,9 +19,12 @@ create_radii_comps <- function(pluto_model) {
   # 1m rows = 284,542 unique bbls = 10.6hours
   #
   # All rows 8.1MM = 2,536,241 unique bbls = XXmins?
-  pluto_model <- pluto_model %>% filter(Borough=="MN")
-  unique_bbls <- distinct(pluto_model, bbl, round_lat, round_lon) %>% filter(!is.na(round_lat))
   
+  unique_bbls <- 
+    pluto_model %>% 
+    distinct(bbl, round_lat, round_lon, Borough) %>% 
+    filter(!is.na(round_lat)) %>% 
+    distinct(bbl, .keep_all = TRUE)
   
   unique_bbls_sf <- 
     unique_bbls %>% 
@@ -32,49 +34,21 @@ create_radii_comps <- function(pluto_model) {
              , crs = 4326) %>% 
     st_transform(32618)
   
-  pb <- progress::progress_bar$new(total = nrow(unique_bbls_sf))
-  opts <- list(progress = function(n) pb$tick(token = list("current" = n)))
   
-  message("Starting radii indexing at ", Sys.time())
-  run_start <- Sys.time()
-  
-  num_cores <- parallel::detectCores()-2
-  cl <- makeSOCKcluster(num_cores)
-  registerDoSNOW(cl)
-  on.exit(closeAllConnections())
-  on.exit(stopImplicitCluster())
-  
-  Comps_uids <- foreach(ii = 1:nrow(unique_bbls_sf)
-                        , .verbose = FALSE
-                        , .errorhandling = "pass"
-                        , .options.snow = opts ) %dopar% {
-                          
-                          pacman::p_load(sf, dplyr, magrittr)
-                          l = 500 # 500 meters
-                          row_interest <- filter(unique_bbls_sf, row_number()==ii)
-                          buffer <- row_interest %>% st_buffer(dist = l)
-                          
-                          comps_idx <- suppressMessages(st_intersects(buffer, unique_bbls_sf))[[1]]
-                          comps <- unique_bbls_sf %>% filter(row_number() %in% comps_idx)
-                          comps <- comps %>% st_set_geometry(NULL)
-                          
-                          if(nrow(comps)>0) {
-                            comps$Origin_Key <- row_interest$bbl
-                          } else {
-                            comps <- data_frame("lat" = NA_integer_,"lon" = NA_integer_, "bbl" = row_interest$bbl)
-                            comps$Origin_Key <- row_interest$bbl
-                          }
-                          
-                          
-                          pb$tick()
-                          return(comps)
-                        }; closeAllConnections();stopImplicitCluster()
-  
-  end_time <- Sys.time()
-  tot_time <- end_time-run_start
+
+  ## TESTING ALTERNATIVE APPROACH FOR FASTER INDEXING:
+  # Baseline: Total indexing time: 3.25hours on aws w/ MN, BK
+  # MK+BK 1.39hours using dnearneigh technique. Could split up by boro to improve speed?
+  coords <- st_coordinates(unique_bbls_sf)
+  nbb_time <- Sys.time()
+  nnb <- dnearneigh(coords, 0, 500)
+  end_nbb_time <- Sys.time()
+  nbb_tot <- end_nbb_time-nbb_time
+  message("Total nbb time: ",round(nbb_tot,2),units(nbb_tot))
+  neighbors_list <- nb2listw(nnb)
   
   message("     ...Finished RADII indexing at ", Sys.time())
-  message("     ...Total indexing time: ", round(tot_time,2),units(tot_time))
-  Comps_uids
+  message("     ...Total indexing time: ", round(nbb_tot,2),units(nbb_tot))
+  neighbors_list
 }
 

@@ -20,7 +20,7 @@ comma.rem <- function(x){
 }
 
 
-# process sales data
+# set of standard filters
 PROCESS_SALES_DATA <- function(sales_data){
   sales_data %>% 
     filter(SALE.PRICE>=10000) %>% 
@@ -28,28 +28,6 @@ PROCESS_SALES_DATA <- function(sales_data){
     filter(Building_Type%in%c("A","B","C","D","F","L","O")) %>% 
     mutate(SALE.PRICE = SALE.PRICE/GROSS.SQUARE.FEET)
 }
-
-
-# checks for project directory structure and creates it if it doesn't exist
-project_makefile <- function() {
-  if(!"data" %in% dir()){
-    dir.create("data")
-  }
-  
-  if(!"aux data" %in% dir("data")){
-    dir.create("data/aux data")
-  }
-  
-  if(!"processing steps" %in% dir("data")){
-    dir.create("data/processing steps")
-  }
-  
-  if(!"log" %in% dir()){
-    dir.create("log")
-  }
-  
-}
-
 
 # calculate exponential moving average with RcppRoll::roll_mean()
 exp_roll_meanr <- function(x, exp = 0.9, n = 2, na.rm = TRUE, fill = NaN) {

@@ -2,15 +2,19 @@
 
 create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
                              , outfile = "data/processing steps/p06_base_model_data.rds"
-                             , manhattan_only = FALSE) {
+                             , limit_boros = FALSE) {
   
   message("## Creating Base Modeling Data")
   message("Loading PLUTO...")
   pluto <- read_rds(pluto_with_sales_infile)
   
-  # for dev purposes, if TRUE, filter the data for only manhattan
-  if(manhattan_only==TRUE){
-    pluto <- pluto %>% filter(Borough%in%c("MN"))
+  # for dev purposes, if TRUE, filter the data for only specified boros
+  if(limit_boros==TRUE){
+    
+    boro_lim <- c("MN") ### <- change this if you want to include more borough in the data
+    
+    message("Since limit_boros=TRUE, filtering data for the following boroughs only: ", paste(boro_lim, collapse = ","))
+    pluto <- pluto %>% filter(Borough%in%boro_lim)
   }
   
 # varibale seelction and some feature engineering -------------------------
@@ -33,7 +37,7 @@ create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p0
   
   pluto_model <- 
     pluto_with_sales %>% 
-    create_base_features() %>% 
+    engineer_base_features() %>% 
     ungroup()
   
   message("     ...done. Input ", length(pluto_with_sales)," variables and output ", length(pluto_model), " variables")

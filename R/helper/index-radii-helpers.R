@@ -30,29 +30,43 @@ x %>% group_by(clust) %>% tally() %>% st_convex_hull() %>%
 # 2) split by partition
 x_split <- split(x, x$clust)
 
-# 3) Get neighbor list
-# split <- x_split[[1]]
-get_neighbor_list <- function(split){
-  buffer <- split$buffer_geom
-  points_witin_buffer <- st_intersects(buffer, split)
-  points_without_self <- map(1:length(points_witin_buffer), function(x) points_witin_buffer[[x]][-match(x, points_witin_buffer[[x]])])
-  points_without_self
+out_list <- list()
+for(ii in 1:length(x_split)){
+  # 3) Get neighbor list
+  message("Working on ",ii,"...")
+  split <- x_split[[ii]]
+  get_neighbor_list <- function(split){
+    buffer <- split$buffer_geom
+    points_witin_buffer <- st_intersects(buffer, split)
+    points_without_self <- map(1:length(points_witin_buffer), function(x) points_witin_buffer[[x]][-match(x, points_witin_buffer[[x]])])
+    points_without_self
+  }
+  
+  neighbor_list <- get_neighbor_list(split)
+  
+  # 4) filter failures
+  # split <- x_split[[1]]
+  detect_if_fully_contained <- function(split){
+    buffer <- split$buffer_geom
+    convex_hull <- split %>% group_by(clust) %>% tally() %>% st_convex_hull() %>% st_cast(to = "MULTILINESTRING")
+    hull_intersects <- st_intersects(buffer, convex_hull) 
+    split$Success <- lengths(hull_intersects)==0
+    split
+  }
+  
+  split <- detect_if_fully_contained(split)
+  out <- list("split" = as_tibble(split), "neighbor_list" = tibble(neighbor_list))
+  out_list[[ii]] <- out
 }
 
-get_neighbor_list(x_split[[1]])
+out_list %>% 
+  map(~.x$split) %>% 
+  bind_rows()
 
 
-# 4) filter failures
-# split <- x_split[[1]]
-detect_if_fully_contained <- function(split){
-  buffer <- split$buffer_geom
-  convex_hull <- split %>% group_by(clust) %>% tally() %>% st_convex_hull() %>% st_cast(to = "MULTILINESTRING")
-  hull_intersects <- st_intersects(buffer, convex_hull) 
-  split$Success <- lengths(hull_intersects)==0
-  split
-}
 
-detect_if_fully_contained(x_split[[1]])
+
+
 
 plot(select(split, geometry, Success), add = F)
 plot(split$buffer_geom, add = T)

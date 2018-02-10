@@ -1,4 +1,16 @@
 
+message(
+  paste("PREDICTIVE MODELING USING NYC SALES DATA"
+        , "     Creates and evaluates 2 predictive"
+        , "     models across severl different feature"
+        , "     sets for comparrisson."
+        , ""
+        , "     timothy.j.kiely@gmail.com"
+        , ""
+        , sep = "\n"))
+
+
+
 message("checking if packages are installed...")
 # check if pacman is loaded. if not, prompt user for fresh install
 if(!"pacman"%in%installed.packages()){

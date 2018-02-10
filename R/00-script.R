@@ -1,16 +1,4 @@
 ## run the entire analysis from this script file
-
-message(
-  paste("PREDICTIVE MODELING USING NYC SALES DATA"
-         , "     Creates and evaluates 2 predictive"
-         , "     models across severl different feature"
-         , "     sets for comparrisson."
-         , ""
-         , "     timothy.j.kiely@gmail.com"
-         , ""
-         , sep = "\n"))
-
-
 message("Starting script at ", as.POSIXct(Sys.time(), tz = "EST"))
 script_start <- Sys.time()
 
@@ -60,19 +48,14 @@ if(args$`skip-pp` == TRUE) {
   # zipcode data
   create_zipcode_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
                       , outfile = "data/processing steps/p07_zipcode_model_data.rds")
-
+  
   # radii data --------------------------------------------------------------
   # Note: extremely time intensive
+  create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
+                    , outfile = "data/processing steps/p08_radii_model_data.rds"
+                    # default is to not run. to run, explicity supply the "--run-radii" argument or modify the funtion argument run_daii below
+                    , run_radii = args$`run-radii`)
   
-  if(args$`run-radii`==TRUE) {
-    create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
-                      , outfile = "data/processing steps/p08_radii_model_data.rds"
-                      , run_radii = TRUE)
-  } else {
-    create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
-                      , outfile = "data/processing steps/p08_radii_model_data.rds"
-                      , run_radii = FALSE)
-  }
   
 }
 

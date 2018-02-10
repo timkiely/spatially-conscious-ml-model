@@ -19,24 +19,14 @@ comma.rem <- function(x){
   return(x)
 }
 
-
-
-# checks for project directory structure and creates it if it doesn't exist
-project_makefile <- function() {
-  if(!"data" %in% dir()){
-    dir.create("data")
-  }
-  
-  if(!"aux data" %in% dir("data")){
-    dir.create("data/aux data")
-  }
-  
-  if(!"processing steps" %in% dir("data")){
-    dir.create("data/processing steps")
-  }
-  
+# set of standard filters
+PROCESS_SALES_DATA <- function(sales_data){
+  sales_data %>% 
+    filter(SALE.PRICE>=10000) %>% 
+    filter(GROSS.SQUARE.FEET>500) %>% 
+    filter(Building_Type%in%c("A","B","C","D","F","L","O")) %>% 
+    mutate(SALE.PRICE = SALE.PRICE/GROSS.SQUARE.FEET)
 }
-
 
 # calculate exponential moving average with RcppRoll::roll_mean()
 exp_roll_meanr <- function(x, exp = 0.9, n = 2, na.rm = TRUE, fill = NaN) {

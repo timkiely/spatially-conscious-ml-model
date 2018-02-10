@@ -1,16 +1,20 @@
-## run the entire analysis from this script file
-message("Starting script at ", as.POSIXct(Sys.time(), tz = "EST"))
-script_start <- Sys.time()
 
-# load packages and source the necessary scripting functions:
+## run the entire analysis from this script file
+message("Starting script at ", as.POSIXct(Sys.time(), tz = "EST")); script_start <- Sys.time()
+
+
+# load/install necessary packages (ask first) and source the various project functions:
 source("R/helper/load-packages.R")
 source("R/helper/source-files.R")
 
-# parse command arguments:
+# checking file structure
+project_makefile()
+
+# parse command arguments passed to 'Rscript R/00-script.R'
+# for arguments, enter 'Rscript R/00-script.R -h' on the command line
 args <- parse_cmd_args()
 
 # data --------------------------------------------------------------------
-# approx. 5 minutes
 if(args$`skip-dl` == TRUE){
   message("=====> Bypassing download functions")
 } else {
@@ -21,10 +25,11 @@ if(args$`skip-dl` == TRUE){
 
 
 # processing --------------------------------------------------------------
-# approx. 30 minutes
 if(args$`skip-pp` == TRUE) {
   message("=====> Bypassing preprocessing functions")
 } else {
+  
+  # merging -----------------------------------------------------------------
   
   combine_sales_and_pad(sales_infile = "data/processing steps/p03_sales_raw.rds"
                         , pad_infile = "data/processing steps/p02_pad_raw.rds"
@@ -39,11 +44,10 @@ if(args$`skip-pp` == TRUE) {
   
   # features and partitions -------------------------------------------------
   
-  
   # base data
   create_base_data(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
                    , outfile = "data/processing steps/p06_base_model_data.rds"
-                   , manhattan_only = TRUE)
+                   , limit_boros = TRUE)
   
   # zipcode data
   create_zipcode_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
@@ -56,8 +60,8 @@ if(args$`skip-pp` == TRUE) {
                     # default is to not run. to run, explicity supply the "--run-radii" argument or modify the funtion argument run_daii below
                     , run_radii = args$`run-radii`)
   
-  
 }
+
 
 
 

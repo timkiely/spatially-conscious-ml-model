@@ -1,9 +1,16 @@
 
-# source the requisite files
+message(
+  paste("PREDICTIVE MODELING USING NYC SALES DATA"
+        , "     Creates and evaluates 2 predictive"
+        , "     models across severl different feature"
+        , "     sets for comparrisson."
+        , ""
+        , "     timothy.j.kiely@gmail.com"
+        , ""
+        , sep = "\n")
+  )
 
-source("R/helper/helper-functions.R")
-message("runnning makefile... ")
-project_makefile()
+# source the requisite files:
 
 message("Sourcing project functions...")
 source("R/01-download-pluto-data.R")
@@ -20,4 +27,6 @@ source("R/11-evaluate-model-output.R")
 
 
 # Helper functions --------------------------------------------------------
+source("R/helper/helper-functions.R")
 source("R/helper/parse-cmd-args.R")
+source("R/helper/project-makefile.R")

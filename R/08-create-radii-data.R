@@ -8,7 +8,7 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
   
   
   # create radii index set --------------------------------------------------
-  # we create an index of all PLUTO observations within 0.25 miles of every other
+  # we create an index of all PLUTO observations within 500 meters of every other
   # PLUTO observation. We later use this to create radii metrics
   
   if(run_radii==TRUE){
@@ -20,8 +20,11 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
     message("     ...done")
     
     message("Writing radii index to disk...")
-    write_rds(radii_comps, "data/aux data/radii-index.rds")
-    message("     ...done")
+    write_time <- Sys.time()
+    write_rds(radii_comps, "data/aux data/radii-index.rds", compress = "gz")
+    write_time_end <- Sys.time()
+    tot_write_time <- write_time_end-write_time
+    message("     ...done. Writing took ", round(tot_write_time,2),units(tot_write_time))
     
   } else {
     message("Bypassing radii index calculation, loading from disk...")
@@ -41,8 +44,11 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
     
     
     message("Writing radii features to disk...")
-    write_rds(pluto_radii, "data/aux data/radii-features.rds")
-    message("     ...done")
+    write_time <- Sys.time()
+    write_rds(pluto_radii, "data/aux data/radii-features.rds", compress = "gz")
+    write_time_end <- Sys.time()
+    tot_write_time <- write_time_end-write_time
+    message("     ...done. Writing took ", round(tot_write_time,2),units(tot_write_time))
     
     
   } else {

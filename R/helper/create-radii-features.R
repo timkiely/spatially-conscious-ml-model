@@ -1,15 +1,12 @@
-create_radii_features <- function(pluto_model, radii_comps) {
+create_radii_features <- function(pluto_model, radii_index) {
   
   # pluto_model_bak <- pluto_model
   # pluto_model <- pluto_model %>% filter(Borough=="MN")
   
-  pb <- progress::progress_bar$new(total = length(radii_comps))
+  pb <- progress::progress_bar$new(total = length(radii_index))
   opts <- list(progress = function(n) pb$tick(token = list("current" = n)))
   
   message("Preparing radii feature loop...")
-  radii_comps_loop <- bind_rows(radii_comps)
-  radii_comps_loop <- distinct(radii_comps_loop, bbl, Origin_Key)
-  all_keys <- unique(radii_comps_loop$Origin_Key)
   
   message("Starting radii feature engineering at ", Sys.time())
   run_start <- Sys.time()
@@ -20,7 +17,7 @@ create_radii_features <- function(pluto_model, radii_comps) {
   on.exit(closeAllConnections())
   on.exit(stopImplicitCluster())
   
-  radii_features <- foreach(jj = 1:length(all_keys)
+  radii_features <- foreach(jj = 1:length(radii_index)
                         , .verbose = FALSE
                         , .errorhandling = "pass"
                         , .options.snow = opts ) %dopar% {
@@ -29,7 +26,7 @@ create_radii_features <- function(pluto_model, radii_comps) {
                           
                           pacman::p_load(sf, dplyr, magrittr)
                           
-                          item_interest <- radii_comps_loop %>% filter(Origin_Key==all_keys[jj])
+                          item_interest <- radii_index_loop %>% filter(Origin_Key==all_keys[jj])
                           key <- as.character(unique(item_interest[1, "Origin_Key"]))
                           bbls <- distinct(item_interest, bbl)
                           
@@ -58,7 +55,7 @@ create_radii_features <- function(pluto_model, radii_comps) {
                           
                           
                           return(features)
-                        }; closeAllConnections();stopImplicitCluster()
+                        }; closeAllConnections(); stopImplicitCluster()
   
 
   

@@ -17,7 +17,7 @@ create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p0
     pluto <- pluto %>% filter(Borough%in%boro_lim)
   }
   
-# varibale seelction and some feature engineering -------------------------
+# varibale selection and some feature engineering -------------------------
 
   message("Partitioning PLUTO...")
   

@@ -15,13 +15,13 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
     message("Loading BASE model data...")
     pluto_model <- read_rds(base_model_data)
     message("Creating radii comps...")
-    source("R/helper/create-radii-comps.R")
-    radii_comps <- create_radii_comps(pluto_model)
+    source("R/helper/create-radii-index.R")
+    radii_index <- create_radii_index(pluto_model)
     message("     ...done")
     
     message("Writing radii index to disk...")
     write_time <- Sys.time()
-    write_rds(radii_comps, "data/aux data/radii-index.rds", compress = "gz")
+    write_rds(radii_index, "data/aux data/radii-index.rds", compress = "gz")
     write_time_end <- Sys.time()
     tot_write_time <- write_time_end-write_time
     message("     ...done. Writing took ", round(tot_write_time,2),units(tot_write_time))
@@ -29,7 +29,7 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
   } else {
     message("Bypassing radii index calculation, loading from disk...")
     if(!file.exists("data/aux data/radii-index.rds")) stop("file data/aux data/radii-comps.rds missing. Run create_radii_data() at least once to completion first")
-    radii_comps <- read_rds("data/aux data/radii-index.rds")
+    radii_index <- read_rds("data/aux data/radii-index.rds")
   }
   
   

@@ -1,6 +1,8 @@
 # checks for project directory structure and creates it if it doesn't exist
 project_makefile <- function() {
   
+  message("Checking project directory structure...")
+  
   # data
   if(!"data" %in% dir()){
     dir.create("data")

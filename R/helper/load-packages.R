@@ -1,15 +1,4 @@
 
-message(
-  paste("PREDICTIVE MODELING USING NYC SALES DATA"
-        , "     Creates and evaluates 2 predictive"
-        , "     models across severl different feature"
-        , "     sets for comparrisson."
-        , ""
-        , "     timothy.j.kiely@gmail.com"
-        , ""
-        , sep = "\n"))
-
-
 
 message("checking if packages are installed...")
 # check if pacman is loaded. if not, prompt user for fresh install
@@ -29,20 +18,22 @@ message("loading packages...")
 
 # all the packages we need for this script:
 pacman::p_load(
-  gdata, caret, plyr, dplyr, tidyverse
-  , magrittr, lubridate, stringr
+  gdata, caret, plyr 
+  , magrittr, stringr
   , purrr, modelr, sf
   , lubridate, Matrix, doMC
   , parallel, foreach, doSNOW
-  , doParallel, vtreat
+  , doParallel
   , xgboost, randomForest, elasticnet
-  , progress, knitr, h2o, data.table
+  , knitr, h2o, data.table
   , htmlTable, pander, rPython, kknn
   , proj4, httr, RCurl, rvest, TTR, zoo, RcppRoll
-  , e1071, progress, pROC, optparse, spdep
+  , e1071, progress, pROC, optparse, spdep, tidyverse
+  , dplyr
 )
 
-# dplyr::select tends to get masked unexpectedly, so making sure that doesn't happen:
+# dplyr verbs sometimes get masked unexpectedly, so making sure that doesn't happen:
 select <- dplyr::select
+summarise <- dplyr::summarise
 
 message("packages loaded successfully")

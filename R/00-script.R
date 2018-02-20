@@ -1,9 +1,9 @@
 
 ## run the entire analysis from this script file
-message("Starting script at ", as.POSIXct(Sys.time(), tz = "EST")); script_start <- Sys.time()
-
+script_start <- Sys.time()
 
 # load/install necessary packages (ask first) and source the various project functions:
+source("R/helper/display-opener.R")
 source("R/helper/load-packages.R")
 source("R/helper/source-files.R")
 

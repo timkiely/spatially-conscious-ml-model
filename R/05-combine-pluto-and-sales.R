@@ -75,10 +75,7 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
     filter(Building_Type%in%c("A","B","C","D","F","L","O")) %>% # eliminates ~2 million records
     
     # remove any tax lots with >1 building (e.g, World Trade Center)
-    filter(NumBldgs==1) %>% # eliminates ~2 million records
-    
-    # remove micro transactions
-    # filter(`SALE PRICE`>1|is.na(`SALE PRICE`)) %>% # eliminates small number of records
+    filter(NumBldgs<2) %>% # eliminates ~2 million records
     
     # remove GSF of less than 500
     filter(`GROSS SQUARE FEET`>=50|is.na(`GROSS SQUARE FEET`)) # eliminates a small number of records

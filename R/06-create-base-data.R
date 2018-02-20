@@ -17,18 +17,25 @@ create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p0
     pluto <- pluto %>% filter(Borough%in%boro_lim)
   }
   
+  
+  #  data cleansing -----------------------------------------------
+  message("Applying data cleansing...")
+  source("R/helper/cleanse-base-data.R")
+  pluto_cleansed <- cleanse_base_data(pluto)
+  
+  
 # varibale selection and some feature engineering -------------------------
 
   message("Partitioning PLUTO...")
   
   pluto_with_sales <- 
-    pluto %>% 
+    pluto_cleansed %>% 
     # filters out bbls that have no recorded sale in the dataset:
     group_by(bbl) %>% mutate(sold_sum = sum(Sold, na.rm = T)) %>% 
     ungroup() %>% filter(sold_sum>0) %>% select(-sold_sum)
   
   pluto_without_sales <- 
-    pluto %>% 
+    pluto_cleansed %>% 
     group_by(bbl) %>% mutate(sold_sum = sum(Sold, na.rm = T)) %>% 
     ungroup() %>% filter(sold_sum==0) %>% select(-sold_sum)
   
@@ -40,11 +47,12 @@ create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p0
     engineer_base_features() %>% 
     ungroup()
   
-  message("     ...done. Input ", length(pluto_with_sales)," variables and output ", length(pluto_model), " variables")
+  message("     ...done. Input ", length(pluto_with_sales)," variables and output ", length(pluto_model), " variables.  Total rows: ", scales::comma(nrow(pluto_model)+nrow(pluto_without_sales)))
   
   
   message("Re-combining PLUTO...")
   final_data <- bind_rows(pluto_model, pluto_without_sales) %>% ungroup()
+  
   
   message("Writing base modeling data to disk...")
   write_rds(final_data, outfile, compress = "gz")

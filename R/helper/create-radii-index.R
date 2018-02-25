@@ -27,7 +27,6 @@ create_radii_index <- function(pluto_model) {
              , crs = 4326) %>% 
     st_transform(32618)
   
-  
 
   ## TESTING ALTERNATIVE APPROACH FOR FASTER INDEXING:
   # Baseline: Total indexing time: 3.25hours on aws w/ MN, BK

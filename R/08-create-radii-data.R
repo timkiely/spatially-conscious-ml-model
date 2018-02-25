@@ -6,7 +6,6 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
   
   message("## Creating RADII Modeling Data")
   
-  
   # create radii index set --------------------------------------------------
   # we create an index of all PLUTO observations within 500 meters of every other
   # PLUTO observation. We later use this to create radii metrics
@@ -14,17 +13,30 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
   if(run_radii==TRUE){
     message("Loading BASE model data...")
     pluto_model <- read_rds(base_model_data)
+    
     message("Creating radii comps...")
-    source("R/helper/create-radii-index.R")
-    radii_index <- create_radii_index(pluto_model)
-    message("     ...done")
+    source("R/helper/get-spatial-neighbor-points.R")
+    radii_time <- Sys.time()
+    
+    radii_index <- 
+      pluto_model %>% 
+      filter(Year == max(unique(pluto_model$Year), na.rm = T)) %>% 
+      distinct(bbl, .keep_all = T) %>% 
+      st_as_sf(coords = c("lon","lat"), na.fail=F, crs = 4326) %>% 
+      st_transform(crs = 32618) %>% 
+      get_spatial_neighbor_points(id_col = "bbl"
+                                  , max_distance = 500
+                                  , n_cuts = 3
+                                  , allow_parralell = TRUE
+                                  , num_clusters = parallel::detectCores()-2)
+    
+    radii_time_end <- Sys.time()
+    message("     ...done. Total indexing time: ", round(radii_time_end-radii_time), " ",units(radii_time_end-radii_time))
     
     message("Writing radii index to disk...")
-    write_time <- Sys.time()
+    
     write_rds(radii_index, "data/aux data/radii-index.rds", compress = "gz")
-    write_time_end <- Sys.time()
-    tot_write_time <- write_time_end-write_time
-    message("     ...done. Writing took ", round(tot_write_time,2),units(tot_write_time))
+    message("     ...done")
     
   } else {
     message("Bypassing radii index calculation, loading from disk...")
@@ -33,7 +45,7 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
   }
   
   
-# create radii features from the index ------------------------------------
+  # create radii features from the index ------------------------------------
   message("Creating radii features...")
   
   if(run_radii==TRUE){

@@ -18,5 +18,6 @@ cleanse_base_data <- function(pluto){
     select(-ZipCode, -Address, -lat, -lon) %>% 
     left_join(standard_combos, by = "bbl")
   
-  
+  pluto <- pluto %>% filter(!is.na(lat),!is.na(lon))
+  pluto
 }

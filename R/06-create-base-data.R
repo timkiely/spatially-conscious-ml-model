@@ -14,7 +14,7 @@ create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p0
     boro_lim <- c("MN") ### <- change this if you want to include more borough in the data
     
     message("Since limit_boros=TRUE, filtering data for the following boroughs only: ", paste(boro_lim, collapse = ","))
-    pluto <- pluto %>% filter(Borough%in%boro_lim)
+    pluto <- pluto %>% filter(Borough %in% boro_lim)
   }
   
   

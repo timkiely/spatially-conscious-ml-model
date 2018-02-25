@@ -29,8 +29,9 @@ pacman::p_load(
   , htmlTable, pander, rPython, kknn
   , proj4, httr, RCurl, rvest, TTR, zoo, RcppRoll
   , e1071, progress, pROC, optparse, spdep, tidyverse
-  , dplyr
+  , data.table, tibble, dplyr
 )
+
 
 # dplyr verbs sometimes get masked unexpectedly, so making sure that doesn't happen:
 select <- dplyr::select

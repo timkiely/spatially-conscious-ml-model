@@ -23,6 +23,7 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 -   (01/30/2018) UPDATE: SALES model now also stable on base data. The sales eval metrics are suspiciously too good; need to backtrack through the preocessing steps to see if I included the y variable in any of the training data ("Last Sale Amt" seems too good to be true). Evaluation scripts working for now, although could use some improvement. Last things to do is to create zip and radii features the wrap up
 -   (02/02/2018) Currently running the radii indexing script. Has been running ~12 hours straight and still working at 100% CPU. I also added optparse() for Rscript argument parsing flexibility. Added argument help to README file as well.
 -   (02/07/2018) By filtering the data to just Manhattan, have been able to successfully run all models. I also have a streategy for speeding up the radii calculations, which are the main bottelneck, but that may not be necessary for this project. Still to do: finsih the model evaluation script and possibly fine-tune the data processing to maximize results. Note that on &gt;60 cores, total program runtime with skip-dl and skip-pp enabled runs at just under 10 mins.
+-   (02/24/2018): Radii indexing, on all boroughs, is now down to ~6 minutes. Using a grid-index approach, and massive parralelization, was able to bring the run time down from &gt;12 hours to under 6 minutes!s
 
 ### TODO:
 
@@ -38,12 +39,15 @@ Steps
 1.  Download & process all years of PLUTO data
     -   <https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts%5Byear%5D=0>
     -   at time of writing, 2002-2017 files available
+
 2.  Download & process all Property Address Directory data
     -   <https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data>
     -   at time of writing, only 2017 file available (not perfect, but sufficient)
+
 3.  Download & process all NYC rolling Sales data
     -   <http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page>
     -   at time of writing, 2003-2016 files available
+
 4.  Combine PAD and Sales data (allows every transaction to be mapped to a BBL)
 5.  Create base modeling data by Left-joining Sales-PAD data to PLUTO
 

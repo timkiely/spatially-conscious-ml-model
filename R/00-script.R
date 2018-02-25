@@ -13,6 +13,10 @@ project_makefile()
 # parse command arguments passed to 'Rscript R/00-script.R'
 # for arguments, enter 'Rscript R/00-script.R -h' on the command line
 cli_args <- parse_cmd_args()
+cli_args$`skip-dl` = TRUE
+cli_args$`skip-pp` = FALSE
+cli_args$`run-radii` = TRUE
+cli_args$`run-sample` = TRUE
 
 # data --------------------------------------------------------------------
 if(cli_args$`skip-dl` == TRUE){
@@ -47,7 +51,7 @@ if(cli_args$`skip-pp` == TRUE) {
   # base data
   create_base_data(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
                    , outfile = "data/processing steps/p06_base_model_data.rds"
-                   , limit_boros = TRUE)
+                   , limit_boros = FALSE)
   
   # zipcode data
   create_zipcode_data(base_model_data = "data/processing steps/p06_base_model_data.rds"

@@ -1,8 +1,7 @@
 
 # for testing things out
 
-source("R/helper/load-packages.R")
-source("R/helper/source-files.R")
+
 
 # pluto1 <- read_rds("data/processing steps/p01_pluto_raw.rds")
 # pad1 <- read_rds("data/processing steps/p02_pad_raw.rds")
@@ -25,62 +24,77 @@ source("R/helper/source-files.R")
 # "data/processing steps/p15_prob_model_evaluations.rds"
 # "data/processing steps/p16_sales_model_evaluations.rds"
 
+source("R/helper/load-packages.R")
+source("R/helper/source-files.R")
 
-base1 <- read_rds("data/processing steps/p06_base_model_data.rds")
+# base1 <- read_rds("data/processing steps/p06_base_model_data.rds")
+# base_samp <- base1 %>% filter(BoroCode==1)
+# write_rds(base_samp, "data/aux data/sample_p06_base_model_data.rds")
+base1 <- read_rds("data/aux data/sample_p06_base_model_data.rds")
 
 
 base1 %>% glimpse()
 base1 %>% summary()
 
 
-
-
-
-
-# testing new spatial neighbors find function -----------------------------
-
-source("R/helper/get-spatial-neighbor-points.R")
-base1 <- readRDS("data/processing steps/p06_base_model_data.rds")
-library(tidyverse)
-system.time({
-  base2 <- 
-    base1 %>% filter(Year==2017) %>% 
-    distinct(bbl, .keep_all = T) %>% 
-    st_as_sf(coords = c("lon","lat"), na.fail=F, crs = 4326) %>% 
-    st_transform(crs = 32618) %>% 
-    get_spatial_neighbor_points(id_col = "bbl",
-                                max_distance = 500, 
-                                n_cuts = 3, 
-                                allow_parralell = T, 
-                                num_clusters = 9)
+message("Initiating h2o clusters...")
+suppressMessages({
+  suppressWarnings({
+    sink(".sink-output")
+    h2o.init(nthreads = -1) #Number of threads -1 means use all cores on your machine
+    options("h2o.use.data.table"=TRUE)
+    h2o.no_progress()
+    h2o.removeAll()
+    sink(NULL)
+  })
 })
 
-neigbs <- base2 %>% head(1) %>% select(bbl, geometry, neighbors)
-neighbors <- base2 %>% filter(bbl%in%neigbs$neighbors[[1]])
-neigbs$lag <- neighbors %>% st_set_geometry(NULL) %>% summarise(mean(EMA_Price_5_year)) %>% as.numeric()
+train <- base1 %>% filter(Year!=2017) %>% filter(OfficeArea>0)
+test <- base1 %>% filter(Year==2017) %>% filter(OfficeArea>0)
 
-boros <- read_sf("http://services5.arcgis.com/GfwWNkhOj9bNBqoJ/arcgis/rest/services/nybb/FeatureServer/0/query?where=1=1&outFields=*&outSR=4326&f=geojson")
+X <- train %>% select(-Sold, -`SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
+X_names <- names(X)
+Y <- train %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
+names(Y) <- Y_names <- "Sold"
+training_frame <- as.h2o(bind_cols(X,Y))
 
-boros %>% 
-  filter(BoroCode==1) %>% 
-  st_transform(32618) %>% 
-  st_simplify() %>% 
-  select(geometry) %>% 
-  plot()
-
-plot(neighbors$geometry, add = T)
-plot(neigbs$geometry, add = T, col = "red")
-
+X_val <- test %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
+X_val_names <- names(X_val)
+Y_val <- test %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
+names(Y_val) <- Y_val_names <- "Sold"
+validation_frame <- as.h2o(bind_cols(X_val,Y_val))
 
 
 
+start_time <- Sys.time()-14400
+bst <- h2o.randomForest(x = X_names,
+                        y = Y_names,
+                        training_frame = training_frame,
+                        validation_frame = validation_frame, 
+                        model_id = "h2o_rf_fit",
+                        ntrees = 200,
+                        stopping_rounds = 10,
+                        stopping_metric = "AUC",
+                        seed = 1)
+end_time <- Sys.time()-14400
+end_time-start_time
+print(bst)
+h2o.varimp(bst)
 
+# h2o.gainsLift(bst, valid = F, xval = T)
 
+validation_frame_bak <- validation_frame
+validation_frame_bak$preds <- predict(bst, newdata = validation_frame_bak, type = 'probs')$predict
 
+actual <- as.numeric(as.data.frame(validation_frame_bak$Sold)$Sold)
+pred <- as.numeric(as.data.frame(validation_frame_bak$preds)$preds)
+(roc <- pROC::roc(actual, pred))
 
-
-
-
+validation_frame_bak %>% 
+  as_tibble() %>% 
+  group_by(Building_Type) %>% 
+  nest() %>% 
+  mutate(roc = map_dbl(data, ~as.numeric(pROC::roc(as.numeric(.x$Sold), as.numeric(.x$preds))$auc)))
 
 
 

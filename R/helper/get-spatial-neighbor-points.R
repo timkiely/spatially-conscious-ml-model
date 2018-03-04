@@ -39,7 +39,7 @@ get_spatial_neighbor_points <- function(data,
   pts[ , geometry := geom]
   names(pts)[names(pts) == "X"] = "x"
   names(pts)[names(pts) == "Y"] = "y"
-  pts[, key_id := st_set_geometry(data,NULL)[,id_col]]
+  pts[, key_id := st_set_geometry(data, NULL)[,id_col]]
   pts[, order_id := 1:dim(pts)[1]]
   
   # divide the extent into n_cuts*n_cuts quadrants and assign each

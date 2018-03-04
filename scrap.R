@@ -49,8 +49,9 @@ suppressMessages({
   })
 })
 
-train <- base1 %>% filter(Year!=2017) %>% filter(OfficeArea>0)
-test <- base1 %>% filter(Year==2017) %>% filter(OfficeArea>0)
+train <- base1 %>% filter(!Year%in%c(2016, 2017))
+validate <- base1 %>% filter(Year==2016)
+test <- base1 %>% filter(Year==2017)
 
 X <- train %>% select(-Sold, -`SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
 X_names <- names(X)
@@ -58,9 +59,9 @@ Y <- train %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
 names(Y) <- Y_names <- "Sold"
 training_frame <- as.h2o(bind_cols(X,Y))
 
-X_val <- test %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
+X_val <- validate %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
 X_val_names <- names(X_val)
-Y_val <- test %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
+Y_val <- validate %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
 names(Y_val) <- Y_val_names <- "Sold"
 validation_frame <- as.h2o(bind_cols(X_val,Y_val))
 
@@ -83,18 +84,30 @@ h2o.varimp(bst)
 
 # h2o.gainsLift(bst, valid = F, xval = T)
 
-validation_frame_bak <- validation_frame
-validation_frame_bak$preds <- predict(bst, newdata = validation_frame_bak, type = 'probs')$predict
 
-actual <- as.numeric(as.data.frame(validation_frame_bak$Sold)$Sold)
-pred <- as.numeric(as.data.frame(validation_frame_bak$preds)$preds)
+X_test <- test %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
+X_test_names <- names(X_test)
+Y_test <- test %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
+names(Y_test) <- Y_test_names <- "Sold"
+test_frame <- as.h2o(bind_cols(X_test,Y_test))
+test_frame$preds <- predict(bst, newdata = test_frame)$predict
+
+actual <- recode(as.numeric(as.data.frame(test_frame)$Sold),0,1)
+pred <- recode(as.numeric(as.data.frame(test_frame)$preds), 0,1)
 (roc <- pROC::roc(actual, pred))
+confusionMatrix(table(actual, pred), positive = "1")
 
-validation_frame_bak %>% 
+test_frame %>% 
   as_tibble() %>% 
   group_by(Building_Type) %>% 
   nest() %>% 
-  mutate(roc = map_dbl(data, ~as.numeric(pROC::roc(as.numeric(.x$Sold), as.numeric(.x$preds))$auc)))
+  mutate(actual = map(data, ~as.numeric(.x$Sold))
+         , preds = map(data, ~as.numeric(.x$preds))
+         ) %>% 
+  mutate(auc = map2_dbl(actual, preds, ~pROC::roc(.x, .y)$auc)
+         , sensitivity = map2_dbl(actual, preds, ~pROC::roc(.x, .y)$sensitivities[2])
+         , specificity = map2_dbl(actual, preds, ~pROC::roc(.x, .y)$specificities[2])
+         )
 
 
 

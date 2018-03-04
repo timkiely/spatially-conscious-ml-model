@@ -36,20 +36,31 @@ base1 <- read_rds("data/aux data/sample_p06_base_model_data.rds")
 
 radii_index <- read_rds("data/aux data/radii-index.rds")
 radii_data <- radii_index %>% st_set_geometry(NULL)
+radii_data$lon <- st_coordinates(radii_index)[,1]
+radii_data$lat <- st_coordinates(radii_index)[,2]
 
+inverted_normalized_distance <- function(x){
+  x <- if_else(x!=0,1/x,0)
+  x <- x/sum(x)
+}
 
+distance_weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
 radii_mean <- function(x) mean(x, na.rm = T)
-identity <- function(x) first(x)
-map_radii_mean_Years_Since_Last_Sale <- 
-  radii_data %>% 
-  select(bbl, neighbors) %>% 
-  unnest() %>% 
-  left_join(radii_data, by = 'bbl') %>% 
-  group_by(bbl) %>% 
-  summarise_at(vars(Years_Since_Last_Sale:Percent_Change_EMA_5), funs(radii_mean, identity)) %>% 
-  select(-contains("identity"))
 
-base1 <- base1 %>% left_join(map_radii_mean_Years_Since_Last_Sale, by = "bbl")
+nb_weights <- 
+  radii_data %>% 
+  select(bbl, lat, lon, neighbors) %>% 
+  unnest() %>% 
+  left_join(select(radii_data, bbl, "lat_neighbor" = lat, "lon_neighbor" = lon), by = c('neighbors'='bbl')) %>% 
+  mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>% 
+  group_by(bbl) %>% 
+  mutate(weights = inverted_normalized_distance(Euc_distance)) %>% 
+  select(bbl,neighbors, weights) %>% 
+  left_join(select(base1, Year, bbl, Years_Since_Last_Sale:Percent_Change_EMA_5), by = c('neighbors'='bbl')) %>% 
+  group_by(bbl, Year) %>%
+  summarise_at(vars(Years_Since_Last_Sale:Percent_Change_EMA_5), funs(distance_weighted_mean(., weights), radii_mean))
+  
+base1 <- base1 %>% left_join(nb_weights, by = c("bbl", "Year"))
 
 message("Initiating h2o clusters...")
 suppressMessages({
@@ -102,11 +113,12 @@ X_test_names <- names(X_test)
 Y_test <- test %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
 names(Y_test) <- Y_test_names <- "Sold"
 test_frame <- as.h2o(bind_cols(X_test,Y_test))
-test_frame$preds <- predict(bst, newdata = test_frame)$predict
+test_frame$preds <- predict(bst, newdata = test_frame, type = "probs")$predict
+probs <- as.numeric(as.data.frame(predict(bst, newdata = test_frame, type = "probs")$p1)$p1)
 
 actual <- recode(as.numeric(as.data.frame(test_frame)$Sold),0,1)
 pred <- recode(as.numeric(as.data.frame(test_frame)$preds), 0,1)
-(roc <- pROC::roc(actual, pred))
+(roc <- pROC::roc(actual, probs))
 confusionMatrix(table(actual, pred), positive = "1")
 
 test_frame %>% 

@@ -46,7 +46,9 @@ inverted_normalized_distance <- function(x){
 }
 
 distance_weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
+sf_weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
 distance_weighted_mean_sf_concious <- function(x, w) weighted.mean(x, w, na.rm = T)
+combined_weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
 radii_mean <- function(x) mean(x, na.rm = T)
 range01 <- function(x){(x-min(x))/(max(x)-min(x))}
 
@@ -75,15 +77,18 @@ nb_weights <-
   mutate(Euc_distance = ifelse(Building_Type == Nieghbor_BT, Euc_distance, 0)) %>% 
   mutate(absolute_sf_difference = ifelse(Building_Type == Nieghbor_BT, absolute_sf_difference, NA)) %>% 
   
-  # For the square footage, scaleing both distances
+  # Scale both distances
   mutate(Euc_distance_scaled = scale(Euc_distance, center = FALSE)) %>% 
   mutate(sf_diff_scaled = scale(absolute_sf_difference, center = FALSE)) %>% 
   
+  # geometric average of the two scaled distances
+  mutate(combined_distance = sqrt(Euc_distance_scaled*sf_diff_scaled)) %>% 
   
   group_by(bbl) %>% 
   # inverting and normalizing. Closer observations are more alike
   mutate(euc_weight = inverted_normalized_distance(Euc_distance)) %>% 
   mutate(sf_weight = inverted_normalized_distance(absolute_sf_difference)) %>% 
+  mutate(combined_weight = inverted_normalized_distance(combined_distance)) %>% 
   
   # same but with the scaled data
   mutate(euc_weight_scaled = inverted_normalized_distance(sf_diff_scaled)) %>% 
@@ -91,17 +96,21 @@ nb_weights <-
   
   # creating weight vectors. Taking geometric mean of scaled data
   mutate(dist_weight = euc_weight) %>% 
+  mutate(sf_weight = sf_weight) %>% 
+  mutate(combined_weight = combined_weight) %>% 
   mutate(dist_sf_geometric_weight = sqrt(euc_weight_scaled*sf_weight_scaled)) %>% 
   
   ungroup() %>% 
 
   # joining to the radii index and creating distance-weighted mean objects
-  select(bbl, neighbors, dist_weight, dist_sf_geometric_weight) %>% 
+  select(bbl, neighbors, dist_weight, sf_weight, combined_weight, dist_sf_geometric_weight) %>% 
   left_join(select(base1, Year, bbl, Years_Since_Last_Sale:Percent_Change_EMA_5), by = c('neighbors'='bbl')) %>% 
   group_by(bbl, Year) %>%
   summarise_at(vars(Years_Since_Last_Sale:Percent_Change_EMA_5)
                , funs(distance_weighted_mean(., dist_weight)
                       , distance_weighted_mean_sf_concious(., dist_sf_geometric_weight)
+                      , sf_weighted_mean(., sf_weight)
+                      , combined_weighted_mean(., combined_weight)
                       , radii_mean)
                )
   

@@ -29,8 +29,8 @@ get_spatial_neighbor_points <- function(data,
   # set aside the input data for re-merging at the end
   the_crs <- st_crs(data)
   pure_data <- data.table(data)
-  pure_data$x <- st_coordinates(data)[1,]
-  pure_data$y <- st_coordinates(data)[2,]
+  pure_data$x <- st_coordinates(data)[,1]
+  pure_data$y <- st_coordinates(data)[,2]
   pure_data[,key_id := pure_data[,..id_col]]
   
   # construct a data.table from the sf object with x, y, geometry, neighbor-key, and an ordering column

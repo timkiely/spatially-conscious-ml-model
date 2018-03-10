@@ -3,80 +3,96 @@ create_radii_features <- function(pluto_model, radii_index) {
   # pluto_model_bak <- pluto_model
   # pluto_model <- pluto_model %>% filter(Borough=="MN")
   
-  pb <- progress::progress_bar$new(total = length(radii_index))
-  opts <- list(progress = function(n) pb$tick(token = list("current" = n)))
+  pluto <- pluto_model
+  radii_data <- radii_index %>% st_set_geometry(NULL)
+  radii_data$lon <- st_coordinates(radii_index)[,1]
+  radii_data$lat <- st_coordinates(radii_index)[,2]
   
-  message("Preparing radii feature loop...")
-  
-  message("Starting radii feature engineering at ", Sys.time())
-  run_start <- Sys.time()
-  
-  num_cores <- parallel::detectCores()-2
-  cl <- makeSOCKcluster(num_cores)
-  registerDoSNOW(cl)
-  on.exit(closeAllConnections())
-  on.exit(stopImplicitCluster())
-  
-  radii_features <- foreach(jj = 1:length(radii_index)
-                        , .verbose = FALSE
-                        , .errorhandling = "pass"
-                        , .options.snow = opts ) %dopar% {
-                          
-                          pb$tick()
-                          
-                          pacman::p_load(sf, dplyr, magrittr)
-                          
-                          item_interest <- radii_index_loop %>% filter(Origin_Key==all_keys[jj])
-                          key <- as.character(unique(item_interest[1, "Origin_Key"]))
-                          bbls <- distinct(item_interest, bbl)
-                          
-                          all_options <- inner_join(bbls, pluto_model, by = "bbl")
-                          
-                          identity <- function(x) mean(x) # for naming purposes, will be removed
-                          radii_average <- function(x) mean(x, na.rm  = T) # for naming purposes, a simple average
-                          
-                          features <- 
-                            all_options %>% 
-                            select(-Block, -Lot, -Easements, -BoroCode, -NumBldgs, -ProxCode) %>% 
-                            group_by(Year) %>% 
-                            summarise_at(.vars = vars(Last_Sale_Price:Percent_Change_EMA_5), .funs = funs(identity, radii_average)) %>% 
-                            select(Year,contains("radii_average")) %>% 
-                            left_join({
-                            all_options %>%
-                            group_by(Year) %>% 
-                            summarise(Last_Year_radii_Sold = sum(Sold, na.rm = T)) %>% 
-                            mutate(Last_Year_radii_Sold = lag(Last_Year_radii_Sold, 1)
-                                   , Last_Year_radii_Sold_Percent_Ch = (Last_Year_radii_Sold - lag(Last_Year_radii_Sold,1))/lag(Last_Year_radii_Sold,1))
-                            }, by = c("Year"))
-                          
-                          if(nrow(features)>0|length(features)>1) {
-                            features$Origin <- key
-                          } else next
-                          
-                          
-                          return(features)
-                        }; closeAllConnections(); stopImplicitCluster()
   
 
-  
-  end_time <- Sys.time()
-  tot_time <- end_time-run_start
-  
-  message("     ...Finished RADII feature creation at ", Sys.time())
-  message("     ...Total feature creation time: ", round(tot_time,2),units(tot_time))
-  
-  message("Writing intermediate features to disk...")
-  write_rds(radii_features, "data/aux data/radii-features-step1.rds")
-  
-  # ensure no error in the list:
-  message("Discarding error messages and binding together...")
-  radii_features <- radii_features %>% keep(.p = function(x) "data.frame"%in%class(x))
-  all_feats <- bind_rows(radii_features)
-  all_feats2 <- distinct(all_feats, Origin, Year)
+# UDFs --------------------------------------------------------------------
 
-  message("Merging with original data...")
-  pluto_model <- left_join(pluto_model, all_feats2, by = c("bbl"="Origin","Year"))
-  message("     ...done")
-  pluto_model
+  inverted_normalized_distance <- function(x){
+    x <- if_else(x!=0, 1/x ,0) # take inverse only if denominator is not zero
+    x <- x/sum(x, na.rm = TRUE) # normalize 0 to 1
+    x <- if_else(is.nan(x),0,x) # anything with NaN convert to zero
+  }
+  weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
+  radii_mean <- function(x) mean(x, na.rm = T)
+  range01 <- function(x){(x-min(x))/(max(x)-min(x))}
+  
+  
+
+# create features ---------------------------------------------------------
+
+  nb_weights <- 
+    radii_data %>% 
+    # sample_frac(.01) %>% 
+    # filter(bbl == '1_10_14') %>% 
+    select(bbl, lat, lon, Building_Type, BldgArea, Years_Since_Latest, neighbors) %>% 
+    unnest() %>% 
+    
+    # join back to original data to add properties of the neighbors
+    left_join(select(radii_data
+                     , bbl
+                     , "lat_neighbor" = lat
+                     , "lon_neighbor" = lon
+                     , "Nieghbor_BT" = Building_Type
+                     , "Neighbor_SF" = BldgArea
+                     , "Neighbor_age" = Years_Since_Latest
+                     )
+              , by = c('neighbors' = 'bbl')
+              ) %>% 
+    
+    # create distance metrics (using both euclidean spatial distance and absolute difference in Gross Square Footage)
+    # COULD USE: WEIGHTS LIST TO INCLUDE BUILDING SIZE, CHARACTERISTICS, AGE, DISTANCE etc
+    mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)
+           , sf_difference = abs(BldgArea-Neighbor_SF)
+           , Age_difference = abs(Years_Since_Latest-Neighbor_age)
+           ) %>% 
+    
+    # Weights only apply to buildings of the same Building_Type, otherwise weight drops to 0
+    mutate_at(vars(Euc_distance, sf_difference, Age_difference), funs(ifelse(Building_Type == Nieghbor_BT, ., NA))) %>% 
+    
+    # Scaled distances (for combining)
+    mutate_at(vars(Euc_distance, sf_difference, Age_difference), funs(scaled = scale(., center = FALSE))) %>% 
+    
+    # geometric average of the the scaled weights
+    mutate(combined_distance = (Euc_distance_scaled * sf_difference_scaled * Age_difference_scaled)^(1/3)) %>% 
+    
+    # inverting and normalizing so that closer observations are more alike
+    group_by(bbl) %>% 
+    mutate_at(vars(Euc_distance, sf_difference, Age_difference, combined_distance
+                  , Euc_distance_scaled, sf_difference_scaled,  Age_difference_scaled)
+              , funs(weight = inverted_normalized_distance)) %>% 
+    
+    # name the weight vectors. 
+    mutate(dist_weight = Euc_distance_weight
+           , SF_weight = sf_difference_weight
+           , age_weight = Age_difference_weight
+           , combined_weight = combined_distance_weight
+      
+           # alternative geometric mean weight. geometric mean of scaled weights
+           , geometric_weight = (Euc_distance_scaled_weight*sf_difference_scaled_weight*Age_difference_scaled_weight)^(1/3)
+           ) %>% 
+    
+    ungroup() %>% 
+    
+    # joining weights back to to the original radii data and creating distance-weighted means
+    # several different weight calculations
+    select(bbl, neighbors, dist_weight, SF_weight, age_weight, combined_weight, geometric_weight) %>% 
+    left_join(select(pluto, Year, bbl, Years_Since_Last_Sale:Percent_Change_EMA_5), by = c('neighbors'='bbl')) %>% 
+    group_by(bbl, Year) %>%
+    summarise_at(vars(Years_Since_Last_Sale:Percent_Change_EMA_5)
+                 , funs(       dist = weighted_mean(., dist_weight)
+                        ,      sqft = weighted_mean(., SF_weight)
+                        ,       age = weighted_mean(., age_weight)
+                        ,  combined = weighted_mean(., combined_weight)
+                        ,      geom = weighted_mean(., geometric_weight)
+                        ,    simple = radii_mean)
+    )
+  
+  pluto <- pluto %>% left_join(nb_weights, by = c("bbl", "Year")) 
+  pluto
 }
 

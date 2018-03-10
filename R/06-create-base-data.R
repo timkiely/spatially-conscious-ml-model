@@ -8,29 +8,37 @@ create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p0
   message("Loading PLUTO...")
   pluto <- read_rds(pluto_with_sales_infile)
   
-  # for dev purposes, if TRUE, filter the data for only specified boros
+  # If TRUE, filter the data for only specified boros. Dramatically speeds up modeling
   if(limit_boros==TRUE){
     
-    boro_lim <- c("MN") ### <- change this if you want to include more boroughs in the data
+    boro_lim <- c("MN") ### <- change this if you want to include more boroughs in the sample data
     
     message("Since limit_boros=TRUE, filtering data for the following boroughs only: ", paste(boro_lim, collapse = ","))
     pluto <- pluto %>% filter(Borough %in% boro_lim)
   }
+  
+  # add age features to the data
+  pluto <- 
+    pluto %>% 
+    mutate(YearBuilt = if_else(YearBuilt==0, as.integer(NA), YearBuilt)
+           , Building_Age = Year-YearBuilt
+           , Years_Since_Latest = Year - pmax(YearBuilt, YearAlter1, YearAlter2, na.rm = TRUE)
+           , Has_alteration = if_else(YearAlter1+YearAlter2>0, 1, 0)
+    )
   
   
   #  data cleansing -----------------------------------------------
   message("Applying data cleansing...")
   source("R/helper/cleanse-base-data.R")
   pluto_cleansed <- cleanse_base_data(pluto)
-  
-  
-# varibale selection and some feature engineering -------------------------
 
+  
+  # varibale selection and some feature engineering -------------------------
   message("Partitioning PLUTO...")
   
+  # For features based on sale data, only use bbls that have recorded sales
   pluto_with_sales <- 
     pluto_cleansed %>% 
-    # filters out bbls that have no recorded sale in the dataset:
     group_by(bbl) %>% mutate(sold_sum = sum(Sold, na.rm = T)) %>% 
     ungroup() %>% filter(sold_sum>0) %>% select(-sold_sum)
   
@@ -52,7 +60,6 @@ create_base_data <- function(pluto_with_sales_infile = "data/processing steps/p0
   
   message("Re-combining PLUTO...")
   final_data <- bind_rows(pluto_model, pluto_without_sales) %>% ungroup()
-  
   
   message("Writing base modeling data to disk...")
   write_rds(final_data, outfile, compress = "gz")

@@ -51,7 +51,7 @@ if(cli_args$`skip-pp` == TRUE) {
   # base data
   create_base_data(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
                    , outfile = "data/processing steps/p06_base_model_data.rds"
-                   , limit_boros = FALSE)
+                   , limit_boros = T)
   
   # zipcode data
   create_zipcode_data(base_model_data = "data/processing steps/p06_base_model_data.rds"

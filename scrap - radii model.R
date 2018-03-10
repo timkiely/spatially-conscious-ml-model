@@ -41,21 +41,51 @@ radii_data$lat <- st_coordinates(radii_index)[,2]
 
 inverted_normalized_distance <- function(x){
   x <- if_else(x!=0,1/x,0)
-  x <- x/sum(x)
+  x <- x/sum(x, na.rm = TRUE)
 }
 
 distance_weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
 radii_mean <- function(x) mean(x, na.rm = T)
+range01 <- function(x){(x-min(x))/(max(x)-min(x))}
 
 nb_weights <- 
   radii_data %>% 
-  select(bbl, lat, lon, neighbors) %>% 
+  #sample_frac(.01) %>% 
+  #filter(bbl == '1_10_14') %>% 
+  select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
   unnest() %>% 
-  left_join(select(radii_data, bbl, "lat_neighbor" = lat, "lon_neighbor" = lon), by = c('neighbors'='bbl')) %>% 
-  mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>% 
+  left_join(select(radii_data, bbl, "lat_neighbor" = lat
+           , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+           , "Neighbor_SF" = BldgArea)
+    , by = c('neighbors'='bbl')
+    ) %>% 
+  mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
+  mutate(absolute_sf_difference = abs(BldgArea-Neighbor_SF)) %>% 
+  
+  
+  # TEST: drop unlike buildings weights to zero. 
+  # Run 1 AUC: 0.8397
+  # Run 2 AUC: 0.8454 (drop unlike building class to 0 weight)
+  
+                  #   pred
+      # actual     0     1
+              # 0 18480  5742
+              # 1   535  2208
+  
+# test 1 0.01 data AUC: 0.85
+# test 2 0.01 data AUC 0.8512 no change
+# test 3 0.01 data going back to just inverted distance (no sf consideration) 0.8518
+
+  mutate(Euc_distance = ifelse(Building_Type == Nieghbor_BT, Euc_distance, 0)) %>% 
+  mutate(absolute_sf_difference = ifelse(Building_Type == Nieghbor_BT, absolute_sf_difference, NA)) %>% 
+  
   group_by(bbl) %>% 
-  mutate(weights = inverted_normalized_distance(Euc_distance)) %>% 
-  select(bbl,neighbors, weights) %>% 
+  mutate(sf_weight = inverted_normalized_distance(absolute_sf_difference)) %>% 
+  mutate(euc_weight = inverted_normalized_distance(Euc_distance)) %>% 
+  mutate(weights = euc_weight) %>% arrange(sf_distance_rank) %>% 
+  ungroup() %>% 
+
+  select(bbl, neighbors, weights) %>% 
   left_join(select(base1, Year, bbl, Years_Since_Last_Sale:Percent_Change_EMA_5), by = c('neighbors'='bbl')) %>% 
   group_by(bbl, Year) %>%
   summarise_at(vars(Years_Since_Last_Sale:Percent_Change_EMA_5), funs(distance_weighted_mean(., weights), radii_mean))

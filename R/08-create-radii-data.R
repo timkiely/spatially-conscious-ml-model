@@ -22,7 +22,7 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
      pluto_model %>% 
       filter(Year == max(unique(pluto_model$Year), na.rm = T)) %>% 
       distinct(bbl, .keep_all = T) %>% 
-      st_as_sf(coords = c("lon","lat"), na.fail=F, crs = 4326) %>% 
+      st_as_sf(coords = c("lon","lat"), na.fail=FALSE, crs = 4326) %>% 
       st_transform(crs = 32618) %>% 
       get_spatial_neighbor_points(id_col = "bbl"
                                   , max_distance = 500

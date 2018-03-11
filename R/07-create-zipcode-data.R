@@ -14,6 +14,7 @@ create_zipcode_data <- function(base_model_data = "data/processing steps/p06_bas
   identity <- function(x) mean(x) # for naming purposes, will be removed
   zip_code_average <- function(x) mean(x, na.rm  = T) # for naming purposes, a simple average
   
+  
   pluto_zip_features <- 
     pluto_model %>% 
     left_join(
@@ -28,9 +29,20 @@ create_zipcode_data <- function(base_model_data = "data/processing steps/p06_bas
             select(-Block, -Lot, -Easements, -BoroCode, -NumBldgs, -ProxCode) %>% 
             group_by(ZipCode, Year) %>% 
             summarise_at(.vars = vars(Last_Sale_Price:Percent_Change_EMA_5), .funs = funs(identity, zip_code_average)) %>% 
-            select(ZipCode, Year,contains("zip_code_average"))
+            select(ZipCode, Year, contains("zip_code_average"))
           , by = c("Year", "ZipCode"))
       , by = c("Year", "ZipCode"))
+  
+  
+  BT_only_features <-
+    pluto_model %>% 
+    select(-Block, -Lot, -Easements, -BoroCode, -NumBldgs, -ProxCode) %>% 
+    group_by(ZipCode, Year, Building_Type) %>% 
+    summarise_at(.vars = vars(Last_Sale_Price:Percent_Change_EMA_5), .funs = funs(identity, bt_only = zip_code_average)) %>% 
+    select(ZipCode, Year, Building_Type, contains("bt_only"))
+    
+  pluto_zip_features <- left_join(pluto_zip_features, BT_only_features, by = c("ZipCode", "Year", "Building_Type"))
+                
   
   message("     ...Engineering done. Input ", length(pluto_model)," variables and output ", length(pluto_zip_features), " variables")
 

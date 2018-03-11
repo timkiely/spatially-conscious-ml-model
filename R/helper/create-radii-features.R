@@ -1,9 +1,7 @@
 create_radii_features <- function(pluto_model, radii_index) {
   
-  # pluto_model_bak <- pluto_model
-  # pluto_model <- pluto_model %>% filter(Borough=="MN")
+  radii_feature_start <- Sys.time()
   
-  pluto <- pluto_model
   radii_data <- radii_index %>% st_set_geometry(NULL)
   radii_data$lon <- st_coordinates(radii_index)[,1]
   radii_data$lat <- st_coordinates(radii_index)[,2]
@@ -81,7 +79,7 @@ create_radii_features <- function(pluto_model, radii_index) {
     # joining weights back to to the original radii data and creating distance-weighted means
     # several different weight calculations
     select(bbl, neighbors, dist_weight, SF_weight, age_weight, combined_weight, geometric_weight) %>% 
-    left_join(select(pluto, Year, bbl, Years_Since_Last_Sale:Percent_Change_EMA_5), by = c('neighbors'='bbl')) %>% 
+    left_join(select(pluto_model, Year, bbl, Years_Since_Last_Sale:Percent_Change_EMA_5), by = c('neighbors'='bbl')) %>% 
     group_by(bbl, Year) %>%
     summarise_at(vars(Years_Since_Last_Sale:Percent_Change_EMA_5)
                  , funs(       dist = weighted_mean(., dist_weight)
@@ -92,7 +90,14 @@ create_radii_features <- function(pluto_model, radii_index) {
                         ,    simple = radii_mean)
     )
   
-  pluto <- pluto %>% left_join(nb_weights, by = c("bbl", "Year")) 
-  pluto
+  pluto_model <- pluto_model %>% left_join(nb_weights, by = c("bbl", "Year")) 
+  
+  radii_feature_end <- Sys.time()
+  
+  message("Radii feature creation time: ", round(radii_feature_end-radii_feature_start, 2)
+          ," ",units(radii_feature_end-radii_feature_start)
+          )
+  
+  pluto_model
 }
 

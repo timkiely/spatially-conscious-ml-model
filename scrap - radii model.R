@@ -71,6 +71,7 @@ nb_weights <-
   # Run 1 AUC: 0.8397
   # Run 2 AUC: 0.8454 (drop unlike building class to 0 weight)
   # Run 3 both dist and SF+dist weighted means 0.8462
+  # Run 4 dist, SqFt, combined, and geom 0.8463
 
 
   # distance metrics. Currently using absolute euclidean distance, and Square Footage

@@ -15,8 +15,8 @@ project_makefile()
 cli_args <- parse_cmd_args()
 cli_args$`skip-dl` = TRUE
 cli_args$`skip-pp` = FALSE
-cli_args$`run-radii` = TRUE
-cli_args$`run-sample` = TRUE
+cli_args$`run-radii` = FALSE
+cli_args$`run-sample` = FALSE
 
 # data --------------------------------------------------------------------
 if(cli_args$`skip-dl` == TRUE){
@@ -51,7 +51,7 @@ if(cli_args$`skip-pp` == TRUE) {
   # base data
   create_base_data(pluto_with_sales_infile = "data/processing steps/p05_pluto_with_sales.rds"
                    , outfile = "data/processing steps/p06_base_model_data.rds"
-                   , limit_boros = T)
+                   , limit_boros = FALSE)
   
   # zipcode data
   create_zipcode_data(base_model_data = "data/processing steps/p06_base_model_data.rds"

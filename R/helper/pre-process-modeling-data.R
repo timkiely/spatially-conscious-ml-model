@@ -36,12 +36,6 @@ run_preprocessing_steps <- function(data, sample = 0.25) {
   set.seed(1989)
   numeric_only_train_sample <- sample_frac(numeric_only_train, sample)
   
-  message("Treating with NZV and MedianImpute...")
-  # pprocess_num_only <- 
-  #   preProcess(numeric_only_train_sample, method = c("nzv", "medianImpute")
-  #              , thresh = 0.99, numUnique = 2, freqCut = 98/2
-  #              , uniqueCut = 2, cutoff = 0.99)
-  
   
   message("Treating with center, scale, NZV and medianImpute")
   pprocess_num_processed <- 
@@ -65,8 +59,7 @@ run_preprocessing_steps <- function(data, sample = 0.25) {
   message("Total processing time: ",round(proc_time, 2), units(proc_time))
   
   modeling_data <- 
-    list(#"train_numeric_only" = tbl_df(num_train)
-         #, "test_numeric_only" = tbl_df(num_test)
+    list(
           "train_processed" = tbl_df(num_processed_train)
          , "test_processed" = tbl_df(num_processed_test)
          )

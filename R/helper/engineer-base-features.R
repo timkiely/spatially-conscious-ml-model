@@ -29,6 +29,7 @@ engineer_base_features <- function(pluto_with_sales){
            , Last_Sale_Price_Total = na.locf(lag(TOTAL_SALES,1), na.rm = FALSE)
            , SALE_YEAR = if_else(is.na(`SALE PRICE`), NA_real_, SALE_YEAR) 
            , SALE_DATE = if_else(is.na(`SALE PRICE`), as.Date(NA), SALE_DATE)
+           , Sold = if_else(is.na(`SALE PRICE`), 0, Sold)
            , Last_Sale_Date = na.locf(lag(SALE_DATE, 1), na.rm = FALSE)
            , Years_Since_Last_Sale = Year-lubridate::year(Last_Sale_Date)
     ) %>% 

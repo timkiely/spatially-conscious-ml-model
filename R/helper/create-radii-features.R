@@ -11,86 +11,124 @@ create_radii_features <- function(pluto_model, radii_index) {
 # UDFs --------------------------------------------------------------------
 
   inverted_normalized_distance <- function(x){
-    x <- if_else(x!=0, 1/x ,0) # take inverse only if denominator is not zero
-    x <- x/sum(x, na.rm = TRUE) # normalize 0 to 1
-    x <- if_else(is.nan(x),0,x) # anything with NaN convert to zero
+    x <- if_else(x!=0,1/x,0)
+    x <- x/sum(x, na.rm = TRUE)
+    x <- if_else(is.nan(x),0,x)
   }
-  weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
+  
+  distance_weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
   radii_mean <- function(x) mean(x, na.rm = T)
   range01 <- function(x){(x-min(x))/(max(x)-min(x))}
+  percent_change = function(x) (x-lag(x,1))/lag(x,1)
+  two_year_sum = function(x) x+lag(x,1)
   
+  
+  
+  set.seed(1988)
+  sample_bbls <- sample_n(distinct(radii_data, bbl, lat, lon), 3000)
+  sample_bbls <- bind_rows(sample_bbls, data_frame(bbl = "1_829_16", lat = 40.74504, lon = -73.98949))
   
 
 # create features ---------------------------------------------------------
 
-  nb_weights <- 
-    radii_data %>% 
-    # sample_frac(.01) %>% 
-    # filter(bbl == '1_10_14') %>% 
-    select(bbl, lat, lon, Building_Type, BldgArea, Years_Since_Latest, neighbors) %>% 
+  sold_features <- radii_data %>% 
+    select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
     unnest() %>% 
+    left_join(select(radii_data, bbl, "lat_neighbor" = lat
+                     , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+                     , "Neighbor_SF" = BldgArea)
+              , by = c('neighbors'='bbl')
+    ) %>% 
+    mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
     
-    # join back to original data to add properties of the neighbors
-    left_join(select(radii_data
-                     , bbl
-                     , "lat_neighbor" = lat
-                     , "lon_neighbor" = lon
-                     , "Nieghbor_BT" = Building_Type
-                     , "Neighbor_SF" = BldgArea
-                     , "Neighbor_age" = Years_Since_Latest
-                     )
-              , by = c('neighbors' = 'bbl')
-              ) %>% 
-    
-    # create distance metrics (using both euclidean spatial distance and absolute difference in Gross Square Footage)
-    # COULD USE: WEIGHTS LIST TO INCLUDE BUILDING SIZE, CHARACTERISTICS, AGE, DISTANCE etc
-    mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)
-           , sf_difference = abs(BldgArea-Neighbor_SF)
-           , Age_difference = abs(Years_Since_Latest-Neighbor_age)
-           ) %>% 
-    
-    # Weights only apply to buildings of the same Building_Type, otherwise weight drops to 0
-    mutate_at(vars(Euc_distance, sf_difference, Age_difference), funs(ifelse(Building_Type == Nieghbor_BT, ., NA))) %>% 
-    
-    # Scaled distances (for combining)
-    mutate_at(vars(Euc_distance, sf_difference, Age_difference), funs(scaled = scale(., center = FALSE))) %>% 
-    
-    # geometric average of the the scaled weights
-    mutate(combined_distance = (Euc_distance_scaled * sf_difference_scaled * Age_difference_scaled)^(1/3)) %>% 
-    
-    # inverting and normalizing so that closer observations are more alike
+    # inverting and normalizing. Closer observations are more alike
     group_by(bbl) %>% 
-    mutate_at(vars(Euc_distance, sf_difference, Age_difference, combined_distance
-                  , Euc_distance_scaled, sf_difference_scaled,  Age_difference_scaled)
-              , funs(weight = inverted_normalized_distance)) %>% 
+    mutate(euc_weight = max(Euc_distance)-Euc_distance) %>% 
     
-    # name the weight vectors. 
-    mutate(dist_weight = Euc_distance_weight
-           , SF_weight = sf_difference_weight
-           , age_weight = Age_difference_weight
-           , combined_weight = combined_distance_weight
-      
-           # alternative geometric mean weight. geometric mean of scaled weights
-           , geometric_weight = (Euc_distance_scaled_weight*sf_difference_scaled_weight*Age_difference_scaled_weight)^(1/3)
-           ) %>% 
+    # creating weight vectors. Taking geometric mean of scaled data
+    mutate(dist_weight = euc_weight) %>% 
     
+    # joining to the radii index and creating distance-weighted mean objects
     ungroup() %>% 
-    
-    # joining weights back to to the original radii data and creating distance-weighted means
-    # several different weight calculations
-    select(bbl, neighbors, dist_weight, SF_weight, age_weight, combined_weight, geometric_weight) %>% 
-    left_join(select(pluto_model, Year, bbl, Years_Since_Last_Sale:Percent_Change_EMA_5), by = c('neighbors'='bbl')) %>% 
+    select(bbl, neighbors, dist_weight) %>% 
+    left_join(select(base1, Year, bbl, Sold, SALE_DATE, SALE_YEAR, Annual_Sales
+                     , Years_Since_Last_Sale, BldgArea, UnitsTotal, UnitsRes)
+              , by = c('neighbors'='bbl')) %>% 
+    filter(Sold == 1) %>% 
     group_by(bbl, Year) %>%
-    summarise_at(vars(Years_Since_Last_Sale:Percent_Change_EMA_5)
-                 , funs(       dist = weighted_mean(., dist_weight)
-                        ,      sqft = weighted_mean(., SF_weight)
-                        ,       age = weighted_mean(., age_weight)
-                        ,  combined = weighted_mean(., combined_weight)
-                        ,      geom = weighted_mean(., geometric_weight)
-                        ,    simple = radii_mean)
-    )
+    summarise(Radius_Total_Sold_In_Year = sum(Annual_Sales, na.rm = T)
+              , Radius_Average_Years_Since_Last_Sale = radii_mean(Years_Since_Last_Sale)
+              , Radius_Res_Units_Sold_In_Year = sum(UnitsRes, na.rm = T)
+              , Radius_All_Units_Sold_In_Year = sum(UnitsTotal, na.rm = T)
+              , Radius_SF_Sold_In_Year = sum(BldgArea, na.rm = T)
+    ) %>% 
+    mutate_at(vars(Radius_Total_Sold_In_Year:Radius_SF_Sold_In_Year), funs(sum_over_2_years = two_year_sum)) %>%
+    mutate_at(vars(Radius_Total_Sold_In_Year:Radius_SF_Sold_In_Year_sum_over_2_years), funs(percent_change = percent_change))
   
-  pluto_model <- pluto_model %>% left_join(nb_weights, by = c("bbl", "Year")) 
+  building_features <- radii_data %>% 
+    select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
+    unnest() %>% 
+    left_join(select(radii_data, bbl, "lat_neighbor" = lat
+                     , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+                     , "Neighbor_SF" = BldgArea)
+              , by = c('neighbors'='bbl')
+    ) %>% 
+    mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
+    
+    # inverting and normalizing. Closer observations are more alike
+    group_by(bbl) %>% 
+    mutate(euc_weight = max(Euc_distance)-Euc_distance) %>% 
+    
+    # creating weight vectors. Taking geometric mean of scaled data
+    mutate(dist_weight = euc_weight) %>% 
+    
+    # joining to the radii index and creating distance-weighted mean objects
+    ungroup() %>% 
+    select(bbl, neighbors, dist_weight) %>% 
+    left_join(select(base1, bbl, Year, Percent_Com:Percent_Other)
+              , by = c('neighbors'='bbl')) %>% 
+    mutate_at(vars(Percent_Com:Percent_Other), function(x) ifelse(is.na(x),0,x)) %>% 
+    group_by(bbl, Year) %>%
+    summarise_at(vars(Percent_Com:Percent_Other), funs(dist = distance_weighted_mean(. , dist_weight)
+                                                       , basic_mean = radii_mean)) %>% 
+    mutate_at(vars(Percent_Com_dist:Percent_Other_dist), funs(perc_change = percent_change))
+  
+  
+  MA_features <- radii_data %>% 
+    select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
+    unnest() %>% 
+    left_join(select(radii_data, bbl, "lat_neighbor" = lat
+                     , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+                     , "Neighbor_SF" = BldgArea)
+              , by = c('neighbors'='bbl')
+    ) %>% 
+    mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
+    
+    # inverting and normalizing. Closer observations are more alike
+    group_by(bbl) %>% 
+    mutate(euc_weight = max(Euc_distance)-Euc_distance) %>% 
+    
+    # creating weight vectors. Taking geometric mean of scaled data
+    mutate(dist_weight = euc_weight) %>% 
+    
+    # joining to the radii index and creating distance-weighted mean objects
+    ungroup() %>% 
+    select(bbl, neighbors, dist_weight) %>% 
+    left_join(select(base1, bbl, Year, SMA_Price_2_year:Percent_Change_EMA_5)
+              , by = c('neighbors'='bbl')) %>% 
+    mutate_at(vars(SMA_Price_2_year:Percent_Change_EMA_5), function(x) ifelse(is.nan(x), NA, x)) %>% 
+    group_by(bbl, Year) %>%
+    summarise_at(vars(SMA_Price_2_year:Percent_Change_EMA_5), funs(dist = distance_weighted_mean(. , dist_weight)
+                                                                   , basic_mean = radii_mean)) %>% 
+    mutate_at(vars(SMA_Price_2_year_dist:Percent_Change_EMA_5_basic_mean), funs(perc_change = percent_change))
+  
+  
+
+# join to base data -------------------------------------------------------
+  pluto_model <- pluto_model %>% 
+    left_join(sold_features, by = c("bbl", "Year")) %>% 
+    left_join(building_features, by = c("bbl", "Year")) %>% 
+    left_join(MA_features, by = c("bbl", "Year"))
   
   radii_feature_end <- Sys.time()
   

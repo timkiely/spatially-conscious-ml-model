@@ -42,7 +42,7 @@ combine_pluto_with_sales <- function(pluto_infile = "data/processing steps/p01_p
   message("Merging sales data with PLUTO...")  
   pluto_with_sales <- 
     left_join(pluto_raw, sales, by = c("bbl"="pluto_bbl", "Year"="SALE YEAR")) %>% 
-    select(-contains(".y")) %>% mutate(Sold = if_else(is.na(Sold),0,Sold)) %>% 
+    select(-contains(".y")) %>% mutate(Sold = if_else(is.na(Sold), 0, Sold)) %>% 
     
     # removing select variables which are redundant
     select(-BBL, -XCoord, -YCoord, -file, -`ZIP CODE`, -`RESIDENTIAL UNITS`, -`COMMERCIAL UNITS`

@@ -24,7 +24,13 @@ cleanse_base_data <- function(pluto){
     # Where tax lots have no building (only land) change NA's to zeros
     mutate_at(vars(BldgArea:BldgDepth), function(x) ifelse(is.na(x),0,x))
   
-  # GLOBAL FILTERING
+  
+  
+
+# GLOBAL FILTERING --------------------------------------------------------
+  # this section is important. Here we are removing rows from our base data. This step will effect 
+  # all subsequent steps
+  
   message("Applying global filtering to data...")
   start_with_rows <- nrow(pluto)
   pluto <-

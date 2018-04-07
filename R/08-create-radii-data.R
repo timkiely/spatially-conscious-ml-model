@@ -50,7 +50,7 @@ create_radii_data <- function(base_model_data = "data/processing steps/p06_base_
   if(run_radii==TRUE){
     message("Running RADII feature creation")
     source("R/helper/create-radii-features.R")
-    pluto_radii <- create_radii_features(pluto_model, radii_index)
+    pluto_radii <- create_radii_features(pluto_model, radii_index) # takes 27 minutes for Manhattan-only
     message("     ...done")
 
 

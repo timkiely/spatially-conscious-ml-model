@@ -4,10 +4,14 @@ output: github_document
 ---
 
 
+```{r setup, include = FALSE}
+require("knitr")
+opts_knit$set(root.dir = "/Users/timkiely/Dropbox (Personal)/MSPA/Thesis/Analysis/nyc-sales-data")
+```
+
 ```{r}
 source("R/helper/load-packages.R")
 source("R/helper/source-files.R")
-
 ```
 
 
@@ -145,6 +149,22 @@ radii_data %>%
   theme(legend.position = "none")+
   labs(x = NULL, y = NULL)
 
+```
+
+
+```{r}
+radii_data %>% 
+  filter(bbl == '1_829_16') %>% 
+  filter(!is.na(Year)) %>% 
+  select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% unnest() %>% 
+  left_join(select(radii_data, bbl, "lat_neighbor" = lat
+           , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+           , "Neighbor_SF" = BldgArea)
+    , by = c('neighbors'='bbl')) %>% ungroup() %>% select(bbl, neighbors, lat_neighbor, lon_neighbor) %>% 
+  left_join(select(base1, Year, bbl, Sold), by = c('neighbors'='bbl')) %>% 
+  select(bbl, neighbors, Year, Sold) %>% 
+  group_by(neighbors) %>% 
+  summarise(sum(Sold))
 ```
 
 

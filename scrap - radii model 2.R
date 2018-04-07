@@ -31,7 +31,7 @@ percent_change = function(x) (x-lag(x,1))/lag(x,1)
 two_year_sum = function(x) x+lag(x,1)
 
 set.seed(1988)
-sample_bbls <- sample_n(distinct(radii_data, bbl, lat, lon), 3000) #reset to 3000
+sample_bbls <- sample_n(distinct(radii_data, bbl, lat, lon), 5000) #reset to 3000
 sample_bbls <- bind_rows(sample_bbls, data_frame(bbl = "1_829_16", lat = 40.74504, lon = -73.98949))
 sample_bbls %>% st_as_sf(coords = c("lon","lat"), crs = 32618) %>% st_transform(4326) %>% st_geometry() %>% 
   leaflet() %>% addTiles() %>% addCircleMarkers()
@@ -50,9 +50,6 @@ sold_features <-
   ) %>% 
   mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
   
-  # distance metrics. Currently using absolute euclidean distance, and Square Footage
-  #mutate(Euc_distance = ifelse(Building_Type == Nieghbor_BT, Euc_distance, max(Euc_distance))) %>% 
-
   # inverting and normalizing. Closer observations are more alike
   group_by(bbl) %>% 
   mutate(euc_weight = max(Euc_distance)-Euc_distance) %>% 
@@ -73,7 +70,7 @@ sold_features <-
             , Radius_Res_Units_Sold_In_Year = sum(UnitsRes, na.rm = T)
             , Radius_Units_Sold_In_Year = sum(UnitsTotal, na.rm = T)
             , Radius_SF_Sold_In_Year = sum(BldgArea, na.rm = T)
-            ) %>% 
+  ) %>% 
   mutate_at(vars(Radius_Sold_In_Year:Radius_SF_Sold_In_Year), funs(Two_year = two_year_sum)) %>%
   mutate_at(vars(Radius_Sold_In_Year:Radius_SF_Sold_In_Year_Two_year), funs(perc_change = percent_change))
 
@@ -110,7 +107,7 @@ build_features <-
   group_by(bbl, Year) %>%
   summarise_at(vars(Percent_Com:Percent_Other), funs(dist = distance_weighted_mean(. , dist_weight)
                                                      , basic_mean = radii_mean)
-               ) %>% 
+  ) %>% 
   mutate_at(vars(Percent_Com_dist:Percent_Other_dist), funs(perc_change = percent_change))
 
 
@@ -129,7 +126,7 @@ MA_features <-
   mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
   
   # distance metrics. Currently using absolute euclidean distance, and Square Footage
-  #mutate(Euc_distance = ifelse(Building_Type == Nieghbor_BT, Euc_distance, max(Euc_distance))) %>% 
+  mutate(Euc_distance = ifelse(Building_Type == Nieghbor_BT, Euc_distance, max(Euc_distance))) %>% 
   
   # inverting and normalizing. Closer observations are more alike
   group_by(bbl) %>% 
@@ -145,7 +142,7 @@ MA_features <-
             , by = c('neighbors'='bbl')) %>% 
   group_by(bbl, Year) %>%
   summarise_at(vars(SMA_Price_2_year:Percent_Change_EMA_5), funs(dist = distance_weighted_mean(. , dist_weight)
-                                                                , basic_mean = radii_mean)
+                                                                 , basic_mean = radii_mean)
   ) %>% 
   mutate_at(vars(SMA_Price_2_year_dist:Percent_Change_EMA_5_basic_mean), funs(perc_change = percent_change))
 
@@ -185,19 +182,19 @@ Intensity_features <-
             , Percent_Neighbords_Sold = Total_Neighbors_Sold/Total_neighbors) %>% 
   mutate_at(vars(Total_neighbors:Percent_Neighbords_Sold), funs(SMA_2_year = SMA(., n = 2))
             ,vars(Total_neighbors:Percent_Neighbords_Sold), funs(SMA_3_year = SMA(., n = 3))
-            ) %>% 
+  ) %>% 
   mutate_at(vars(Total_neighbors:Percent_Neighbords_Sold_SMA_2_year), funs(percent_change = percent_change))
 
 
 
 
 
-base_filt <- base1 %>% filter(bbl %in% sample_bbls$bbl)
+base_filt <- base1 %>% filter(bbl %in% sample_bbls$bbl) %>% filter(!is.na(`SALE PRICE`))
 base2 <- base_filt %>% 
   left_join(sold_features, by = c("bbl", "Year")) %>% 
   left_join(build_features, by = c("bbl", "Year")) %>% 
   left_join(MA_features, by = c("bbl", "Year")) #%>% left_join(Intensity_features, by = c("bbl", "Year"))
-  
+
 
 # base2 %>% filter(grepl("31 WEST 27 STREET", Address)) %>% glimpse()
 
@@ -224,14 +221,14 @@ test <- input %>% filter(Year==2017)
 
 X <- train %>% select(-Sold, -`SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
 X_names <- names(X)
-Y <- train %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
-names(Y) <- Y_names <- "Sold"
+Y <- train %>% select(`SALE PRICE`) %>% mutate(`SALE PRICE` = as.numeric(`SALE PRICE`))
+names(Y) <- Y_names <- "SALE PRICE"
 training_frame <- as.h2o(bind_cols(X,Y))
 
 X_val <- validate %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
 X_val_names <- names(X_val)
-Y_val <- validate %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
-names(Y_val) <- Y_val_names <- "Sold"
+Y_val <- validate %>% select(`SALE PRICE`) %>% mutate(Sold = as.numeric(`SALE PRICE`))
+names(Y_val) <- Y_val_names <- "SALE PRICE"
 validation_frame <- as.h2o(bind_cols(X_val,Y_val))
 
 
@@ -244,7 +241,6 @@ bst <- h2o.randomForest(x = X_names,
                         model_id = "h2o_rf_fit",
                         ntrees = 200,
                         stopping_rounds = 10,
-                        stopping_metric = "AUC",
                         seed = 1)
 end_time <- Sys.time()-14400
 end_time-start_time
@@ -254,19 +250,50 @@ h2o.varimp(bst)
 
 X_test <- test %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
 X_test_names <- names(X_test)
-Y_test <- test %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
-names(Y_test) <- Y_test_names <- "Sold"
-test_frame <- as.h2o(bind_cols(X_test,Y_test))
-test_frame$preds <- predict(bst, newdata = test_frame, type = "probs")$predict
-probs <- as.numeric(as.data.frame(predict(bst, newdata = test_frame, type = "probs")$p1)$p1)
+Y_test <- test %>% select(`SALE PRICE`) %>% mutate(`SALE PRICE` = as.numeric(`SALE PRICE`))
+names(Y_test) <- Y_test_names <- "SALE PRICE"
+test_frame <- as.h2o(bind_cols(X_test, Y_test))
 
-actual <- recode(as.numeric(as.data.frame(test_frame)$Sold),0,1)
-pred <- recode(as.numeric(as.data.frame(test_frame)$preds), 0,1)
+test_frame$preds <- predict(bst, newdata = test_frame)$predict
+preds <- as.numeric(as.data.frame(predict(bst, newdata = test_frame)$predict)$predict)
+
+actual <- as.numeric(as.data.frame(test_frame)$`SALE PRICE`)
+pred <- as.numeric(as.data.frame(test_frame)$preds)
 
 h2o.varimp(bst) %>% head(20)
-confusionMatrix(table(actual, pred), positive = "1")
-(roc <- pROC::roc(actual, probs))
 
+eval_model <- 
+data_frame(actual, pred) %>% 
+  nest() %>% 
+  mutate(y_hat = map(data, ~.x$pred)) %>% 
+  mutate(test.Y = map(data, ~.x$actual)) %>% 
+  mutate(Test_Errors = map2(.x = y_hat, .y = test.Y, .f = ~.y-.x))  %>% 
+  mutate(Test_RMSE = map_dbl(.x = Test_Errors, .f = ~as.numeric(sqrt(mean(.x^2))))
+         , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
+         , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
+         , Test_Percent_Error = map2(Test_Errors, test.Y, ~unlist(.x)/.y)
+         , Test_MAPE = map_dbl(.x = Test_Percent_Error, .f = ~as.numeric(mean(abs(unlist(.x)))))
+  ) %>% 
+  mutate(Test_Sales_Ratios = map2(.x = y_hat, .y = test.Y, .f = ~as.numeric(.x /.y))  
+         , Test_Average_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(mean(.x)))
+         , Test_SD_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(sd(.x))) 
+         , Test_N_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(length(.x))) 
+         , Test_ERR_Sales_Ratio = qt(0.975, df=Test_N_Sales_Ratio-1)*Test_SD_Sales_Ratio/sqrt(Test_N_Sales_Ratio) 
+         , Test_SR_CI_Low = Test_Average_Sales_Ratio-Test_ERR_Sales_Ratio
+         , Test_SR_CI_Hi = Test_Average_Sales_Ratio+Test_ERR_Sales_Ratio
+  ) %>% 
+  mutate(Test_Median_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(median(.x)))
+         , COD_Step1 = map2(.x = Test_Sales_Ratios, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
+         , COD_Step2 = map(.x = COD_Step1, .f = ~abs(.x))
+         , COD_Step3 = map_dbl(.x = COD_Step2, .f = ~sum(.x))
+         , COD_Step4 = COD_Step3/Test_N_Sales_Ratio
+         , COD_Step5 = COD_Step4/Test_Median_Sales_Ratio
+         , Test_COD = COD_Step5*100
+  ) %>% 
+  select(-Test_Percent_Error, -Test_Sales_Ratios, -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
+  arrange(-Test_Rsq)
 
 beepr::beep(4)
 #    View(h2o.varimp(bst))
+
+

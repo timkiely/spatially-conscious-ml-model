@@ -1,13 +1,7 @@
 # for testing things out
 
-# 3,000 bbls
-# BASE: 0.7501
-# W/ FEATS: 0.7697
-# W/ MA FEATS 0.7717
-# W FEATS ALL CONSIDERED 0.7723
-# on Full Manhattan Data: 0.7865
-
-# 0.7717
+# 5,000 bbls
+# BASE: 
 
 source("R/helper/load-packages.R")
 source("R/helper/source-files.R")
@@ -33,8 +27,8 @@ two_year_sum = function(x) x+lag(x,1)
 set.seed(1988)
 sample_bbls <- sample_n(distinct(radii_data, bbl, lat, lon), 5000) #reset to 3000
 sample_bbls <- bind_rows(sample_bbls, data_frame(bbl = "1_829_16", lat = 40.74504, lon = -73.98949))
-sample_bbls %>% st_as_sf(coords = c("lon","lat"), crs = 32618) %>% st_transform(4326) %>% st_geometry() %>% 
-  leaflet() %>% addTiles() %>% addCircleMarkers()
+# sample_bbls %>% st_as_sf(coords = c("lon","lat"), crs = 32618) %>% st_transform(4326) %>% st_geometry() %>% 
+#   leaflet() %>% addTiles() %>% addCircleMarkers()
 
 sold_features <- 
   radii_data %>% 
@@ -74,10 +68,9 @@ sold_features <-
   mutate_at(vars(Radius_Sold_In_Year:Radius_SF_Sold_In_Year), funs(Two_year = two_year_sum)) %>%
   mutate_at(vars(Radius_Sold_In_Year:Radius_SF_Sold_In_Year_Two_year), funs(perc_change = percent_change))
 
+
 build_features <- 
   radii_data %>% 
-  # sample_frac(.01) %>% 
-  # filter(bbl == '1_829_16') %>% 
   filter(bbl %in% sample_bbls$bbl) %>% 
   select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
   unnest() %>% 
@@ -87,9 +80,6 @@ build_features <-
             , by = c('neighbors'='bbl')
   ) %>% 
   mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
-  
-  # distance metrics. Currently using absolute euclidean distance, and Square Footage
-  #mutate(Euc_distance = ifelse(Building_Type == Nieghbor_BT, Euc_distance, max(Euc_distance))) %>% 
   
   # inverting and normalizing. Closer observations are more alike
   group_by(bbl) %>% 
@@ -125,9 +115,6 @@ MA_features <-
   ) %>% 
   mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
   
-  # distance metrics. Currently using absolute euclidean distance, and Square Footage
-  mutate(Euc_distance = ifelse(Building_Type == Nieghbor_BT, Euc_distance, max(Euc_distance))) %>% 
-  
   # inverting and normalizing. Closer observations are more alike
   group_by(bbl) %>% 
   mutate(euc_weight = max(Euc_distance)-Euc_distance) %>% 
@@ -161,9 +148,6 @@ Intensity_features <-
   ) %>% 
   mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
   
-  # distance metrics. Currently using absolute euclidean distance, and Square Footage
-  #mutate(Euc_distance = ifelse(Building_Type == Nieghbor_BT, Euc_distance, max(Euc_distance))) %>% 
-  
   # inverting and normalizing. Closer observations are more alike
   group_by(bbl) %>% 
   mutate(euc_weight = max(Euc_distance)-Euc_distance) %>% 
@@ -191,9 +175,11 @@ Intensity_features <-
 
 base_filt <- base1 %>% filter(bbl %in% sample_bbls$bbl) %>% filter(!is.na(`SALE PRICE`))
 base2 <- base_filt %>% 
+  left_join(MA_features, by = c("bbl", "Year")) %>% 
   left_join(sold_features, by = c("bbl", "Year")) %>% 
   left_join(build_features, by = c("bbl", "Year")) %>% 
-  left_join(MA_features, by = c("bbl", "Year")) #%>% left_join(Intensity_features, by = c("bbl", "Year"))
+  left_join(Intensity_features, by = c("bbl", "Year")) %>% 
+  select(Sold, `SALE PRICE`,`BUILDING CLASS CATEGORY`:Annual_Sales, Year, best_vars$variable)
 
 
 # base2 %>% filter(grepl("31 WEST 27 STREET", Address)) %>% glimpse()
@@ -263,7 +249,7 @@ pred <- as.numeric(as.data.frame(test_frame)$preds)
 h2o.varimp(bst) %>% head(20)
 
 eval_model <- 
-data_frame(actual, pred) %>% 
+  data_frame(actual, pred) %>% 
   nest() %>% 
   mutate(y_hat = map(data, ~.x$pred)) %>% 
   mutate(test.Y = map(data, ~.x$actual)) %>% 
@@ -283,15 +269,28 @@ data_frame(actual, pred) %>%
          , Test_SR_CI_Hi = Test_Average_Sales_Ratio+Test_ERR_Sales_Ratio
   ) %>% 
   mutate(Test_Median_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(median(.x)))
-         , COD_Step1 = map2(.x = Test_Sales_Ratios, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
+         , COD_Step1 = map2(.x = Test_Average_Sales_Ratio, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
          , COD_Step2 = map(.x = COD_Step1, .f = ~abs(.x))
          , COD_Step3 = map_dbl(.x = COD_Step2, .f = ~sum(.x))
          , COD_Step4 = COD_Step3/Test_N_Sales_Ratio
          , COD_Step5 = COD_Step4/Test_Median_Sales_Ratio
          , Test_COD = COD_Step5*100
   ) %>% 
-  select(-Test_Percent_Error, -Test_Sales_Ratios, -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
+  select(-data, -y_hat, -test.Y, -Test_Errors, -Test_Percent_Error, -Test_Sales_Ratios, -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
   arrange(-Test_Rsq)
+
+glimpse(eval_model)
+
+eval_model$Model <- "All Feats top vars"
+# keep_frame <- bind_rows(keep_frame, eval_model)
+# glimpse(keep_frame)
+
+# extract the variables that account for 80% of the importance
+best_vars <- 
+  h2o.varimp(bst) %>% mutate(cumulative = cumsum(percentage)) %>% 
+  filter(cumulative<=.80) %>% 
+  select(variable)
+
 
 beepr::beep(4)
 #    View(h2o.varimp(bst))

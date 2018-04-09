@@ -1,26 +1,17 @@
 
-
+# TWO functions: one to evaluate the SALES model and one for the PROB model
 
 # PROBABILITY MODEL EVALUATION --------------------------------------------
 evaluate_probability_models <- function(base_data_infile = "data/processing steps/p09_prob_of_sale_model_base.rds"
                                         , zip_data_infile = "data/processing steps/p10_prob_of_sale_model_zipcode.rds"
                                         , radii_data_infile = "data/processing steps/p11_prob_of_sale_model_radii.rds"
                                         , outfile = "data/processing steps/p15_prob_model_evaluations.rds") {
-
+  
   if(file.exists(base_data_infile)){
     message("\n Evaluating base PROBABILITY model...")
     base_model <- read_rds(base_data_infile)
-    
-    base_model <- 
-      base_model %>% 
-      mutate(y_hat = map(y_hat, ~.x$predict)) %>% 
-      mutate(AUC = map2_dbl(.x = y_hat, .y = test.Y, .f = function(x, y) pROC::auc(predictor = as.numeric(x>0.5), response = y)))
-    
-    base_model$data_type <- "Base"
-    
-    # base_model1 <- base_model[2,]
-    # table(as.numeric(base_model1$y_hat[[1]]>0.5) == as.numeric(base_model1$test.Y[[1]]))
-    # h2o::h2o.varimp(base_model1$modelFits[[1]])
+    act_pred <- data_frame(actual = base_model$actual, pred = base_model$probs)
+    base_model_AUC <- pROC::auc(predictor = act_pred$pred, response = act_pred$actual)[[1]]
     
   } else message(base_data_infile, " Not yet avaulable")
   
@@ -28,19 +19,12 @@ evaluate_probability_models <- function(base_data_infile = "data/processing step
   # zip models --------------------------------------------------------------
   
   if(file.exists(zip_data_infile)){
-      message("\n Evaluating zipcode PROBABILITY model...")
-      zip_model <- read_rds(zip_data_infile)
-      
-      zip_model <- 
-        zip_model %>% 
-        mutate(y_hat = map(y_hat, ~.x$predict)) %>% 
-        mutate(AUC = map2_dbl(.x = y_hat, .y = test.Y, .f = function(x, y) pROC::auc(predictor = as.numeric(x>0.5), response = y)))
-      
-      zip_model$data_type <- "Zip"
-      
-      # zip_model1 <- zip_model[1,]
-      # table(as.numeric(zip_model1$y_hat[[1]]>0.5) == as.numeric(zip_model1$test.Y[[1]]))
-      # h2o::h2o.varimp(zip_model1$modelFits[[1]])
+    message("\n Evaluating zipcode PROBABILITY model...")
+    zip_model <- read_rds(zip_data_infile)
+    
+    act_pred <- data_frame(actual = zip_model$actual, pred = zip_model$probs)
+    zip_model_AUC <- pROC::auc(predictor = act_pred$pred, response = act_pred$actual)[[1]]
+    
     
   } else message(zip_data_infile, " Not yet avaulable")
   
@@ -54,29 +38,22 @@ evaluate_probability_models <- function(base_data_infile = "data/processing step
     message("\n Evaluating radii PROBABILITY model...")
     radii_model <- read_rds(radii_data_infile)
     
-    radii_model <- 
-      radii_model %>% 
-      mutate(y_hat = map(y_hat, ~.x$predict)) %>% 
-      mutate(AUC = map2_dbl(.x = y_hat, .y = test.Y, .f = function(x, y) pROC::auc(predictor = as.numeric(x>0.5), response = y)))
+    act_pred <- data_frame(actual = radii_model$actual, pred = radii_model$probs)
+    radii_model_AUC <- pROC::auc(predictor = act_pred$pred, response = act_pred$actual)[[1]]
     
-    radii_model$data_type <- "Radii"
-    
-    # radii_model1 <- radii_model[1,]
-    # table(as.numeric(radii_model1$y_hat[[1]]>0.5) == as.numeric(radii_model1$test.Y[[1]]))
-    # h2o::h2o.varimp(radii_model1$modelFits[[1]])
     
   } else message(radii_data_infile, " Not yet avaulable")
   
   
   
- message("\n Writing probability model evaluations to ",outfile)
- all_evals <- bind_rows(base_model,zip_model,radii_model)
- write_rds(all_evals, outfile)
- 
- best_model <- all_evals %>% arrange(-AUC) %>% head(1) %>% select(modelName, data_type, data_id, AUC)
- message(paste("=========> Best AUC: ", paste(best_model$modelName, best_model$data_type, best_model$data_id, round(best_model$AUC, 3))))
-
- }
+  message("\n Writing probability model evaluations to ",outfile)
+  ( all_evals <- data_frame(type = "Prob", base = base_model_AUC, Zip = zip_model_AUC, Radii = radii_model_AUC) )
+  write_rds(all_evals, outfile)
+  
+  
+  print(all_evals)
+  
+}
 
 
 

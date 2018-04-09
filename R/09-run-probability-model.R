@@ -134,6 +134,7 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   
   final_model_object <- list()
   final_model_object[["actual"]] <- actual
+  final_model_object[["probs"]] <- probs
   final_model_object[["pred"]] <- pred
   final_model_object[["model"]] <- bst
   

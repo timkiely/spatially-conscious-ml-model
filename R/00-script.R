@@ -15,7 +15,7 @@ project_makefile()
 cli_args <- parse_cmd_args()
 cli_args$`skip-dl` = TRUE
 cli_args$`skip-pp` = FALSE
-cli_args$`run-radii` = FALSE
+cli_args$`run-radii` = TRUE
 cli_args$`run-sample` = FALSE
 
 # data --------------------------------------------------------------------

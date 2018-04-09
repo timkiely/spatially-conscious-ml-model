@@ -24,12 +24,13 @@ create_radii_features <- function(pluto_model, radii_index) {
 
 
 # create features ---------------------------------------------------------
-  message("     Bulding sales features...")
+  message("     Building sales features...")
   sold_features <- radii_data %>% 
     select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
     unnest() %>% 
     left_join(select(radii_data, bbl, "lat_neighbor" = lat
-                     , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+                     , "lon_neighbor" = lon
+                     , "Nieghbor_BT" = Building_Type
                      , "Neighbor_SF" = BldgArea)
               , by = c('neighbors'='bbl')
     ) %>% 
@@ -117,7 +118,7 @@ create_radii_features <- function(pluto_model, radii_index) {
                                                                    , basic_mean = radii_mean)) %>% 
     mutate_at(vars(SMA_Price_2_year_dist:Percent_Change_EMA_5_basic_mean), funs(perc_change = percent_change))
   
-  message("     Bulding intensity features...")
+  message("     Building intensity features...")
   Intensity_features <- radii_data %>% 
     select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
     unnest() %>% 
@@ -138,7 +139,7 @@ create_radii_features <- function(pluto_model, radii_index) {
     # joining to the radii index and creating distance-weighted mean objects
     ungroup() %>% 
     select(bbl, neighbors, dist_weight) %>% 
-    left_join(select(base1, bbl, Year, Sold)
+    left_join(select(radii_data, bbl, Year, Sold)
               , by = c('neighbors'='bbl')) %>% 
     group_by(bbl, Year) %>%
     summarise(Total_neighbors = n()

@@ -70,7 +70,7 @@ evalutate_sales_models <- function(base_data_infile = "data/processing steps/p12
     base_model <- read_rds(base_data_infile)
     
     base_model <- 
-      base_model %>% 
+      data_frame(pred = base_model$actual) %>% 
       mutate(y_hat = map(y_hat, ~.x$predict)) %>% 
       mutate(Test_Errors = map2(.x = y_hat, .y = test.Y, .f = ~.y-.x))  %>% 
       mutate(Test_RMSE = map_dbl(.x = Test_Errors, .f = ~as.numeric(sqrt(mean(.x^2))))

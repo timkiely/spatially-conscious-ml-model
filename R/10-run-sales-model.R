@@ -138,7 +138,7 @@ run_sales_model <- function(model_data_infile = "data/processing steps/p06_base_
     final_model_object <- list()
     
     final_model_object[["actual"]] <- actual
-    final_model_object[["actual"]] <- pred
+    final_model_object[["pred"]] <- pred
     final_model_object[["model"]] <- bst
   
     model_RMSE <- data_frame(actual, pred) %>% 

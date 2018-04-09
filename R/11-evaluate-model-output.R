@@ -69,15 +69,18 @@ evalutate_sales_models <- function(base_data_infile = "data/processing steps/p12
     message("\n Evaluating base SALES model...")
     base_model <- read_rds(base_data_infile)
     
-    base_model <- 
-      data_frame(pred = base_model$actual) %>% 
-      mutate(y_hat = map(y_hat, ~.x$predict)) %>% 
+    base_eval <- 
+      data_frame(pred = base_model$pred, actual = base_model$actual) %>% 
+      nest() %>% 
+      mutate(y_hat = map(data, ~.x$pred)
+             , test.Y = map(data, ~.x$actual)) %>% 
       mutate(Test_Errors = map2(.x = y_hat, .y = test.Y, .f = ~.y-.x))  %>% 
       mutate(Test_RMSE = map_dbl(.x = Test_Errors, .f = ~as.numeric(sqrt(mean(.x^2))))
              , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
              , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
              , Test_Percent_Error = map2(Test_Errors, test.Y, ~unlist(.x)/.y)
              , Test_MAPE = map_dbl(.x = Test_Percent_Error, .f = ~as.numeric(mean(abs(unlist(.x)))))
+             , Test_MEAPE = map_dbl(.x = Test_Percent_Error, .f = ~as.numeric(median(abs(unlist(.x)))))
       ) %>% 
       mutate(Test_Sales_Ratios = map2(.x = y_hat, .y = test.Y, .f = ~as.numeric(.x /.y))  
              , Test_Average_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(mean(.x)))
@@ -88,20 +91,18 @@ evalutate_sales_models <- function(base_data_infile = "data/processing steps/p12
              , Test_SR_CI_Hi = Test_Average_Sales_Ratio+Test_ERR_Sales_Ratio
       ) %>% 
       mutate(Test_Median_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(median(.x)))
-             , COD_Step1 = map2(.x = Test_Sales_Ratios, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
+             , COD_Step1 = map2(.x = Test_Average_Sales_Ratio, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
              , COD_Step2 = map(.x = COD_Step1, .f = ~abs(.x))
              , COD_Step3 = map_dbl(.x = COD_Step2, .f = ~sum(.x))
              , COD_Step4 = COD_Step3/Test_N_Sales_Ratio
              , COD_Step5 = COD_Step4/Test_Median_Sales_Ratio
              , Test_COD = COD_Step5*100
       ) %>% 
-      select(-Test_Percent_Error, -Test_Sales_Ratios, -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
+      select(-data, -y_hat, -test.Y, -Test_Errors, -Test_Percent_Error, -Test_Sales_Ratios
+             , -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
       arrange(-Test_Rsq)
     
-    base_model$data_type <- "Base"
-    
-    # base_model1 <- base_model[1,]
-    # h2o::h2o.varimp(base_model1$modelFits[[1]])
+    base_eval$data_type <- "Base"
     
   } else message(base_data_infile, " Not yet available")
   
@@ -112,15 +113,18 @@ evalutate_sales_models <- function(base_data_infile = "data/processing steps/p12
     message("\n Evaluating zip SALES model...")
     zip_model <- read_rds(zip_data_infile)
     
-    zip_model <- 
-      zip_model %>% 
-      mutate(y_hat = map(y_hat, ~.x$predict)) %>% 
+    zip_eval <- 
+      data_frame(pred = zip_model$pred, actual = zip_model$actual) %>% 
+      nest() %>% 
+      mutate(y_hat = map(data, ~.x$pred)
+             , test.Y = map(data, ~.x$actual)) %>% 
       mutate(Test_Errors = map2(.x = y_hat, .y = test.Y, .f = ~.y-.x))  %>% 
       mutate(Test_RMSE = map_dbl(.x = Test_Errors, .f = ~as.numeric(sqrt(mean(.x^2))))
              , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
              , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
              , Test_Percent_Error = map2(Test_Errors, test.Y, ~unlist(.x)/.y)
              , Test_MAPE = map_dbl(.x = Test_Percent_Error, .f = ~as.numeric(mean(abs(unlist(.x)))))
+             , Test_MEAPE = map_dbl(.x = Test_Percent_Error, .f = ~as.numeric(median(abs(unlist(.x)))))
       ) %>% 
       mutate(Test_Sales_Ratios = map2(.x = y_hat, .y = test.Y, .f = ~as.numeric(.x /.y))  
              , Test_Average_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(mean(.x)))
@@ -131,20 +135,18 @@ evalutate_sales_models <- function(base_data_infile = "data/processing steps/p12
              , Test_SR_CI_Hi = Test_Average_Sales_Ratio+Test_ERR_Sales_Ratio
       ) %>% 
       mutate(Test_Median_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(median(.x)))
-             , COD_Step1 = map2(.x = Test_Sales_Ratios, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
+             , COD_Step1 = map2(.x = Test_Average_Sales_Ratio, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
              , COD_Step2 = map(.x = COD_Step1, .f = ~abs(.x))
              , COD_Step3 = map_dbl(.x = COD_Step2, .f = ~sum(.x))
              , COD_Step4 = COD_Step3/Test_N_Sales_Ratio
              , COD_Step5 = COD_Step4/Test_Median_Sales_Ratio
              , Test_COD = COD_Step5*100
       ) %>% 
-      select(-Test_Percent_Error, -Test_Sales_Ratios, -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
+      select(-data, -y_hat, -test.Y, -Test_Errors, -Test_Percent_Error, -Test_Sales_Ratios
+             , -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
       arrange(-Test_Rsq)
     
-    zip_model$data_type <- "Zip"
-    
-    # zip_model1 <- zip_model[1,]
-    # h2o::h2o.varimp(zip_model1$modelFits[[1]])
+    zip_eval$data_type <- "Zip"
     
   } else message(zip_data_infile, " Not yet available")
   
@@ -158,15 +160,18 @@ evalutate_sales_models <- function(base_data_infile = "data/processing steps/p12
     message("\n Evaluating radii SALES model...")
     radii_model <- read_rds(radii_data_infile)
     
-    radii_model <- 
-      radii_model %>% 
-      mutate(y_hat = map(y_hat, ~.x$predict)) %>% 
+    radii_eval <- 
+      data_frame(pred = radii_model$pred, actual = radii_model$actual) %>% 
+      nest() %>% 
+      mutate(y_hat = map(data, ~.x$pred)
+             , test.Y = map(data, ~.x$actual)) %>% 
       mutate(Test_Errors = map2(.x = y_hat, .y = test.Y, .f = ~.y-.x))  %>% 
       mutate(Test_RMSE = map_dbl(.x = Test_Errors, .f = ~as.numeric(sqrt(mean(.x^2))))
              , Test_Rsq = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "pearson")))
              , Test_Spearman = map2_dbl(.x = y_hat, .y = test.Y, .f = ~as.numeric(cor(.x,.y, method = "spearman")))
              , Test_Percent_Error = map2(Test_Errors, test.Y, ~unlist(.x)/.y)
              , Test_MAPE = map_dbl(.x = Test_Percent_Error, .f = ~as.numeric(mean(abs(unlist(.x)))))
+             , Test_MEAPE = map_dbl(.x = Test_Percent_Error, .f = ~as.numeric(median(abs(unlist(.x)))))
       ) %>% 
       mutate(Test_Sales_Ratios = map2(.x = y_hat, .y = test.Y, .f = ~as.numeric(.x /.y))  
              , Test_Average_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(mean(.x)))
@@ -177,32 +182,27 @@ evalutate_sales_models <- function(base_data_infile = "data/processing steps/p12
              , Test_SR_CI_Hi = Test_Average_Sales_Ratio+Test_ERR_Sales_Ratio
       ) %>% 
       mutate(Test_Median_Sales_Ratio = map_dbl(.x = Test_Sales_Ratios, .f = ~as.numeric(median(.x)))
-             , COD_Step1 = map2(.x = Test_Sales_Ratios, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
+             , COD_Step1 = map2(.x = Test_Average_Sales_Ratio, .y = Test_Median_Sales_Ratio, .f = ~as.numeric(.x-.y))
              , COD_Step2 = map(.x = COD_Step1, .f = ~abs(.x))
              , COD_Step3 = map_dbl(.x = COD_Step2, .f = ~sum(.x))
              , COD_Step4 = COD_Step3/Test_N_Sales_Ratio
              , COD_Step5 = COD_Step4/Test_Median_Sales_Ratio
              , Test_COD = COD_Step5*100
       ) %>% 
-      select(-Test_Percent_Error, -Test_Sales_Ratios, -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
+      select(-data, -y_hat, -test.Y, -Test_Errors, -Test_Percent_Error, -Test_Sales_Ratios, -Test_SD_Sales_Ratio, -Test_N_Sales_Ratio, -Test_ERR_Sales_Ratio, -contains("Step")) %>% 
       arrange(-Test_Rsq)
     
-    radii_model$data_type <- "Radii"
-    
-    # radii_model1 <- radii_model[1,]
-    # h2o::h2o.varimp(radii_model1$modelFits[[1]])
+    radii_eval$data_type <- "Radii"
     
   } else message(radii_data_infile, " Not yet available")
   
   
   
   message("\nWriting sales model evaluations to ", outfile)
-  all_evals <- bind_rows(base_model,zip_model,radii_model)
+  all_evals <- bind_rows(base_eval, zip_eval, radii_eval) %>% select(data_type, names(base_eval)[!names(base_eval)%in%c("data_type")])
   write_rds(all_evals, outfile)
-  
-  best_model <- all_evals %>% arrange(Test_RMSE) %>% head(1) %>% select(modelName, data_type, data_id, Test_RMSE)
-  message(paste("=========> Best RMSE: ", paste(best_model$modelName, best_model$data_type, best_model$data_id, round(best_model$Test_RMSE, 3))))
-  
+  message("Glipse of test results:")
+  glimpse(all_evals)
 }
 
 

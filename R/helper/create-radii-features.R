@@ -1,7 +1,7 @@
 create_radii_features <- function(pluto_model, radii_index) {
   
-  message("     Starting radii feature creation...")
   radii_feature_start <- Sys.time()
+  message("     Starting radii feature creation at ",radii_feature_start," ...")
   
   radii_data <- radii_index %>% st_set_geometry(NULL)
   radii_data$lon <- st_coordinates(radii_index)[,1]
@@ -89,7 +89,7 @@ create_radii_features <- function(pluto_model, radii_index) {
                                                        , basic_mean = radii_mean)) %>% 
     mutate_at(vars(Percent_Com_dist:Percent_Other_dist), funs(perc_change = percent_change))
   
-  message("     Bulding moving average features...")
+  message("     Building moving average features...")
   MA_features <- radii_data %>% 
     select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
     unnest() %>% 
@@ -119,7 +119,9 @@ create_radii_features <- function(pluto_model, radii_index) {
     mutate_at(vars(SMA_Price_2_year_dist:Percent_Change_EMA_5_basic_mean), funs(perc_change = percent_change))
   
   message("     Building intensity features...")
-  Intensity_features <- radii_data %>% 
+  
+  Intensity_features <- 
+    radii_data %>% 
     select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
     unnest() %>% 
     left_join(select(radii_data, bbl, "lat_neighbor" = lat
@@ -139,16 +141,17 @@ create_radii_features <- function(pluto_model, radii_index) {
     # joining to the radii index and creating distance-weighted mean objects
     ungroup() %>% 
     select(bbl, neighbors, dist_weight) %>% 
-    left_join(select(radii_data, bbl, Year, Sold)
+    left_join(select(pluto_model, bbl, Year, Sold)
               , by = c('neighbors'='bbl')) %>% 
     group_by(bbl, Year) %>%
     summarise(Total_neighbors = n()
               , Total_Neighbors_Sold = sum(Sold, na.rm = T)
               , Percent_Neighbords_Sold = Total_Neighbors_Sold/Total_neighbors) %>% 
-    mutate_at(vars(Total_neighbors:Percent_Neighbords_Sold), funs(SMA_2_year = SMA(., n = 2))
-              ,vars(Total_neighbors:Percent_Neighbords_Sold), funs(SMA_3_year = SMA(., n = 3))
+  
+    mutate_at(vars(Total_neighbors:Percent_Neighbords_Sold), funs(SMA_2_year = TTR::SMA(., n = 2))) %>% 
+    mutate_at(vars(Total_neighbors:Percent_Neighbords_Sold), funs(SMA_3_year = TTR::SMA(., n = 3))
     ) %>% 
-    mutate_at(vars(Total_neighbors:Percent_Neighbords_Sold_SMA_2_year), funs(percent_change = percent_change))
+    mutate_at(vars(Total_neighbors:Percent_Neighbords_Sold_SMA_3_year), funs(percent_change = percent_change))
   
   
 

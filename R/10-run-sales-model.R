@@ -91,7 +91,9 @@ run_sales_model <- function(model_data_infile = "data/processing steps/p06_base_
       select(variable)
     
     base_data_simplified <- base_data %>% 
-      select(bbl, Year, Sold, `SALE PRICE`, `BUILDING CLASS CATEGORY`:Annual_Sales, best_variables$variable)
+      select(bbl, Year, Borough, Sold, `SALE PRICE`
+             , Building_Type:Annual_Sales
+             , best_variables$variable)
     
     train <- base_data_simplified %>% filter(!Year%in%c(2016, 2017))
     validate <- base_data_simplified %>% filter(Year==2016)
@@ -116,8 +118,8 @@ run_sales_model <- function(model_data_infile = "data/processing steps/p06_base_
                             training_frame = training_frame,
                             validation_frame = validation_frame, 
                             model_id = "h2o_rf_fit",
-                            ntrees = 200,
-                            stopping_rounds = 10,
+                            ntrees = 1000,
+                            stopping_rounds = 200,
                             stopping_metric = "RMSE",
                             seed = 1)
     end_time <- Sys.time()
@@ -135,8 +137,11 @@ run_sales_model <- function(model_data_infile = "data/processing steps/p06_base_
     actual <- as.numeric(as.data.frame(test_frame)$`SALE PRICE`)
     pred <- as.numeric(as.data.frame(test_frame)$preds)
     
+    # save final model output
     final_model_object <- list()
-    
+    final_model_object[["bbl"]] <- as_data_frame(test_frame$bbl)
+    final_model_object[["Building_Type"]] <- as_data_frame(test_frame$Building_Type)
+    final_model_object[["Borough"]] <- as_data_frame(test_frame$Borough)
     final_model_object[["actual"]] <- actual
     final_model_object[["pred"]] <- pred
     final_model_object[["model"]] <- bst

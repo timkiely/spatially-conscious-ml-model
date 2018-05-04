@@ -201,8 +201,6 @@ evalutate_sales_models <- function(base_data_infile = "data/processing steps/p12
   message("\nWriting sales model evaluations to ", outfile)
   all_evals <- bind_rows(base_eval, zip_eval, radii_eval) %>% select(data_type, names(base_eval)[!names(base_eval)%in%c("data_type")])
   write_rds(all_evals, outfile)
-  message("Glipse of test results:")
-  glimpse(all_evals)
 }
 
 

@@ -14,3 +14,7 @@ log/*
 xgboost.model
 nohuo.out
 nohup.out
+analysis/utils/*
+analysis/results/*
+analysis/utils/*
+/analysis/utils/*

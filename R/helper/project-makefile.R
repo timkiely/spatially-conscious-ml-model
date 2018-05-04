@@ -21,4 +21,24 @@ project_makefile <- function() {
     message("Created directory '/data/processing steps'")
   }
   
+  if(!"analysis" %in% dir()){
+    dir.create("analysis")
+    message("Created directory 'analysis'")
+  }
+  
+  if(!"results" %in% dir("analysis")){
+    dir.create("analysis/results")
+    message("Created directory 'analysis/results'")
+  }
+  
+  if(!"prob" %in% dir("analysis/results")){
+    dir.create("analysis/results/prob")
+    message("Created directory 'analysis/results/prob'")
+  }
+  
+  if(!"sales" %in% dir("analysis/results")){
+    dir.create("analysis/results/sales")
+    message("Created directory 'analysis/results/sales'")
+  }
+  
 }

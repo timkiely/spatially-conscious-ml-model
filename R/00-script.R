@@ -53,7 +53,7 @@ if(cli_args$`skip-pp` == TRUE) message("=====> Bypassing preprocessing functions
   create_zipcode_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
                       , outfile = "data/processing steps/p07_zipcode_model_data.rds")
   
-  # radii data. Note: extremely time intensive. default is to not run.
+  # radii data. Note: extremely time intensive. Last full data run was 3.3 hours
   create_radii_data(base_model_data = "data/processing steps/p06_base_model_data.rds"
                     , outfile = "data/processing steps/p08_radii_model_data.rds"
                     
@@ -121,6 +121,27 @@ evalutate_sales_models(base_data_infile = "data/processing steps/p12_sale_price_
                        , radii_data_infile = "data/processing steps/p14_sale_price_model_radii.rds"
                        , outfile = "data/processing steps/p16_sales_model_evaluations.rds")
 
+
+
+# wrapping up -------------------------------------------------------------
+# copy model results to analysis folder
+file.copy(from = "data/processing steps/p15_prob_model_evaluations.rds"
+          , to = "analysis/results/p15_prob_model_evaluations.rds"
+          , overwrite = TRUE)
+
+file.copy(from = "data/processing steps/p16_sales_model_evaluations.rds"
+          , to = "analysis/results/p16_sales_model_evaluations.rds"
+          , overwrite = TRUE)
+
+c("data/processing steps/p09_prob_of_sale_model_base.rds"
+  , "data/processing steps/p10_prob_of_sale_model_zipcode.rds"
+  , "data/processing steps/p11_prob_of_sale_model_radii.rds") %>% 
+  map(function(x) file.copy(from = x, to = paste0("analysis/results/prob/",basename(x)), overwrite = TRUE))
+
+c("data/processing steps/p12_sale_price_model_base.rds"
+  , "data/processing steps/p13_sale_price_model_zipcode.rds"
+  , "data/processing steps/p14_sale_price_model_radii.rds") %>% 
+  map(function(x) file.copy(from = x, to = paste0("analysis/results/sales/",basename(x)), overwrite = TRUE))
 
 script_end <- Sys.time()
 message("Program Total Run Time: ", round(script_end - script_start,2), units(script_end - script_start))

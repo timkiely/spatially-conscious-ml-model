@@ -28,12 +28,44 @@ Create a modeling data set with NYC sales data. To enrich features, we want to m
 - (02/02/2018) Currently running the radii indexing script. Has been running ~12 hours straight and still working at 100% CPU. I also added optparse() for Rscript argument parsing flexibility. Added argument help to README file as well. - (02/07/2018) By filtering the data to just Manhattan, have been able to successfully run all models. I also have a strategy for speeding up the radii calculations, which are the main bottleneck, but that may not be necessary for this project. Still to do: finish the model evaluation script and possibly fine-tune the data processing to maximize results. Note that on >60 cores, total program run time with skip-dl and skip-pp enabled runs at just under 10 mins. 
 - (02/24/2018): Radii indexing, on all boroughs, is now down to ~6 minutes. Using a grid-index approach, and massive parallelization, was able to bring the run time down from >12 hours to under 6 minutes!s
 -(03/11/2018): Radii features are done. Implemented various distance weights including by euclidean distance, square footage, age, and combinations of those three. Weights are also Building Type conscious. Radii indexing has been significantly optimized, however, radii feature creation took 5 hours and required a substantial memory increase. Preliminary results are promising for lift over base model. Still to do: mirror the features at the zip level, then finish the evaluation scripts and run the full models.
-
+- (11/04/2018) Both the probability model and the sales model have now run and finished on the full dataset. Runtime is approx 5 hours. I may still wish to compare Random Forrest results with a GBM, but that will be an easy adjustment. I am now moving to the analysis folder to start an EDA of the resultant data. 
 
 ### TODO: 
-- Re-implement zip-level data
-- Finish evaluation script
-- Wrap up
+- EDA of results data
+- Write methods section
+
+# TO RUN THE MODEL
+
+The full script can be run from the command line (from inside the project directory) with the following command:
+
+`Rscript R/00-script.R`
+
+Additional arguments can be passed to the Rscript via the `optparse` package (use -h to see help menu):
+
+```{bash eval=FALSE, include=TRUE}
+Rscript R/00-script.R -h
+
+Usage: R/00-script.R [options]
+
+Options:
+	-d, --skip-dl
+		Skip the download script to save time
+
+	-p, --skip-pp
+		Skip the pre-processing steps to same time
+
+	-r, --run-radii
+		Should the radii indexing be run? Default is not to run (very time intensive)
+
+	-s, --run-sample
+		Run the model on sample data
+
+	-h, --help
+		Show this help message and exit
+```
+
+Most of the options are used to speed up the development process. skip-dl, skip-pp and run-sample can only be run successfully once they have been run once and the data has been cached. run-radii by default does not run, because it is so time-intensive, however if has yet to be run successfully (or a sample of the data is not available) the script will throw an error. 
+
 
 # Steps
 
@@ -84,51 +116,6 @@ OUTPUT: binary prediction modeling results
 ```ruby
 OUTPUT: regression prediction modeling results
 ```
-
-# TO RUN THE MODEL
-
-The full script can be run from the command line (from inside the project directory) with the following command:
-
-`Rscript R/00-script.R`
-
-Additional arguments can be passed to the Rscript via the `optparse` package (use -h to see help menu):
-
-```{bash eval=FALSE, include=TRUE}
-Rscript R/00-script.R -h
-
-Usage: R/00-script.R [options]
-
-Options:
-	-d, --skip-dl
-		Skip the download script to save time
-
-	-p, --skip-pp
-		Skip the pre-processing steps to same time
-
-	-r, --run-radii
-		Should the radii indexing be run? Default is not to run (very time intensive)
-
-	-s, --run-sample
-		Run the model on sample data
-
-	-h, --help
-		Show this help message and exit
-```
-
-Most of the options are used to speed up the development process. skip-dl, skip-pp and run-sample can only be run successfully once they have been run once and the data has been cached. run-radii by default does not run, because it is so time-intensive, however if has yet to be run successfully (or a sample of the data is not available) the script will throw an error. 
-
-# MODEL RUN LOG:
-
-### Model Run Oct 16th, 2017
-
-First complete model training run complete. Total run time was 1.6 days, with considerable time dedicated to Random Forrest (approx. 1.3 days for just RF). We can significantly improve the model training time by optimizing the RF routine, possibly by experimenting with alternative implementations of RF. In addition, the Multi layer perceptron models performed exceedingly poorly and also required some of the longest training times. It's possible that they require significant tuning in order to be competitive. Literature suggests that MLP's won't compete vs GBM or RF without significant pre-processing and computation time. I will consider tuning MLP further.
-
-### Model Run Oct 19th, 2017
-
-After optimizing several of the slowest models, the entire run time has been reduced by a factor of 8 (from ~40 hours down to 5). This despite adding several models. The largest speedup was due to incorporating H2O for Random Forrest rather than the caret version. 
-
-Interestingly, the best performing models are trained on the numeric_only and numeric_processed data sets. The vtreat packages appears to help with parametric models but the non-linear models don't seem to benefit from such treatment. It's possible and worth investigating alternative methods for dealing with categorical variables, such as one-hot encoding. This seems like the logical next step as the overall process will no doubt benefit from having the best possible baseline models prior to introducing proximity features. 
-
 
 
 

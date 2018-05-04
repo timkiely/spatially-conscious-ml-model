@@ -50,22 +50,26 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
     })
   })
   
+  # split in to train, test and val by year
   train <- base_data %>% filter(!Year%in%c(2016, 2017))
   validate <- base_data %>% filter(Year==2016)
   test <- base_data %>% filter(Year==2017)
   
+  # train
   X <- train %>% select(-Sold, -`SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
   X_names <- names(X)
   Y <- train %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
   names(Y) <- Y_names <- "Sold"
   training_frame <- as.h2o(bind_cols(X,Y))
   
+  # validate
   X_val <- validate %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
   X_val_names <- names(X_val)
   Y_val <- validate %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
   names(Y_val) <- Y_val_names <- "Sold"
   validation_frame <- as.h2o(bind_cols(X_val,Y_val))
   
+  # run first model. take top 80% of influential vairbles and re-run in subsequent step
   message("     Training Model for Variable Selection Step...")
   start_time <- Sys.time()
   bst <- h2o.randomForest(x = X_names,
@@ -80,26 +84,31 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   end_time <- Sys.time()
   message("Model training time:" , round(end_time - start_time, 2), units(end_time - start_time))
   
+  # re-run with top variables
   message("   Running model with variables accounting for 80% of VarImp...")
-  best_variables <- 
-    h2o.varimp(bst) %>% 
+  best_variables <- h2o.varimp(bst) %>% 
     mutate(Cumulative = cumsum(percentage)) %>% 
     filter(Cumulative<=0.80) %>% 
     select(variable)
   
   base_data_simplified <- base_data %>% 
-    select(bbl, Year, Sold, `SALE PRICE`, `BUILDING CLASS CATEGORY`:Annual_Sales, best_variables$variable)
+    select(bbl, Year, Borough, Sold, `SALE PRICE`
+           , Building_Type:Annual_Sales
+           , best_variables$variable)
   
+  # re-split into train test val
   train <- base_data_simplified %>% filter(!Year%in%c(2016, 2017))
   validate <- base_data_simplified %>% filter(Year==2016)
   test <- base_data_simplified %>% filter(Year==2017)
   
+  # train
   X <- train %>% select(-Sold, -`SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
   X_names <- names(X)
   Y <- train %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
   names(Y) <- Y_names <- "Sold"
   training_frame <- as.h2o(bind_cols(X,Y))
   
+  # validate
   X_val <- validate %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
   X_val_names <- names(X_val)
   Y_val <- validate %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
@@ -113,14 +122,14 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
                           training_frame = training_frame,
                           validation_frame = validation_frame, 
                           model_id = "h2o_rf_fit",
-                          ntrees = 200,
-                          stopping_rounds = 10,
+                          ntrees = 1000,
+                          stopping_rounds = 200,
                           stopping_metric = "AUC",
                           seed = 1)
   end_time <- Sys.time()
   message("Model training time:" , round(end_time - start_time, 2), units(end_time - start_time))
   
-  
+  # test data
   X_test <- test %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
   X_test_names <- names(X_test)
   Y_test <- test %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
@@ -133,12 +142,15 @@ run_probability_model <- function(model_data_infile = "data/processing steps/p06
   pred <- recode(as.numeric(as.data.frame(test_frame)$preds), 0, 1)
   
   final_model_object <- list()
+  final_model_object[["bbl"]] <- as_data_frame(test_frame$bbl)
+  final_model_object[["Building_Type"]] <- as_data_frame(test_frame$Building_Type)
+  final_model_object[["Borough"]] <- as_data_frame(test_frame$Borough)
   final_model_object[["actual"]] <- actual
   final_model_object[["probs"]] <- probs
   final_model_object[["pred"]] <- pred
   final_model_object[["model"]] <- bst
   
-  (roc <- pROC::roc(actual, probs))
+  roc <- pROC::roc(actual, probs)
   
   message("Probability Model AUC: ", round(as.numeric(roc$auc), 4))
   

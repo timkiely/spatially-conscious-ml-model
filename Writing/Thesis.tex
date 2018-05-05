@@ -136,6 +136,16 @@ Dependence}
 \subsection{Motivating Example: Combatting Economic
 Exclusion}\label{motivating-example-combatting-economic-exclusion}
 
+Predictive modeling using spatial dependence has been employed
+extensively in recent years, notably in Crime Prediction (Almanie 2015).
+However, a key deficiency of many spatial models are their use of
+arbitrarily defined geographic regions, such as zip codes, political
+districts, police precincts, state lines, neighborhoods, etc. which
+diminish and obscure potentially valuable insights. Worse yet, many
+predictive models ignore and exclude spatial dependence, violating one
+of the basic tenets of geography: the direct relationship between
+distance and likeness (Miller 2007).
+
 Income inequality may be a central challenge of our time. Researchers at
 the Urban Institute (Solomon Greene and Lei 2016) recently identified
 the socio-economic phenomenon of ``Economic Exclusion'' as one
@@ -183,19 +193,15 @@ data-journalists and data-activists who have become modern mechanisms of
 public service. It is imperative that research be done and tools created
 to better harness such data for commercial and public good.
 
-Predictive modeling using spatial dependence has been employed
-extensively in recent years, notably in Crime Prediction (Almanie 2015).
-However, a key deficiency of many spatial dependent models are their use
-of arbitrarily defined geographic regions, such as zip codes, political
-districts, police precincts, state lines, neighborhoods, etc. which
-diminish and obscure potentially valuable insights. Worse yet, many
-predictive models ignore and exclude spatial dependence, violating one
-of the basic tenets of geography: the direct relationship between
-distance and likeness (Miller 2007).
-
 \section{Literature Review}\label{literature-review}
 
 \subsection{Lit Review}\label{lit-review}
+
+Much of the research on predicting real estate values has been in
+service of creating mass appraisal models. Mass appraisal models share
+many characteristics with predictive machine learning model modeling,
+primarily in that they are data-driven, standardized methods that employ
+statistical testing (Eckert 1990).
 
 \subsection{sample citations}\label{sample-citations}
 
@@ -217,13 +223,25 @@ Antipov and Pokryshevskaya (2012) says blah.
 
 \subsection{Methodology Section}\label{methodology-section}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{plot}\NormalTok{(iris}\OperatorTok{$}\NormalTok{Sepal.Length, iris}\OperatorTok{$}\NormalTok{Sepal.Width, }\DataTypeTok{col =}\NormalTok{ iris}\OperatorTok{$}\NormalTok{Species)}
-\end{Highlighting}
-\end{Shaded}
+Random Forrest has several advantages over traditional geographic
+weighted regression, amoung them:
 
-\includegraphics{Thesis_files/figure-latex/unnamed-chunk-6-1.pdf}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Ability to handle large amounts of categorical data without much
+  pre-processing
+\item
+  Ability to model in spite of missing values in data
+\item
+  Eliminated colinearity as a concern
+\item
+  Allows for the introduction of many more variables without requiring
+  penalty for additional predictors
+\item
+  Works relatively fast and can be parallelized
+\end{enumerate}
 
 \section{Results}\label{results}
 
@@ -233,7 +251,7 @@ Antipov and Pokryshevskaya (2012) says blah.
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Thesis_files/figure-latex/unnamed-chunk-7-1.pdf}
+\includegraphics{Thesis_files/figure-latex/unnamed-chunk-6-1.pdf}
 
 Note that the \texttt{echo\ =\ FALSE} parameter was added to the code
 chunk to prevent printing of the R code that generated the plot.
@@ -247,7 +265,7 @@ Research}\label{conclusions-and-future-research}
 \end{Highlighting}
 \end{Shaded}
 
-\includegraphics{Thesis_files/figure-latex/unnamed-chunk-8-1.pdf}
+\includegraphics{Thesis_files/figure-latex/unnamed-chunk-7-1.pdf}
 
 Note that the \texttt{echo\ =\ FALSE} parameter was added to the code
 chunk to prevent printing of the R code that generated the plot.
@@ -267,6 +285,11 @@ Antipov, Evgeny A., and Elena B. Pokryshevskaya. 2012. ``Mass Appraisal
 of Residential Apartments: An Application of Random Forest for Valuation
 and a Cart-Based Approach for Model Diagnostics.'' \emph{Expert Systems
 with Applications}.
+
+\hypertarget{ref-Eckert1990}{}
+Eckert, J. K. 1990. \emph{Property Appraisal and Assessment
+Administration}. Chicago, IL.: International Association of Assessing
+Officers.
 
 \hypertarget{ref-Miller2015}{}
 Miller, J.; Aspinall, J.; Franklin. 2007. ``Incorporating Spatial

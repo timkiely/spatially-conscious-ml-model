@@ -1,0 +1,12 @@
+---
+title: "04-Results"
+output:
+  pdf_document: 
+    keep_tex: true
+---
+
+```{r}
+plot(mtcars$wt, mtcars$mpg, col = mtcars$cyl)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

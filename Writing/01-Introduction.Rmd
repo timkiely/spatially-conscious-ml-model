@@ -1,0 +1,13 @@
+---
+title: "Introduction"
+output: pdf_document
+---
+
+## Introduction to my thesis
+
+Income inequality may be a central challenge of our time. Researchers at the Urban Institute recently identified the socio-economic phenomenon of “Economic Exclusion” as one compelling explanation for the recent rise in inequality in the US. Vulnerable populations (disproportionately communities of color, immigrants, refugees, and women), who are displaced by localized economic prosperity enter into a gradual cycle of diminished access to good jobs, good schools, health care facilities, public spaces, etc. This systematic denial causes enduring and self-reinforcing poverty over the course years and even generations (Greene, et al. 2016), gradually entrenching income inequality and general unrest.
+
+One way to practically combat economic exclusion is to focus on preventing displacement, however, detecting gentrification at an early enough stage can be a daunting task. When an area experiences economic growth, increased housing demands and subsequent affordability pressures can lead to evictions of low-income families and small businesses. Government agencies and nonprofits tend to intervene once displacement is already underway, and after-the-fact interventions can be costly and ineffective. There are a host of pre-emptive actions that can be deployed to stem divestment and ensure that existing residents benefit from new investments. Not unlike medical treatment, early detection is key to success. Consequently, in 2016, the Urban Institute put forth a call for research into the creation of “neighborhood-level early warning and response systems that can help city leaders and community advocates get ahead of neighborhood changes.”
+
+This paper explores novel techniques to predict gentrification in the pursuit of combating displacement and economic exclusion. Modern techniques of data mining, machine learning and predictive modeling are applied to datasets describing property values and sale prices in New York City. I explore the viability of using spatial lags, i.e., variables created from physically proximate observations, as features in a machine learning predictive model. 
+

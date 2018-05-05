@@ -1,0 +1,13 @@
+---
+title: "Methodology"
+output:
+  pdf_document: 
+    keep_tex: true
+---
+
+## Methodology Section
+
+```{r}
+plot(iris$Sepal.Length, iris$Sepal.Width, col = iris$Species)
+```
+

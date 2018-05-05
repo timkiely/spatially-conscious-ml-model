@@ -1,0 +1,46 @@
+---
+title: "Predicting Real Estate Sales Using Machine Learning and Spatial Dependence"
+output:
+  pdf_document: 
+    keep_tex: true
+    toc: yes
+header-includes:
+  - \setlength{\parindent}{4em}
+  - \setlength{\parskip}{0em}
+bibliography: bib/bibliography.bib
+---
+
+
+# Introduction
+
+```{r child = '01-Introduction.Rmd'}
+```
+
+# Literature Review
+
+```{r child = '02-Literature Review.Rmd'}
+```
+
+# Methodology
+
+```{r child = '03-Methodology.Rmd'}
+```
+
+# Results
+
+```{r child = '04-Results.Rmd'}
+```
+
+
+# Conclusions and Future Research
+
+```{r child = '05-Conclusions.Rmd'}
+```
+
+# References
+
+---
+metadata references not mentioned in paper:
+nocite: | 
+  @antipov12, @antipov12, etc
+...

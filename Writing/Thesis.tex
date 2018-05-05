@@ -133,19 +133,20 @@ Dependence}
 }
 \section{Introduction}\label{introduction}
 
-\subsection{Introduction to my thesis}\label{introduction-to-my-thesis}
+\subsection{Motivating Example: Combatting Economic
+Exclusion}\label{motivating-example-combatting-economic-exclusion}
 
 Income inequality may be a central challenge of our time. Researchers at
-the Urban Institute recently identified the socio-economic phenomenon of
-``Economic Exclusion'' as one compelling explanation for the recent rise
-in inequality in the US. Vulnerable populations (disproportionately
-communities of color, immigrants, refugees, and women), who are
-displaced by localized economic prosperity enter into a gradual cycle of
-diminished access to good jobs, good schools, health care facilities,
-public spaces, etc. This systematic denial causes enduring and
-self-reinforcing poverty over the course years and even generations
-(Greene, et al. 2016), gradually entrenching income inequality and
-general unrest.
+the Urban Institute (Solomon Greene and Lei 2016) recently identified
+the socio-economic phenomenon of ``Economic Exclusion'' as one
+compelling explanation for the recent rise in inequality in the US.
+Vulnerable populations (disproportionately communities of color,
+immigrants, refugees, and women), who are displaced by localized
+economic prosperity enter into a gradual cycle of diminished access to
+good jobs, good schools, health care facilities, public spaces, etc.
+This systematic denial causes enduring and self-reinforcing poverty over
+the course years and even generations, gradually entrenching income
+inequality and general unrest.
 
 One way to practically combat economic exclusion is to focus on
 preventing displacement, however, detecting gentrification at an early
@@ -160,19 +161,17 @@ from new investments. Not unlike medical treatment, early detection is
 key to success. Consequently, in 2016, the Urban Institute put forth a
 call for research into the creation of ``neighborhood-level early
 warning and response systems that can help city leaders and community
-advocates get ahead of neighborhood changes.''
+advocates get ahead of neighborhood changes'' (2016).
 
 This paper explores novel techniques to predict gentrification in the
 pursuit of combating displacement and economic exclusion. Modern
 techniques of data mining, machine learning and predictive modeling are
 applied to datasets describing property values and sale prices in New
-York City. I explore the viability of using spatial lags, i.e.,
+York City. We explore the viability of using spatial lags, i.e.,
 variables created from physically proximate observations, as features in
 a machine learning predictive model.
 
-\section{Literature Review}\label{literature-review}
-
-\subsection{Lit Review}\label{lit-review}
+\subsection{Geo-spatial Data}\label{geo-spatial-data}
 
 The world has seen an unprecedented amount of geospatial data produced
 in recent years (i.e., data that contain information about where an
@@ -185,14 +184,18 @@ public service. It is imperative that research be done and tools created
 to better harness such data for commercial and public good.
 
 Predictive modeling using spatial dependence has been employed
-extensively in recent years, notably in Crime Prediction (Almanie et
-al., 2015). However, a key deficiency of many spatial dependent models
-are their use of arbitrarily defined geographic regions, such as zip
-codes, political districts, police precincts, state lines,
-neighborhoods, etc. which diminish and obscure potentially valuable
-insights. Worse yet, many predictive models ignore and exclude spatial
-dependence, violating one of the basic tenets of geography: the direct
-relationship between distance and likeness (Miller, et al., 2015).
+extensively in recent years, notably in Crime Prediction (Almanie 2015).
+However, a key deficiency of many spatial dependent models are their use
+of arbitrarily defined geographic regions, such as zip codes, political
+districts, police precincts, state lines, neighborhoods, etc. which
+diminish and obscure potentially valuable insights. Worse yet, many
+predictive models ignore and exclude spatial dependence, violating one
+of the basic tenets of geography: the direct relationship between
+distance and likeness (Miller 2007).
+
+\section{Literature Review}\label{literature-review}
+
+\subsection{Lit Review}\label{lit-review}
 
 \subsection{sample citations}\label{sample-citations}
 
@@ -253,11 +256,27 @@ chunk to prevent printing of the R code that generated the plot.
 \addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
+\hypertarget{ref-Almanie2015}{}
+Almanie, R.; Lor, T.; Mirza. 2015. ``Crime Prediction Based on Crime
+Types and Using Spatial and Temporal Criminal Hotspots.''
+\emph{International Journal of Data Mining \& Knowledge Management
+Process (IJDKP)} 5 (4).
+
 \hypertarget{ref-antipov12}{}
 Antipov, Evgeny A., and Elena B. Pokryshevskaya. 2012. ``Mass Appraisal
 of Residential Apartments: An Application of Random Forest for Valuation
 and a Cart-Based Approach for Model Diagnostics.'' \emph{Expert Systems
 with Applications}.
+
+\hypertarget{ref-Miller2015}{}
+Miller, J.; Aspinall, J.; Franklin. 2007. ``Incorporating Spatial
+Dependence in Predictive Vegetation Models.'' \emph{Ecological
+Modelling} 202 (3): 225--42.
+
+\hypertarget{ref-urban2016}{}
+Solomon Greene, Molly Scott, Rolf Pendall, and Serena Lei. 2016. ``Open
+Cities: From Economic Exclusion to Urban Inclusion.'' \emph{Urban
+Institue Brief}, June. Urban Institue Brief.
 
 
 \end{document}

@@ -7,7 +7,10 @@ output:
 
 ## Methodology Section
 
-```{r}
-plot(iris$Sepal.Length, iris$Sepal.Width, col = iris$Species)
-```
+Random Forrest has several advantages over traditional geographic weighted regression, amoung them:
 
+1. Ability to handle large amounts of categorical data without much pre-processing
+2. Ability to model in spite of missing values in data
+3. Eliminated colinearity as a concern
+4. Allows for the introduction of many more variables without requiring penalty for additional predictors
+5. Works relatively fast and can be parallelized

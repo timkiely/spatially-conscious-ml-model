@@ -7,34 +7,34 @@ output:
 header-includes:
   - \setlength{\parindent}{4em}
   - \setlength{\parskip}{0em}
-bibliography: bib/bibliography.bib
+bibliography: Sections/bib/bibliography.bib
 ---
 
 
 # Introduction
 
-```{r child = '01-Introduction.Rmd'}
+```{r child = 'Sections/01-Introduction.Rmd'}
 ```
 
 # Literature Review
 
-```{r child = '02-Literature Review.Rmd'}
+```{r child = 'Sections/02-Literature Review.Rmd'}
 ```
 
 # Methodology
 
-```{r child = '03-Methodology.Rmd'}
+```{r child = 'Sections/03-Methodology.Rmd'}
 ```
 
 # Results
 
-```{r child = '04-Results.Rmd'}
+```{r child = 'Sections/04-Results.Rmd'}
 ```
 
 
 # Conclusions and Future Research
 
-```{r child = '05-Conclusions.Rmd'}
+```{r child = 'Sections/05-Conclusions.Rmd'}
 ```
 
 # References

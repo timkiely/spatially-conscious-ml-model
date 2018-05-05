@@ -1,11 +1,13 @@
 ---
 title: "Methodology"
-output:
-  pdf_document: 
-    keep_tex: true
+output: pdf_document
+bibliography: bib/bibliography.bib
 ---
 
-## Methodology Section
+## Data
+
+
+## Algorithm
 
 Random Forrest has several advantages over traditional geographic weighted regression, amoung them:
 
@@ -14,3 +16,6 @@ Random Forrest has several advantages over traditional geographic weighted regre
 3. Eliminated colinearity as a concern
 4. Allows for the introduction of many more variables without requiring penalty for additional predictors
 5. Works relatively fast and can be parallelized
+
+
+## Model Diagnostics

@@ -1,5 +1,6 @@
 ---
-title: "Predicting Real Estate Sales Using Machine Learning and Spatial Dependence"
+title: "A Predictive Model for Commerical Real Estate Sales Using Machine Learning and Spatial Dependence"
+subtitle: "Using Spatial Lags in Machine Learning Models"
 output:
   pdf_document: 
     keep_tex: true
@@ -42,5 +43,6 @@ bibliography: Sections/bib/bibliography.bib
 ---
 metadata references not mentioned in paper:
 nocite: | 
-  @antipov12, @antipov12, etc
+  @Johnson2007
+  @Geltner2017
 ...

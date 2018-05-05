@@ -1,12 +1,14 @@
 ---
-title: "04-Results"
-output:
-  pdf_document: 
-    keep_tex: true
+title: "Results"
+output: pdf_document
+bibliography: bib/bibliography.bib
 ---
 
-```{r}
-plot(mtcars$wt, mtcars$mpg, col = mtcars$cyl)
-```
+## Probability of Sale Model
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## Sale Price Model
+
+
+## Using the Models in Practice
+

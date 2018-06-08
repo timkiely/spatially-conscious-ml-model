@@ -24,7 +24,7 @@
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
 \hypersetup{unicode=true,
-            pdftitle={A Predictive Model for Commerical Real Estate Sales Using Machine Learning and Spatial Dependence},
+            pdftitle={A Predictive Model for Real Estate Sales Using Machine Learning and Spatial Dependence},
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
@@ -72,11 +72,12 @@
 }
 
 \setlength{\droptitle}{-2em}
-  \title{A Predictive Model for Commerical Real Estate Sales Using Machine
-Learning and Spatial Dependence}
+  \title{A Predictive Model for Real Estate Sales Using Machine Learning and
+Spatial Dependence}
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-\subtitle{Using Spatial Lags in Machine Learning Models}
+\subtitle{Using Spatial Lags to Create Geospatial Machine Learning Predictive
+Models}
   \author{}
   \preauthor{}\postauthor{}
   \date{}
@@ -97,19 +98,20 @@ Learning and Spatial Dependence}
 \subsection{What is Economic
 Exclusion?}\label{what-is-economic-exclusion}
 
-Income inequality may be a central challenge of our time. Researchers at
-the Urban Institute (Solomon Greene and Lei 2016) recently identified
+Income inequality may be a defining challenge of our time. Researchers
+at the Urban Institute (Solomon Greene and Lei 2016) recently identified
 the socio-economic phenomenon of ``Economic Exclusion'' as one
 compelling explanation for the recent rise in inequality in the US. As
 discussed by Zuk (2015), ``Neighborhoods change slowly, but over time
 are becoming more segregated by income, due in part to macro-level
-increases in income inequality''. Vulnerable populations
-(disproportionately communities of color, immigrants, refugees, and
-women), who are displaced by localized economic prosperity enter into a
-gradual cycle of diminished access to good jobs, good schools, health
-care facilities, public spaces, etc. Such systematic denial causes
-enduring and self-reinforcing poverty over the course years and even
-generations, gradually entrenching income inequality and general unrest.
+increases in income inequality''. Vulnerable
+populations--disproportionately communities of color, immigrants,
+refugees, and women--who are displaced by localized economic prosperity
+enter into a gradual cycle of diminished access to good jobs, good
+schools, health care facilities, public spaces, etc. Such systematic
+denial causes enduring and self-reinforcing poverty over the course
+years and even generations, gradually entrenching income inequality and
+general unrest.
 
 One way to practically combat economic exclusion is to focus on
 preventing displacement, however, detecting gentrification at an early
@@ -160,52 +162,17 @@ at arbitrary geographic regions such as zip codes.
 \subsection{How Has Economic Displacement Been Addressed in the
 Past?}\label{how-has-economic-displacement-been-addressed-in-the-past}
 
-(Zuk 2015)
+Research on Economic Displacement dates back to the 1970s, occuring in
+direct reaction to the urban renewal period in US cities (Zuk 2015).
 
-Scholarly interest in the relationship between investment and
-displacement dates back to the 1970s, in the aftermath of displacement
-related to urban renewal. More recently, a new wave of scholarship
-examines gentrification, primarily in strong market cities, and its
-relationship to public investment, particularly in transit. The results
-of these studies are mixed, due in part to methodological shortcomings.
-
-Displacement takes many different forms---direct and indirect, physical
-or economic, and exclusionary---and may result from either investment or
-disinvestment.
-
-Despite severe data and analytic challenges in measuring the extent of
-displacement, most studies agree that gentrification at a minimum leads
-to exclusionary displacement and may push out some renters as well.
-
-The first documented use of the term ``gentrification'' (Glass 1964)
-describes the influx of a ``gentry'' in lower income neighborhoods in
-London during the 1950s and 60s.2 Today, gentrification is generally
-defined as simultaneously a spatial and social practice that results in
-``the transformation of a working-class or vacant area of the central
+Gentrification as a concept came into being during the 1950's and
+1960's, and was first used by Glass in 1964 to described the ``gentry''
+in low income neighborhoods in London. The modern conception of
+gentrification is a spatial organization and re-organiztion of human
+dwelling and activity. Specific to cities, gentrification is thought of
+as ``the transformation of a working-class or vacant area of the central
 city into middle-class residential or commercial use'' (Loretta Lees,
-Slater, and Wyly 2008, xv)
-
-Revitalization, as first noted by Clay (1979) can take two forms:
-incumbent upgrading and gentrification. Incumbent upgrading, whereupon
-existing residents improve the conditions of their neighborhood, is
-catalyzed by the cost of housing, the rise of neighborhood
-consciousness, demographic pressure, and reduced pressures from migrants
-to the city. Gentrification, on the other hand, draws middle class
-residents to the city, attracted by job and recreational opportunities,
-low and appreciating housing prices, stabilization of negative social
-conditions (such as crime), and lifestyle or aesthetic considerations.
-Displacement is the negative outcome of gentrification, but not present
-in incumbent upgrading.
-
-It is arguably a ``chaotic'' process, that does not lend itself to
-binary or linear analysis (Beauregard 1986; Freeman 2006; L. Lees 1996).
-
-Today, the overarching debate has generally drawn a line between the
-flows of capital versus flows of people to neighborhoods. This
-dichotomous narrative has spawned many analyses focused on either
-production and supply-side or consumption, demand-side catalysts. Flows
-of capital focus on profit-seeking and the work of broader economic
-forces to make inner city areas profitable for in-movers.
+Slater, and Wyly 2008).
 
 Smith (1979) argues that the return of capital from the suburbs to the
 city drives gentrification; the change in neighborhoods is the spatial
@@ -223,13 +190,25 @@ than white) (Fischer et al. 2004; Fry and Taylor 2015; P. Jargowsky
 2001; Lichter, Parisi, and Taquino 2012; Reardon and Bischoff 2011;
 Watson 2009; Yang and Jargowsky 2006)
 
-Government policies shape free markets and preferences, as well as
-respond to them. Thus, transportation policies favoring the automobile,
-discrimination and redlining in early federal home ownership policies,
-mortgage interest tax deductions for home owners, and other urban
-policies have actively shaped or reinforced patterns of racial and
-economic segregation, while severely constraining choices for
-disadvantaged groups (Dreier, Mollenkopf, and Swanstrom 2004).
+A range of studies have found that living in poor neighborhoods
+negatively impacts residents, particularly young people, who are more
+likely than their counterparts in wealthier neighborhoods to participate
+in and be victims of criminal activity, experience teen pregnancy, drop
+out of high school, and perform poorly in school among a multitude of
+other negative outcomes (Crane 1991; Ellen and Turner 1997; Galster
+2010; P. A. Jargowsky 1997; Jencks et al. 1990; Ludwig et al. 2001;
+Sampson, Morenoff, and GannonRowley 2002; Sharkey 2013)
+
+More recent topics covering Displacement include the relationship
+between gentrification and to public investment such as transit
+infrastructure.
+
+Today, the overarching debate has generally drawn a line between the
+flows of capital versus flows of people to neighborhoods. This
+dichotomous narrative has spawned many analyses focused on either
+production and supply-side or consumption, demand-side catalysts. Flows
+of capital focus on profit-seeking and the work of broader economic
+forces to make inner city areas profitable for in-movers.
 
 But we also now understand that neighborhood income segregation within
 metropolitan areas is influenced mostly by income inequality, in
@@ -246,6 +225,19 @@ underwriting industry (Hirsch 1983; Levy, McDade, and Dumlao Bertumen
 segregated neighborhoods would decline (Reardon and Bischoff 2011,
 Watson 2009).
 
+Zuk characterizes the results of these studies as ``mixed, due in part
+to methodological shortcomings''. Many studies conclude that
+gentrification in most forms leads to exclusionary economic
+displacement.
+
+Government policies shape free markets and preferences, as well as
+respond to them. Thus, transportation policies favoring the automobile,
+discrimination and redlining in early federal home ownership policies,
+mortgage interest tax deductions for home owners, and other urban
+policies have actively shaped or reinforced patterns of racial and
+economic segregation, while severely constraining choices for
+disadvantaged groups (Dreier, Mollenkopf, and Swanstrom 2004).
+
 African American - White segregation has persisted in major metropolitan
 areas, especially in the Northeast and Midwest and a large share of
 minorities still live in neighborhoods with virtually no White residents
@@ -256,12 +248,6 @@ discriminating institutions that limit residential movement of African
 Americans into White neighborhoods, such as biased residential
 preferences among nonHispanic Whites and discrimination in the real
 estate market (Charles 2003; Krysan et al. 2009; Turner et al. 2013).
-
-Analysis of change over time suggests that neighborhoods are
-surprisingly stable (Wei and Knox 2014). And in fact, overall, Americans
-have become significantly more rooted over time; just 12\% of U.S.
-residents moved in 2008, the lowest rate since 1948 and probably long
-before (C. S. Fischer 2010).
 
 Yet, for many at the lower end of the economic spectrum, stability means
 imprisonment: even though many families have left, researchers estimate
@@ -274,15 +260,6 @@ and schools structure social mobility. Patterns of urban development in
 the United States have resulted in uneven geographies of opportunity, in
 which low-income and families of color experience limited access to
 affordable housing, high quality schools, and good-paying jobs.
-
-A range of studies have found that living in poor neighborhoods
-negatively impacts residents, particularly young people, who are more
-likely than their counterparts in wealthier neighborhoods to participate
-in and be victims of criminal activity, experience teen pregnancy, drop
-out of high school, and perform poorly in school among a multitude of
-other negative outcomes (Crane 1991; Ellen and Turner 1997; Galster
-2010; P. A. Jargowsky 1997; Jencks et al. 1990; Ludwig et al. 2001;
-Sampson, Morenoff, and GannonRowley 2002; Sharkey 2013)
 
 \subsection{A Review of Mass Appraisal
 Techniques}\label{a-review-of-mass-appraisal-techniques}

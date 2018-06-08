@@ -1,6 +1,6 @@
 ---
-title: "A Predictive Model for Commerical Real Estate Sales Using Machine Learning and Spatial Dependence"
-subtitle: "Using Spatial Lags in Machine Learning Models"
+title: "A Predictive Model for Real Estate Sales Using Machine Learning and Spatial Dependence"
+subtitle: "Using Spatial Lags to Create Geospatial Machine Learning Predictive Models"
 output:
   pdf_document: 
     keep_tex: true

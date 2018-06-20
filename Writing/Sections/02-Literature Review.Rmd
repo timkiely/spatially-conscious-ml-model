@@ -6,27 +6,15 @@ bibliography: bib/bibliography.bib
 
 ## How Has Economic Displacement Been Addressed in the Past?
 
-Research on Economic Displacement dates back to the 1970s, occuring in direct reaction to the urban renewal period in US cities [@Zuk2015]. 
+Economic Displacement has been intertwined with the study of gentrification since shortly after the latter became academically relevant in the 1960's.  Gentrification was first popularized by Ruth Glass in 1964 to described the “gentry” in low income neighborhoods in London. Gentirifcation was originally understood as a "tool of revitilization for declining neighborhoods" [@Zuk2015], however, in 1979 Phillip Clay  made the distinction between two types of revitilization: "incumbent upgrading" and "gentrification", noting that Economic Displacement was the negative consequence of the latter [@Clay1979]. Today, the term has evolved to describe "a spatial organization and re-organiztion of human dwelling and activity" [@Zuk2015]. Specific to cities, gentrification is thought of as “the transformation of a working-class or vacant area of the central city into middle-class residential or commercial use” [@Lees2008].
 
-Gentrification as a concept came into being during the 1950's and 1960's, and was first used by Glass in 1964 to described the “gentry” in low income neighborhoods in London. The modern conception of gentrification is a spatial organization and re-organiztion of human dwelling and activity. Specific to cities, gentrification is thought of as “the transformation of a working-class or vacant area of the central city into middle-class residential or commercial use” (Loretta Lees, Slater, and Wyly 2008). 
+Studies of gentrification and displacement generally take two approaches in the literature: supply-side and demand-side, or "the flows of capital versus flows of people to neighborhoods", respectively [@Zuk2015]. Supply side arguments for gentrification tend to focus on "private capital investment, public policies, and public investments" [@Zuk2015]. [@Smith1979] argued that the return of capital from the suburbs to the city drives gentrification. He describes a "political economy of capital flows into urban areas" [@Zuk2015] as largely responsible for both the positive and negative consequences of gentrification. Supply-side arguments have the advantage of being focused around public policy. Policies that have been linked to increased Economic Displacment have been, among others, automobile-oritented transportation infrastrucure spending and mortgage interest tax deductions for home owners  [@Dreier2004].
 
-Smith (1979) argues that the return of capital from the suburbs to the city drives gentrification; the change in neighborhoods is the spatial manifestation of the restructuring of capital through shifting land values and housing development. Smith (1979) sees individual gentrifiers as important, but places a greater emphasis on a broader nexus of actors – developers, builders, mortgage lenders, government agencies, real estate agents – that make up the full political economy of capital flows into urban areas. 
+Living in poor neighborhoods negatively impacts residents by making them more prone to "participate in and be victims of criminal activity" and other poor socio-economic outcomes [@Zuk2015]. More recently, we have come to understand that Economic Displacement can be influenced "mostly by income inequality, in particular, higher compensation in the top quintile and the lack of jobs for the bottom quintile" [@Reardon2011]; [@Watson2009]. Inequality has become a highly visible topic in recent years, with critics pointing out that the concentration of wealth allows "certain households to sort themselves according to their preferences – and control local political processes that continue exclusion [@Reardon2011]. @Reardon2011 argues that "were income inequality to stop rising, the number of segregated neighborhoods would decline."
 
-Economic segregation has increased steadily since the 1970s, with a brief respite in the 1990s, and is related closely to racial segregation (i.e., income segregation is growing more rapidly among black families than white) (Fischer et al. 2004; Fry and Taylor 2015; P. Jargowsky 2001; Lichter, Parisi, and Taquino 2012; Reardon and Bischoff 2011; Watson 2009; Yang and Jargowsky 2006)
-
-A range of studies have found that living in poor neighborhoods negatively impacts residents, particularly young people, who are more likely than their counterparts in wealthier neighborhoods to participate in and be victims of criminal activity, experience teen pregnancy, drop out of high school, and perform poorly in school among a multitude of other negative outcomes (Crane 1991; Ellen and Turner 1997; Galster 2010; P. A. Jargowsky 1997; Jencks et al. 1990; Ludwig et al. 2001; Sampson, Morenoff, and GannonRowley 2002; Sharkey 2013)
+Many studies conclude that gentrification in most forms leads to exclusionary economic displacement, however, @Zuk2015 characterizes the results of many recent studies as "mixed, due in part to methodological shortcomings".
 
 
-More recent topics covering Displacement include the relationship between gentrification and to public investment such as transit infrastructure. 
-
-
-Today, the overarching debate has generally drawn a line between the flows of capital versus flows of people to neighborhoods. This dichotomous narrative has spawned many analyses focused on either production and supply-side or consumption, demand-side catalysts. Flows of capital focus on profit-seeking and the work of broader economic forces to make inner city areas profitable for in-movers. 
-
-But we also now understand that neighborhood income segregation within metropolitan areas is influenced mostly by income inequality, in particular, higher compensation in the top quintile and the lack of jobs for the bottom quintile (Reardon and Bischoff 2011; Watson 2009). Income inequality leads to income segregation because higher incomes, supported by housing policy, allow certain households to sort themselves according to their preferences – and control local political processes that continue exclusion (Reardon and Bischoff 2011). Other explanatory factors include disinvestment in urban areas, suburban investment and land use patterns, and the practices generally of government and the underwriting industry (Hirsch 1983; Levy, McDade, and Dumlao Bertumen 2011). But were income inequality to stop rising, the number of segregated neighborhoods would decline (Reardon and Bischoff 2011, Watson 2009).
-
-Zuk characterizes the results of these studies as "mixed, due in part to methodological shortcomings". Many studies conclude that gentrification in most forms leads to exclusionary economic displacement.
-
-Government policies shape free markets and preferences, as well as respond to them. Thus, transportation policies favoring the automobile, discrimination and redlining in early federal home ownership policies, mortgage interest tax deductions for home owners, and other urban policies have actively shaped or reinforced patterns of racial and economic segregation, while severely constraining choices for disadvantaged groups (Dreier, Mollenkopf, and Swanstrom 2004). 
 
 
 
@@ -34,11 +22,9 @@ African American - White segregation has persisted in major metropolitan areas, 
 
 A theory of “place stratification” is a better fit, incorporating discriminating institutions that limit residential movement of African Americans into White neighborhoods, such as biased residential preferences among nonHispanic Whites and discrimination in the real estate market (Charles 2003; Krysan et al. 2009; Turner et al. 2013). 
 
-
 Yet, for many at the lower end of the economic spectrum, stability means imprisonment: even though many families have left, researchers estimate that some 70% of families in today’s impoverished neighborhoods were living there in the 1970s as well (Sharkey 2012).
 
 Scholars writing on the “geographies of opportunity” (Briggs 2005) argue that the spatial relationships between high quality housing, jobs, and schools structure social mobility. Patterns of urban development in the United States have resulted in uneven geographies of opportunity, in which low-income and families of color experience limited access to affordable housing, high quality schools, and good-paying jobs. 
-
 
 
 ## A Review of Mass Appraisal Techniques
@@ -67,12 +53,10 @@ In this case the correct welfare measure should be the direct effect since there
 [@Fotheringham2015]
 Explores the use of GWR to forecast prices.Explores the combination of time-series forecasting (in the Holt-Winters tradition) to geogaphically weighted regression (GWR). GWR is a variation on OLS that allows for "adaptive bandwidths" of local data to be included, i.e., for each estimate, the number of data points included varies (optimized using CV). In addition, the data points are weighted according to distance. This is known as a "local" model
 
-## Gentrification and Neighborhood Ascent
+## Has Machine Learning Been Applied to this Problem Before?
 
 [@Zuk2015]
-The primary concern of gentrification is one of its negative outcomes: displacement
-
-## Has Machine Learning Been Applied to this Problem Before?
+It is arguably a “chaotic” process, that does not lend itself to binary or linear analysis (Beauregard 1986; Freeman 2006; L. Lees 1996)
 
 [@Zuk2015]
 Urban simulation models are guided by consumer decision-making, rather than the development decisions – flows of people rather than capital – and have neglected the role of race; thus they may not capture complex gentrification dynamics.

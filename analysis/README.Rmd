@@ -143,7 +143,8 @@ fastAUC <- function(probs, class) {
   return(auc)
 }
 
-by_boro_base <- data_frame(Borough = prob_base_data$Borough$Borough, Actual = prob_base_data$actual, Prob = prob_base_data$probs, Pred = prob_base_data$pred)
+  
+by_boro_base <- data_frame(Borough = prob_base_data$, Actual = prob_base_data$actual, Prob = prob_base_data$probs, Pred = prob_base_data$pred)
 by_boro_zip <- data_frame(Borough = prob_zip_data$Borough$Borough, Actual = prob_zip_data$actual, Prob = prob_zip_data$probs, Pred = prob_zip_data$pred)
 by_boro_radii <- data_frame(Borough = prob_radii_data$Borough$Borough, Actual = prob_radii_data$actual, Prob = prob_radii_data$probs, Pred = prob_radii_data$pred)
 

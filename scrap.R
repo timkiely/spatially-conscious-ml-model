@@ -33,6 +33,14 @@ source("R/helper/source-files.R")
 base1 <- read_rds("data/aux data/sample_p06_base_model_data.rds")
 
 
+
+condo_classes <-  c("04  TAX CLASS 1 CONDOS", "04 TAX CLASS 1 CONDOS"
+ , "12  CONDOS - WALKUP APARTMENTS", "12 CONDOS - WALKUP APARTMENTS", "13  CONDOS - ELEVATOR APARTMENTS"
+ , "13 CONDOS - ELEVATOR APARTMENTS", "15  CONDOS - 2-10 UNIT RESIDENTIAL", "15 CONDOS - 2-10 UNIT RESIDENTIAL"
+ , "16  CONDOS - 2-10 UNIT WITH COMMERCIAL UNIT")
+ 
+sales2 %>% filter(`BUILDING CLASS CATEGORY`%in% condo_classes, BOROUGH==1, `SALE PRICE`>0) %>% count(`SALE YEAR`)
+
 base1 %>% glimpse()
 base1 %>% summary()
 

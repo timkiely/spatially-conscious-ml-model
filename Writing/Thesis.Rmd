@@ -1,6 +1,6 @@
 ---
 title: "Predicting Real Estate Sales Using Machine Learning and Spatial Dependence"
-subtitle: "Combining Spatial Lags with Machine Learning"
+subtitle: "Boosting Random Forest Predictive Accuracy Using Spatial Lags"
 output:
   pdf_document: 
     keep_tex: true

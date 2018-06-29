@@ -7,7 +7,7 @@ output:
     toc: yes
 header-includes:
   - \setlength{\parindent}{4em}
-  - \setlength{\parskip}{0em}
+  - \setlength{\parskip}{1em}
 bibliography: Sections/bib/bibliography.bib
 ---
 

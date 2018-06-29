@@ -4,7 +4,90 @@ output: pdf_document
 bibliography: bib/bibliography.bib
 ---
 
+Building off of previous research (see: @antipov12; also @Schernthanner2016), the goal of this study is to employ the Random Forest algorithm to predict:
+
+1) Probability of Sale. The probability that a given property in New York City will sell in a given year
+2) Amount of Sale. Given that a property sells, how much is the sale value?
+
+
+To accomplish this, we combine three open-source data repositories provided by New York City via [nyc.gov](nyc.gov) and [data.cityofnewyork.us](data.cityofnewyork.us). Our base modeling data set includes all building records and associated sales information from 2003-2017. 
+
+Following the creation of the base modeling data, we create two additional data sets through feature engineering: a "zipcode-features" data set and a "spatial-lag-features" data set. The primary goal of this study is to compare the predictive power of the spatial lag data set vs. the base and zipcode level features.
+
 ## Data
+
+The New York City government makes available an annual data set which describes all tax lots in the five boroughs. The Primary Land Use and Tax Lot Ouput data set, known as [PLUTO](https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts[year]=0), contains a single record for every tax lot in the city along with a number of building and tax-related attributes such as Year Built, Assessed Value, Square Footage, number of stories, and many more. At the time of this writing, NYC has made this data set available for all years between 2002-2017, excluding 2008. For convinience, we also exclude the 2002 data set from our analysis because sales information is not available for that year. Importantly for our analysis, the latitude and longitude of the tax lots are also made available, allowing us to locate in space each building and to build geospatial features from the data. 
+
+Ultimately, we are interested in sales transactions--both frequency, and amount. Sales transactions are also made available by the New York City government, known as [NYC Rolling Sales Data](http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page). At the time of this writing, sales transactions are available for the years 2003-2017. The sales transactions data contains additional data fields describing time, place, and amount of sale as well as additional building characteristics. Crucially, the sales transaction data does not include geographical coordinates, making it impossible to perform geospatial analysis without first mapping the sales data to PLUTO.
+
+Prior to mapping to PLUTO, the sales data must first be transformed to include the proper mapping key. New York City uses a standard key of Borough-Block-Lot to identify tax lots in the data. For example, 31 West 27th Street is located in Manhattan, on block 829 and lot 16, therefore, its Borough-Block-Lot (BBL) is 1_829_16 (the 1 represents Manhattan). The sales data contains BBL's at the building level, however, the sales transactions data does not appropriately designate condos as their own BBLs. Mapping the sales data directlty to the PLUTO data results in a mapping error rate of 23.1%. Therefore, the sales transactions data must first be mapped to another data source, the NYC Property Address Directory, or [PAD](https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data)), which contains an exhaustive list of all BBLs in NYC. Once the sales data is combined with PAD, the data can be mapped to PLUTO with an error rate of 0.291%.
+
+After the Sales Transactions data has been mapped to PAD, it can then be mapped to PLUTO. The sales data is normalized and filtered so that only BBLs with less than or equal to 1 transactions in a year occur. The final data set is an exhaustive list of all tax lots in NYC for every year between 2003-2017, whether that building was sold, for what amount, and several other additional variables. 
+
+
+Only building categories of significant interest are included in the data. The following building types are included:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+suppressPackageStartupMessages(library(tibble))
+
+category_table <- tribble(
+  ~Category, ~Description
+  , "A", "ONE FAMILY DWELLINGS"
+  , "B", "TWO FAMILY DWELLINGS"
+  , "C", "WALK UP APARTMENTS"
+  , "D", "ELEVATOR APARTMENTS"
+  , "F", "FACTORY AND INDUSTRIAL BUILDINGS"
+  , "G", "GARAGES AND GASOLINE STATIONS"
+  , "L", "LOFT BUILDINGS"
+  , "O", "OFFICES"
+)
+knitr::kable(category_table)
+```
+
+
+The data is further filtered to include only records with equal to or less than 2 buildings per tax lot. The global filtering of the dataset reduces the base modeling data from 12,012,780 records down to 8,247,499. 
+
+
+## Feature Engineering & Data Partitioning
+
+The 
+
+Executing base feature engineering...
+     ...done. Input 69 variables and output 92 variables.  Total rows: 8,247,499
+
+Executing ZIP feature engineering...
+     ...Engineering done. Input 92 variables and output 122 variables
+     
+     Running spatial indexing on 514,124 points
+ID column: bbl
+Max distance: 500 units=m
+Number of partions: 7 by 7, 49 total data partitions
+Parallel: TRUE with number of clusters set to 62
+
+     ...done. Total indexing time: 5 mins
+Writing radii index to disk...
+     ...done
+Creating radii features...
+Running RADII feature creation
+     Starting radii feature creation at 2018-06-08 14:30:24 ...
+     Building sales features...
+     Creating building features...
+     Building moving average features...
+     Building intensity features...
+     Joining new features to original data...
+Radii feature creation time: 3.47 hours
+     ...done
+Writing radii features to disk...
+     ...done. Writing took 3.99mins
+     ...Engineering done. Input 92 variables and output 194 variables
+
+1) Create radii-index & radii features
+2) Create zip code features
+3) Create 3 modeling data sets:
+    a) Base
+    b) Zip code features
+    c) Radii features 
 
 
 ## Algorithm
@@ -19,3 +102,4 @@ Random Forrest has several advantages over traditional geographic weighted regre
 
 
 ## Model Diagnostics
+

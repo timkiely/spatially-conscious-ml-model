@@ -10,7 +10,7 @@
 # pluto2 <- read_rds("data/processing steps/p05_pluto_with_sales.rds")
 
 # base1 <- read_rds("data/processing steps/p06_base_model_data.rds")
-# "data/processing steps/p07_zipcode_model_data.rds"
+# zip_level <- read_rds("data/processing steps/p07_zipcode_model_data.rds")
 # radii <- read_rds("data/processing steps/p08_radii_model_data.rds")
 
 # "data/processing steps/p09_prob_of_sale_model_base.rds"
@@ -32,92 +32,49 @@ source("R/helper/source-files.R")
 # write_rds(base_samp, "data/aux data/sample_p06_base_model_data.rds")
 base1 <- read_rds("data/aux data/sample_p06_base_model_data.rds")
 
+data_frame(`a` = names(summary(base1$`SALE PRICE`))) %>% 
+  bind_cols(data_frame(`Sale Price per Square Foot` = scales::comma(round(summary(base1$`SALE PRICE`),2)))) %>% 
+  filter(a!="NA's") %>% 
+  rename(` ` = a) %>% 
+  write_rds("Writing/Sections/tables and figures/sale_price_summary_table4.rds")
 
+min1 <- 
+  radii %>% 
+  select(Radius_Total_Sold_In_Year:Percent_Change_EMA_5_basic_mean_perc_change) %>% 
+  summarise_all(min, na.rm = T) %>% 
+  transpose() %>% 
+  rename("Min" = V1)
 
-condo_classes <-  c("04  TAX CLASS 1 CONDOS", "04 TAX CLASS 1 CONDOS"
- , "12  CONDOS - WALKUP APARTMENTS", "12 CONDOS - WALKUP APARTMENTS", "13  CONDOS - ELEVATOR APARTMENTS"
- , "13 CONDOS - ELEVATOR APARTMENTS", "15  CONDOS - 2-10 UNIT RESIDENTIAL", "15 CONDOS - 2-10 UNIT RESIDENTIAL"
- , "16  CONDOS - 2-10 UNIT WITH COMMERCIAL UNIT")
- 
-sales2 %>% filter(`BUILDING CLASS CATEGORY`%in% condo_classes, BOROUGH==1, `SALE PRICE`>0) %>% count(`SALE YEAR`)
+median1 <- 
+  radii %>% 
+  select(Radius_Total_Sold_In_Year:Percent_Change_EMA_5_basic_mean_perc_change) %>% 
+  summarise_all(median, na.rm = T) %>% 
+  transpose() %>% 
+  rename("Median" = V1)
 
-base1 %>% glimpse()
-base1 %>% summary()
+  mean1 <- 
+    radii %>% 
+    select(Radius_Total_Sold_In_Year:Percent_Change_EMA_5_basic_mean_perc_change) %>% 
+  summarise_all(mean, na.rm = T) %>% 
+transpose() %>% 
+  rename("Mean" = V1)
 
+max1 <- 
+  radii %>% 
+  select(Radius_Total_Sold_In_Year:Percent_Change_EMA_5_basic_mean_perc_change) %>% 
+  summarise_all(max, na.rm = T) %>% 
+  transpose() %>% 
+  rename("Max" = V1)
 
-message("Initiating h2o clusters...")
-suppressMessages({
-  suppressWarnings({
-    sink(".sink-output")
-    h2o.init(nthreads = -1) #Number of threads -1 means use all cores on your machine
-    options("h2o.use.data.table"=TRUE)
-    h2o.no_progress()
-    h2o.removeAll()
-    sink(NULL)
-  })
-})
+table_1 <- 
+  data_frame(Feature = names(select(radii, Radius_Total_Sold_In_Year:Percent_Change_EMA_5_basic_mean_perc_change))) %>% 
+  bind_cols(min1) %>% 
+  bind_cols(median1) %>% 
+  bind_cols(mean1) %>% 
+  bind_cols(max1) %>% 
+  mutate_at(vars(Min:Max), round, 2) %>% 
+  mutate_at(vars(Min:Max), scales::comma)
 
-train <- base1 %>% filter(!Year%in%c(2016, 2017))
-validate <- base1 %>% filter(Year==2016)
-test <- base1 %>% filter(Year==2017)
-
-X <- train %>% select(-Sold, -`SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
-X_names <- names(X)
-Y <- train %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
-names(Y) <- Y_names <- "Sold"
-training_frame <- as.h2o(bind_cols(X,Y))
-
-X_val <- validate %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
-X_val_names <- names(X_val)
-Y_val <- validate %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
-names(Y_val) <- Y_val_names <- "Sold"
-validation_frame <- as.h2o(bind_cols(X_val,Y_val))
-
-
-
-start_time <- Sys.time()-14400
-bst <- h2o.randomForest(x = X_names,
-                        y = Y_names,
-                        training_frame = training_frame,
-                        validation_frame = validation_frame, 
-                        model_id = "h2o_rf_fit",
-                        ntrees = 200,
-                        stopping_rounds = 10,
-                        stopping_metric = "AUC",
-                        seed = 1)
-end_time <- Sys.time()-14400
-end_time-start_time
-print(bst)
-h2o.varimp(bst)
-
-# h2o.gainsLift(bst, valid = F, xval = T)
-
-
-X_test <- test %>% select(-Sold, `SALE PRICE`,-c(`BUILDING CLASS CATEGORY`:Annual_Sales))
-X_test_names <- names(X_test)
-Y_test <- test %>% select(Sold) %>% mutate(Sold = as.factor(Sold))
-names(Y_test) <- Y_test_names <- "Sold"
-test_frame <- as.h2o(bind_cols(X_test,Y_test))
-test_frame$preds <- predict(bst, newdata = test_frame)$predict
-
-actual <- recode(as.numeric(as.data.frame(test_frame)$Sold),0,1)
-pred <- recode(as.numeric(as.data.frame(test_frame)$preds), 0,1)
-(roc <- pROC::roc(actual, pred))
-confusionMatrix(table(actual, pred), positive = "1")
-
-test_frame %>% 
-  as_tibble() %>% 
-  group_by(Building_Type) %>% 
-  nest() %>% 
-  mutate(actual = map(data, ~as.numeric(.x$Sold))
-         , preds = map(data, ~as.numeric(.x$preds))
-         ) %>% 
-  mutate(auc = map2_dbl(actual, preds, ~pROC::roc(.x, .y)$auc)
-         , sensitivity = map2_dbl(actual, preds, ~pROC::roc(.x, .y)$sensitivities[2])
-         , specificity = map2_dbl(actual, preds, ~pROC::roc(.x, .y)$specificities[2])
-         )
-
-
-
+write_rds(table_1, "Writing/Sections/tables and figures/table3.rds")
 
 

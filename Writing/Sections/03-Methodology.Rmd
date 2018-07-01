@@ -91,14 +91,33 @@ knitr::kable(readr::read_rds("tables and figures/table3.rds"))
 
 ## Algorithm
 
-Random Forrest has several advantages over traditional geographic weighted regression, among them:
+Previous work (@antipov12; also @Schernthanner2016) has found the Random Forest algorithm [@Breiman2001] suitable to prediction tasks invlovling real estate. While algorithms exist that may marginally outperform Random Forest in terms of predictive accuracy (such as nueral networks and functional gradient descent algorithms), Random Forest is highly scalable and paralellizable, and therefore a natural choice for comparing different feature engineering strategies (such as in this paper).  
 
-1. Ability to handle large amounts of categorical data without much pre-processing
-2. Ability to model in spite of missing values in data
-3. Eliminated colinearity as a concern
-4. Allows for the introduction of many more variables without requiring penalty for additional predictors
-5. Works relatively fast and can be parallelized
+Random Forest can be used for both classification and regression tasks. The Random Forest algorithm works by generating a large number of independent classification or regression decision trees and then employing  majority voting (for classification) or averaging (for regression) to generate predictions. Over a dataset of N rows by M predictors, a bootstrap sample of the data is chosen (n < N) as well as a subset of the predictors (m < M). Individual decision/regression trees are built on the n by m sample. Because the trees can be built independently (and not sequentially, as is the case with most functional gradient descent algorithms), the tree building process can be executed in parallel across an arbitrary number of computer cores. With a sufficiently large number of cores, the model training time can be significantly reduced. This provides a highly accurate, robust prediction model that avoids many of the drawbacks of traditional parametric techniques, such as OLS. 
+
+The primary advantages to using Random Forest with real estate data are: 
+
+1. Can handle an arbitrarily large number of variables while avoiding the curse of dimensionality associated with regression techniques. Increasing the number of predictors in a multiple regression can quickly lead to overfitting. 
+2. Can accomodate categorical variables with many levels. Real estate data often contains information describing the location of the property, or the property itself, as one of a large set of possible choices, such as neighborhood, county, census tract, district, property type, and zoning information. Because factors need to be recoded as individual dummy variables in the model building process, factors with many levels will quickly encounter the curse of dimensionality in multiple regression techniques.
+3. Appropriately handles missing data. Predictions can be made with the parts of the tree which are succesfully built, and therefore, there is no need to filter out incomplete observations or impute missing values. Since much real destate data is self reported, incomplete fields are common in the data.
+4. Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, are reduced in terms of importance. Real estate data, especially with regards to pricing, tends to contain large outliers. For example, the dependent variable in one of our models, Sale Price, exhibits the following characteristics:
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+knitr::kable(readr::read_rds("tables and figures/sale_price_summary_table4.rds"))
+```
+
+Note that the mean and median diverge, while the maximum is significantly higher than the third quartile. 
+
+5. Can recognize non-linear relationships in data, which is useful when modeling spatial relationships. 
+6. Is not affected by colinearity in the data. This is highly valuable as real estate data can be highly correlated. 
+7. The algorithm can be parallelized and is relatively fast compared to nueral networks and functional gradient descent algorithms. 
 
 
 ## Model Diagnostics
+
+
+
+
+
+
 

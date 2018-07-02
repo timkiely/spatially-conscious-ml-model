@@ -33,7 +33,7 @@ source("R/helper/source-files.R")
 base1 <- read_rds("data/aux data/sample_p06_base_model_data.rds")
 
 data_frame(`a` = names(summary(base1$`SALE PRICE`))) %>% 
-  bind_cols(data_frame(`Sale Price per Square Foot` = scales::comma(round(summary(base1$`SALE PRICE`),2)))) %>% 
+  bind_cols(data_frame(`Sale Price per SF` = scales::comma(round(summary(base1$`SALE PRICE`),2)))) %>% 
   filter(a!="NA's") %>% 
   rename(` ` = a) %>% 
   write_rds("Writing/Sections/tables and figures/sale_price_summary_table4.rds")

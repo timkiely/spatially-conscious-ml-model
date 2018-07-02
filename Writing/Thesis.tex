@@ -521,8 +521,7 @@ less than 2 buildings per tax lot. The global filtering of the data set
 reduces the base modeling data from 12,012,780 records down to
 8,247,499.
 
-\subsection{Feature Engineering \& Data
-Partitioning}\label{feature-engineering-data-partitioning}
+\subsection{Feature Engineering}\label{feature-engineering}
 
 \subsubsection{Base modeling data}\label{base-modeling-data}
 
@@ -859,16 +858,56 @@ Inf & Inf\tabularnewline
 \bottomrule
 \end{longtable}
 
+\subsection{Outcome variables}\label{outcome-variables}
+
+The final step in creating the modeling data is to define the outcome
+variables. For our purposes, we create two dependent variables: - Sold.
+Whether a tax lot sold in a given year. Used in the Probability of Sale
+classification model. - Sale Price. The price-per-square foot assocaited
+with a transaction, if a sale took place. Used in the Sale Price
+Regression model.
+
+The following two tables describe the distributions of both outcome
+variables:
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+& Sale Price per SF\tabularnewline
+\midrule
+\endhead
+Min. & 0.0\tabularnewline
+1st Qu. & 163.5\tabularnewline
+Median & 375.2\tabularnewline
+Mean & 644.8\tabularnewline
+3rd Qu. & 783.3\tabularnewline
+Max. & 83,598.7\tabularnewline
+\bottomrule
+\end{longtable}
+
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+& Sold\tabularnewline
+\midrule
+\endhead
+Min. & 0.00\tabularnewline
+1st Qu. & 0.00\tabularnewline
+Median & 0.00\tabularnewline
+Mean & 0.04\tabularnewline
+3rd Qu. & 0.00\tabularnewline
+Max. & 1.00\tabularnewline
+\bottomrule
+\end{longtable}
+
 \subsection{Algorithm}\label{algorithm}
 
-Previous work (Antipov and Pokryshevskaya (2012); also Schernthanner H.
-(2016)) has found the Random Forest algorithm (Breiman 2001) suitable to
-prediction tasks invlovling real estate. While algorithms exist that may
-marginally outperform Random Forest in terms of predictive accuracy
-(such as nueral networks and functional gradient descent algorithms),
-Random Forest is highly scalable and paralellizable, and therefore a
-natural choice for comparing different feature engineering strategies
-(such as in this paper).
+Previous works (see: Antipov and Pokryshevskaya (2012); also
+Schernthanner H. (2016)) have found the Random Forest algorithm (Breiman
+2001) suitable to prediction tasks invlovling real estate. While
+algorithms exist that may marginally outperform Random Forest in terms
+of predictive accuracy (such as nueral networks and functional gradient
+descent algorithms), Random Forest is highly scalable and
+paralellizable, and therefore a natural choice for comparing different
+feature engineering strategies (such as in this paper).
 
 Random Forest can be used for both classification and regression tasks.
 The Random Forest algorithm works by generating a large number of
@@ -890,6 +929,7 @@ The primary advantages to using Random Forest with real estate data are:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi}.}
+\tightlist
 \item
   Can handle an arbitrarily large number of variables while avoiding the
   curse of dimensionality associated with regression techniques.
@@ -914,32 +954,10 @@ The primary advantages to using Random Forest with real estate data are:
   Robust against outliers. Because of bootstrap sampling, outliers
   appear in individual trees less often, and therefore, are reduced in
   terms of importance. Real estate data, especially with regards to
-  pricing, tends to contain large outliers. For example, the dependent
-  variable in one of our models, Sale Price, exhibits the following
-  characteristics:
-
-  \begin{longtable}[]{@{}rc@{}}
-  \toprule
-  Sale & Price per SF\tabularnewline
-  \midrule
-  \endhead
-  Min. & 0.0\tabularnewline
-  1st Qu. & 163.5\tabularnewline
-  Median & 375.2\tabularnewline
-  Mean & 644.8\tabularnewline
-  3rd Qu. & 783.3\tabularnewline
-  Max. & 83,598.7\tabularnewline
-  \bottomrule
-  \end{longtable}
-\end{enumerate}
-
-Note that the mean and median diverge, while the maximum is
-significantly higher than the third quartile.
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\setcounter{enumi}{4}
-\tightlist
+  pricing, tends to contain outliers. For example, the dependent
+  variable in one of our models, Sale Price (see: Table 5), shows a
+  clear divergence in median and mean, as well as a maximum
+  significantly higher than the third quartile.
 \item
   Can recognize non-linear relationships in data, which is useful when
   modeling spatial relationships.
@@ -951,7 +969,17 @@ significantly higher than the third quartile.
   nueral networks and functional gradient descent algorithms.
 \end{enumerate}
 
+To run the model, we have chosen the h2o.randomForest function from the
+h2o R open source library. The h2o implementation of the Random Forest
+algorithm is particularly well-suited for high parallelization. For more
+information, see: \url{https://www.h2o.ai/}.
+
 \subsection{Model Diagnostics}\label{model-diagnostics}
+
+\subsubsection{Probability of Sale model
+diagnostics}\label{probability-of-sale-model-diagnostics}
+
+The Probability of Sale model is a classification model. We will
 
 \section{Results}\label{results}
 

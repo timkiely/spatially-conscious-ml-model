@@ -5,8 +5,9 @@ output:
   pdf_document: 
     keep_tex: true
     toc: yes
+    fig_caption: yes
 header-includes:
-  - \setlength{\parindent}{4em}
+  - \setlength{\parindent}{0em}
   - \setlength{\parskip}{1em}
 bibliography: Sections/bib/bibliography.bib
 ---

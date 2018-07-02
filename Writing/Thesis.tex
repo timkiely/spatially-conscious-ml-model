@@ -83,7 +83,7 @@ Dependence}
   \date{}
   \predate{}\postdate{}
 
-\setlength{\parindent}{4em}
+\setlength{\parindent}{0em}
 \setlength{\parskip}{1em}
 
 \begin{document}
@@ -402,27 +402,24 @@ boundary-aggregation techniques (specifically, aggregating by zip codes)
 to spatial-lag techniques and finds the spatial lag techniques to
 generally outperform.
 
-\subsection{sample citations}\label{sample-citations}
-
-Sample Citation: (Antipov and Pokryshevskaya 2012) (see: Antipov and
-Pokryshevskaya 2012, 33--35; also Antipov and Pokryshevskaya 2012, ch.~1
-and \emph{passim})
-
-A minus sign (-) before the @ will suppress mention of the author in the
-citation. This can be useful when the author is already mentioned in the
-text:
-
-Antipov says blah (2012).
-
-You can also write an in-text citation, as follows:
-
-Antipov and Pokryshevskaya (2012) says blah.
-
 \section{Methodology}\label{methodology}
 
-Building off of previous research (see: Antipov and Pokryshevskaya
-(2012); also Schernthanner H. (2016)), the goal of this study is to
-employ the Random Forest algorithm to predict:
+Our goal is to compare the use of spatial lags as features in a machine
+learning predictive model against traditional feature engineering
+techniques. We will create three modeling data sets:
+
+\begin{itemize}
+\tightlist
+\item
+  Base
+\item
+  Zip Code
+\item
+  Spatial Lag
+\end{itemize}
+
+We will then create 2 predictive models for each modeling data set,
+using a different outcome variable for each:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -435,16 +432,39 @@ employ the Random Forest algorithm to predict:
   value?
 \end{enumerate}
 
+There will be six predictive models built in total, as follows:
+
+\begin{longtable}[]{@{}rllllll@{}}
+\toprule
+\# & Model & Model Type & Data & Outcome Variable & Outcome Var Type &
+Evaluation Metric\tabularnewline
+\midrule
+\endhead
+1 & Probability of Sale & Classification & Base & Building Sold & Binary
+& AUC\tabularnewline
+2 & Probability of Sale & Classification & Zip Code & Building Sold &
+Binary & AUC\tabularnewline
+3 & Probability of Sale & Classification & Spatial Lags & Building Sold
+& Binary & AUC\tabularnewline
+4 & Sale Price & Regression & Base & Sale Price per SF & Continuous &
+RMSE\tabularnewline
+5 & Sale Price & Regression & Zip Code & Sale Price per SF & Continuous
+& RMSE\tabularnewline
+6 & Sale Price & Regression & Spatial Lag & Sale Price per SF &
+Continuous & RMSE\tabularnewline
+\bottomrule
+\end{longtable}
+
 To accomplish this, we combine three open-source data repositories
 provided by New York City via \url{nyc.gov} and
 \url{data.cityofnewyork.us}. Our base modeling data set includes all
 building records and associated sales information from 2003-2017.
 
 Following the creation of the base modeling data, we create two
-additional data sets through feature engineering: a ``zip
-code-features'' data set and a ``spatial-lag-features'' data set. The
-primary goal of this study is to compare the predictive power of the
-spatial lag data set vs.~the base and zip code level features.
+additional data sets through feature engineering: a ``Zip Code
+features'' data set and a ``Spatial Lag features'' data set. The primary
+goal of this study is to compare the predictive power of the spatial
+lags vs.~the base and zip code features.
 
 \subsection{Data}\label{data}
 
@@ -867,34 +887,20 @@ classification model. - Sale Price. The price-per-square foot assocaited
 with a transaction, if a sale took place. Used in the Sale Price
 Regression model.
 
-The following two tables describe the distributions of both outcome
+The following table describes the distributions of both outcome
 variables:
 
-\begin{longtable}[]{@{}ll@{}}
+\begin{longtable}[]{@{}lll@{}}
 \toprule
-& Sale Price per SF\tabularnewline
+& Sold & Sale Price per SF\tabularnewline
 \midrule
 \endhead
-Min. & 0.0\tabularnewline
-1st Qu. & 163.5\tabularnewline
-Median & 375.2\tabularnewline
-Mean & 644.8\tabularnewline
-3rd Qu. & 783.3\tabularnewline
-Max. & 83,598.7\tabularnewline
-\bottomrule
-\end{longtable}
-
-\begin{longtable}[]{@{}ll@{}}
-\toprule
-& Sold\tabularnewline
-\midrule
-\endhead
-Min. & 0.00\tabularnewline
-1st Qu. & 0.00\tabularnewline
-Median & 0.00\tabularnewline
-Mean & 0.04\tabularnewline
-3rd Qu. & 0.00\tabularnewline
-Max. & 1.00\tabularnewline
+Min. & 0.00 & 0.0\tabularnewline
+1st Qu. & 0.00 & 163.5\tabularnewline
+Median & 0.00 & 375.2\tabularnewline
+Mean & 0.04 & 644.8\tabularnewline
+3rd Qu. & 0.00 & 783.3\tabularnewline
+Max. & 1.00 & 83,598.7\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -974,12 +980,80 @@ h2o R open source library. The h2o implementation of the Random Forest
 algorithm is particularly well-suited for high parallelization. For more
 information, see: \url{https://www.h2o.ai/}.
 
-\subsection{Model Diagnostics}\label{model-diagnostics}
+\subsection{Evaluation Metrics}\label{evaluation-metrics}
 
-\subsubsection{Probability of Sale model
-diagnostics}\label{probability-of-sale-model-diagnostics}
+We have chosen evaluation metrics that will allow us to easily compare
+the performance of the models against other models with the same outcome
+variable. The classification models (Probability of Sale) will be
+compared using Area Under the ROC Curve (AUC). The regression models
+(Sale Price) will be compared using Root Mean Squared Error (RMSE). Both
+evaluation metrics are common for their respective outcome variable
+types, and as such will be useful for comparing within model-groups.
 
-The Probability of Sale model is a classification model. We will
+\subsubsection{Area Under ROC Curve
+(AUC)}\label{area-under-roc-curve-auc}
+
+A classification model typically outputs a probability that a given row
+in the data belongs to a group. In the case of binary classification,
+the value falls between 0 and 1. There are many techniques for
+determining the cut off threshold for classification; a typical method
+is to assign anything above a 0.5 into the ``1'' or posistive class. An
+ROC curve (receiver operating characteristic curve) plots the True
+Positive Rate vs.~the False Positive rate at different classification
+thresholds; it is a meaurement of the performance of a classification
+model across all possible thresholds, and therefore sidesteps the need
+to arbitrarily assign a cutoff.
+
+Area Under the ROC Curve, or AUC measures the entire two-dimensional
+area underneath the ROC curve. It is the integration of the curve from
+(0,0) to (1,1), defined as \(AUC = \int_{(0,0)}^{(1,1)} f(x)dx\).
+
+AUC provides a relatively standard measure of performance across all
+possible classification thresholds, and can be interpreted as the
+probability that the model ranks a random positive example more highly
+than a random negative example. A value of 0.5 represents a perfectly
+random model, while a value of 1.0 represents a model that can perfectly
+discriminate between the two classes. AUC is useful for comparing
+classification models against one another because they are both scale
+and threshold-invariant.
+
+One of the drawbacks to AUC is that is does not describe the tradeoffs
+between false positives and false negatives. In certain cirmustances, a
+false positive might be considerably less desirable than a fasle
+negative, oe vice-versa. For our purposes, we rank false positives and
+false negatives as equally undesirable outcomes.
+
+\subsubsection{Root Mean Squared Error}\label{root-mean-squared-error}
+
+The Root Mean Squared Error (RMSE) is a common measurement of the
+differences between values predicted by a regression model and the
+observed values. It is formally defined as
+\(RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }\), where
+\(\hat{y}\) represents the prediction and \(y\) represents the observed
+value at observation \(t\).
+
+Lower RMSE scores are typically more desireable. An RMSE value of 0
+would indicate a perfect fit to the data. RMSE can be difficult to
+interpret on its own, however, it is useful for comparing models with
+similar outcome variables. In our case, the outcome variables (Sales
+Price per Square Foot) are consistent across modeling data sets, and
+therefore can be reasonably compared using RMSE.
+
+\subsubsection{Model Validation}\label{model-validation}
+
+The goal of the predictive models are to be able to successfully predict
+both the probability and amount of real estate sales into the near
+future. As such, our models will use out-of-time validation to assess
+performance. As shown in Figure \ref{fig:TrainTestValidate} The models
+will be trained using data from 2003-2015. 2016 modeling data will be
+used during the model training process as cross-validation data.
+Finally, we will score our model using 2017 as a held-out sample. Using
+out-of-time validation should ensure that the models generalize well
+into the immediate future.
+
+\begin{figure}
+\includegraphics[width=1\linewidth]{Sections/tables and figures/Train Validate Test} \caption{Out-of-time validation}\label{fig:TrainTestValidate}
+\end{figure}
 
 \section{Results}\label{results}
 

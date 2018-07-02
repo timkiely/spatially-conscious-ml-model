@@ -38,6 +38,16 @@ data_frame(`a` = names(summary(base1$`SALE PRICE`))) %>%
   rename(` ` = a) %>% 
   write_rds("Writing/Sections/tables and figures/sale_price_summary_table4.rds")
 
+
+data_frame(`a` = names(summary(base1$Sold))) %>% 
+  bind_cols(data_frame(`Sold` = scales::comma(round(summary(base1$Sold),2)))) %>% 
+  filter(a!="NA's") %>% 
+  rename(` ` = a) %>% 
+  write_rds("Writing/Sections/tables and figures/sold_summary_table5.rds")
+
+
+base1$`SALE PRICE` %>% summary()
+
 min1 <- 
   radii %>% 
   select(Radius_Total_Sold_In_Year:Percent_Change_EMA_5_basic_mean_perc_change) %>% 

@@ -4,15 +4,41 @@ output: pdf_document
 bibliography: bib/bibliography.bib
 ---
 
-Building off of previous research (see: @antipov12; also @Schernthanner2016), the goal of this study is to employ the Random Forest algorithm to predict:
+Our goal is to compare the use of spatial lags as features in a machine learning predictive model against traditional feature engineering techniques. We will create three modeling data sets: 
+
+- Base
+- Zip Code
+- Spatial Lag
+
+We will then create 2 predictive models for each modeling data set, using a different outcome variable for each: 
 
 1) Probability of Sale. The probability that a given property in New York City will sell in a given year
 2) Amount of Sale. Given that a property sells, how much is the sale value?
 
+There will be six predictive models built in total, as follows:
+
+```{r model table, fig.cap= "All Six Predictive Models", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+suppressPackageStartupMessages(library(tibble))
+
+model_desc_table <- tribble(
+  ~`#`, ~Model, ~`Model Type`, ~Data, ~`Outcome Variable`, ~`Outcome Var Type`, ~`Evaluation Metric`
+  , 1, "Probability of Sale", "Classification", "Base", "Building Sold", "Binary", "AUC"
+  , 2, "Probability of Sale", "Classification", "Zip Code", "Building Sold", "Binary", "AUC"
+  , 3, "Probability of Sale", "Classification", "Spatial Lags", "Building Sold", "Binary", "AUC"
+  
+  , 4, "Sale Price", "Regression", "Base", "Sale Price per SF", "Continuous", "RMSE"
+  , 5, "Sale Price", "Regression", "Zip Code", "Sale Price per SF", "Continuous", "RMSE"
+  , 6, "Sale Price", "Regression", "Spatial Lag", "Sale Price per SF", "Continuous", "RMSE"
+  )
+knitr::kable(model_desc_table)
+```
+
+
 
 To accomplish this, we combine three open-source data repositories provided by New York City via [nyc.gov](nyc.gov) and [data.cityofnewyork.us](data.cityofnewyork.us). Our base modeling data set includes all building records and associated sales information from 2003-2017. 
 
-Following the creation of the base modeling data, we create two additional data sets through feature engineering: a "zip code-features" data set and a "spatial-lag-features" data set. The primary goal of this study is to compare the predictive power of the spatial lag data set vs. the base and zip code level features.
+Following the creation of the base modeling data, we create two additional data sets through feature engineering: a "Zip Code features" data set and a "Spatial Lag features" data set. The primary goal of this study is to compare the predictive power of the spatial lags vs. the base and zip code features.
 
 ## Data
 
@@ -27,7 +53,7 @@ After the Sales Transactions data has been mapped to PAD, it can then be mapped 
 
 Only building categories of significant interest are included in the data. The following building types are included:
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r echo=FALSE, fig.cap= "Building Types Included in Modeling Data", message=FALSE, warning=FALSE, paged.print=FALSE}
 
 suppressPackageStartupMessages(library(tibble))
 
@@ -56,7 +82,7 @@ The data is further filtered to include only records with equal to or less than 
 The base modeling data set is enhanced to include additional features. A summary table of the additional features are presented below:
 
 
-```{r Table 1, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r Table 1, fig.cap= "Base Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 knitr::kable(readr::read_rds("tables and figures/table1.rds"))
 ```
 
@@ -69,7 +95,7 @@ Importantly, two variables are created from the Sales Prices: A price-per-square
 
 The first of the comparative modeling data sets is the Zip code modeling data. Using the base data as a starting point, several features are generated to describe characteristics of the zip code where the tax lot resides. A summary table of the Zip code level features is presented below. 
 
-```{r Table 2, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r Table 2, fig.cap= "Zip Code Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 knitr::kable(readr::read_rds("tables and figures/table2.rds"))
 ```
 
@@ -84,7 +110,7 @@ To build spatial lags for all 8,247,499 observations in our modeling data, we cr
 
 Next, we used the spatial index to create spatial lag features. One advantage to using spatial lags is the rich number of potential features which can be created. Spatial lags can be weighted based on a distance function, i.e., physically closer observations can be given more weight. For our modeling purposes, we created two sets of features: distance weighted features (denoted with a "_dist") and simple average features (denoted with "_basic"). SMA and EMA as well as percent changes were also calculated. In total, the spatial lag feature engineering process input 92 variables and output 194 variables. A summary of the Spatial Lag features are presented below:
 
-```{r Table 3, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r Table 3, fig.cap= "Spatial Lag Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 knitr::kable(readr::read_rds("tables and figures/table3.rds"))
 ```
 
@@ -94,14 +120,17 @@ The final step in creating the modeling data is to define the outcome variables.
 - Sold. Whether a tax lot sold in a given year. Used in the Probability of Sale classification model.
 - Sale Price. The price-per-square foot assocaited with a transaction, if a sale took place. Used in the Sale Price Regression model. 
 
-The following two tables describe the distributions of both outcome variables:
+The following table describes the distributions of both outcome variables:
 
-```{r table 4, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
-knitr::kable(readr::read_rds("tables and figures/sale_price_summary_table4.rds"))
-```
 
-```{r table 5, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
-knitr::kable(readr::read_rds("tables and figures/sold_summary_table5.rds"))
+```{r table 4, fig.cap= "Distributions for Outcome Variables", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+knitr::kable(
+  merge(
+  readr::read_rds("tables and figures/sold_summary_table5.rds")
+  ,readr::read_rds("tables and figures/sale_price_summary_table4.rds")
+  , sort = FALSE
+  )
+  )
 ```
 
 
@@ -123,11 +152,47 @@ The primary advantages to using Random Forest with real estate data are:
 
 To run the model, we have chosen the h2o.randomForest function from the h2o R open source library. The h2o implementation of the Random Forest algorithm is particularly well-suited for high parallelization. For more information, see: [https://www.h2o.ai/](https://www.h2o.ai/). 
 
-## Model Diagnostics
 
-### Probability of Sale model diagnostics
+## Evaluation Metrics
 
-The Probability of Sale model is a classification model. We will 
+We have chosen evaluation metrics that will allow us to easily compare the performance of the models against other models with the same outcome variable. The classification models (Probability of Sale) will be compared using Area Under the ROC Curve (AUC). The regression models (Sale Price) will be compared using Root Mean Squared Error (RMSE). Both evaluation metrics are common for their respective outcome variable types, and as such will be useful for comparing within model-groups. 
+
+
+
+### Area Under ROC Curve (AUC)
+
+A classification model typically outputs a probability that a given row in the data belongs to a group. In the case of binary classification, the value falls between 0 and 1. There are many techniques for determining the cut off threshold for classification; a typical method is to assign anything above a 0.5 into the "1" or posistive class. An ROC curve (receiver operating characteristic curve) plots the True Positive Rate vs. the False Positive rate at different classification thresholds; it is a meaurement of the performance of a classification model across all possible thresholds, and therefore sidesteps the need to arbitrarily assign a cutoff. 
+
+Area Under the ROC Curve, or AUC measures the entire two-dimensional area underneath the ROC curve. It is the integration of the curve from (0,0) to (1,1), defined as $AUC = \int_{(0,0)}^{(1,1)} f(x)dx$. 
+
+AUC provides a relatively standard measure of performance across all possible classification thresholds, and can be interpreted as the probability that the model ranks a random positive example more highly than a random negative example. A value of 0.5 represents a perfectly random model, while a value of 1.0 represents a model that can perfectly discriminate between the two classes. AUC is useful for comparing classification models against one another because they are both scale and threshold-invariant.
+
+One of the drawbacks to AUC is that is does not describe the tradeoffs between false positives and false negatives. In certain cirmustances, a false positive might be considerably less desirable than a fasle negative, oe vice-versa. For our purposes, we rank false positives and false negatives as equally undesirable outcomes.
+
+### Root Mean Squared Error
+
+The Root Mean Squared Error (RMSE) is a common measurement of the differences between values predicted by a regression model and the observed values. It is formally defined as $RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }$, where $\hat{y}$ represents the prediction and $y$ represents the observed value at observation $t$. 
+
+Lower RMSE scores are typically more desireable. An RMSE value of 0 would indicate a perfect fit to the data. RMSE can be difficult to interpret on its own, however, it is useful for comparing models with similar outcome variables. In our case, the outcome variables (Sales Price per Square Foot) are consistent across modeling data sets, and therefore can be reasonably compared using RMSE. 
+
+### Model Validation
+
+The goal of the predictive models are to be able to successfully predict both the probability and amount of real estate sales into the near future. As such, our models will use out-of-time validation to assess performance. As shown in Figure  \ref{fig:TrainTestValidate} The models will be trained using data from 2003-2015. 2016 modeling data will be used during the model training process as cross-validation data. Finally, we will score our model using 2017 as a held-out sample. Using out-of-time validation should ensure that the models generalize well into the immediate future. 
+
+
+```{r TrainTestValidate, fig.cap="Out-of-time validation",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE}
+knitr::include_graphics("Sections/tables and figures/Train Validate Test.png")
+```
+
+
+
+
+
+
+
+
+
+
 
 
 

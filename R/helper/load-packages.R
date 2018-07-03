@@ -29,7 +29,7 @@ pacman::p_load(
   , htmlTable, pander, rPython, kknn
   , proj4, httr, RCurl, rvest, TTR, zoo, RcppRoll
   , e1071, progress, pROC, optparse, spdep, tidyverse
-  , data.table, tibble, dplyr
+  , data.table, tibble, dplyr, pander
 )
 
 

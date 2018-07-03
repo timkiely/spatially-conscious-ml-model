@@ -39,6 +39,11 @@ bibliography: Sections/bib/bibliography.bib
 ```{r child = 'Sections/05-Conclusions.Rmd'}
 ```
 
+# Appendix A: List of Spatial Lag Features
+
+```{r child = 'Sections/06-Appendix A.Rmd'}
+```
+
 # References
 
 ---
@@ -46,4 +51,35 @@ metadata references not mentioned in paper:
 nocite: | 
   @Johnson2007
   @Geltner2017
+  @Almanie2015
+  @Chapple2009
+  @Chapple2016
+  @Clay1979
+  @Dietzell2014
+  @Eckert1990
+  @Fotheringham2015
+  @Fu2014
+  @Geltner2017
+  @Guan2014
+  @Helbich2013
+  @Johnson2007
+  @Kontrimasa2011
+  @Koschinsky2012
+  @Lees2008
+  @Miller2015
+  @Park2015
+  @Pivo2011
+  @Pollack2010
+  @Quintos2013
+  @Rafiei2016
+  @Reardon2011
+  @Schernthanner2016
+  @Silverherz1936
+  @Smith1979
+  @Springer2017
+  @Turner2001
+  @urban2016
+  @Watson2009
+  @Zuk2015
+  
 ...

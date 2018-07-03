@@ -32,6 +32,22 @@ source("R/helper/source-files.R")
 # write_rds(base_samp, "data/aux data/sample_p06_base_model_data.rds")
 base1 <- read_rds("data/aux data/sample_p06_base_model_data.rds")
 
+
+
+
+prob_evals <- read_rds("data/processing steps/p15_prob_model_evaluations.rds")
+sale_evals <- read_rds("data/processing steps/p16_sales_model_evaluations.rds")
+
+prob_base <- read_rds("data/processing steps/p09_prob_of_sale_model_base.rds")
+# "data/processing steps/p10_prob_of_sale_model_zipcode.rds"
+# "data/processing steps/p11_prob_of_sale_model_radii.rds"
+
+sale_base <- read_rds("data/processing steps/p12_sale_price_model_base.rds")
+sale_zip <- read_rds("data/processing steps/p13_sale_price_model_zipcode.rds")
+sale_radii <- read_rds("data/processing steps/p14_sale_price_model_radii.rds")
+
+
+
 data_frame(`a` = names(summary(base1$`SALE PRICE`))) %>% 
   bind_cols(data_frame(`Sale Price per SF` = scales::comma(round(summary(base1$`SALE PRICE`),2)))) %>% 
   filter(a!="NA's") %>% 

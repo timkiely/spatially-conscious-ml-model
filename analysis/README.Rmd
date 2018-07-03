@@ -103,7 +103,7 @@ prob_results_table
 
 Here is a chart of performance
 
-```{r fig.height=8, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r, message=FALSE, warning=FALSE, paged.print=FALSE}
 tt <- ttheme_default(colhead=list(fg_params = list(parse=TRUE)))
 prob_results_table_plot <- tableGrob(prob_results_table, rows=NULL, theme=tt)
 
@@ -114,7 +114,7 @@ prob_results_plot <-
   aes(x = type, y = Value, fill = Var)+
   geom_col(position = "dodge")+
   facet_wrap(~Var)+
-  coord_cartesian(ylim = c(0.775,0.85))+
+  coord_cartesian(ylim = c(0.82,0.84))+
   ggthemes::scale_fill_fivethirtyeight()+
   ggthemes::theme_few()+
   theme(legend.position = "none")+
@@ -144,7 +144,7 @@ fastAUC <- function(probs, class) {
 }
 
   
-by_boro_base <- data_frame(Borough = prob_base_data$, Actual = prob_base_data$actual, Prob = prob_base_data$probs, Pred = prob_base_data$pred)
+by_boro_base <- data_frame(Borough = prob_base_data$Borough$Borough, Actual = prob_base_data$actual, Prob = prob_base_data$probs, Pred = prob_base_data$pred)
 by_boro_zip <- data_frame(Borough = prob_zip_data$Borough$Borough, Actual = prob_zip_data$actual, Prob = prob_zip_data$probs, Pred = prob_zip_data$pred)
 by_boro_radii <- data_frame(Borough = prob_radii_data$Borough$Borough, Actual = prob_radii_data$actual, Prob = prob_radii_data$probs, Pred = prob_radii_data$pred)
 
@@ -239,7 +239,7 @@ bind_rows(by_both_base, by_both_zip, by_both_radii) %>%
 
 # Map of correctly predicted sales
 
-```{r}
+```{r, eval = F}
 correct_predictions <- 
   by_both_radii %>% 
   mutate(ColorKey = ifelse(Actual==1 & Pred==1, "TP","Other")

@@ -22,7 +22,7 @@ There will be six predictive models built in total, as follows:
 suppressPackageStartupMessages(library(tibble))
 
 model_desc_table <- tribble(
-  ~`#`, ~Model, ~`Model Type`, ~Data, ~`Outcome Variable`, ~`Outcome Var Type`, ~`Evaluation Metric`
+  ~`#`, ~Model, ~`Model Type`, ~Data, ~`Outcome Var`, ~`Outcome Type`, ~`Eval Metric`
   , 1, "Probability of Sale", "Classification", "Base", "Building Sold", "Binary", "AUC"
   , 2, "Probability of Sale", "Classification", "Zip Code", "Building Sold", "Binary", "AUC"
   , 3, "Probability of Sale", "Classification", "Spatial Lags", "Building Sold", "Binary", "AUC"
@@ -31,7 +31,12 @@ model_desc_table <- tribble(
   , 5, "Sale Price", "Regression", "Zip Code", "Sale Price per SF", "Continuous", "RMSE"
   , 6, "Sale Price", "Regression", "Spatial Lag", "Sale Price per SF", "Continuous", "RMSE"
   )
-knitr::kable(model_desc_table)
+
+pander::pander(model_desc_table
+               , caption = "Table 1: Six Predictive Models"
+               , split.table = Inf
+               , style = "rmarkdown"
+               , justify = "left")
 ```
 
 
@@ -46,7 +51,7 @@ The New York City government makes available an annual data set which describes 
 
 Ultimately, we are interested in sales transactions--both frequency, and amount. Sales transactions are also made available by the New York City government, known as [NYC Rolling Sales Data](http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page). At the time of this writing, sales transactions are available for the years 2003-2017. The sales transactions data contains additional data fields describing time, place, and amount of sale as well as additional building characteristics. Crucially, the sales transaction data does not include geographical coordinates, making it impossible to perform geospatial analysis without first mapping the sales data to PLUTO.
 
-Prior to mapping to PLUTO, the sales data must first be transformed to include the proper mapping key. New York City uses a standard key of Borough-Block-Lot to identify tax lots in the data. For example, 31 West 27th Street is located in Manhattan, on block 829 and lot 16, therefore, its Borough-Block-Lot (BBL) is 1_829_16 (the 1 represents Manhattan). The sales data contains BBL's at the building level, however, the sales transactions data does not appropriately designate condos as their own BBLs. Mapping the sales data directly to the PLUTO data results in a mapping error rate of 23.1%. Therefore, the sales transactions data must first be mapped to another data source, the NYC Property Address Directory, or [PAD](https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data)), which contains an exhaustive list of all BBLs in NYC. Once the sales data is combined with PAD, the data can be mapped to PLUTO with an error rate of 0.291%.
+Prior to mapping to PLUTO, the sales data must first be transformed to include the proper mapping key. New York City uses a standard key of Borough-Block-Lot to identify tax lots in the data. For example, 31 West 27th Street is located in Manhattan, on block 829 and lot 16, therefore, its Borough-Block-Lot (BBL) is 1_829_16 (the 1 represents Manhattan). The sales data contains BBL's at the building level, however, the sales transactions data does not appropriately designate condos as their own BBLs. Mapping the sales data directly to the PLUTO data results in a mapping error rate of 23.1%. Therefore, the sales transactions data must first be mapped to another data source, the NYC Property Address Directory, or [PAD](https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data), which contains an exhaustive list of all BBLs in NYC. Once the sales data is combined with PAD, the data can be mapped to PLUTO with an error rate of 0.291%.
 
 After the Sales Transactions data has been mapped to PAD, it can then be mapped to PLUTO. The sales data is normalized and filtered so that only BBLs with less than or equal to 1 transactions in a year occur. The final data set is an exhaustive list of all tax lots in NYC for every year between 2003-2017, whether that building was sold, for what amount, and several other additional variables. 
 
@@ -68,7 +73,12 @@ category_table <- tribble(
   , "L", "LOFT BUILDINGS"
   , "O", "OFFICES"
 )
-knitr::kable(category_table)
+
+pander::pander(category_table
+               , caption = "Building Types Included in Modeling Data"
+               , split.table = Inf
+               , style = "rmarkdown"
+               , justify = "left")
 ```
 
 
@@ -83,7 +93,13 @@ The base modeling data set is enhanced to include additional features. A summary
 
 
 ```{r Table 1, fig.cap= "Base Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
-knitr::kable(readr::read_rds("tables and figures/table1.rds"))
+
+pander::pander(readr::read_rds("tables and figures/table1.rds")
+               , caption = "Base Modeling Data Features"
+               , split.table = Inf
+               , style = "rmarkdown"
+               , justify = "left")
+
 ```
 
 A binary variable is created to indicate whether a tax lot has a building on it (i.e., whether it is an empty plot of land or not). In addition, building types are quantified by what percent of the square footage belongs to the major property types: Commercial, Residential, Office, Retail, Garage, Storage, Factory and Other. 
@@ -91,12 +107,17 @@ A binary variable is created to indicate whether a tax lot has a building on it 
 Importantly, two variables are created from the Sales Prices: A price-per-square-foot figure ("Last_Sale_Price") and a total Sale Price ("Last_Sale_Price_Total"). Sale Price per Square foot eventually becomes the outcome variable in one of the predictive models, even though it is referred to as Sale Price. Further features are derived which carry forward the previous sale price of a tax lot, if there is one, through successive years. Previous Sale Price is then used to create Simple Moving Averages (SMA), Exponential Moving Averages (SMA), and percent change measurements between the moving averages. In total, 69 variables are input to the feature engineering process and 92 variables are output. The final base modeling data set is 92 variables by 8,247,499 rows. 
 
 
-### Zip code modeling data
+### Zip Code Modeling Data
 
 The first of the comparative modeling data sets is the Zip code modeling data. Using the base data as a starting point, several features are generated to describe characteristics of the zip code where the tax lot resides. A summary table of the Zip code level features is presented below. 
 
 ```{r Table 2, fig.cap= "Zip Code Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
-knitr::kable(readr::read_rds("tables and figures/table2.rds"))
+
+pander::pander(readr::read_rds("tables and figures/table2.rds")
+               , caption = "Zip Code Modeling Data Features"
+               , style = "rmarkdown"
+               , justify = "left")
+
 ```
 
 In general, the base model data features are aggregated to a zip code level and attached to the individual observations, including SMA and EMA calculations. Additionally, a second set of features are added, denoted as "bt_only", which filter only for tax lots of the same building type. In total, the Zip code feature engineering process inputs 92 variables and outputs 122 variables. 
@@ -108,15 +129,49 @@ Spatial lags are variables created from physically proximate observations. For e
 
 To build spatial lags for all 8,247,499 observations in our modeling data, we created a spatial indexing technique that sped up the process by allowing for parallelization of the operation. Since tax lots rarely if ever move, we reduced the indexing task to 514,124 points (the number of unique tax lots in New York City). Then, for each point, we calculated and cached every other tax lot within 500 meters of that building. The result was an origin-destination relationship graph that connected each tax lot to its surrounding tax lots. 
 
-Next, we used the spatial index to create spatial lag features. One advantage to using spatial lags is the rich number of potential features which can be created. Spatial lags can be weighted based on a distance function, i.e., physically closer observations can be given more weight. For our modeling purposes, we created two sets of features: distance weighted features (denoted with a "_dist") and simple average features (denoted with "_basic"). SMA and EMA as well as percent changes were also calculated. In total, the spatial lag feature engineering process input 92 variables and output 194 variables. A summary of the Spatial Lag features are presented below:
+Next, we used the spatial index to create spatial lag features. One advantage to using spatial lags is the rich number of potential features which can be created. Spatial lags can be weighted based on a distance function, i.e., physically closer observations can be given more weight. For our modeling purposes, we created two sets of features: distance weighted features (denoted with a "_dist") and simple average features (denoted with "_basic"). SMA and EMA as well as percent changes were also calculated. In total, the spatial lag feature engineering process input 92 variables and output 194 variables. A summary of the Spatial Lag features are presented in Table 6. 
 
-```{r Table 3, fig.cap= "Spatial Lag Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
-knitr::kable(readr::read_rds("tables and figures/table3.rds"))
+```{r Table 3, fig.cap= "Zip Code Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+Summary_SL_feats <- 
+  tribble(
+    ~`Spatial Lag Features`
+    ,"Radius Total Sold In Year"                                           
+    ,"Radius Average Years Since Last Sale"                                
+    ,"Radius Res Units Sold In Year"                                       
+    ,"Radius All Units Sold In Year"                                       
+    ,"Radius SF Sold In Year"                                              
+    ,"Radius Total Sold In Year sum over 2 years"                          
+    ,"Radius Average Years Since Last Sale sum over 2 years"               
+    ,"Radius Res Units Sold In Year sum over 2 years"                      
+    ,"Radius All Units Sold In Year sum over 2 years"                      
+    ,"Radius SF Sold In Year sum over 2 years"                             
+    ,"Radius Total Sold In Year percent change"                            
+    ,"Radius Average Years Since Last Sale percent change"                 
+    ,"Radius Res Units Sold In Year percent change"                        
+    ,"Radius All Units Sold In Year percent change"                        
+    ,"Radius SF Sold In Year percent change"                               
+    ,"Radius Total Sold In Year sum over 2 years percent change"           
+    ,"Radius Average Years Since Last Sale sum over 2 years percent change"
+    ,"Radius Res Units Sold In Year sum over 2 years percent change"       
+    ,"Radius All Units Sold In Year sum over 2 years percent change"       
+    ,"Radius SF Sold In Year sum over 2 years percent change"
+    )
+
+pander::pander(Summary_SL_feats
+               , caption = "Summary of Spatial Lag Features"
+               , split.table = Inf
+               , style = "rmarkdown"
+               , justify = "left")
 ```
 
-## Outcome variables
+Temporal and spatial derivitives of the Spatial Lag features presented in Table 5 are also added to the model, including: variables weighted by euclidean distance ("dist"), basic averages of the spatial lag radius ("basic mean"), Simple Moving Averages ("SMA") for 2 years, 3 years and 5 years, exponential moving averages ("EMA") for 2 years, 3 years and 5 years, and year-over-year percent changes for all variables ("perc change"). For a complete list of Spatial Lag features, see Appendix A. 
+
+
+## Outcome Variables
 
 The final step in creating the modeling data is to define the outcome variables. For our purposes, we create two dependent variables:
+
 - Sold. Whether a tax lot sold in a given year. Used in the Probability of Sale classification model.
 - Sale Price. The price-per-square foot assocaited with a transaction, if a sale took place. Used in the Sale Price Regression model. 
 
@@ -124,13 +179,16 @@ The following table describes the distributions of both outcome variables:
 
 
 ```{r table 4, fig.cap= "Distributions for Outcome Variables", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
-knitr::kable(
+pander::pander(
   merge(
   readr::read_rds("tables and figures/sold_summary_table5.rds")
   ,readr::read_rds("tables and figures/sale_price_summary_table4.rds")
   , sort = FALSE
   )
-  )
+  , caption = "Distributions for Outcome Variables"
+               , split.table = Inf
+               , style = "rmarkdown"
+               , justify = "left")
 ```
 
 
@@ -145,18 +203,36 @@ The primary advantages to using Random Forest with real estate data are:
 1. Can handle an arbitrarily large number of variables while avoiding the curse of dimensionality associated with regression techniques. Increasing the number of predictors in a multiple regression can quickly lead to overfitting. 
 2. Can accomodate categorical variables with many levels. Real estate data often contains information describing the location of the property, or the property itself, as one of a large set of possible choices, such as neighborhood, county, census tract, district, property type, and zoning information. Because factors need to be recoded as individual dummy variables in the model building process, factors with many levels will quickly encounter the curse of dimensionality in multiple regression techniques.
 3. Appropriately handles missing data. Predictions can be made with the parts of the tree which are succesfully built, and therefore, there is no need to filter out incomplete observations or impute missing values. Since much real destate data is self reported, incomplete fields are common in the data.
-4. Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, are reduced in terms of importance. Real estate data, especially with regards to pricing, tends to contain outliers. For example, the dependent variable in one of our models, Sale Price (see: Table 5), shows a clear divergence in median and mean, as well as a maximum significantly higher than the third quartile.
+4. Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, are reduced in terms of importance. Real estate data, especially with regards to pricing, tends to contain outliers. For example, the dependent variable in one of our models, Sale Price (see: Table 7), shows a clear divergence in median and mean, as well as a maximum significantly higher than the third quartile.
 5. Can recognize non-linear relationships in data, which is useful when modeling spatial relationships. 
 6. Is not affected by colinearity in the data. This is highly valuable as real estate data can be highly correlated. 
 7. The algorithm can be parallelized and is relatively fast compared to nueral networks and functional gradient descent algorithms. 
 
 To run the model, we have chosen the h2o.randomForest function from the h2o R open source library. The h2o implementation of the Random Forest algorithm is particularly well-suited for high parallelization. For more information, see: [https://www.h2o.ai/](https://www.h2o.ai/). 
 
+### Data Validation
+
+The goal of the predictive models are to be able to successfully predict both the probability and amount of real estate sales into the near future. As such, our models will use out-of-time validation to assess performance. As shown in Figure  \ref{fig:Train Test Validate} The models will be trained using data from 2003-2015. 2016 modeling data will be used during the model training process as cross-validation data. Finally, we will score our model using 2017 as a held-out sample. Using out-of-time validation should ensure that the models generalize well into the immediate future. 
+
+
+```{r Train Test Validate, fig.cap="Out-of-time validation",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
+knitr::include_graphics("Sections/tables and figures/Train Validate Test.png")
+```
+
+## Variable Selection
+
+For ease of processing and to improve the ability of the model to generalize into the future, a variable selection step is added to the modeling process. A Random Forest model is first trained on a 1% subsample of the modeling data. Variable importance of the resulting model is calculated using the technique proposed by @Friedman2001, i.e., for a collection of decision trees $[T_m]_{1}^{m}$: 
+
+\begin{flalign*}
+  \hat{I_{j}^{2}} = \frac{1}{M} \sum_{m=1}^{M}\hat{I_{j}^{2}}(T_m)
+\end{flalign*}
+
+Where influence $I$ for variable $j$ is calculatd as the sum of corresponding improvements in squared-error for node tree $T$. After calculating variable importance for the model data subset, the variables are rank-ordered by descending importance. Variables which account for 80% of the total variable importance are chosen to advance to the model training round on the full modeling data sets. 
+
 
 ## Evaluation Metrics
 
 We have chosen evaluation metrics that will allow us to easily compare the performance of the models against other models with the same outcome variable. The classification models (Probability of Sale) will be compared using Area Under the ROC Curve (AUC). The regression models (Sale Price) will be compared using Root Mean Squared Error (RMSE). Both evaluation metrics are common for their respective outcome variable types, and as such will be useful for comparing within model-groups. 
-
 
 
 ### Area Under ROC Curve (AUC)
@@ -174,27 +250,5 @@ One of the drawbacks to AUC is that is does not describe the tradeoffs between f
 The Root Mean Squared Error (RMSE) is a common measurement of the differences between values predicted by a regression model and the observed values. It is formally defined as $RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }$, where $\hat{y}$ represents the prediction and $y$ represents the observed value at observation $t$. 
 
 Lower RMSE scores are typically more desireable. An RMSE value of 0 would indicate a perfect fit to the data. RMSE can be difficult to interpret on its own, however, it is useful for comparing models with similar outcome variables. In our case, the outcome variables (Sales Price per Square Foot) are consistent across modeling data sets, and therefore can be reasonably compared using RMSE. 
-
-### Model Validation
-
-The goal of the predictive models are to be able to successfully predict both the probability and amount of real estate sales into the near future. As such, our models will use out-of-time validation to assess performance. As shown in Figure  \ref{fig:TrainTestValidate} The models will be trained using data from 2003-2015. 2016 modeling data will be used during the model training process as cross-validation data. Finally, we will score our model using 2017 as a held-out sample. Using out-of-time validation should ensure that the models generalize well into the immediate future. 
-
-
-```{r TrainTestValidate, fig.cap="Out-of-time validation",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE}
-knitr::include_graphics("Sections/tables and figures/Train Validate Test.png")
-```
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 

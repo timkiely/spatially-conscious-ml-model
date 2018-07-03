@@ -4,10 +4,17 @@ output: pdf_document
 bibliography: bib/bibliography.bib
 ---
 
-## Probability of Sale Model
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+})
+```
 
 
 ## Sale Price Model
+
+
+## Probability of Sale Model
 
 
 ## Using the Models in Practice

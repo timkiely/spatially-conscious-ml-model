@@ -255,7 +255,7 @@ all_dates %>%
 Look at the predictions and see how they match up against actual:
 
 ```{r}
-radii_data_infile <- read_rds('results/prob/p11_prob_of_sale_model_radii.rds')
+radii_data_infile <- read_rds('analysis/results/prob/p11_prob_of_sale_model_radii.rds')
 radii_model <- radii_data_infile$model
 
 radii_model_data <- read_rds("/Users/timkiely/Dropbox (Personal)/MSPA/Thesis/Analysis/nyc-sales-data/data/processing steps/p08_radii_model_data.rds")
@@ -284,6 +284,7 @@ w27_sales %>%
        , subtitle = "Red dots are predictions, black bars are actual sales, green line is probability of sale"
        , y = "Probability of Sale"
        , x = NULL)
+
 
 ```
 

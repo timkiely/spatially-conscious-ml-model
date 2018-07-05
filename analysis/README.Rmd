@@ -143,7 +143,7 @@ fastAUC <- function(probs, class) {
   return(auc)
 }
 
-  
+
 by_boro_base <- data_frame(Borough = prob_base_data$Borough$Borough, Actual = prob_base_data$actual, Prob = prob_base_data$probs, Pred = prob_base_data$pred)
 by_boro_zip <- data_frame(Borough = prob_zip_data$Borough$Borough, Actual = prob_zip_data$actual, Prob = prob_zip_data$probs, Pred = prob_zip_data$pred)
 by_boro_radii <- data_frame(Borough = prob_radii_data$Borough$Borough, Actual = prob_radii_data$actual, Prob = prob_radii_data$probs, Pred = prob_radii_data$pred)
@@ -231,7 +231,7 @@ bind_rows(by_both_base, by_both_zip, by_both_radii) %>%
   labs(title = "AUC by Borough and Building Type"
        , subtitle = "Only includes models with >70 samples"
        , fill = "Difference from\nGroup Average")
-  
+
 
 
 ```
@@ -246,7 +246,7 @@ correct_predictions <-
          , ColorKey = ifelse(Actual==0 & Pred==0, "TN",ColorKey)
          , ColorKey = ifelse(Actual==0 & Pred==1, "FP",ColorKey)
          , ColorKey = ifelse(Actual==1 & Pred==0, "FN",ColorKey)
-         )
+  )
 # map in lat/lon
 bbl_coords <- read_rds("utils/bbl_coords_sf.rds")
 correct_predictions_coords <- correct_predictions %>% left_join(bbl_coords, by = 'bbl') %>% st_as_sf(sf_column_name = "geometry", crs = 4326)
@@ -276,7 +276,9 @@ sales_test_metrics <-
              , zip = as.numeric(sales_evals[2,"Test_RMSE"])
              , radii = as.numeric(sales_evals[3,"Test_RMSE"]))
 
-bind_rows(sales_val_metrics, sales_test_metrics)
+sales_model_RMSE <- bind_rows(sales_val_metrics, sales_test_metrics)
+write_rds(sales_model_RMSE, "sales model evaluations.rds")
+sales_model_RMSE
 ```
 
 
@@ -303,4 +305,135 @@ sales_base_data$model@model$scoring_history %>%
 ```
 
 
+
+Does the RMSE vary across boroughs and building types?
+
+```{r}
+
+rmse <- function(error) {
+  sqrt(mean(error^2))
+}
+
+sales_by_both_base <- data_frame(Building_Type = sales_base_data$Building_Type$Building_Type
+                                 , Borough = sales_base_data$Borough$Borough
+                                 , bbl = sales_base_data$bbl$bbl
+                                 , Actual = sales_base_data$actual
+                                 , Pred = sales_base_data$pred) %>% 
+  mutate(Model = "Base")
+
+sales_by_both_zip <- data_frame(Building_Type = sales_zip_data$Building_Type$Building_Type
+                                , Borough = sales_zip_data$Borough$Borough
+                                , bbl = sales_zip_data$bbl$bbl
+                                , Actual = sales_zip_data$actual
+                                , Pred = sales_zip_data$pred) %>% 
+  mutate(Model = "Zip")
+
+
+sales_by_both_radii <- data_frame(Building_Type = sales_radii_data$Building_Type$Building_Type
+                                  , Borough = sales_radii_data$Borough$Borough
+                                  , bbl = sales_radii_data$bbl$bbl
+                                  , Actual = sales_radii_data$actual
+                                  , Pred = sales_radii_data$pred) %>% 
+  mutate(Model = "Radii")
+
+
+bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>% 
+  mutate(error = Actual - Pred) %>% 
+  group_by(Borough, Building_Type, Model) %>% 
+  summarise(RMSE = rmse(error)
+            , Count = n()) %>% 
+  mutate(Model = ifelse(Model=="Radii","Spatial Lag", Model)) %>% 
+  filter(Building_Type!="G") %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x)) %>% 
+  ggplot()+
+  aes(x = Model, y = RMSE)+
+  geom_col()+
+  #geom_text(aes(x = "Spatial Lag", y = 600, label = scales::comma(Count)), color = "red")+
+  facet_grid(Borough~Building_Type)+
+  ggthemes::theme_few()+
+  theme(axis.text.x = element_text(angle = 45,hjust = 1, vjust = 1))+
+  labs(title = "Sale Price Model Performance by Borough and Building Type") -> rmse_by_boro_by_build_type
+
+jpeg(filename = "RMSE by boro and build type.jpeg",
+    width = 480*2, height = 480*2, units = "px", pointsize = 100, quality = 100, res = 150)
+
+rmse_by_boro_by_build_type
+
+dev.off()
+
+rmse_by_boro_by_build_type
+
+```
+
+
+Average rank, RMSE by borough and building type
+
+```{r}
+average_model_rank_rmse <- 
+  bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>% 
+  mutate(error = Actual - Pred) %>% 
+  group_by(Borough, Building_Type, Model) %>% 
+  summarise(RMSE = rmse(error)
+            , Count = n()) %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x)) %>% 
+  ungroup() %>% 
+  group_by(Borough, Building_Type) %>% 
+  mutate(Model_rank = rank(RMSE)) %>% 
+  ungroup() %>% 
+  group_by(Model) %>% 
+  summarise(`Average Rank` = mean(Model_rank)) %>% 
+  mutate(Model = ifelse(Model=="Radii", "Spatial Lag", Model)) %>% 
+  mutate(`Average Rank` = round(`Average Rank`,2))
+
+write_rds(average_model_rank_rmse, "average sales model rank rmse.rds")
+
+average_model_rank_rmse
+```
+
+How often does spatial lag outperform zip?
+
+```{r}
+bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>% 
+  mutate(error = Actual - Pred) %>% 
+  group_by(Borough, Building_Type, Model) %>% 
+  summarise(RMSE = rmse(error)
+            , Count = n()) %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x)) %>% 
+  ungroup() %>% 
+  group_by(Borough, Building_Type) %>% 
+  mutate(Model_rank = rank(RMSE)) %>% 
+  ungroup() %>% 
+  select(Borough, Building_Type,Model, Model_rank) %>% 
+  filter(Model!="Base") %>% 
+  spread(Model, Model_rank) %>% 
+  mutate(radii_wins = ifelse(Radii<Zip, 1,0)) %>% 
+  summarise(radii_wins = sum(radii_wins), count = n(), percent = radii_wins/count)
+
+```
+
+```{r}
+bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>% 
+  mutate(error = Actual - Pred) %>% 
+  group_by(Borough, Building_Type, Model) %>% 
+  summarise(RMSE = rmse(error)
+            , Count = n()) %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x)) %>% 
+  ungroup() %>% 
+  group_by(Borough, Building_Type) %>% 
+  mutate(Model_rank = rank(RMSE)) %>% 
+  ungroup() %>% 
+  select(Borough, Building_Type,Model, Model_rank) %>% 
+  group_by(Model, Model_rank) %>% 
+  summarise(count = n()) %>% 
+  ungroup() %>% 
+  mutate(percent = scales::percent(count/sum(count))) %>% 
+  mutate(Model = ifelse(Model=="Radii", "Spatial Lag", Model)) %>% 
+  select(-count) %>% 
+  spread(Model_rank, percent) %>% 
+  rename("Model Rank" = Model) -> rmse_model_rank_disto
+
+write_csv(rmse_model_rank_disto, "model rank perc distribution table.csv")
+
+rmse_model_rank_disto
+```
 

@@ -43,7 +43,7 @@ prob_base_data$model@model$scoring_history %>%
        , x = "number of trees")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-3-1.png)
 
 ROC Curves on validation data
 =============================
@@ -74,7 +74,7 @@ ggplot()+
        , subtitle = "Radii model marginally outperforms zip and base")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-4-1.png)
 
 Does spatial lag probability model outperform base? Zip?
 ========================================================
@@ -101,10 +101,10 @@ prob_results_table
 ```
 
     ## # A tibble: 2 x 4
-    ##   type       base_AUC zip_AUC radii_AUC
-    ##   <chr>         <dbl>   <dbl>     <dbl>
-    ## 1 Validation    0.832   0.829     0.829
-    ## 2 Test          0.787   0.788     0.796
+    ##         type  base_AUC   zip_AUC radii_AUC
+    ##        <chr>     <dbl>     <dbl>     <dbl>
+    ## 1 Validation 0.8320345 0.8292006 0.8287313
+    ## 2       Test 0.8300389 0.8246017 0.8279034
 
 Here is a chart of performance
 
@@ -119,7 +119,7 @@ prob_results_plot <-
   aes(x = type, y = Value, fill = Var)+
   geom_col(position = "dodge")+
   facet_wrap(~Var)+
-  coord_cartesian(ylim = c(0.775,0.85))+
+  coord_cartesian(ylim = c(0.82,0.84))+
   ggthemes::scale_fill_fivethirtyeight()+
   ggthemes::theme_few()+
   theme(legend.position = "none")+
@@ -130,7 +130,7 @@ prob_results_plot <-
 grid.arrange(prob_results_plot, prob_results_table_plot,nrow=2, heights = c(3,1))
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-6-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-6-1.png)
 
 Are there certain areas where radii model performs better?
 ==========================================================
@@ -146,6 +146,7 @@ fastAUC <- function(probs, class) {
   auc = (sum(r[1:n1]) - n1*(n1+1)/2) / n1 / n2
   return(auc)
 }
+
 
 by_boro_base <- data_frame(Borough = prob_base_data$Borough$Borough, Actual = prob_base_data$actual, Prob = prob_base_data$probs, Pred = prob_base_data$pred)
 by_boro_zip <- data_frame(Borough = prob_zip_data$Borough$Borough, Actual = prob_zip_data$actual, Prob = prob_zip_data$probs, Pred = prob_zip_data$pred)
@@ -167,11 +168,11 @@ list(by_boro_base, by_boro_zip, by_boro_radii) %>%
 ```
 
     ## # A tibble: 3 x 6
-    ##   Model    BK    BX    MN    QN    SI
-    ##   <chr> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 Base  0.831 0.829 0.793 0.834 0.834
-    ## 2 Zip   0.823 0.822 0.780 0.828 0.828
-    ## 3 Radii 0.826 0.831 0.803 0.833 0.835
+    ##   Model     BK     BX     MN     QN     SI
+    ##   <chr>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
+    ## 1  Base 0.8309 0.8288 0.7926 0.8338 0.8336
+    ## 2   Zip 0.8234 0.8215 0.7796 0.8283 0.8281
+    ## 3 Radii 0.8257 0.8312 0.8031 0.8327 0.8348
 
 Do any of the models perform best for certin building types?
 ============================================================
@@ -198,11 +199,11 @@ list(by_buildtype_base, by_buildtype_zip, by_buildtype_radii) %>%
 ```
 
     ## # A tibble: 3 x 9
-    ##   Model     A     B     C     D     F     G     L     O
-    ##   <chr> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl> <dbl>
-    ## 1 Base  0.846 0.829 0.807 0.768 0.777 0.879 0.853 0.840
-    ## 2 Zip   0.842 0.822 0.798 0.760 0.792 0.881 0.870 0.834
-    ## 3 Radii 0.843 0.823 0.811 0.804 0.805 0.890 0.813 0.838
+    ##   Model      A      B      C      D      F      G      L      O
+    ##   <chr>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>  <dbl>
+    ## 1  Base 0.8461 0.8286 0.8071 0.7681 0.7773 0.8789 0.8534 0.8395
+    ## 2   Zip 0.8419 0.8222 0.7982 0.7602 0.7923 0.8809 0.8698 0.8336
+    ## 3 Radii 0.8433 0.8229 0.8113 0.8037 0.8048 0.8896 0.8134 0.8380
 
 Is there a particularly outstanding subset of model results at the intersection of Building Type and Borough?
 =============================================================================================================
@@ -246,7 +247,7 @@ bind_rows(by_both_base, by_both_zip, by_both_radii) %>%
        , fill = "Difference from\nGroup Average")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-9-1.png)
 
 Map of correctly predicted sales
 ================================
@@ -258,7 +259,7 @@ correct_predictions <-
          , ColorKey = ifelse(Actual==0 & Pred==0, "TN",ColorKey)
          , ColorKey = ifelse(Actual==0 & Pred==1, "FP",ColorKey)
          , ColorKey = ifelse(Actual==1 & Pred==0, "FN",ColorKey)
-         )
+  )
 # map in lat/lon
 bbl_coords <- read_rds("utils/bbl_coords_sf.rds")
 correct_predictions_coords <- correct_predictions %>% left_join(bbl_coords, by = 'bbl') %>% st_as_sf(sf_column_name = "geometry", crs = 4326)
@@ -291,14 +292,16 @@ sales_test_metrics <-
              , zip = as.numeric(sales_evals[2,"Test_RMSE"])
              , radii = as.numeric(sales_evals[3,"Test_RMSE"]))
 
-bind_rows(sales_val_metrics, sales_test_metrics)
+sales_model_RMSE <- bind_rows(sales_val_metrics, sales_test_metrics)
+write_rds(sales_model_RMSE, "sales model evaluations.rds")
+sales_model_RMSE
 ```
 
     ## # A tibble: 2 x 4
-    ##   type        base   zip radii
-    ##   <chr>      <dbl> <dbl> <dbl>
-    ## 1 Validation   281   302   289
-    ## 2 Test         862  1120   815
+    ##         type     base      zip    radii
+    ##        <chr>    <dbl>    <dbl>    <dbl>
+    ## 1 Validation 280.6314 297.9717 286.2295
+    ## 2       Test 287.8305 300.6031 297.9202
 
 ``` r
 sales_base_data$model@model$scoring_history %>% 
@@ -311,7 +314,7 @@ sales_base_data$model@model$scoring_history %>%
        , y = "RMSE")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-13-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-13-1.png)
 
 ``` r
 sales_base_data$model@model$scoring_history %>% 
@@ -324,4 +327,148 @@ sales_base_data$model@model$scoring_history %>%
        , y = "MAE")
 ```
 
-![](README_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-14-1.png)
+
+Does the RMSE vary across boroughs and building types?
+
+``` r
+rmse <- function(error) {
+  sqrt(mean(error^2))
+}
+
+sales_by_both_base <- data_frame(Building_Type = sales_base_data$Building_Type$Building_Type
+                                 , Borough = sales_base_data$Borough$Borough
+                                 , bbl = sales_base_data$bbl$bbl
+                                 , Actual = sales_base_data$actual
+                                 , Pred = sales_base_data$pred) %>% 
+  mutate(Model = "Base")
+
+sales_by_both_zip <- data_frame(Building_Type = sales_zip_data$Building_Type$Building_Type
+                                , Borough = sales_zip_data$Borough$Borough
+                                , bbl = sales_zip_data$bbl$bbl
+                                , Actual = sales_zip_data$actual
+                                , Pred = sales_zip_data$pred) %>% 
+  mutate(Model = "Zip")
+
+
+sales_by_both_radii <- data_frame(Building_Type = sales_radii_data$Building_Type$Building_Type
+                                  , Borough = sales_radii_data$Borough$Borough
+                                  , bbl = sales_radii_data$bbl$bbl
+                                  , Actual = sales_radii_data$actual
+                                  , Pred = sales_radii_data$pred) %>% 
+  mutate(Model = "Radii")
+
+
+bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>% 
+  mutate(error = Actual - Pred) %>% 
+  group_by(Borough, Building_Type, Model) %>% 
+  summarise(RMSE = rmse(error)
+            , Count = n()) %>% 
+  filter(Building_Type!="G") %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x)) %>% 
+  #filter(Count>70) %>% 
+  mutate(Group_Av = mean(RMSE, na.rm = T)
+         , `Difference From Group Average` = RMSE-Group_Av) %>% 
+  ggplot()+
+  aes(x = Model, y = RMSE, fill = `Difference From Group Average`)+
+  geom_col()+
+  geom_text(aes(x = "Radii", y = 600, label = Count), color = "red")+
+  facet_grid(Borough~Building_Type)+
+  #coord_cartesian(ylim = c(.75,.9))+
+  ggthemes::theme_few()+
+  theme(axis.text.x = element_text(angle = 45,hjust = 1, vjust = 1))+
+  labs(title = "RMSE by Borough and Building Type"
+       #, subtitle = "Only includes models with >70 samples"
+       , fill = "Difference from\nGroup Average")
+```
+
+![](README_files/figure-markdown_github-ascii_identifiers/unnamed-chunk-15-1.png)
+
+Average rank, RMSE by borough and building type
+
+``` r
+average_model_rank_rmse <- 
+  bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>% 
+  mutate(error = Actual - Pred) %>% 
+  group_by(Borough, Building_Type, Model) %>% 
+  summarise(RMSE = rmse(error)
+            , Count = n()) %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x)) %>% 
+  ungroup() %>% 
+  group_by(Borough, Building_Type) %>% 
+  mutate(Model_rank = rank(RMSE)) %>% 
+  ungroup() %>% 
+  group_by(Model) %>% 
+  summarise(`Average Rank` = mean(Model_rank)) %>% 
+  mutate(Model = ifelse(Model=="Radii", "Spatial Lag", Model)) %>% 
+  mutate(`Average Rank` = round(`Average Rank`,2))
+
+write_rds(average_model_rank_rmse, "average sales model rank rmse.rds")
+
+average_model_rank_rmse
+```
+
+    ## # A tibble: 3 x 2
+    ##         Model `Average Rank`
+    ##         <chr>          <dbl>
+    ## 1        Base           1.39
+    ## 2 Spatial Lag           2.11
+    ## 3         Zip           2.50
+
+How often does spatial lag outperform zip?
+
+``` r
+bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>% 
+  mutate(error = Actual - Pred) %>% 
+  group_by(Borough, Building_Type, Model) %>% 
+  summarise(RMSE = rmse(error)
+            , Count = n()) %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x)) %>% 
+  ungroup() %>% 
+  group_by(Borough, Building_Type) %>% 
+  mutate(Model_rank = rank(RMSE)) %>% 
+  ungroup() %>% 
+  select(Borough, Building_Type,Model, Model_rank) %>% 
+  filter(Model!="Base") %>% 
+  spread(Model, Model_rank) %>% 
+  mutate(radii_wins = ifelse(Radii<Zip, 1,0)) %>% 
+  summarise(radii_wins = sum(radii_wins), count = n(), percent = radii_wins/count)
+```
+
+    ## # A tibble: 1 x 3
+    ##   radii_wins count   percent
+    ##        <dbl> <int>     <dbl>
+    ## 1         26    36 0.7222222
+
+``` r
+bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>% 
+  mutate(error = Actual - Pred) %>% 
+  group_by(Borough, Building_Type, Model) %>% 
+  summarise(RMSE = rmse(error)
+            , Count = n()) %>% 
+  mutate_all(function(x) ifelse(is.infinite(x), 0, x)) %>% 
+  ungroup() %>% 
+  group_by(Borough, Building_Type) %>% 
+  mutate(Model_rank = rank(RMSE)) %>% 
+  ungroup() %>% 
+  select(Borough, Building_Type,Model, Model_rank) %>% 
+  group_by(Model, Model_rank) %>% 
+  summarise(count = n()) %>% 
+  ungroup() %>% 
+  mutate(percent = scales::percent(count/sum(count))) %>% 
+  mutate(Model = ifelse(Model=="Radii", "Spatial Lag", Model)) %>% 
+  select(-count) %>% 
+  spread(Model_rank, percent) %>% 
+  rename("Model Rank" = Model) -> rmse_model_rank_disto
+
+write_csv(rmse_model_rank_disto, "model rank perc distribution table.csv")
+
+rmse_model_rank_disto
+```
+
+    ## # A tibble: 3 x 4
+    ##   `Model Rank`   `1`   `2`   `3`
+    ## *        <chr> <chr> <chr> <chr>
+    ## 1         Base 22.2%  9.3%  1.9%
+    ## 2  Spatial Lag  5.6% 18.5%  9.3%
+    ## 3          Zip  5.6%  5.6% 22.2%

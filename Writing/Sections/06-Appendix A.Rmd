@@ -4,7 +4,7 @@ output: pdf_document
 ---
 
 ```{r Appendix A, fig.cap= "Spatial Lag Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, out.width = '100%'}
-pander::pander(readr::read_rds("tables and figures/table3.rds")
+pander::pander(readr::read_rds("tables and figures/table3.rds") %>% select(Feature)
                , caption = "Appendix A: All Spatial Lag Features"
                , split.table = Inf
                , style = "rmarkdown"

@@ -51,9 +51,9 @@ The New York City government makes available an annual data set which describes 
 
 Ultimately, we are interested in sales transactions--both frequency, and amount. Sales transactions are also made available by the New York City government, known as [NYC Rolling Sales Data](http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page). At the time of this writing, sales transactions are available for the years 2003-2017. The sales transactions data contains additional data fields describing time, place, and amount of sale as well as additional building characteristics. Crucially, the sales transaction data does not include geographical coordinates, making it impossible to perform geospatial analysis without first mapping the sales data to PLUTO.
 
-Prior to mapping to PLUTO, the sales data must first be transformed to include the proper mapping key. New York City uses a standard key of Borough-Block-Lot to identify tax lots in the data. For example, 31 West 27th Street is located in Manhattan, on block 829 and lot 16, therefore, its Borough-Block-Lot (BBL) is 1_829_16 (the 1 represents Manhattan). The sales data contains BBL's at the building level, however, the sales transactions data does not appropriately designate condos as their own BBLs. Mapping the sales data directly to the PLUTO data results in a mapping error rate of 23.1%. Therefore, the sales transactions data must first be mapped to another data source, the NYC Property Address Directory, or [PAD](https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data), which contains an exhaustive list of all BBLs in NYC. Once the sales data is combined with PAD, the data can be mapped to PLUTO with an error rate of 0.291%.
+Prior to mapping to PLUTO, the sales data must first be transformed to include the proper mapping key. New York City uses a standard key of Borough-Block-Lot to identify tax lots in the data. For example, 31 West 27th Street is located in Manhattan, on block 829 and lot 16, therefore, its Borough-Block-Lot (BBL) is 1_829_16 (the 1 represents Manhattan). The sales data contains BBL's at the building level, however, the sales transactions data does not appropriately designate condos as their own BBL's. Mapping the sales data directly to the PLUTO data results in a mapping error rate of 23.1%. Therefore, the sales transactions data must first be mapped to another data source, the NYC Property Address Directory, or [PAD](https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data), which contains an exhaustive list of all BBL's in NYC. Once the sales data is combined with PAD, the data can be mapped to PLUTO with an error rate of 0.291%.
 
-After the Sales Transactions data has been mapped to PAD, it can then be mapped to PLUTO. The sales data is normalized and filtered so that only BBLs with less than or equal to 1 transactions in a year occur. The final data set is an exhaustive list of all tax lots in NYC for every year between 2003-2017, whether that building was sold, for what amount, and several other additional variables. 
+After the Sales Transactions data has been mapped to PAD, it can then be mapped to PLUTO. The sales data is normalized and filtered so that only BBL's with less than or equal to 1 transactions in a year occur. The final data set is an exhaustive list of all tax lots in NYC for every year between 2003-2017, whether that building was sold, for what amount, and several other additional variables. 
 
 
 Only building categories of significant interest are included in the data. The following building types are included:
@@ -165,7 +165,7 @@ pander::pander(Summary_SL_feats
                , justify = "left")
 ```
 
-Temporal and spatial derivitives of the Spatial Lag features presented in Table 5 are also added to the model, including: variables weighted by euclidean distance ("dist"), basic averages of the spatial lag radius ("basic mean"), Simple Moving Averages ("SMA") for 2 years, 3 years and 5 years, exponential moving averages ("EMA") for 2 years, 3 years and 5 years, and year-over-year percent changes for all variables ("perc change"). For a complete list of Spatial Lag features, see Appendix A. 
+Temporal and spatial derivatives of the Spatial Lag features presented in Table 5 are also added to the model, including: variables weighted by euclidean distance ("dist"), basic averages of the spatial lag radius ("basic mean"), Simple Moving Averages ("SMA") for 2 years, 3 years and 5 years, exponential moving averages ("EMA") for 2 years, 3 years and 5 years, and year-over-year percent changes for all variables ("perc change"). For a complete list of Spatial Lag features, see Appendix A. 
 
 
 ## Outcome Variables
@@ -173,7 +173,7 @@ Temporal and spatial derivitives of the Spatial Lag features presented in Table 
 The final step in creating the modeling data is to define the outcome variables. For our purposes, we create two dependent variables:
 
 - Sold. Whether a tax lot sold in a given year. Used in the Probability of Sale classification model.
-- Sale Price. The price-per-square foot assocaited with a transaction, if a sale took place. Used in the Sale Price Regression model. 
+- Sale Price. The price-per-square foot associated with a transaction, if a sale took place. Used in the Sale Price Regression model. 
 
 The following table describes the distributions of both outcome variables:
 
@@ -194,19 +194,19 @@ pander::pander(
 
 ## Algorithm
 
-Previous works (see: @antipov12; also @Schernthanner2016) have found the Random Forest algorithm [@Breiman2001] suitable to prediction tasks invlovling real estate. While algorithms exist that may marginally outperform Random Forest in terms of predictive accuracy (such as nueral networks and functional gradient descent algorithms), Random Forest is highly scalable and paralellizable, and therefore a natural choice for comparing different feature engineering strategies (such as in this paper).  
+Previous works (see: @antipov12; also @Schernthanner2016) have found the Random Forest algorithm [@Breiman2001] suitable to prediction tasks involving real estate. While algorithms exist that may marginally outperform Random Forest in terms of predictive accuracy (such as neural networks and functional gradient descent algorithms), Random Forest is highly scalable and parallelizable, and therefore a natural choice for comparing different feature engineering strategies (such as in this paper).  
 
-Random Forest can be used for both classification and regression tasks. The Random Forest algorithm works by generating a large number of independent classification or regression decision trees and then employing  majority voting (for classification) or averaging (for regression) to generate predictions. Over a dataset of N rows by M predictors, a bootstrap sample of the data is chosen (n < N) as well as a subset of the predictors (m < M). Individual decision/regression trees are built on the n by m sample. Because the trees can be built independently (and not sequentially, as is the case with most functional gradient descent algorithms), the tree building process can be executed in parallel across an arbitrary number of computer cores. With a sufficiently large number of cores, the model training time can be significantly reduced. This provides a highly accurate, robust prediction model that avoids many of the drawbacks of traditional parametric techniques, such as OLS. 
+Random Forest can be used for both classification and regression tasks. The Random Forest algorithm works by generating a large number of independent classification or regression decision trees and then employing  majority voting (for classification) or averaging (for regression) to generate predictions. Over a data set of N rows by M predictors, a bootstrap sample of the data is chosen (n < N) as well as a subset of the predictors (m < M). Individual decision/regression trees are built on the n by m sample. Because the trees can be built independently (and not sequentially, as is the case with most functional gradient descent algorithms), the tree building process can be executed in parallel across an arbitrary number of computer cores. With a sufficiently large number of cores, the model training time can be significantly reduced. This provides a highly accurate, robust prediction model that avoids many of the drawbacks of traditional parametric techniques, such as OLS. 
 
 The primary advantages to using Random Forest with real estate data are: 
 
-1. Can handle an arbitrarily large number of variables while avoiding the curse of dimensionality associated with regression techniques. Increasing the number of predictors in a multiple regression can quickly lead to overfitting. 
-2. Can accomodate categorical variables with many levels. Real estate data often contains information describing the location of the property, or the property itself, as one of a large set of possible choices, such as neighborhood, county, census tract, district, property type, and zoning information. Because factors need to be recoded as individual dummy variables in the model building process, factors with many levels will quickly encounter the curse of dimensionality in multiple regression techniques.
-3. Appropriately handles missing data. Predictions can be made with the parts of the tree which are succesfully built, and therefore, there is no need to filter out incomplete observations or impute missing values. Since much real destate data is self reported, incomplete fields are common in the data.
+1. Can handle an arbitrarily large number of variables while avoiding the curse of dimensionality associated with regression techniques. Increasing the number of predictors in a multiple regression can quickly lead to over-fitting. 
+2. Can accommodate categorical variables with many levels. Real estate data often contains information describing the location of the property, or the property itself, as one of a large set of possible choices, such as neighborhood, county, census tract, district, property type, and zoning information. Because factors need to be recoded as individual dummy variables in the model building process, factors with many levels will quickly encounter the curse of dimensionality in multiple regression techniques.
+3. Appropriately handles missing data. Predictions can be made with the parts of the tree which are successfully built, and therefore, there is no need to filter out incomplete observations or impute missing values. Since much real estate data is self reported, incomplete fields are common in the data.
 4. Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, are reduced in terms of importance. Real estate data, especially with regards to pricing, tends to contain outliers. For example, the dependent variable in one of our models, Sale Price (see: Table 7), shows a clear divergence in median and mean, as well as a maximum significantly higher than the third quartile.
 5. Can recognize non-linear relationships in data, which is useful when modeling spatial relationships. 
-6. Is not affected by colinearity in the data. This is highly valuable as real estate data can be highly correlated. 
-7. The algorithm can be parallelized and is relatively fast compared to nueral networks and functional gradient descent algorithms. 
+6. Is not affected by co-linearity in the data. This is highly valuable as real estate data can be highly correlated. 
+7. The algorithm can be parallelized and is relatively fast compared to neural networks and functional gradient descent algorithms. 
 
 To run the model, we have chosen the h2o.randomForest function from the h2o R open source library. The h2o implementation of the Random Forest algorithm is particularly well-suited for high parallelization. For more information, see: [https://www.h2o.ai/](https://www.h2o.ai/). 
 
@@ -221,13 +221,13 @@ knitr::include_graphics("Sections/tables and figures/Train Validate Test.png")
 
 ## Variable Selection
 
-For ease of processing and to improve the ability of the model to generalize into the future, a variable selection step is added to the modeling process. A Random Forest model is first trained on a 1% subsample of the modeling data. Variable importance of the resulting model is calculated using the technique proposed by @Friedman2001, i.e., for a collection of decision trees $[T_m]_{1}^{m}$: 
+For ease of processing and to improve the ability of the model to generalize into the future, a variable selection step is added to the modeling process. A Random Forest model is first trained on a 1% sub-sample of the modeling data. Variable importance of the resulting model is calculated using the technique proposed by @Friedman2001, i.e., for a collection of decision trees $[T_m]_{1}^{m}$: 
 
 \begin{flalign*}
   \hat{I_{j}^{2}} = \frac{1}{M} \sum_{m=1}^{M}\hat{I_{j}^{2}}(T_m)
 \end{flalign*}
 
-Where influence $I$ for variable $j$ is calculatd as the sum of corresponding improvements in squared-error for node tree $T$. After calculating variable importance for the model data subset, the variables are rank-ordered by descending importance. Variables which account for 80% of the total variable importance are chosen to advance to the model training round on the full modeling data sets. 
+Where influence $I$ for variable $j$ is calculated as the sum of corresponding improvements in squared-error for node tree $T$. After calculating variable importance for the model data subset, the variables are rank-ordered by descending importance. Variables which account for 80% of the total variable importance are chosen to advance to the model training round on the full modeling data sets. 
 
 
 ## Evaluation Metrics
@@ -237,18 +237,18 @@ We have chosen evaluation metrics that will allow us to easily compare the perfo
 
 ### Area Under ROC Curve (AUC)
 
-A classification model typically outputs a probability that a given row in the data belongs to a group. In the case of binary classification, the value falls between 0 and 1. There are many techniques for determining the cut off threshold for classification; a typical method is to assign anything above a 0.5 into the "1" or posistive class. An ROC curve (receiver operating characteristic curve) plots the True Positive Rate vs. the False Positive rate at different classification thresholds; it is a meaurement of the performance of a classification model across all possible thresholds, and therefore sidesteps the need to arbitrarily assign a cutoff. 
+A classification model typically outputs a probability that a given row in the data belongs to a group. In the case of binary classification, the value falls between 0 and 1. There are many techniques for determining the cut off threshold for classification; a typical method is to assign anything above a 0.5 into the "1" or positive class. An ROC curve (receiver operating characteristic curve) plots the True Positive Rate vs. the False Positive rate at different classification thresholds; it is a measurement of the performance of a classification model across all possible thresholds, and therefore sidesteps the need to arbitrarily assign a cutoff. 
 
 Area Under the ROC Curve, or AUC measures the entire two-dimensional area underneath the ROC curve. It is the integration of the curve from (0,0) to (1,1), defined as $AUC = \int_{(0,0)}^{(1,1)} f(x)dx$. 
 
 AUC provides a relatively standard measure of performance across all possible classification thresholds, and can be interpreted as the probability that the model ranks a random positive example more highly than a random negative example. A value of 0.5 represents a perfectly random model, while a value of 1.0 represents a model that can perfectly discriminate between the two classes. AUC is useful for comparing classification models against one another because they are both scale and threshold-invariant.
 
-One of the drawbacks to AUC is that is does not describe the tradeoffs between false positives and false negatives. In certain cirmustances, a false positive might be considerably less desirable than a fasle negative, oe vice-versa. For our purposes, we rank false positives and false negatives as equally undesirable outcomes.
+One of the drawbacks to AUC is that is does not describe the trade-offs between false positives and false negatives. In certain circumstances, a false positive might be considerably less desirable than a false negative, or vice-versa. For our purposes, we rank false positives and false negatives as equally undesirable outcomes.
 
 ### Root Mean Squared Error
 
 The Root Mean Squared Error (RMSE) is a common measurement of the differences between values predicted by a regression model and the observed values. It is formally defined as $RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }$, where $\hat{y}$ represents the prediction and $y$ represents the observed value at observation $t$. 
 
-Lower RMSE scores are typically more desireable. An RMSE value of 0 would indicate a perfect fit to the data. RMSE can be difficult to interpret on its own, however, it is useful for comparing models with similar outcome variables. In our case, the outcome variables (Sales Price per Square Foot) are consistent across modeling data sets, and therefore can be reasonably compared using RMSE. 
+Lower RMSE scores are typically more desirable. An RMSE value of 0 would indicate a perfect fit to the data. RMSE can be difficult to interpret on its own, however, it is useful for comparing models with similar outcome variables. In our case, the outcome variables (Sales Price per Square Foot) are consistent across modeling data sets, and therefore can be reasonably compared using RMSE. 
 
 

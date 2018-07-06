@@ -21,12 +21,12 @@ pander::pander(read_rds("tables and figures/sales model evaluations.rds") %>% re
                , justify = "left")
 ```
 
-Interestingly, both the Spatial Lag modeling data and the Zip Code modleing data are extensions of the Base data, yet the Base data tends to generalize to the hold-out data sets better. From this, we make two observations:
+Interestingly, both the Spatial Lag modeling data and the Zip Code modeling data are extensions of the Base data, yet the Base data tends to generalize to the hold-out data sets better. From this, we make two observations:
 
 1) Building characteristic data, which largely comprises the Base modeling data, are the most important for predicting building sale price per foot
-2) The Zip Code and Spatial Lag models are suffering from overfitting of the data, which is limiting their ability to generalize to the hold-out samples. 
+2) The Zip Code and Spatial Lag models are suffering from over-fitting of the data, which is limiting their ability to generalize to the hold-out samples. 
 
-It is possible that the overfitting issue could be corrected through hyper-parameter tuning of the algorithms, as well as implementing stricter variable selection. Despite this, we can still safely conclude that the Spatial Lag features are superior to the Zip Code features in terms of predictive power. 
+It is possible that the over-fitting issue could be corrected through hyper-parameter tuning of the algorithms, as well as implementing stricter variable selection. Despite this, we can still safely conclude that the Spatial Lag features are superior to the Zip Code features in terms of predictive power. 
 
 Taking a closer look at the data, we find that the models have varying performance across Building Types and Boroughs. Figure \ref{fig:RMSE by boro and build type} shows RMSE by Model, faceted by Borough across the y-axis and Building Type across the x-axis (See Table 2 for a description of building type codes). 
 
@@ -38,9 +38,9 @@ knitr::include_graphics("Sections/tables and figures/RMSE by boro and build type
 
 We make the following observations from Figure \ref{fig:RMSE by boro and build type}:
 
-- The Spatial Lag modeling data outperforms both Base and Zip Code in 6 cases, notably for Type A buidlings (One Family Dwellings) and Type L buildings (Lofts) in Manhattan as well as Type O Buildings (Office) in Queens
+- The Spatial Lag modeling data outperforms both Base and Zip Code in 6 cases, notably for Type A buildings (One Family Dwellings) and Type L buildings (Lofts) in Manhattan as well as Type O Buildings (Office) in Queens
 - It is generally harder to predict sale prices in Manhattan than other Boroughs
-- The "residential" building Types A (One Family Dwelings), B (Two Family Dwellings), C (Walk Up Apartments) and D (Elevator Apartments) have generally lower RMSE scores compared to the non-residential types
+- The "residential" building Types A (One Family Dwellings), B (Two Family Dwellings), C (Walk Up Apartments) and D (Elevator Apartments) have generally lower RMSE scores compared to the non-residential types
 
 If we rank the models by performance for each Borough, Building Type combination, we find that the Spatial Lag models outperform the Zip Code models in 72% of cases. Table 9 shows the average ranking by model type as well as the percent distribution by model type across rankings.
 
@@ -63,7 +63,7 @@ pander::pander(
 
 ## Probability of Sale Model
 
-Similar to the results found in the Sale Price models, using Area Under the ROC Curve (AUC) as an evaluation metric, we find the Spatial Lag model performs better on the hold-out validation data compared ot the Zip Code modeling data, as shown in Table 10. The Base Modeling data continues to outperform the Spatial Lag and Zip Code modeling data overall, however, when broken down by Borough and Building Type, some interesting patterns emerge. 
+Similar to the results found in the Sale Price models, using Area Under the ROC Curve (AUC) as an evaluation metric, we find the Spatial Lag model performs better on the hold-out validation data compared to the Zip Code modeling data, as shown in Table 10. The Base Modeling data continues to outperform the Spatial Lag and Zip Code modeling data overall, however, when broken down by Borough and Building Type, some interesting patterns emerge. 
 
 ```{r Prob Model AUC, fig.cap= "Sale Price Model Evaluations", echo=FALSE, message=FALSE, warning=FALSE}
 pander::pander(read.csv("tables and figures/Prob Models AUC evaluations.csv", check.names = FALSE)
@@ -98,20 +98,22 @@ We make the following observations about Figure \ref{fig:AUC by boro and build t
 - The Probability of Sale model tends to perform poorly in Manhattan vs. other Boroughs
 - However, the Spatial Lag model performs well in Manhattan for the residential building types (A, B, C and D)
 
-```{r}
+If we rank model the probability models' performance for each Borough and Building Type, we see that the Spatial Lag models consistently outperform the Zip Code models, as shown in Table 12.
 
-read.csv("tables and figures/average prob model rank auc.csv", check.names = FALSE)
+```{r Prob Model AUC Average Rank, fig.cap= "Sale Price Model Evaluations", echo=FALSE, message=FALSE, warning=FALSE}
+pander::pander(
+  
+  left_join(read.csv("tables and figures/auc model rank perc distribution table.csv", check.names = FALSE)
+            , read.csv("tables and figures/average prob model rank auc.csv", check.names = FALSE)
+            , by = c("Model Rank" = "Model"))
+                , caption = "Distribution and Average Model Rank for Probability of Sale by AUC across Borough and Building Types"
+                , split.table = Inf
+                , style = "rmarkdown"
+                , justify = "left")
 
 ```
 
 
-```{r}
-read.csv("tables and figures/auc model rank perc distribution table.csv", check.names = FALSE)
-```
-
-
-
-## Using the Models in Practice
 
 
 

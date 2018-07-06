@@ -28,46 +28,6 @@
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
-\usepackage{color}
-\usepackage{fancyvrb}
-\newcommand{\VerbBar}{|}
-\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
-% Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
-\definecolor{shadecolor}{RGB}{248,248,248}
-\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
-\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
-\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
-\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
-\newcommand{\ImportTok}[1]{#1}
-\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
-\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
-\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
-\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
-\newcommand{\BuiltInTok}[1]{#1}
-\newcommand{\ExtensionTok}[1]{#1}
-\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
-\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
-\newcommand{\RegionMarkerTok}[1]{#1}
-\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
-\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
-\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
-\newcommand{\NormalTok}[1]{#1}
 \usepackage{longtable,booktabs}
 \usepackage{graphicx,grffile}
 \makeatletter
@@ -117,7 +77,7 @@
 Dependence}
   \pretitle{\vspace{\droptitle}\centering\huge}
   \posttitle{\par}
-\subtitle{Boosting Random Forest Predictive Accuracy Using Spatial Lags}
+\subtitle{Boosting ML Predictive Accuracy Using Spatial Lags}
   \author{}
   \preauthor{}\postauthor{}
   \date{}
@@ -547,18 +507,18 @@ Borough-Block-Lot to identify tax lots in the data. For example, 31 West
 its Borough-Block-Lot (BBL) is 1\_829\_16 (the 1 represents Manhattan).
 The sales data contains BBL's at the building level, however, the sales
 transactions data does not appropriately designate condos as their own
-BBLs. Mapping the sales data directly to the PLUTO data results in a
+BBL's. Mapping the sales data directly to the PLUTO data results in a
 mapping error rate of 23.1\%. Therefore, the sales transactions data
 must first be mapped to another data source, the NYC Property Address
 Directory, or
 \href{https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data}{PAD},
-which contains an exhaustive list of all BBLs in NYC. Once the sales
+which contains an exhaustive list of all BBL's in NYC. Once the sales
 data is combined with PAD, the data can be mapped to PLUTO with an error
 rate of 0.291\%.
 
 After the Sales Transactions data has been mapped to PAD, it can then be
 mapped to PLUTO. The sales data is normalized and filtered so that only
-BBLs with less than or equal to 1 transactions in a year occur. The
+BBL's with less than or equal to 1 transactions in a year occur. The
 final data set is an exhaustive list of all tax lots in NYC for every
 year between 2003-2017, whether that building was sold, for what amount,
 and several other additional variables.
@@ -832,7 +792,7 @@ Radius SF Sold In Year sum over 2 years percent change\tabularnewline
 \bottomrule
 \end{longtable}
 
-Temporal and spatial derivitives of the Spatial Lag features presented
+Temporal and spatial derivatives of the Spatial Lag features presented
 in Table 5 are also added to the model, including: variables weighted by
 euclidean distance (``dist''), basic averages of the spatial lag radius
 (``basic mean''), Simple Moving Averages (``SMA'') for 2 years, 3 years
@@ -852,7 +812,7 @@ variables. For our purposes, we create two dependent variables:
   Sold. Whether a tax lot sold in a given year. Used in the Probability
   of Sale classification model.
 \item
-  Sale Price. The price-per-square foot assocaited with a transaction,
+  Sale Price. The price-per-square foot associated with a transaction,
   if a sale took place. Used in the Sale Price Regression model.
 \end{itemize}
 
@@ -882,18 +842,18 @@ Max. & 1.00 & 83,598.7\tabularnewline
 
 Previous works (see: Antipov and Pokryshevskaya (2012); also
 Schernthanner H. (2016)) have found the Random Forest algorithm (Breiman
-2001) suitable to prediction tasks invlovling real estate. While
+2001) suitable to prediction tasks involving real estate. While
 algorithms exist that may marginally outperform Random Forest in terms
-of predictive accuracy (such as nueral networks and functional gradient
+of predictive accuracy (such as neural networks and functional gradient
 descent algorithms), Random Forest is highly scalable and
-paralellizable, and therefore a natural choice for comparing different
+parallelizable, and therefore a natural choice for comparing different
 feature engineering strategies (such as in this paper).
 
 Random Forest can be used for both classification and regression tasks.
 The Random Forest algorithm works by generating a large number of
 independent classification or regression decision trees and then
 employing majority voting (for classification) or averaging (for
-regression) to generate predictions. Over a dataset of N rows by M
+regression) to generate predictions. Over a data set of N rows by M
 predictors, a bootstrap sample of the data is chosen (n \textless{} N)
 as well as a subset of the predictors (m \textless{} M). Individual
 decision/regression trees are built on the n by m sample. Because the
@@ -914,9 +874,9 @@ The primary advantages to using Random Forest with real estate data are:
   Can handle an arbitrarily large number of variables while avoiding the
   curse of dimensionality associated with regression techniques.
   Increasing the number of predictors in a multiple regression can
-  quickly lead to overfitting.
+  quickly lead to over-fitting.
 \item
-  Can accomodate categorical variables with many levels. Real estate
+  Can accommodate categorical variables with many levels. Real estate
   data often contains information describing the location of the
   property, or the property itself, as one of a large set of possible
   choices, such as neighborhood, county, census tract, district,
@@ -926,9 +886,9 @@ The primary advantages to using Random Forest with real estate data are:
   dimensionality in multiple regression techniques.
 \item
   Appropriately handles missing data. Predictions can be made with the
-  parts of the tree which are succesfully built, and therefore, there is
-  no need to filter out incomplete observations or impute missing
-  values. Since much real destate data is self reported, incomplete
+  parts of the tree which are successfully built, and therefore, there
+  is no need to filter out incomplete observations or impute missing
+  values. Since much real estate data is self reported, incomplete
   fields are common in the data.
 \item
   Robust against outliers. Because of bootstrap sampling, outliers
@@ -942,11 +902,11 @@ The primary advantages to using Random Forest with real estate data are:
   Can recognize non-linear relationships in data, which is useful when
   modeling spatial relationships.
 \item
-  Is not affected by colinearity in the data. This is highly valuable as
-  real estate data can be highly correlated.
+  Is not affected by co-linearity in the data. This is highly valuable
+  as real estate data can be highly correlated.
 \item
   The algorithm can be parallelized and is relatively fast compared to
-  nueral networks and functional gradient descent algorithms.
+  neural networks and functional gradient descent algorithms.
 \end{enumerate}
 
 To run the model, we have chosen the h2o.randomForest function from the
@@ -975,7 +935,7 @@ into the immediate future.
 For ease of processing and to improve the ability of the model to
 generalize into the future, a variable selection step is added to the
 modeling process. A Random Forest model is first trained on a 1\%
-subsample of the modeling data. Variable importance of the resulting
+sub-sample of the modeling data. Variable importance of the resulting
 model is calculated using the technique proposed by Friedman (2001),
 i.e., for a collection of decision trees \([T_m]_{1}^{m}\):
 
@@ -983,7 +943,7 @@ i.e., for a collection of decision trees \([T_m]_{1}^{m}\):
   \hat{I_{j}^{2}} = \frac{1}{M} \sum_{m=1}^{M}\hat{I_{j}^{2}}(T_m)
 \end{flalign*}
 
-Where influence \(I\) for variable \(j\) is calculatd as the sum of
+Where influence \(I\) for variable \(j\) is calculated as the sum of
 corresponding improvements in squared-error for node tree \(T\). After
 calculating variable importance for the model data subset, the variables
 are rank-ordered by descending importance. Variables which account for
@@ -1007,10 +967,10 @@ A classification model typically outputs a probability that a given row
 in the data belongs to a group. In the case of binary classification,
 the value falls between 0 and 1. There are many techniques for
 determining the cut off threshold for classification; a typical method
-is to assign anything above a 0.5 into the ``1'' or posistive class. An
+is to assign anything above a 0.5 into the ``1'' or positive class. An
 ROC curve (receiver operating characteristic curve) plots the True
 Positive Rate vs.~the False Positive rate at different classification
-thresholds; it is a meaurement of the performance of a classification
+thresholds; it is a measurement of the performance of a classification
 model across all possible thresholds, and therefore sidesteps the need
 to arbitrarily assign a cutoff.
 
@@ -1027,10 +987,10 @@ discriminate between the two classes. AUC is useful for comparing
 classification models against one another because they are both scale
 and threshold-invariant.
 
-One of the drawbacks to AUC is that is does not describe the tradeoffs
-between false positives and false negatives. In certain cirmustances, a
-false positive might be considerably less desirable than a fasle
-negative, oe vice-versa. For our purposes, we rank false positives and
+One of the drawbacks to AUC is that is does not describe the trade-offs
+between false positives and false negatives. In certain circumstances, a
+false positive might be considerably less desirable than a false
+negative, or vice-versa. For our purposes, we rank false positives and
 false negatives as equally undesirable outcomes.
 
 \subsubsection{Root Mean Squared Error}\label{root-mean-squared-error}
@@ -1042,12 +1002,12 @@ observed values. It is formally defined as
 \(\hat{y}\) represents the prediction and \(y\) represents the observed
 value at observation \(t\).
 
-Lower RMSE scores are typically more desireable. An RMSE value of 0
-would indicate a perfect fit to the data. RMSE can be difficult to
-interpret on its own, however, it is useful for comparing models with
-similar outcome variables. In our case, the outcome variables (Sales
-Price per Square Foot) are consistent across modeling data sets, and
-therefore can be reasonably compared using RMSE.
+Lower RMSE scores are typically more desirable. An RMSE value of 0 would
+indicate a perfect fit to the data. RMSE can be difficult to interpret
+on its own, however, it is useful for comparing models with similar
+outcome variables. In our case, the outcome variables (Sales Price per
+Square Foot) are consistent across modeling data sets, and therefore can
+be reasonably compared using RMSE.
 
 \section{Results}\label{results}
 
@@ -1076,7 +1036,7 @@ Test & 287.8 & 300.6 & 297.9\tabularnewline
 \end{longtable}
 
 Interestingly, both the Spatial Lag modeling data and the Zip Code
-modleing data are extensions of the Base data, yet the Base data tends
+modeling data are extensions of the Base data, yet the Base data tends
 to generalize to the hold-out data sets better. From this, we make two
 observations:
 
@@ -1088,12 +1048,12 @@ observations:
   modeling data, are the most important for predicting building sale
   price per foot
 \item
-  The Zip Code and Spatial Lag models are suffering from overfitting of
+  The Zip Code and Spatial Lag models are suffering from over-fitting of
   the data, which is limiting their ability to generalize to the
   hold-out samples.
 \end{enumerate}
 
-It is possible that the overfitting issue could be corrected through
+It is possible that the over-fitting issue could be corrected through
 hyper-parameter tuning of the algorithms, as well as implementing
 stricter variable selection. Despite this, we can still safely conclude
 that the Spatial Lag features are superior to the Zip Code features in
@@ -1116,14 +1076,14 @@ We make the following observations from Figure
 \tightlist
 \item
   The Spatial Lag modeling data outperforms both Base and Zip Code in 6
-  cases, notably for Type A buidlings (One Family Dwellings) and Type L
+  cases, notably for Type A buildings (One Family Dwellings) and Type L
   buildings (Lofts) in Manhattan as well as Type O Buildings (Office) in
   Queens
 \item
   It is generally harder to predict sale prices in Manhattan than other
   Boroughs
 \item
-  The ``residential'' building Types A (One Family Dwelings), B (Two
+  The ``residential'' building Types A (One Family Dwellings), B (Two
   Family Dwellings), C (Walk Up Apartments) and D (Elevator Apartments)
   have generally lower RMSE scores compared to the non-residential types
 \end{itemize}
@@ -1154,7 +1114,7 @@ Zip & 5.6\% & 5.6\% & 22.2\% & 2.5\tabularnewline
 
 Similar to the results found in the Sale Price models, using Area Under
 the ROC Curve (AUC) as an evaluation metric, we find the Spatial Lag
-model performs better on the hold-out validation data compared ot the
+model performs better on the hold-out validation data compared to the
 Zip Code modeling data, as shown in Table 10. The Base Modeling data
 continues to outperform the Spatial Lag and Zip Code modeling data
 overall, however, when broken down by Borough and Building Type, some
@@ -1221,34 +1181,26 @@ We make the following observations about Figure
   residential building types (A, B, C and D)
 \end{itemize}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{read.csv}\NormalTok{(}\StringTok{"tables and figures/average prob model rank auc.csv"}\NormalTok{, }\DataTypeTok{check.names =} \OtherTok{FALSE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
+If we rank model the probability models' performance for each Borough
+and Building Type, we see that the Spatial Lag models consistently
+outperform the Zip Code models, as shown in Table 12.
 
-\begin{verbatim}
-##         Model Average Rank
-## 1        Base         2.22
-## 2 Spatial Lag         2.09
-## 3         Zip         1.69
-\end{verbatim}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\KeywordTok{read.csv}\NormalTok{(}\StringTok{"tables and figures/auc model rank perc distribution table.csv"}\NormalTok{, }\DataTypeTok{check.names =} \OtherTok{FALSE}\NormalTok{)}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{verbatim}
-##    Model Rank     1     2     3
-## 1        Base 16.2% 12.0%  5.1%
-## 2 Spatial Lag 11.1% 13.7%  8.5%
-## 3         Zip  6.0%  7.7% 19.7%
-\end{verbatim}
-
-\subsection{Using the Models in
-Practice}\label{using-the-models-in-practice}
+\begin{longtable}[]{@{}lllll@{}}
+\caption{Distribution and Average Model Rank for Probability of Sale by
+AUC across Borough and Building Types}\tabularnewline
+\toprule
+Model Rank & 1 & 2 & 3 & Average Rank\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+Model Rank & 1 & 2 & 3 & Average Rank\tabularnewline
+\midrule
+\endhead
+Base & 16.2\% & 12.0\% & 5.1\% & 2.22\tabularnewline
+Spatial Lag & 11.1\% & 13.7\% & 8.5\% & 2.09\tabularnewline
+Zip & 6.0\% & 7.7\% & 19.7\% & 1.69\tabularnewline
+\bottomrule
+\end{longtable}
 
 \section{Conclusions and Future
 Research}\label{conclusions-and-future-research}
@@ -1260,960 +1212,100 @@ Research}\label{conclusions-and-future-research}
 \section{Appendix A: List of Spatial Lag
 Features}\label{appendix-a-list-of-spatial-lag-features}
 
-\begin{longtable}[]{@{}lllll@{}}
+\begin{longtable}[]{@{}l@{}}
 \caption{Appendix A: All Spatial Lag Features}\tabularnewline
 \toprule
-\begin{minipage}[b]{0.49\columnwidth}\raggedright\strut
-Feature\strut
-\end{minipage} & \begin{minipage}[b]{0.08\columnwidth}\raggedright\strut
-Min\strut
-\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\raggedright\strut
-Median\strut
-\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\raggedright\strut
-Mean\strut
-\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\raggedright\strut
-Max\strut
-\end{minipage}\tabularnewline
+Feature\tabularnewline
 \midrule
 \endfirsthead
 \toprule
-\begin{minipage}[b]{0.49\columnwidth}\raggedright\strut
-Feature\strut
-\end{minipage} & \begin{minipage}[b]{0.08\columnwidth}\raggedright\strut
-Min\strut
-\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\raggedright\strut
-Median\strut
-\end{minipage} & \begin{minipage}[b]{0.09\columnwidth}\raggedright\strut
-Mean\strut
-\end{minipage} & \begin{minipage}[b]{0.11\columnwidth}\raggedright\strut
-Max\strut
-\end{minipage}\tabularnewline
+Feature\tabularnewline
 \midrule
 \endhead
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Total\_Sold\_In\_Year\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-20.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-24.00\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-201.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Average\_Years\_Since\_Last\_Sale\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-4.43\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-4.27\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-14.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Res\_Units\_Sold\_In\_Year\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-226.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-289.10\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-2,920.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_All\_Units\_Sold\_In\_Year\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-255.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-325.94\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-2,923.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_SF\_Sold\_In\_Year\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-259,403.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-430,891.57\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-8,603,639.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-2.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-41.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-48.15\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-256.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-2.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-9.25\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-8.70\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-26.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-493.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-584.67\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-3,397.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-555.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-660.67\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-4,265.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-2,917.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-580,947.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-872,816.44\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-14,036,469.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Total\_Sold\_In\_Year\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.99\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.27\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-77.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Average\_Years\_Since\_Last\_Sale\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.91\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.13\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.26\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-8.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Res\_Units\_Sold\_In\_Year\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_All\_Units\_Sold\_In\_Year\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_SF\_Sold\_In\_Year\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.96\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.03\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.03\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-15.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.72\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.12\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.17\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-2.50\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.99\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.12\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-84.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.98\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.18\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-361.55\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Com\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.07\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.56\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Res\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.46\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.43\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.66\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Office\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.01\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.03\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.48\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Retail\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.09\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Garage\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.27\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Storage\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.01\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.26\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Factory\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.04\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Other\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.09\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Com\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.07\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.54\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Res\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.46\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.43\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.66\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Office\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.01\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.03\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.44\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Retail\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.08\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Garage\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.29\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Storage\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.01\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.23\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Factory\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.03\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Other\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-0.04\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Com\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.90\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-6.18\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Res\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.50\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.03\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-36.73\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Office\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Retail\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.82\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Garage\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Storage\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.01\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Factory\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Other\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--1.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_2\_year\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-400.01\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-496.30\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-3,816.57\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_3\_year\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-396.94\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-492.00\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-3,816.57\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_5\_year\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-8.83\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-425.55\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-515.29\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-3,877.53\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_SMA\_2\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.13\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.03\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-552.33\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-804,350.67\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_SMA\_5\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.09\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-317.46\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-322,504.58\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_2\_year\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-378.63\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-475.54\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-3,431.17\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_3\_year\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-8.83\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-382.25\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-476.05\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-3,296.46\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_5\_year\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-7.88\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-386.34\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-468.91\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-2,813.34\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_EMA\_2\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.09\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-346.51\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-480,829.57\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_EMA\_5\_dist\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-303.55\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-273,458.42\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_2\_year\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-412.46\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-496.75\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-2,509.79\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_3\_year\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-409.00\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-492.43\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-2,509.79\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_5\_year\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-17.16\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-443.34\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-515.67\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-2,621.01\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_SMA\_2\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.13\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-543.51\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-393,749.99\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_SMA\_5\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.09\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.03\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-312.46\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-157,500.00\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_2\_year\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-390.30\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-475.96\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-2,259.21\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_3\_year\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-11.39\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-393.25\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-476.45\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-2,136.36\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_5\_year\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
-15.30\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-402.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-469.09\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-1,848.27\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_EMA\_2\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.09\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-340.89\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-235,378.24\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_EMA\_5\_basic\_mean\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.02\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-296.78\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-133,547.59\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_2\_year\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.74\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.05\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.17\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-10,540.56\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_3\_year\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.74\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.05\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.17\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-10,540.56\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_5\_year\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.74\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-15.37\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_SMA\_2\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.24\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-NaN\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_SMA\_5\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.14\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-NaN\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_2\_year\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.74\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.18\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-10,540.57\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_3\_year\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.73\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.08\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-15.06\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_5\_year\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.63\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.07\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-12.04\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_EMA\_2\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.13\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-NaN\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_EMA\_5\_dist\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--556.60\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.10\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_2\_year\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.55\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.05\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.12\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-9,375.77\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_3\_year\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.55\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.05\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.11\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-9,375.77\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-SMA\_Price\_5\_year\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.50\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.04\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-5.90\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_SMA\_2\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.19\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-NaN\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_SMA\_5\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.12\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-NaN\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_2\_year\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.53\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.12\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-9,375.78\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_3\_year\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.47\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.08\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-23.54\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-EMA\_Price\_5\_year\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--0.37\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.06\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-0.07\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-4.81\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_EMA\_2\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.13\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-NaN\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.49\columnwidth}\raggedright\strut
-Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change\strut
-\end{minipage} & \begin{minipage}[t]{0.08\columnwidth}\raggedright\strut
--136.59\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
--0.11\strut
-\end{minipage} & \begin{minipage}[t]{0.09\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage} & \begin{minipage}[t]{0.11\columnwidth}\raggedright\strut
-Inf\strut
-\end{minipage}\tabularnewline
+Radius\_Total\_Sold\_In\_Year\tabularnewline
+Radius\_Average\_Years\_Since\_Last\_Sale\tabularnewline
+Radius\_Res\_Units\_Sold\_In\_Year\tabularnewline
+Radius\_All\_Units\_Sold\_In\_Year\tabularnewline
+Radius\_SF\_Sold\_In\_Year\tabularnewline
+Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\tabularnewline
+Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\tabularnewline
+Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\tabularnewline
+Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\tabularnewline
+Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\tabularnewline
+Radius\_Total\_Sold\_In\_Year\_percent\_change\tabularnewline
+Radius\_Average\_Years\_Since\_Last\_Sale\_percent\_change\tabularnewline
+Radius\_Res\_Units\_Sold\_In\_Year\_percent\_change\tabularnewline
+Radius\_All\_Units\_Sold\_In\_Year\_percent\_change\tabularnewline
+Radius\_SF\_Sold\_In\_Year\_percent\_change\tabularnewline
+Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\tabularnewline
+Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\_percent\_change\tabularnewline
+Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\tabularnewline
+Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\tabularnewline
+Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\tabularnewline
+Percent\_Com\_dist\tabularnewline
+Percent\_Res\_dist\tabularnewline
+Percent\_Office\_dist\tabularnewline
+Percent\_Retail\_dist\tabularnewline
+Percent\_Garage\_dist\tabularnewline
+Percent\_Storage\_dist\tabularnewline
+Percent\_Factory\_dist\tabularnewline
+Percent\_Other\_dist\tabularnewline
+Percent\_Com\_basic\_mean\tabularnewline
+Percent\_Res\_basic\_mean\tabularnewline
+Percent\_Office\_basic\_mean\tabularnewline
+Percent\_Retail\_basic\_mean\tabularnewline
+Percent\_Garage\_basic\_mean\tabularnewline
+Percent\_Storage\_basic\_mean\tabularnewline
+Percent\_Factory\_basic\_mean\tabularnewline
+Percent\_Other\_basic\_mean\tabularnewline
+Percent\_Com\_dist\_perc\_change\tabularnewline
+Percent\_Res\_dist\_perc\_change\tabularnewline
+Percent\_Office\_dist\_perc\_change\tabularnewline
+Percent\_Retail\_dist\_perc\_change\tabularnewline
+Percent\_Garage\_dist\_perc\_change\tabularnewline
+Percent\_Storage\_dist\_perc\_change\tabularnewline
+Percent\_Factory\_dist\_perc\_change\tabularnewline
+Percent\_Other\_dist\_perc\_change\tabularnewline
+SMA\_Price\_2\_year\_dist\tabularnewline
+SMA\_Price\_3\_year\_dist\tabularnewline
+SMA\_Price\_5\_year\_dist\tabularnewline
+Percent\_Change\_SMA\_2\_dist\tabularnewline
+Percent\_Change\_SMA\_5\_dist\tabularnewline
+EMA\_Price\_2\_year\_dist\tabularnewline
+EMA\_Price\_3\_year\_dist\tabularnewline
+EMA\_Price\_5\_year\_dist\tabularnewline
+Percent\_Change\_EMA\_2\_dist\tabularnewline
+Percent\_Change\_EMA\_5\_dist\tabularnewline
+SMA\_Price\_2\_year\_basic\_mean\tabularnewline
+SMA\_Price\_3\_year\_basic\_mean\tabularnewline
+SMA\_Price\_5\_year\_basic\_mean\tabularnewline
+Percent\_Change\_SMA\_2\_basic\_mean\tabularnewline
+Percent\_Change\_SMA\_5\_basic\_mean\tabularnewline
+EMA\_Price\_2\_year\_basic\_mean\tabularnewline
+EMA\_Price\_3\_year\_basic\_mean\tabularnewline
+EMA\_Price\_5\_year\_basic\_mean\tabularnewline
+Percent\_Change\_EMA\_2\_basic\_mean\tabularnewline
+Percent\_Change\_EMA\_5\_basic\_mean\tabularnewline
+SMA\_Price\_2\_year\_dist\_perc\_change\tabularnewline
+SMA\_Price\_3\_year\_dist\_perc\_change\tabularnewline
+SMA\_Price\_5\_year\_dist\_perc\_change\tabularnewline
+Percent\_Change\_SMA\_2\_dist\_perc\_change\tabularnewline
+Percent\_Change\_SMA\_5\_dist\_perc\_change\tabularnewline
+EMA\_Price\_2\_year\_dist\_perc\_change\tabularnewline
+EMA\_Price\_3\_year\_dist\_perc\_change\tabularnewline
+EMA\_Price\_5\_year\_dist\_perc\_change\tabularnewline
+Percent\_Change\_EMA\_2\_dist\_perc\_change\tabularnewline
+Percent\_Change\_EMA\_5\_dist\_perc\_change\tabularnewline
+SMA\_Price\_2\_year\_basic\_mean\_perc\_change\tabularnewline
+SMA\_Price\_3\_year\_basic\_mean\_perc\_change\tabularnewline
+SMA\_Price\_5\_year\_basic\_mean\_perc\_change\tabularnewline
+Percent\_Change\_SMA\_2\_basic\_mean\_perc\_change\tabularnewline
+Percent\_Change\_SMA\_5\_basic\_mean\_perc\_change\tabularnewline
+EMA\_Price\_2\_year\_basic\_mean\_perc\_change\tabularnewline
+EMA\_Price\_3\_year\_basic\_mean\_perc\_change\tabularnewline
+EMA\_Price\_5\_year\_basic\_mean\_perc\_change\tabularnewline
+Percent\_Change\_EMA\_2\_basic\_mean\_perc\_change\tabularnewline
+Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change\tabularnewline
 \bottomrule
 \end{longtable}
 

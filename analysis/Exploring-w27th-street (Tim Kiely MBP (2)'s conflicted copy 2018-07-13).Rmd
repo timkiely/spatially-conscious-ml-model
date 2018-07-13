@@ -1,0 +1,298 @@
+---
+title: "Motivating Example"
+output: github_document
+---
+
+
+```{r setup, include = FALSE}
+require("knitr")
+opts_knit$set(root.dir = "/Users/timkiely/Dropbox (Personal)/MSPA/Thesis/Analysis/nyc-sales-data")
+```
+
+```{r}
+source("R/helper/load-packages.R")
+source("R/helper/source-files.R")
+```
+
+
+```{r}
+base1 <- read_rds("data/aux data/sample_p06_base_model_data.rds")
+radii_index <- read_rds("data/aux data/radii-index.rds")
+radii_data <- radii_index %>% st_set_geometry(NULL)
+radii_data$lon <- st_coordinates(radii_index)[,1]
+radii_data$lat <- st_coordinates(radii_index)[,2]
+
+inverted_normalized_distance <- function(x){
+  x <- if_else(x!=0,1/x,0)
+  x <- x/sum(x, na.rm = TRUE)
+  x <- if_else(is.nan(x),0,x)
+}
+
+distance_weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
+sf_weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
+distance_weighted_mean_sf_concious <- function(x, w) weighted.mean(x, w, na.rm = T)
+combined_weighted_mean <- function(x, w) weighted.mean(x, w, na.rm = T)
+radii_mean <- function(x) mean(x, na.rm = T)
+range01 <- function(x){(x-min(x))/(max(x)-min(x))}
+```
+
+Visualizing the SMA and EMA features on in W27th data:
+
+```{r message=FALSE, warning=FALSE}
+w27st <- base1 %>% filter(bbl == '1_829_16') 
+w27st %>% 
+  filter(!is.na(Last_Sale_Price)) %>% 
+  ggplot()+
+  aes(x = Year, y = Last_Sale_Price, group = 1)+
+  geom_col()+
+  geom_col(aes(y = `SALE PRICE`), fill = "blue")+
+  geom_line(aes(y = SMA_Price_2_year))+
+  geom_line(aes(y = SMA_Price_3_year))+
+  geom_line(aes(y = SMA_Price_5_year))+
+  geom_line(aes(y = EMA_Price_2_year), col = "red")+
+  geom_line(aes(y = EMA_Price_5_year), col = "darkred")
+
+```
+
+Here is a picture of the euclidean distance:
+
+```{r}
+
+w27st_sf <- w27st %>% distinct(address, lon, lat) %>% st_as_sf(coords = c("lon","lat"), crs = 4326) %>% st_transform(32618)
+
+euc_dists <- 
+  radii_data %>% 
+  filter(bbl == '1_829_16') %>% 
+  select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
+  unnest() %>% 
+  left_join(select(radii_data, bbl, "lat_neighbor" = lat
+           , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+           , "Neighbor_SF" = BldgArea)
+    , by = c('neighbors'='bbl')
+    ) %>% 
+  mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>% 
+  st_as_sf(coords = c("lon_neighbor", "lat_neighbor"), crs = 32618)
+
+euc_dists %>% 
+  ggplot(aes(col = Euc_distance))+
+  geom_sf()+
+  geom_sf(data = w27st_sf, col = "red")+
+  labs(title = "Basic euclidean distance")
+
+```
+
+After inveting the euclidean distance, and dropping unlike building types to 0 weight, the inverted distance weight looks like the following:
+
+```{r}
+euc_data <- 
+  radii_data %>% 
+  filter(bbl == '1_829_16') %>% 
+  select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% 
+  unnest() %>% 
+  left_join(select(radii_data, bbl
+                   , "lat_neighbor" = lat
+                   , "lon_neighbor" = lon
+                   , "Nieghbor_BT" = Building_Type
+                   , "Neighbor_SF" = BldgArea)
+            , by = c('neighbors'='bbl')
+            ) %>% 
+  mutate(Euc_distance = sqrt((lat_neighbor-lat)^2+(lon_neighbor - lon)^2)) %>%
+  # distance metrics. Currently using absolute euclidean distance, and Square Footage
+  
+  # if neighbor building type is not same as origin, set distance to max (weight becomes 0)
+  mutate(Euc_distance = ifelse(Building_Type == Nieghbor_BT, Euc_distance, max(Euc_distance))) %>% 
+  
+  # inverting and normalizing. Closer observations are more alike
+  group_by(bbl) %>% 
+  mutate(euc_weight = max(Euc_distance)-Euc_distance) %>% 
+  ungroup() %>% 
+  select(lat_neighbor, lon_neighbor, euc_weight) %>% 
+  st_as_sf(coords = c("lon_neighbor","lat_neighbor"))
+  
+euc_data %>% 
+  ggplot()+
+  aes(col = euc_weight)+
+  geom_sf()
+
+```
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+library(leaflet)
+euc_data %>% st_set_crs(32618) %>% st_transform(4326) %>% 
+  leaflet() %>% 
+  addTiles() %>% 
+  addCircleMarkers() %>% 
+  addCircleMarkers(data = w27st_sf%>% st_transform(4326), col = "red")
+```
+
+
+Visualize the pattern of sales by year around W27th:
+
+```{r}
+
+radii_data %>% 
+  filter(bbl == '1_829_16') %>% 
+  filter(!is.na(Year)) %>% 
+  select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% unnest() %>% 
+  left_join(select(radii_data, bbl, "lat_neighbor" = lat
+           , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+           , "Neighbor_SF" = BldgArea)
+    , by = c('neighbors'='bbl')) %>% ungroup() %>% select(bbl, neighbors, lat_neighbor, lon_neighbor) %>% 
+  left_join(select(base1, Year, bbl, Sold), by = c('neighbors'='bbl')) %>% 
+  st_as_sf(coords = c("lon_neighbor", "lat_neighbor"), crs = 32618) %>% 
+  arrange(Sold) %>% 
+  ggplot()+
+  geom_sf(size = 0.00001)+
+  aes(col = Sold)+
+  facet_wrap(~Year)+
+  theme(legend.position = "none")+
+  labs(x = NULL, y = NULL)
+
+```
+
+
+```{r}
+radii_data %>% 
+  filter(bbl == '1_829_16') %>% 
+  filter(!is.na(Year)) %>% 
+  select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% unnest() %>% 
+  left_join(select(radii_data, bbl, "lat_neighbor" = lat
+           , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+           , "Neighbor_SF" = BldgArea)
+    , by = c('neighbors'='bbl')) %>% ungroup() %>% select(bbl, neighbors, lat_neighbor, lon_neighbor) %>% 
+  left_join(select(base1, Year, bbl, Sold), by = c('neighbors'='bbl')) %>% 
+  select(bbl, neighbors, Year, Sold) %>% 
+  group_by(neighbors) %>% 
+  summarise(sum(Sold))
+```
+
+
+We can see that sales seem to co-occur in the area:
+
+```{r message=FALSE, warning=FALSE}
+
+radius_sales <- radii_data %>% 
+  filter(bbl == '1_829_16') %>% 
+  filter(!is.na(Year)) %>% 
+  select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% unnest() %>% 
+  left_join(select(radii_data, bbl, "lat_neighbor" = lat
+                   , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+                   , "Neighbor_SF" = BldgArea)
+            , by = c('neighbors'='bbl')) %>% ungroup() %>% select(bbl, neighbors, lat_neighbor, lon_neighbor) %>% 
+  left_join(select(base1, Year, SALE_DATE, bbl, Sold), by = c('neighbors'='bbl')) %>% 
+  mutate(Sale_Month = lubridate::month(SALE_DATE)) %>% 
+  filter(!is.na(Sale_Month)) %>% 
+  group_by(Year, Sale_Month) %>% 
+  summarise(Sold_In_Year = sum(Sold)
+            , Total_in_Year = n()
+            , Percent_Sold_in_Year = Sold_In_Year/Total_in_Year) %>% 
+  mutate(Sale_YearMonth = as.Date(paste0(Year,"-",Sale_Month,"-1"))) %>% 
+  select(Sale_YearMonth, Sold_In_Year)
+
+w27_sales <- w27st %>% 
+  mutate(Sale_Month = lubridate::month(SALE_DATE)) %>% 
+  select(Sale_Month, SALE_DATE, Year, "Building_Sold" = Sold) %>% 
+  filter(!is.na(Sale_Month)) %>% 
+  mutate(Sale_YearMonth = as.Date(paste0(Year,"-",Sale_Month,"-1"))) %>% 
+  select(Sale_YearMonth, Building_Sold)
+
+all_dates <- data_frame(date = seq.Date(from = as.Date("2003-01-01"), to = as.Date("2017-12-01"), by = "month"))
+
+all_dates %>% 
+  left_join(radius_sales, by = c("date" = "Sale_YearMonth")) %>% 
+  left_join(w27_sales, by = c("date" = "Sale_YearMonth") ) %>% 
+  ggplot()+
+  aes(x = date, y = Sold_In_Year)+
+  geom_col()+
+  geom_col(aes(y = Building_Sold), fill = "red")+
+  geom_smooth(se = F)
+
+
+```
+
+
+```{r}
+
+radius_sales_sf <- radii_data %>% 
+  filter(bbl == '1_829_16') %>% 
+  filter(!is.na(Year)) %>% 
+  select(bbl, lat, lon, Building_Type, BldgArea, neighbors) %>% unnest() %>% 
+  left_join(select(radii_data, bbl, "lat_neighbor" = lat
+                   , "lon_neighbor" = lon,"Nieghbor_BT" = Building_Type
+                   , "Neighbor_SF" = BldgArea)
+            , by = c('neighbors'='bbl')) %>% ungroup() %>% select(bbl, neighbors, lat_neighbor, lon_neighbor, Neighbor_SF) %>% 
+  left_join(select(base1, Year, SALE_DATE, bbl, Sold), by = c('neighbors'='bbl')) %>% 
+  mutate(Sale_Month = lubridate::month(SALE_DATE)) %>% 
+  filter(!is.na(Sale_Month)) %>% 
+  group_by(Year, Sale_Month) %>% 
+  summarise(Sold_In_Year = sum(Sold)
+            , Total_in_Year = n()
+            , Percent_Sold_in_Year = Sold_In_Year/Total_in_Year) %>% 
+  mutate(Sale_YearMonth = as.Date(paste0(Year,"-",Sale_Month,"-1"))) %>% 
+  select(Sale_YearMonth, Sold_In_Year)
+
+w27_sales <- w27st %>% 
+  mutate(Sale_Month = lubridate::month(SALE_DATE)) %>% 
+  select(Sale_Month, SALE_DATE, Year, "Building_Sold" = Sold) %>% 
+  filter(!is.na(Sale_Month)) %>% 
+  mutate(Sale_YearMonth = as.Date(paste0(Year,"-",Sale_Month,"-1"))) %>% 
+  select(Sale_YearMonth, Building_Sold)
+
+all_dates <- data_frame(date = seq.Date(from = as.Date("2003-01-01"), to = as.Date("2017-12-01"), by = "month"))
+
+all_dates %>% 
+  left_join(radius_sales, by = c("date" = "Sale_YearMonth")) %>% 
+  left_join(w27_sales, by = c("date" = "Sale_YearMonth") ) %>% 
+  ggplot()+
+  aes(x = date, y = Sold_In_Year)+
+  geom_col()+
+  geom_col(aes(y = Building_Sold), fill = "red")+
+  geom_smooth(se = F)
+
+```
+
+Look at the predictions and see how they match up against actual:
+
+```{r}
+radii_data_infile <- read_rds('analysis/results/prob/p11_prob_of_sale_model_radii.rds')
+radii_model <- radii_data_infile$model
+
+radii_model_data <- read_rds("/Users/timkiely/Dropbox (Personal)/MSPA/Thesis/Analysis/nyc-sales-data/data/processing steps/p08_radii_model_data.rds")
+
+h2o.init()
+the_preds <- predict(radii_model, newdata = as.h2o(radii_model_data))
+
+radii_model_data_sales <- radii_model_data %>% 
+  bind_cols(as_data_frame(the_preds$predict)) %>%
+  bind_cols(as_data_frame(the_preds$p1))
+
+w27_sales <- radii_model_data_sales %>% 
+  filter(bbl == '1_829_16') %>% 
+  select(Year, Sold, predict, p1)
+
+w27_sales %>% 
+  mutate(predict = as.integer(predict)) %>% 
+  mutate(predict = ifelse(predict==1,0,1)) %>% 
+  ggplot()+
+  aes(x = Year)+
+  geom_col(aes(y = Sold))+
+  geom_point(aes(y = predict), color = "red")+
+  geom_line(aes(y = p1), color = "darkgreen")+
+  theme_bw()+
+  labs(title = "Probability of Sale, Prediction and Outcome for Single Office Property in NYC"
+       , subtitle = "Red dots are predictions, black bars are actual sales, green line is probability of sale"
+       , y = "Probability of Sale"
+       , x = NULL) -> 
+
+
+```
+
+
+
+
+
+
+
+
+

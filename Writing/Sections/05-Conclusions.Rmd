@@ -6,5 +6,23 @@ bibliography: bib/bibliography.bib
 
 ## Future Research
 
+This research has shown that spatial-lag features can be worthwhile additions to machine learning predictive models in certain circumstances. There are several areas that could be further explored regarding spatial lag features, some of which are mentioned below. 
+
+First, it became apparent in the research that generalization was a problem for the models overall, likely due to overfitting of the training data. Further research into proper varibale selection could be one remedy for such issues.
+
+Additionally, the spatial lag features seemd to perform best for outer boroughs (non-Manhattan) and for smaller, residential building types. One possible explanation for this is that these types of assetts are considerably more numerous and homogenous. It is possible that a 500 meter radius, which was arbitrarily chosen, works best for this type of asset. @Fotheringham2015 used an "Adaptive Bandwidth" technique to adjust the spatial lag radius based on cross-validation. research into applying a similar technique to this research could be valuable. 
+
+Finally, this research aimed to predict real estate transactions 1 year into the future. While this is a promising start, 1-year of lead time may not be sufficient to respond to growing gentirifaction challenges. In addition, modeling at the annual level could be improved to quartlery or monthly, given that the sales data contains date information down to the day. To make this system practial for combatting displacement, it may be helpful to predict at a more granular level and further into the future. 
+
 ## Conclusion
+
+Gentification is largely beneficial to societies and communities, however, the downside should not be overlooked. Displacement causes Economic Exclusion, which over time can contribute to rising Income Inequality. Combatting displacement allows communities to benefit from gentrification without suffering the negative consequences. One way to practically combat displacement is to predict gentirification, which this paper has attempted to do.  
+
+Spatial lags, typically seen in geographically weighted regression, were employed successfully to enhance the predictive power of machine learning models. The features suffered in some areas do to modeling and data shortcomings, but overall we found that spatial lags outperform zip-code level aggregations, and perform quite well for specific asset types and geographic locations, particularly residential buildings outside of Manhattan. 
+
+While this research is not intended to serve as a full early-warining system for gentrification and displacmenet, it is a step in that direction. More research is needed to help address the challenges faced by city planners and governments trying to help incumbent residents reap the benefits of local investments. Income inequallity is a complicated and grave issue of our time, but new tools and tecnhiques to inform and prevent give a hope for a more equitable future. 
+
+
+
+
 

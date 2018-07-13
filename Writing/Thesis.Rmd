@@ -5,13 +5,12 @@ output:
   pdf_document: 
     keep_tex: true
     toc: yes
-    fig_caption: yes
-header-includes:
-  - \setlength{\parindent}{0em}
-  - \setlength{\parskip}{1em}
 bibliography: Sections/bib/bibliography.bib
 ---
 
+```{r global_options 1, include=FALSE}
+knitr::opts_chunk$set(fig.pos = 'h')
+```
 
 # Introduction
 

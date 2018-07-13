@@ -8,7 +8,6 @@ bibliography: bib/bibliography.bib
 suppressPackageStartupMessages({library(tidyverse)})
 ```
 
-
 ## Sale Price Model
 
 Using Root Mean Squared Error (RMSE) as an evaluation metric of predictive power, we find that the Spatial Lag modeling features consistently outperform the Zip Code features, while the Base modeling data tends to outperform both, as shown in the following Table (lower RMSE is better):
@@ -88,7 +87,7 @@ pander::pander(read.csv("tables and figures/AUC by borogh.csv", check.names = FA
 Figure \ref{fig:AUC by boro and build type} shows a breakdown of model AUC faceted along the x-axis by Building Type and along the y-axis by Borough. The coloring indicated by how much a model's AUC diverges from the cell average. 
 
 
-```{r AUC by boro and build type, fig.cap="AUC By Borough and Building Type", out.width = '100%', echo=FALSE}
+```{r AUC by boro and build type, echo=FALSE, fig.cap="AUC By Borough and Building Type", message=FALSE, warning=FALSE, out.width='100%', paged.print=FALSE}
 knitr::include_graphics("Sections/tables and figures/AUC by boro and build type.jpeg")
 ```
 

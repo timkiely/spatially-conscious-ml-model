@@ -33,7 +33,7 @@ model_desc_table <- tribble(
   )
 
 pander::pander(model_desc_table
-               , caption = "Table 1: Six Predictive Models"
+               , caption = "Six Predictive Models"
                , split.table = Inf
                , style = "rmarkdown"
                , justify = "left")
@@ -60,7 +60,7 @@ Only building categories of significant interest are included in the data. The f
 
 ```{r echo=FALSE, fig.cap= "Building Types Included in Modeling Data", message=FALSE, warning=FALSE, paged.print=FALSE}
 
-suppressPackageStartupMessages(library(tibble))
+suppressPackageStartupMessages(library(tidyverse))
 
 category_table <- tribble(
   ~Category, ~Description
@@ -94,7 +94,8 @@ The base modeling data set is enhanced to include additional features. A summary
 
 ```{r Table 1, fig.cap= "Base Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 
-pander::pander(readr::read_rds("tables and figures/table1.rds")
+pander::pander(readr::read_rds("tables and figures/table1.rds") %>% 
+                 mutate(Feature = gsub("_"," ",Feature))
                , caption = "Base Modeling Data Features"
                , split.table = Inf
                , style = "rmarkdown"
@@ -113,7 +114,8 @@ The first of the comparative modeling data sets is the Zip code modeling data. U
 
 ```{r Table 2, fig.cap= "Zip Code Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 
-pander::pander(readr::read_rds("tables and figures/table2.rds")
+pander::pander(readr::read_rds("tables and figures/table2.rds")%>% 
+                 mutate(Feature = gsub("_"," ",Feature))
                , caption = "Zip Code Modeling Data Features"
                , style = "rmarkdown"
                , justify = "left")

@@ -93,47 +93,33 @@ Dependence}
 }
 \section{Introduction}\label{introduction}
 
-In this paper, we explore a technique for more accurately predicting
-real estate transactions, both their occurrence (probability of sale)
-and their dollar amount (sale price per square foot). We explain how
-this predictive technique may be applied to combat Economic Exclusion, a
-precursor to Income Inequality. The technique marries the use of
-machine-learning predictive models (Random Forrest) with ``spatial-lag''
-features typically seen in geographically-weighted regressions (GWR). We
-find that, while the addition of many new variables to a modeling data
-set can inhibit the models' ability to generalize into the future,
-spatial-lag features 1) consistently outperform zip-code level
-aggregation features, and 2) outperform all models for specific types of
-properties in specific areas. We conclude that spatial-lag features,
-while computationally expensive, can be used to significantly increase
-the predictive accuracy of spatial predictive models.
+\subsection{Background}\label{background}
 
-\subsection{What is Economic
-Exclusion?}\label{what-is-economic-exclusion}
-
-Income inequality may be a defining challenge of our time, yet the
-causes of inequality remain unclear. As discussed by Zuk (2015),
+Income inequality may be one of the most pressing challenges of our
+time, yet, its causes remain unclear. As discussed by Zuk (2015),
 ``Neighborhoods change slowly, but over time {[}they{]} are becoming
 more segregated by income, due in part to macro-level increases in
 income inequality''. Researchers at the Urban Institute (Solomon Greene
 and Lei 2016) recently identified the socio-economic phenomenon of
 ``Economic Exclusion'' as an explanation for income inequality in the
-US. Economic Exclusion can be explained as follows: vulnerable
+US.
+
+Economic Exclusion can be defined as follows: vulnerable
 populations--disproportionately communities of color, immigrants,
 refugees, and women--who are physically displaced by local economic
 prosperity can enter into a gradual cycle of diminished access to good
-jobs, good schools, health care facilities, public spaces, etc.
-Diminished access leads to more poverty, which leads to more
-displacement. Such self-reinforcing poverty gradually exacerbates income
-inequality over the course years and even generations.
-
-\subsection{Predicting Gentrification}\label{predicting-gentrification}
+jobs, good schools, health care facilities, public spaces and other
+physically proximate benefits. Diminished access leads to more poverty,
+which leads to more displacement. Such self-reinforcing poverty
+gradually exacerbates income inequality over the course years and even
+generations.
 
 One practical way to combat Economic Exclusion is to focus on preventing
 displacement, i.e., the physical relocation of populations away from
 economic resources. As argued by Clay (1979), displacement is the
 negative consequence of gentrification. Predicting gentrification at an
 early stage, however, has proven to be a difficult task historically.
+
 When an area experiences economic growth, increased housing demands and
 subsequent affordability pressures can lead to voluntary or involuntary
 relocation of low-income families and small businesses. Government
@@ -142,12 +128,40 @@ underway, and after-the-fact interventions can be costly and
 ineffective. As explained by Solomon Greene and Lei (2016), there are
 several preemptive actions that can be deployed to stem divestment and
 ensure that existing residents benefit from new investments. Not unlike
-medical treatment, early detection is the key to success. Consequently,
-in 2016, the Urban Institute put forth a call for research into the
-creation of ``neighborhood-level early warning and response systems that
-can help city leaders and community advocates get ahead of neighborhood
-changes'' (Solomon Greene and Lei 2016). This paper explores a technique
-to answer that call in part.
+medical treatment, early detection is the key to success.
+
+Consequently, in 2016, the Urban Institute put forth a call for research
+into the creation of ``neighborhood-level early warning and response
+systems that can help city leaders and community advocates get ahead of
+neighborhood changes'' (Solomon Greene and Lei 2016). This paper
+explores a technique to answer that call in part using free, open data
+and open-source software.
+
+Many government agencies have already become competant at using
+predictive modeling to identify and address socio-economic challenges at
+the individual-level, ranging from prescription drug abuse to
+homelessness to recidivism (Ritter 2013). However, few, if any, examples
+exist of large-scale, systematic applications of data analysis to aid
+vulnerable populations experiencing displacement. This paper belongs to
+an emerging trend known as the ``science of cities'' which aims to use
+large datasets and advanced simulation and modeling techniques to
+understand urban patterns and how cities function (Batty 2013).
+
+In this paper, we explore a technique to more accurately predict real
+estate transactions, both their occurrence (probability of sale) and
+their dollar amount (sale price per square foot). We explain how this
+predictive technique may be applied to practically combat Economic
+Exclusion, a precursor and contributor to Income Inequality. The
+technique marries the use of machine-learning predictive modeling (using
+Random Forrest) with ``spatial-lag'' features typically seen in
+geographically-weighted regressions (GWR). We find that, while the
+addition of many new variables to a modeling data set can inhibit the
+models' ability to generalize into the future, spatial-lag features 1)
+consistently outperform zip-code level aggregation features, and 2)
+outperform all models for specific types of properties in specific
+areas. We conclude that spatial-lag features, while computationally
+expensive, can be used to increase the accuracy of spatially-conscious
+predictive models.
 
 \section{Literature Review}\label{literature-review}
 
@@ -427,7 +441,7 @@ using a different outcome variable for each:
 There will be six predictive models built in total, as follows:
 
 \begin{longtable}[]{@{}lllllll@{}}
-\caption{Table 1: Six Predictive Models}\tabularnewline
+\caption{Six Predictive Models}\tabularnewline
 \toprule
 \# & Model & Model Type & Data & Outcome Var & Outcome Type & Eval
 Metric\tabularnewline
@@ -561,33 +575,29 @@ Feature & Min & Median & Mean & Max\tabularnewline
 Feature & Min & Median & Mean & Max\tabularnewline
 \midrule
 \endhead
-has\_building\_area & 0 & 1.00 & 1.00 & 1.00\tabularnewline
-Percent\_Com & 0 & 0.00 & 0.16 & 1.00\tabularnewline
-Percent\_Res & 0 & 1.00 & 0.82 & 1.00\tabularnewline
-Percent\_Office & 0 & 0.00 & 0.07 & 1.00\tabularnewline
-Percent\_Retail & 0 & 0.00 & 0.04 & 1.00\tabularnewline
-Percent\_Garage & 0 & 0.00 & 0.01 & 1.00\tabularnewline
-Percent\_Storage & 0 & 0.00 & 0.02 & 1.00\tabularnewline
-Percent\_Factory & 0 & 0.00 & 0.00 & 1.00\tabularnewline
-Percent\_Other & 0 & 0.00 & 0.00 & 1.00\tabularnewline
-Last\_Sale\_Price & 0 & 312.68 & 531.02 & 62,055.59\tabularnewline
-Last\_Sale\_Price\_Total & 2 & 2,966,835.00 & 12,844,252.00 &
+has building area & 0 & 1.00 & 1.00 & 1.00\tabularnewline
+Percent Com & 0 & 0.00 & 0.16 & 1.00\tabularnewline
+Percent Res & 0 & 1.00 & 0.82 & 1.00\tabularnewline
+Percent Office & 0 & 0.00 & 0.07 & 1.00\tabularnewline
+Percent Retail & 0 & 0.00 & 0.04 & 1.00\tabularnewline
+Percent Garage & 0 & 0.00 & 0.01 & 1.00\tabularnewline
+Percent Storage & 0 & 0.00 & 0.02 & 1.00\tabularnewline
+Percent Factory & 0 & 0.00 & 0.00 & 1.00\tabularnewline
+Percent Other & 0 & 0.00 & 0.00 & 1.00\tabularnewline
+Last Sale Price & 0 & 312.68 & 531.02 & 62,055.59\tabularnewline
+Last Sale Price Total & 2 & 2,966,835.00 & 12,844,252.00 &
 1,932,900,000.00\tabularnewline
-Years\_Since\_Last\_Sale & 1 & 4.00 & 5.05 & 14.00\tabularnewline
-SMA\_Price\_2\_year & 0 & 296.92 & 500.89 & 62,055.59\tabularnewline
-SMA\_Price\_3\_year & 0 & 294.94 & 495.29 & 62,055.59\tabularnewline
-SMA\_Price\_5\_year & 0 & 300.12 & 498.82 & 62,055.59\tabularnewline
-Percent\_Change\_SMA\_2 & -1 & 0.00 & 685.69 &
-15,749,999.50\tabularnewline
-Percent\_Change\_SMA\_5 & -1 & 0.00 & 337.77 &
-6,299,999.80\tabularnewline
-EMA\_Price\_2\_year & 0 & 288.01 & 482.69 & 62,055.59\tabularnewline
-EMA\_Price\_3\_year & 0 & 283.23 & 471.98 & 62,055.59\tabularnewline
-EMA\_Price\_5\_year & 0 & 278.67 & 454.15 & 62,055.59\tabularnewline
-Percent\_Change\_EMA\_2 & -1 & 0.00 & 422.50 &
-9,415,128.85\tabularnewline
-Percent\_Change\_EMA\_5 & -1 & 0.06 & 308.05 &
-5,341,901.60\tabularnewline
+Years Since Last Sale & 1 & 4.00 & 5.05 & 14.00\tabularnewline
+SMA Price 2 year & 0 & 296.92 & 500.89 & 62,055.59\tabularnewline
+SMA Price 3 year & 0 & 294.94 & 495.29 & 62,055.59\tabularnewline
+SMA Price 5 year & 0 & 300.12 & 498.82 & 62,055.59\tabularnewline
+Percent Change SMA 2 & -1 & 0.00 & 685.69 & 15,749,999.50\tabularnewline
+Percent Change SMA 5 & -1 & 0.00 & 337.77 & 6,299,999.80\tabularnewline
+EMA Price 2 year & 0 & 288.01 & 482.69 & 62,055.59\tabularnewline
+EMA Price 3 year & 0 & 283.23 & 471.98 & 62,055.59\tabularnewline
+EMA Price 5 year & 0 & 278.67 & 454.15 & 62,055.59\tabularnewline
+Percent Change EMA 2 & -1 & 0.00 & 422.50 & 9,415,128.85\tabularnewline
+Percent Change EMA 5 & -1 & 0.06 & 308.05 & 5,341,901.60\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -629,43 +639,37 @@ Feature & Min & Median\tabularnewline
 Feature & Min & Median\tabularnewline
 \midrule
 \endhead
-Last\_Year\_Zip\_Sold & 0.00 & 27.00\tabularnewline
-Last\_Year\_Zip\_Sold\_Percent\_Ch & -1.00 & 0.00\tabularnewline
-Last\_Sale\_Price\_zip\_code\_average & 0.00 & 440.95\tabularnewline
-Last\_Sale\_Price\_Total\_zip\_code\_average & 10.00 &
+Last Year Zip Sold & 0.00 & 27.00\tabularnewline
+Last Year Zip Sold Percent Ch & -1.00 & 0.00\tabularnewline
+Last Sale Price zip code average & 0.00 & 440.95\tabularnewline
+Last Sale Price Total zip code average & 10.00 &
 5,312,874.67\tabularnewline
-Last\_Sale\_Date\_zip\_code\_average & 12,066.00 &
-13,338.21\tabularnewline
-Years\_Since\_Last\_Sale\_zip\_code\_average & 1.00 &
-4.84\tabularnewline
-SMA\_Price\_2\_year\_zip\_code\_average & 34.31 & 429.26\tabularnewline
-SMA\_Price\_3\_year\_zip\_code\_average & 34.31 & 422.04\tabularnewline
-SMA\_Price\_5\_year\_zip\_code\_average & 39.48 & 467.04\tabularnewline
-Percent\_Change\_SMA\_2\_zip\_code\_average & -0.20 &
-0.04\tabularnewline
-Percent\_Change\_SMA\_5\_zip\_code\_average & -0.09 &
-0.03\tabularnewline
-EMA\_Price\_2\_year\_zip\_code\_average & 30.77 & 401.43\tabularnewline
-EMA\_Price\_3\_year\_zip\_code\_average & 33.48 & 419.11\tabularnewline
-EMA\_Price\_5\_year\_zip\_code\_average & 29.85 & 431.89\tabularnewline
-Percent\_Change\_EMA\_2\_zip\_code\_average & -0.16 &
-0.06\tabularnewline
-Percent\_Change\_EMA\_5\_zip\_code\_average & -0.08 &
-0.07\tabularnewline
-Last\_Sale\_Price\_bt\_only & 0.00 & 357.71\tabularnewline
-Last\_Sale\_Price\_Total\_bt\_only & 10.00 & 3,797,461.46\tabularnewline
-Last\_Sale\_Date\_bt\_only & 12,055.00 & 13,331.92\tabularnewline
-Years\_Since\_Last\_Sale\_bt\_only & 1.00 & 4.78\tabularnewline
-SMA\_Price\_2\_year\_bt\_only & 0.00 & 347.59\tabularnewline
-SMA\_Price\_3\_year\_bt\_only & 0.00 & 345.40\tabularnewline
-SMA\_Price\_5\_year\_bt\_only & 0.00 & 372.30\tabularnewline
-Percent\_Change\_SMA\_2\_bt\_only & -0.55 & 0.03\tabularnewline
-Percent\_Change\_SMA\_5\_bt\_only & -0.33 & 0.02\tabularnewline
-EMA\_Price\_2\_year\_bt\_only & 0.00 & 332.98\tabularnewline
-EMA\_Price\_3\_year\_bt\_only & 0.00 & 332.79\tabularnewline
-EMA\_Price\_5\_year\_bt\_only & 0.00 & 340.57\tabularnewline
-Percent\_Change\_EMA\_2\_bt\_only & -0.47 & 0.06\tabularnewline
-Percent\_Change\_EMA\_5\_bt\_only & -0.34 & 0.06\tabularnewline
+Last Sale Date zip code average & 12,066.00 & 13,338.21\tabularnewline
+Years Since Last Sale zip code average & 1.00 & 4.84\tabularnewline
+SMA Price 2 year zip code average & 34.31 & 429.26\tabularnewline
+SMA Price 3 year zip code average & 34.31 & 422.04\tabularnewline
+SMA Price 5 year zip code average & 39.48 & 467.04\tabularnewline
+Percent Change SMA 2 zip code average & -0.20 & 0.04\tabularnewline
+Percent Change SMA 5 zip code average & -0.09 & 0.03\tabularnewline
+EMA Price 2 year zip code average & 30.77 & 401.43\tabularnewline
+EMA Price 3 year zip code average & 33.48 & 419.11\tabularnewline
+EMA Price 5 year zip code average & 29.85 & 431.89\tabularnewline
+Percent Change EMA 2 zip code average & -0.16 & 0.06\tabularnewline
+Percent Change EMA 5 zip code average & -0.08 & 0.07\tabularnewline
+Last Sale Price bt only & 0.00 & 357.71\tabularnewline
+Last Sale Price Total bt only & 10.00 & 3,797,461.46\tabularnewline
+Last Sale Date bt only & 12,055.00 & 13,331.92\tabularnewline
+Years Since Last Sale bt only & 1.00 & 4.78\tabularnewline
+SMA Price 2 year bt only & 0.00 & 347.59\tabularnewline
+SMA Price 3 year bt only & 0.00 & 345.40\tabularnewline
+SMA Price 5 year bt only & 0.00 & 372.30\tabularnewline
+Percent Change SMA 2 bt only & -0.55 & 0.03\tabularnewline
+Percent Change SMA 5 bt only & -0.33 & 0.02\tabularnewline
+EMA Price 2 year bt only & 0.00 & 332.98\tabularnewline
+EMA Price 3 year bt only & 0.00 & 332.79\tabularnewline
+EMA Price 5 year bt only & 0.00 & 340.57\tabularnewline
+Percent Change EMA 2 bt only & -0.47 & 0.06\tabularnewline
+Percent Change EMA 5 bt only & -0.34 & 0.06\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -1266,90 +1270,93 @@ Feature\tabularnewline
 Feature\tabularnewline
 \midrule
 \endhead
-Radius\_Total\_Sold\_In\_Year\tabularnewline
-Radius\_Average\_Years\_Since\_Last\_Sale\tabularnewline
-Radius\_Res\_Units\_Sold\_In\_Year\tabularnewline
-Radius\_All\_Units\_Sold\_In\_Year\tabularnewline
-Radius\_SF\_Sold\_In\_Year\tabularnewline
-Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\tabularnewline
-Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\tabularnewline
-Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\tabularnewline
-Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\tabularnewline
-Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\tabularnewline
-Radius\_Total\_Sold\_In\_Year\_percent\_change\tabularnewline
-Radius\_Average\_Years\_Since\_Last\_Sale\_percent\_change\tabularnewline
-Radius\_Res\_Units\_Sold\_In\_Year\_percent\_change\tabularnewline
-Radius\_All\_Units\_Sold\_In\_Year\_percent\_change\tabularnewline
-Radius\_SF\_Sold\_In\_Year\_percent\_change\tabularnewline
-Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\tabularnewline
-Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\_percent\_change\tabularnewline
-Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\tabularnewline
-Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\tabularnewline
-Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change\tabularnewline
-Percent\_Com\_dist\tabularnewline
-Percent\_Res\_dist\tabularnewline
-Percent\_Office\_dist\tabularnewline
-Percent\_Retail\_dist\tabularnewline
-Percent\_Garage\_dist\tabularnewline
-Percent\_Storage\_dist\tabularnewline
-Percent\_Factory\_dist\tabularnewline
-Percent\_Other\_dist\tabularnewline
-Percent\_Com\_basic\_mean\tabularnewline
-Percent\_Res\_basic\_mean\tabularnewline
-Percent\_Office\_basic\_mean\tabularnewline
-Percent\_Retail\_basic\_mean\tabularnewline
-Percent\_Garage\_basic\_mean\tabularnewline
-Percent\_Storage\_basic\_mean\tabularnewline
-Percent\_Factory\_basic\_mean\tabularnewline
-Percent\_Other\_basic\_mean\tabularnewline
-Percent\_Com\_dist\_perc\_change\tabularnewline
-Percent\_Res\_dist\_perc\_change\tabularnewline
-Percent\_Office\_dist\_perc\_change\tabularnewline
-Percent\_Retail\_dist\_perc\_change\tabularnewline
-Percent\_Garage\_dist\_perc\_change\tabularnewline
-Percent\_Storage\_dist\_perc\_change\tabularnewline
-Percent\_Factory\_dist\_perc\_change\tabularnewline
-Percent\_Other\_dist\_perc\_change\tabularnewline
-SMA\_Price\_2\_year\_dist\tabularnewline
-SMA\_Price\_3\_year\_dist\tabularnewline
-SMA\_Price\_5\_year\_dist\tabularnewline
-Percent\_Change\_SMA\_2\_dist\tabularnewline
-Percent\_Change\_SMA\_5\_dist\tabularnewline
-EMA\_Price\_2\_year\_dist\tabularnewline
-EMA\_Price\_3\_year\_dist\tabularnewline
-EMA\_Price\_5\_year\_dist\tabularnewline
-Percent\_Change\_EMA\_2\_dist\tabularnewline
-Percent\_Change\_EMA\_5\_dist\tabularnewline
-SMA\_Price\_2\_year\_basic\_mean\tabularnewline
-SMA\_Price\_3\_year\_basic\_mean\tabularnewline
-SMA\_Price\_5\_year\_basic\_mean\tabularnewline
-Percent\_Change\_SMA\_2\_basic\_mean\tabularnewline
-Percent\_Change\_SMA\_5\_basic\_mean\tabularnewline
-EMA\_Price\_2\_year\_basic\_mean\tabularnewline
-EMA\_Price\_3\_year\_basic\_mean\tabularnewline
-EMA\_Price\_5\_year\_basic\_mean\tabularnewline
-Percent\_Change\_EMA\_2\_basic\_mean\tabularnewline
-Percent\_Change\_EMA\_5\_basic\_mean\tabularnewline
-SMA\_Price\_2\_year\_dist\_perc\_change\tabularnewline
-SMA\_Price\_3\_year\_dist\_perc\_change\tabularnewline
-SMA\_Price\_5\_year\_dist\_perc\_change\tabularnewline
-Percent\_Change\_SMA\_2\_dist\_perc\_change\tabularnewline
-Percent\_Change\_SMA\_5\_dist\_perc\_change\tabularnewline
-EMA\_Price\_2\_year\_dist\_perc\_change\tabularnewline
-EMA\_Price\_3\_year\_dist\_perc\_change\tabularnewline
-EMA\_Price\_5\_year\_dist\_perc\_change\tabularnewline
-Percent\_Change\_EMA\_2\_dist\_perc\_change\tabularnewline
-Percent\_Change\_EMA\_5\_dist\_perc\_change\tabularnewline
-SMA\_Price\_2\_year\_basic\_mean\_perc\_change\tabularnewline
-SMA\_Price\_3\_year\_basic\_mean\_perc\_change\tabularnewline
-SMA\_Price\_5\_year\_basic\_mean\_perc\_change\tabularnewline
-Percent\_Change\_SMA\_2\_basic\_mean\_perc\_change\tabularnewline
-Percent\_Change\_SMA\_5\_basic\_mean\_perc\_change\tabularnewline
-EMA\_Price\_2\_year\_basic\_mean\_perc\_change\tabularnewline
-EMA\_Price\_3\_year\_basic\_mean\_perc\_change\tabularnewline
-EMA\_Price\_5\_year\_basic\_mean\_perc\_change\tabularnewline
-Percent\_Change\_EMA\_2\_basic\_mean\_perc\_change\tabularnewline
-Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change\tabularnewline
+Radius Total Sold In Year\tabularnewline
+Radius Average Years Since Last Sale\tabularnewline
+Radius Res Units Sold In Year\tabularnewline
+Radius All Units Sold In Year\tabularnewline
+Radius SF Sold In Year\tabularnewline
+Radius Total Sold In Year sum over 2 years\tabularnewline
+Radius Average Years Since Last Sale sum over 2 years\tabularnewline
+Radius Res Units Sold In Year sum over 2 years\tabularnewline
+Radius All Units Sold In Year sum over 2 years\tabularnewline
+Radius SF Sold In Year sum over 2 years\tabularnewline
+Radius Total Sold In Year percent change\tabularnewline
+Radius Average Years Since Last Sale percent change\tabularnewline
+Radius Res Units Sold In Year percent change\tabularnewline
+Radius All Units Sold In Year percent change\tabularnewline
+Radius SF Sold In Year percent change\tabularnewline
+Radius Total Sold In Year sum over 2 years percent change\tabularnewline
+Radius Average Years Since Last Sale sum over 2 years percent
+change\tabularnewline
+Radius Res Units Sold In Year sum over 2 years percent
+change\tabularnewline
+Radius All Units Sold In Year sum over 2 years percent
+change\tabularnewline
+Radius SF Sold In Year sum over 2 years percent change\tabularnewline
+Percent Com dist\tabularnewline
+Percent Res dist\tabularnewline
+Percent Office dist\tabularnewline
+Percent Retail dist\tabularnewline
+Percent Garage dist\tabularnewline
+Percent Storage dist\tabularnewline
+Percent Factory dist\tabularnewline
+Percent Other dist\tabularnewline
+Percent Com basic mean\tabularnewline
+Percent Res basic mean\tabularnewline
+Percent Office basic mean\tabularnewline
+Percent Retail basic mean\tabularnewline
+Percent Garage basic mean\tabularnewline
+Percent Storage basic mean\tabularnewline
+Percent Factory basic mean\tabularnewline
+Percent Other basic mean\tabularnewline
+Percent Com dist perc change\tabularnewline
+Percent Res dist perc change\tabularnewline
+Percent Office dist perc change\tabularnewline
+Percent Retail dist perc change\tabularnewline
+Percent Garage dist perc change\tabularnewline
+Percent Storage dist perc change\tabularnewline
+Percent Factory dist perc change\tabularnewline
+Percent Other dist perc change\tabularnewline
+SMA Price 2 year dist\tabularnewline
+SMA Price 3 year dist\tabularnewline
+SMA Price 5 year dist\tabularnewline
+Percent Change SMA 2 dist\tabularnewline
+Percent Change SMA 5 dist\tabularnewline
+EMA Price 2 year dist\tabularnewline
+EMA Price 3 year dist\tabularnewline
+EMA Price 5 year dist\tabularnewline
+Percent Change EMA 2 dist\tabularnewline
+Percent Change EMA 5 dist\tabularnewline
+SMA Price 2 year basic mean\tabularnewline
+SMA Price 3 year basic mean\tabularnewline
+SMA Price 5 year basic mean\tabularnewline
+Percent Change SMA 2 basic mean\tabularnewline
+Percent Change SMA 5 basic mean\tabularnewline
+EMA Price 2 year basic mean\tabularnewline
+EMA Price 3 year basic mean\tabularnewline
+EMA Price 5 year basic mean\tabularnewline
+Percent Change EMA 2 basic mean\tabularnewline
+Percent Change EMA 5 basic mean\tabularnewline
+SMA Price 2 year dist perc change\tabularnewline
+SMA Price 3 year dist perc change\tabularnewline
+SMA Price 5 year dist perc change\tabularnewline
+Percent Change SMA 2 dist perc change\tabularnewline
+Percent Change SMA 5 dist perc change\tabularnewline
+EMA Price 2 year dist perc change\tabularnewline
+EMA Price 3 year dist perc change\tabularnewline
+EMA Price 5 year dist perc change\tabularnewline
+Percent Change EMA 2 dist perc change\tabularnewline
+Percent Change EMA 5 dist perc change\tabularnewline
+SMA Price 2 year basic mean perc change\tabularnewline
+SMA Price 3 year basic mean perc change\tabularnewline
+SMA Price 5 year basic mean perc change\tabularnewline
+Percent Change SMA 2 basic mean perc change\tabularnewline
+Percent Change SMA 5 basic mean perc change\tabularnewline
+EMA Price 2 year basic mean perc change\tabularnewline
+EMA Price 3 year basic mean perc change\tabularnewline
+EMA Price 5 year basic mean perc change\tabularnewline
+Percent Change EMA 2 basic mean perc change\tabularnewline
+Percent Change EMA 5 basic mean perc change\tabularnewline
 \bottomrule
 \end{longtable}
 
@@ -1374,6 +1381,9 @@ Barry Bluestone \& Chase Billingham, Stephanie Pollack \&. 2010.
 ``Maintaining Diversity in America's Transit-Rich Neighborhoods: Tools
 for Equitable Neighborhood Change.'' \emph{New England Community
 Developments, Federal Reserve Bank of Boston}, 1--6.
+
+\hypertarget{ref-Batty2013}{}
+Batty, Michael. 2013. ``The New Science of Cities.'' \emph{MIT Press}.
 
 \hypertarget{ref-Breiman2001}{}
 Breiman, L. 2001. ``Random Forests.'' \emph{Machine Learning} 45 (1):
@@ -1497,6 +1507,11 @@ Learning Model for Estimation of Sale Prices of Real Estate Units.''
 \hypertarget{ref-Reardon2011}{}
 Reardon, Kendra, Sean F.; Bischoff. 2011. ``Income Inequality and Income
 Segregation.'' \emph{American Journal of Sociology}.
+
+\hypertarget{ref-Ritter2013}{}
+Ritter, Nancy. 2013. ``Predicting Recidivism Risk: New Tool in
+Philadelphia Shows Great Promise.'' \emph{National Institute of Justice
+Journal} 271.
 
 \hypertarget{ref-Schernthanner2016}{}
 Schernthanner H., Gonschorek J., Asche H. 2016. ``Spatial Modeling and

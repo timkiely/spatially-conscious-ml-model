@@ -1,16 +1,48 @@
 ---
-title: "Predicting Real Estate Sales Using Machine Learning and Spatial Dependence"
-subtitle: "Boosting ML Predictive Accuracy Using Spatial Lags"
 output:
-  pdf_document: 
+  pdf_document:
     keep_tex: true
-    toc: yes
+    fig_caption: yes
+    number_sections: yes
 bibliography: Sections/bib/bibliography.bib
+fontsize: 12pt
+geometry: "left=1in,right=1in,top=1in,bottom=1in"
+documentclass: article
+spacing: double
+header-includes:
+- \usepackage{placeins}
+- \usepackage{fancyhdr}
+- \usepackage{setspace}
+- \usepackage{chngcntr}
+- \usepackage{microtype}
+- \onehalfspacing
+- \counterwithin{figure}{section}
+- \counterwithin{table}{section}
+- \linespread{2}
 ---
 
 ```{r global_options 1, include=FALSE}
 knitr::opts_chunk$set(fig.pos = 'h')
 ```
+
+
+```{r child = 'Sections/00-Title.Rmd'}
+```
+
+\normalsize
+\newpage
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\flushleft
+
+\fancypagestyle{plain}{%
+  \renewcommand{\headrulewidth}{0pt}%
+  \fancyhf{}%
+  \fancyhead[R] \thepage
+  \setlength\footskip{0pt}
+}
+\pagestyle{plain}
 
 # Introduction
 
@@ -37,6 +69,8 @@ knitr::opts_chunk$set(fig.pos = 'h')
 
 ```{r child = 'Sections/05-Conclusions.Rmd'}
 ```
+
+\newpage
 
 # Appendix A: List of Spatial Lag Features
 
@@ -82,3 +116,4 @@ nocite: |
   @Zuk2015
   
 ...
+

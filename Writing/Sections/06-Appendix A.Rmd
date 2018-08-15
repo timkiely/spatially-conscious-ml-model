@@ -7,11 +7,15 @@ output: pdf_document
 
 suppressPackageStartupMessages(library(tidyverse))
 
-pander::pander(readr::read_rds("tables and figures/table3.rds") %>% select(Feature)%>% 
-                 mutate(Feature = gsub("_"," ",Feature))
-               , caption = "Appendix A: All Spatial Lag Features"
-               , split.table = Inf
-               , style = "rmarkdown"
-               , justify = "left")
-               
+# pander::pander(readr::read_rds("tables and figures/table3.rds") %>% select(Feature)%>% 
+#                  mutate(Feature = gsub("_"," ",Feature))
+#                , caption = "Appendix A: All Spatial Lag Features"
+#                , split.table = Inf
+#                , style = "rmarkdown"
+#                , justify = "left")
+
+readr::read_rds("tables and figures/table3.rds") %>% #select(Feature)
+  knitr::kable(
+    caption = "Appendix A: All Spatial Lag Features"
+  ) %>% kable_styling(latex_options = "scale_down")
 ```

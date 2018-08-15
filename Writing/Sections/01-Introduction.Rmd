@@ -1,10 +1,11 @@
 ---
-title: "Introduction"
+title: "Background"
 output: pdf_document
 bibliography: bib/bibliography.bib
+header-includes:
+  - \setlength{\parindent}{4em}
+  - \setlength{\parskip}{0em}
 ---
-
-## Background
 
 Income inequality may be one of the most pressing challenges of our time, yet, its causes remain unclear. As discussed by @Zuk2015, "Neighborhoods change slowly, but over time [they] are becoming more segregated by income, due in part to macro-level increases in income inequality". Researchers at the Urban Institute [@urban2016] recently identified the socio-economic phenomenon of “Economic Exclusion” as an explanation for income inequality in the US. 
 

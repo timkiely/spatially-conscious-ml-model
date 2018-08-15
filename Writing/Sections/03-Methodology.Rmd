@@ -2,6 +2,8 @@
 title: "Methodology"
 output: pdf_document
 bibliography: bib/bibliography.bib
+header-includes:
+  - \usepackage{amsmath}
 ---
 
 Our goal is to compare the use of spatial lags as features in a machine learning predictive model against traditional feature engineering techniques. We will create three modeling data sets: 
@@ -20,6 +22,9 @@ There will be six predictive models built in total, as follows:
 ```{r model table, fig.cap= "All Six Predictive Models", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 
 suppressPackageStartupMessages(library(tibble))
+suppressPackageStartupMessages(library(magrittr))
+suppressPackageStartupMessages(library(knitr))
+suppressPackageStartupMessages(library(kableExtra))
 
 model_desc_table <- tribble(
   ~`#`, ~Model, ~`Model Type`, ~Data, ~`Outcome Var`, ~`Outcome Type`, ~`Eval Metric`
@@ -32,11 +37,17 @@ model_desc_table <- tribble(
   , 6, "Sale Price", "Regression", "Spatial Lag", "Sale Price per SF", "Continuous", "RMSE"
   )
 
-pander::pander(model_desc_table
-               , caption = "Six Predictive Models"
-               , split.table = Inf
-               , style = "rmarkdown"
-               , justify = "left")
+# pander::pander(model_desc_table
+#                , caption = "Six Predictive Models"
+#                , split.table = Inf
+#                , style = "rmarkdown"
+#                , keep.line.breaks = FALSE
+#                , split.cells = Inf
+#                , justify = "left")
+model_desc_table %>% 
+  knitr::kable(
+    caption = "Six Predictive Models"
+  ) %>% kable_styling(latex_options = "scale_down")
 ```
 
 
@@ -94,13 +105,16 @@ The base modeling data set is enhanced to include additional features. A summary
 
 ```{r Table 1, fig.cap= "Base Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 
-pander::pander(readr::read_rds("tables and figures/table1.rds") %>% 
-                 mutate(Feature = gsub("_"," ",Feature))
-               , caption = "Base Modeling Data Features"
-               , split.table = Inf
-               , style = "rmarkdown"
-               , justify = "left")
-
+# pander::pander(readr::read_rds("tables and figures/table1.rds") %>% 
+#                  mutate(Feature = gsub("_"," ",Feature))
+#                , caption = "Base Modeling Data Features"
+#                , split.table = Inf
+#                , style = "rmarkdown"
+#                , justify = "left")
+readr::read_rds("tables and figures/table1.rds") %>% 
+  knitr::kable(
+    caption = "Base Modeling Data Features"
+  ) %>% kable_styling(latex_options = "scale_down")
 ```
 
 A binary variable is created to indicate whether a tax lot has a building on it (i.e., whether it is an empty plot of land or not). In addition, building types are quantified by what percent of the square footage belongs to the major property types: Commercial, Residential, Office, Retail, Garage, Storage, Factory and Other. 
@@ -225,9 +239,10 @@ knitr::include_graphics("Sections/tables and figures/Train Validate Test.png")
 
 For ease of processing and to improve the ability of the model to generalize into the future, a variable selection step is added to the modeling process. A Random Forest model is first trained on a 1% sub-sample of the modeling data. Variable importance of the resulting model is calculated using the technique proposed by @Friedman2001, i.e., for a collection of decision trees $[T_m]_{1}^{m}$: 
 
-\begin{flalign*}
+
+\[
   \hat{I_{j}^{2}} = \frac{1}{M} \sum_{m=1}^{M}\hat{I_{j}^{2}}(T_m)
-\end{flalign*}
+\]
 
 Where influence $I$ for variable $j$ is calculated as the sum of corresponding improvements in squared-error for node tree $T$. After calculating variable importance for the model data subset, the variables are rank-ordered by descending importance. Variables which account for 80% of the total variable importance are chosen to advance to the model training round on the full modeling data sets. 
 

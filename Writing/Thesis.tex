@@ -72,19 +72,40 @@
 }
 
 \setlength{\droptitle}{-2em}
-  \title{}
-  \pretitle{\vspace{\droptitle}}
-  \posttitle{}
-  \author{}
-  \preauthor{}\postauthor{}
-  \date{}
-  \predate{}\postdate{}
 
+  \title{}
+    \pretitle{\vspace{\droptitle}}
+  \posttitle{}
+    \author{}
+    \preauthor{}\postauthor{}
+    \date{}
+    \predate{}\postdate{}
+  
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+
+\setlength{\parindent}{4em}
+\setlength{\parskip}{0em}
 \usepackage{placeins}
 \usepackage{fancyhdr}
 \usepackage{setspace}
 \usepackage{chngcntr}
 \usepackage{microtype}
+\usepackage{ragged2e}
+\usepackage{amsmath}
+\usepackage{indentfirst}
 \onehalfspacing
 \counterwithin{figure}{section}
 \counterwithin{table}{section}
@@ -96,11 +117,14 @@
 
 \titlepage
 \center
-\vspace{4 cm} \LARGE
+\vspace{4 cm}
+\LARGE
+
 \bf 
 Predicting Real Estate Sales Using Machine Learning and Spatial Dependence
 
 \Large
+
 Boosting ML Predictive Accuracy Using Spatial Lags
 
 \rm
@@ -132,22 +156,28 @@ Nathaniel D. Bastian, PhD, First Reader
 
 Candice Bradley, Second Reader
 
+\newpage
 \normalsize
-\newpage
+\singlespace
 \tableofcontents
+\doublespace
 \newpage
-\pagenumbering{arabic} \flushleft
+\pagenumbering{arabic}
 
 \fancypagestyle{plain}{%
   \renewcommand{\headrulewidth}{0pt}%
   \fancyhf{}%
   \fancyhead[R] \thepage
   \setlength\footskip{0pt}
-} \pagestyle{plain}
+}
+\pagestyle{plain}
+\justify
 
-\section{Introduction}\label{introduction}
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
 
-\subsection{Background}\label{background}
+\hypertarget{background}{%
+\subsection{Background}\label{background}}
 
 Income inequality may be one of the most pressing challenges of our
 time, yet, its causes remain unclear. As discussed by Zuk (2015),
@@ -217,7 +247,8 @@ areas. We conclude that spatial-lag features, while computationally
 expensive, can be used to increase the accuracy of spatially-conscious
 predictive models.
 
-\section{Literature Review}\label{literature-review}
+\hypertarget{literature-review}{%
+\section{Literature Review}\label{literature-review}}
 
 The literature review for this paper reviews the concept of Economic
 Displacement as it has been addressed in academia, primarily in relation
@@ -227,8 +258,9 @@ large numbers of real estate properties. Finally, we will briefly
 examine machine learning as it relates to the problem of predicting
 gentrification and/or Economic Displacement.
 
+\hypertarget{how-has-economic-displacement-been-addressed-in-the-past}{%
 \subsection{How Has Economic Displacement Been Addressed in the
-Past?}\label{how-has-economic-displacement-been-addressed-in-the-past}
+Past?}\label{how-has-economic-displacement-been-addressed-in-the-past}}
 
 Economic Displacement has been intertwined with the study of
 gentrification since shortly after the latter became academically
@@ -279,8 +311,9 @@ methodological shortcomings''. In this paper, we attempt to further the
 understanding of gentrification prediction by demonstrating a technique
 to better predict real estate sales in New York City.
 
+\hypertarget{a-review-of-mass-appraisal-techniques}{%
 \subsection{A Review of Mass Appraisal
-Techniques}\label{a-review-of-mass-appraisal-techniques}
+Techniques}\label{a-review-of-mass-appraisal-techniques}}
 
 Much of the research on predicting real estate prices has been in
 service of creating mass appraisal models. Mass appraisal models are
@@ -359,8 +392,9 @@ cannot be replaced by AVM. At current, AVM is ``increasingly adaptable
 in describing real estate market behavior'' but has yet to supersede the
 importance and necessity of local information and human evaluation.
 
+\hypertarget{has-machine-learning-been-applied-to-this-problem-before}{%
 \subsection{Has Machine Learning Been Applied to this Problem
-Before?}\label{has-machine-learning-been-applied-to-this-problem-before}
+Before?}\label{has-machine-learning-been-applied-to-this-problem-before}}
 
 Both Mass Appraisal techniques and Automated Valuation Modeling seek to
 predict real estate prices using data and statistical methods, however,
@@ -450,19 +484,20 @@ Finally, it should be noted that many studies, whether exploring
 advanced techniques, new data, or both, rely on aggregation of data by
 some arbitrary boundary. For example, Turner and Snow (2001) predicted
 gentrification in the Washington, D.C. metro area by ranking census
-tracts in terms of development. K. Chapple (2009) created a
-gentrification ``early warning system'' by identifying low income census
-tracts in central city locations. Barry Bluestone \& Chase Billingham
-(2010) analyzed 42 census block groups near rail stations in 12 metro
-areas across the United States, studying changes between 1990 and 2000
-for neighborhood socioeconomic and housing characteristics. All of these
+tracts in terms of development. Chapple (2009) created a gentrification
+``early warning system'' by identifying low income census tracts in
+central city locations. Barry Bluestone \& Chase Billingham (2010)
+analyzed 42 census block groups near rail stations in 12 metro areas
+across the United States, studying changes between 1990 and 2000 for
+neighborhood socioeconomic and housing characteristics. All of these
 studies, and many more, relied on aggregation of data at the
 census-tract or census-block level. In contrast, this paper compares
 boundary-aggregation techniques (specifically, aggregating by zip codes)
 to spatial-lag techniques and finds the spatial lag techniques to
 generally outperform.
 
-\section{Methodology}\label{methodology}
+\hypertarget{methodology}{%
+\section{Methodology}\label{methodology}}
 
 Our goal is to compare the use of spatial lags as features in a machine
 learning predictive model against traditional feature engineering
@@ -494,32 +529,29 @@ using a different outcome variable for each:
 
 There will be six predictive models built in total, as follows:
 
-\begin{longtable}[]{@{}lllllll@{}}
-\caption{Six Predictive Models}\tabularnewline
-\toprule
-\# & Model & Model Type & Data & Outcome Var & Outcome Type & Eval
-Metric\tabularnewline
-\midrule
-\endfirsthead
-\toprule
-\# & Model & Model Type & Data & Outcome Var & Outcome Type & Eval
-Metric\tabularnewline
-\midrule
-\endhead
-1 & Probability of Sale & Classification & Base & Building Sold & Binary
-& AUC\tabularnewline
-2 & Probability of Sale & Classification & Zip Code & Building Sold &
-Binary & AUC\tabularnewline
-3 & Probability of Sale & Classification & Spatial Lags & Building Sold
-& Binary & AUC\tabularnewline
-4 & Sale Price & Regression & Base & Sale Price per SF & Continuous &
-RMSE\tabularnewline
-5 & Sale Price & Regression & Zip Code & Sale Price per SF & Continuous
-& RMSE\tabularnewline
-6 & Sale Price & Regression & Spatial Lag & Sale Price per SF &
-Continuous & RMSE\tabularnewline
-\bottomrule
-\end{longtable}
+\begin{table}
+
+\caption{\label{tab:model table}Six Predictive Models}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{r|l|l|l|l|l|l}
+\hline
+\# & Model & Model Type & Data & Outcome Var & Outcome Type & Eval Metric\\
+\hline
+1 & Probability of Sale & Classification & Base & Building Sold & Binary & AUC\\
+\hline
+2 & Probability of Sale & Classification & Zip Code & Building Sold & Binary & AUC\\
+\hline
+3 & Probability of Sale & Classification & Spatial Lags & Building Sold & Binary & AUC\\
+\hline
+4 & Sale Price & Regression & Base & Sale Price per SF & Continuous & RMSE\\
+\hline
+5 & Sale Price & Regression & Zip Code & Sale Price per SF & Continuous & RMSE\\
+\hline
+6 & Sale Price & Regression & Spatial Lag & Sale Price per SF & Continuous & RMSE\\
+\hline
+\end{tabular}}
+\end{table}
 
 To accomplish this, we combine three open-source data repositories
 provided by New York City via \url{nyc.gov} and
@@ -532,7 +564,8 @@ features'' data set and a ``Spatial Lag features'' data set. The primary
 goal of this study is to compare the predictive power of the spatial
 lags vs.~the base and zip code features.
 
-\subsection{Data}\label{data}
+\hypertarget{data}{%
+\subsection{Data}\label{data}}
 
 The New York City government makes available an annual data set which
 describes all tax lots in the five boroughs. The Primary Land Use and
@@ -612,48 +645,70 @@ less than 2 buildings per tax lot. The global filtering of the data set
 reduces the base modeling data from 12,012,780 records down to
 8,247,499.
 
-\subsection{Feature Engineering}\label{feature-engineering}
+\hypertarget{feature-engineering}{%
+\subsection{Feature Engineering}\label{feature-engineering}}
 
-\subsubsection{Base modeling data}\label{base-modeling-data}
+\hypertarget{base-modeling-data}{%
+\subsubsection{Base modeling data}\label{base-modeling-data}}
 
 The base modeling data set is enhanced to include additional features. A
 summary table of the additional features are presented below:
 
-\begin{longtable}[]{@{}lllll@{}}
-\caption{Base Modeling Data Features}\tabularnewline
-\toprule
-Feature & Min & Median & Mean & Max\tabularnewline
-\midrule
-\endfirsthead
-\toprule
-Feature & Min & Median & Mean & Max\tabularnewline
-\midrule
-\endhead
-has building area & 0 & 1.00 & 1.00 & 1.00\tabularnewline
-Percent Com & 0 & 0.00 & 0.16 & 1.00\tabularnewline
-Percent Res & 0 & 1.00 & 0.82 & 1.00\tabularnewline
-Percent Office & 0 & 0.00 & 0.07 & 1.00\tabularnewline
-Percent Retail & 0 & 0.00 & 0.04 & 1.00\tabularnewline
-Percent Garage & 0 & 0.00 & 0.01 & 1.00\tabularnewline
-Percent Storage & 0 & 0.00 & 0.02 & 1.00\tabularnewline
-Percent Factory & 0 & 0.00 & 0.00 & 1.00\tabularnewline
-Percent Other & 0 & 0.00 & 0.00 & 1.00\tabularnewline
-Last Sale Price & 0 & 312.68 & 531.02 & 62,055.59\tabularnewline
-Last Sale Price Total & 2 & 2,966,835.00 & 12,844,252.00 &
-1,932,900,000.00\tabularnewline
-Years Since Last Sale & 1 & 4.00 & 5.05 & 14.00\tabularnewline
-SMA Price 2 year & 0 & 296.92 & 500.89 & 62,055.59\tabularnewline
-SMA Price 3 year & 0 & 294.94 & 495.29 & 62,055.59\tabularnewline
-SMA Price 5 year & 0 & 300.12 & 498.82 & 62,055.59\tabularnewline
-Percent Change SMA 2 & -1 & 0.00 & 685.69 & 15,749,999.50\tabularnewline
-Percent Change SMA 5 & -1 & 0.00 & 337.77 & 6,299,999.80\tabularnewline
-EMA Price 2 year & 0 & 288.01 & 482.69 & 62,055.59\tabularnewline
-EMA Price 3 year & 0 & 283.23 & 471.98 & 62,055.59\tabularnewline
-EMA Price 5 year & 0 & 278.67 & 454.15 & 62,055.59\tabularnewline
-Percent Change EMA 2 & -1 & 0.00 & 422.50 & 9,415,128.85\tabularnewline
-Percent Change EMA 5 & -1 & 0.06 & 308.05 & 5,341,901.60\tabularnewline
-\bottomrule
-\end{longtable}
+\begin{table}
+
+\caption{\label{tab:Table 1}Base Modeling Data Features}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{l|l|l|l|l}
+\hline
+Feature & Min & Median & Mean & Max\\
+\hline
+has\_building\_area & 0 & 1.00 & 1.00 & 1.00\\
+\hline
+Percent\_Com & 0 & 0.00 & 0.16 & 1.00\\
+\hline
+Percent\_Res & 0 & 1.00 & 0.82 & 1.00\\
+\hline
+Percent\_Office & 0 & 0.00 & 0.07 & 1.00\\
+\hline
+Percent\_Retail & 0 & 0.00 & 0.04 & 1.00\\
+\hline
+Percent\_Garage & 0 & 0.00 & 0.01 & 1.00\\
+\hline
+Percent\_Storage & 0 & 0.00 & 0.02 & 1.00\\
+\hline
+Percent\_Factory & 0 & 0.00 & 0.00 & 1.00\\
+\hline
+Percent\_Other & 0 & 0.00 & 0.00 & 1.00\\
+\hline
+Last\_Sale\_Price & 0 & 312.68 & 531.02 & 62,055.59\\
+\hline
+Last\_Sale\_Price\_Total & 2 & 2,966,835.00 & 12,844,252.00 & 1,932,900,000.00\\
+\hline
+Years\_Since\_Last\_Sale & 1 & 4.00 & 5.05 & 14.00\\
+\hline
+SMA\_Price\_2\_year & 0 & 296.92 & 500.89 & 62,055.59\\
+\hline
+SMA\_Price\_3\_year & 0 & 294.94 & 495.29 & 62,055.59\\
+\hline
+SMA\_Price\_5\_year & 0 & 300.12 & 498.82 & 62,055.59\\
+\hline
+Percent\_Change\_SMA\_2 & -1 & 0.00 & 685.69 & 15,749,999.50\\
+\hline
+Percent\_Change\_SMA\_5 & -1 & 0.00 & 337.77 & 6,299,999.80\\
+\hline
+EMA\_Price\_2\_year & 0 & 288.01 & 482.69 & 62,055.59\\
+\hline
+EMA\_Price\_3\_year & 0 & 283.23 & 471.98 & 62,055.59\\
+\hline
+EMA\_Price\_5\_year & 0 & 278.67 & 454.15 & 62,055.59\\
+\hline
+Percent\_Change\_EMA\_2 & -1 & 0.00 & 422.50 & 9,415,128.85\\
+\hline
+Percent\_Change\_EMA\_5 & -1 & 0.06 & 308.05 & 5,341,901.60\\
+\hline
+\end{tabular}}
+\end{table}
 
 A binary variable is created to indicate whether a tax lot has a
 building on it (i.e., whether it is an empty plot of land or not). In
@@ -674,7 +729,8 @@ total, 69 variables are input to the feature engineering process and 92
 variables are output. The final base modeling data set is 92 variables
 by 8,247,499 rows.
 
-\subsubsection{Zip Code Modeling Data}\label{zip-code-modeling-data}
+\hypertarget{zip-code-modeling-data}{%
+\subsubsection{Zip Code Modeling Data}\label{zip-code-modeling-data}}
 
 The first of the comparative modeling data sets is the Zip code modeling
 data. Using the base data as a starting point, several features are
@@ -772,8 +828,9 @@ as ``bt\_only'', which filter only for tax lots of the same building
 type. In total, the Zip code feature engineering process inputs 92
 variables and outputs 122 variables.
 
+\hypertarget{spatial-lag-modeling-data}{%
 \subsubsection{Spatial Lag modeling
-data}\label{spatial-lag-modeling-data}
+data}\label{spatial-lag-modeling-data}}
 
 Spatial lags are variables created from physically proximate
 observations. For example, taking the average building age from all
@@ -800,11 +857,11 @@ advantage to using spatial lags is the rich number of potential features
 which can be created. Spatial lags can be weighted based on a distance
 function, i.e., physically closer observations can be given more weight.
 For our modeling purposes, we created two sets of features: distance
-weighted features (denoted with a ``\_dist``) and simple average
-features (denoted with''\_basic``). SMA and EMA as well as percent
-changes were also calculated. In total, the spatial lag feature
-engineering process input 92 variables and output 194 variables. A
-summary of the Spatial Lag features are presented in Table 6.
+weighted features (denoted with a "\_dist``) and simple average features
+(denoted with''\_basic"). SMA and EMA as well as percent changes were
+also calculated. In total, the spatial lag feature engineering process
+input 92 variables and output 194 variables. A summary of the Spatial
+Lag features are presented in Table 6.
 
 \begin{longtable}[]{@{}l@{}}
 \caption{Summary of Spatial Lag Features}\tabularnewline
@@ -851,7 +908,8 @@ and 5 years, and year-over-year percent changes for all variables
 (``perc change''). For a complete list of Spatial Lag features, see
 Appendix A.
 
-\subsection{Outcome Variables}\label{outcome-variables}
+\hypertarget{outcome-variables}{%
+\subsection{Outcome Variables}\label{outcome-variables}}
 
 The final step in creating the modeling data is to define the outcome
 variables. For our purposes, we create two dependent variables:
@@ -888,7 +946,8 @@ Max. & 1.00 & 83,598.7\tabularnewline
 \bottomrule
 \end{longtable}
 
-\subsection{Algorithm}\label{algorithm}
+\hypertarget{algorithm}{%
+\subsection{Algorithm}\label{algorithm}}
 
 Previous works (see: Antipov and Pokryshevskaya (2012); also
 Schernthanner H. (2016)) have found the Random Forest algorithm (Breiman
@@ -964,7 +1023,8 @@ h2o R open source library. The h2o implementation of the Random Forest
 algorithm is particularly well-suited for high parallelization. For more
 information, see: \url{https://www.h2o.ai/}.
 
-\subsubsection{Data Validation}\label{data-validation}
+\hypertarget{data-validation}{%
+\subsubsection{Data Validation}\label{data-validation}}
 
 The goal of the predictive models are to be able to successfully predict
 both the probability and amount of real estate sales into the near
@@ -980,7 +1040,8 @@ into the immediate future.
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Train Validate Test} \caption{Out-of-time validation}\label{fig:Train Test Validate}
 \end{figure}
 
-\subsection{Variable Selection}\label{variable-selection}
+\hypertarget{variable-selection}{%
+\subsection{Variable Selection}\label{variable-selection}}
 
 For ease of processing and to improve the ability of the model to
 generalize into the future, a variable selection step is added to the
@@ -989,9 +1050,9 @@ sub-sample of the modeling data. Variable importance of the resulting
 model is calculated using the technique proposed by Friedman (2001),
 i.e., for a collection of decision trees \([T_m]_{1}^{m}\):
 
-\begin{flalign*}
+\[
   \hat{I_{j}^{2}} = \frac{1}{M} \sum_{m=1}^{M}\hat{I_{j}^{2}}(T_m)
-\end{flalign*}
+\]
 
 Where influence \(I\) for variable \(j\) is calculated as the sum of
 corresponding improvements in squared-error for node tree \(T\). After
@@ -1000,7 +1061,8 @@ are rank-ordered by descending importance. Variables which account for
 80\% of the total variable importance are chosen to advance to the model
 training round on the full modeling data sets.
 
-\subsection{Evaluation Metrics}\label{evaluation-metrics}
+\hypertarget{evaluation-metrics}{%
+\subsection{Evaluation Metrics}\label{evaluation-metrics}}
 
 We have chosen evaluation metrics that will allow us to easily compare
 the performance of the models against other models with the same outcome
@@ -1010,8 +1072,9 @@ compared using Area Under the ROC Curve (AUC). The regression models
 evaluation metrics are common for their respective outcome variable
 types, and as such will be useful for comparing within model-groups.
 
+\hypertarget{area-under-roc-curve-auc}{%
 \subsubsection{Area Under ROC Curve
-(AUC)}\label{area-under-roc-curve-auc}
+(AUC)}\label{area-under-roc-curve-auc}}
 
 A classification model typically outputs a probability that a given row
 in the data belongs to a group. In the case of binary classification,
@@ -1043,7 +1106,8 @@ false positive might be considerably less desirable than a false
 negative, or vice-versa. For our purposes, we rank false positives and
 false negatives as equally undesirable outcomes.
 
-\subsubsection{Root Mean Squared Error}\label{root-mean-squared-error}
+\hypertarget{root-mean-squared-error}{%
+\subsubsection{Root Mean Squared Error}\label{root-mean-squared-error}}
 
 The Root Mean Squared Error (RMSE) is a common measurement of the
 differences between values predicted by a regression model and the
@@ -1059,9 +1123,11 @@ outcome variables. In our case, the outcome variables (Sales Price per
 Square Foot) are consistent across modeling data sets, and therefore can
 be reasonably compared using RMSE.
 
-\section{Results}\label{results}
+\hypertarget{results}{%
+\section{Results}\label{results}}
 
-\subsection{Sale Price Model}\label{sale-price-model}
+\hypertarget{sale-price-model}{%
+\subsection{Sale Price Model}\label{sale-price-model}}
 
 Using Root Mean Squared Error (RMSE) as an evaluation metric of
 predictive power, we find that the Spatial Lag modeling features
@@ -1160,7 +1226,8 @@ Zip & 5.6\% & 5.6\% & 22.2\% & 2.5\tabularnewline
 \bottomrule
 \end{longtable}
 
-\subsection{Probability of Sale Model}\label{probability-of-sale-model}
+\hypertarget{probability-of-sale-model}{%
+\subsection{Probability of Sale Model}\label{probability-of-sale-model}}
 
 Similar to the results found in the Sale Price models, using Area Under
 the ROC Curve (AUC) as an evaluation metric, we find the Spatial Lag
@@ -1252,10 +1319,12 @@ Zip & 6.0\% & 7.7\% & 19.7\% & 1.69\tabularnewline
 \bottomrule
 \end{longtable}
 
+\hypertarget{conclusions-and-future-research}{%
 \section{Conclusions and Future
-Research}\label{conclusions-and-future-research}
+Research}\label{conclusions-and-future-research}}
 
-\subsection{Future Research}\label{future-research}
+\hypertarget{future-research}{%
+\subsection{Future Research}\label{future-research}}
 
 This research has shown that spatial-lag features can be worthwhile
 additions to machine learning predictive models in certain
@@ -1285,7 +1354,8 @@ the day. To make this system practial for combatting displacement, it
 may be helpful to predict at a more granular level and further into the
 future.
 
-\subsection{Conclusion}\label{conclusion}
+\hypertarget{conclusion}{%
+\subsection{Conclusion}\label{conclusion}}
 
 Gentification is largely beneficial to societies and communities,
 however, the downside should not be overlooked. Displacement causes
@@ -1313,292 +1383,372 @@ prevent give a hope for a more equitable future.
 
 \newpage
 
+\hypertarget{appendix-a-list-of-spatial-lag-features}{%
 \section{Appendix A: List of Spatial Lag
-Features}\label{appendix-a-list-of-spatial-lag-features}
+Features}\label{appendix-a-list-of-spatial-lag-features}}
 
-\begin{longtable}[]{@{}l@{}}
-\caption{Appendix A: All Spatial Lag Features}\tabularnewline
-\toprule
-Feature\tabularnewline
-\midrule
-\endfirsthead
-\toprule
-Feature\tabularnewline
-\midrule
-\endhead
-Radius Total Sold In Year\tabularnewline
-Radius Average Years Since Last Sale\tabularnewline
-Radius Res Units Sold In Year\tabularnewline
-Radius All Units Sold In Year\tabularnewline
-Radius SF Sold In Year\tabularnewline
-Radius Total Sold In Year sum over 2 years\tabularnewline
-Radius Average Years Since Last Sale sum over 2 years\tabularnewline
-Radius Res Units Sold In Year sum over 2 years\tabularnewline
-Radius All Units Sold In Year sum over 2 years\tabularnewline
-Radius SF Sold In Year sum over 2 years\tabularnewline
-Radius Total Sold In Year percent change\tabularnewline
-Radius Average Years Since Last Sale percent change\tabularnewline
-Radius Res Units Sold In Year percent change\tabularnewline
-Radius All Units Sold In Year percent change\tabularnewline
-Radius SF Sold In Year percent change\tabularnewline
-Radius Total Sold In Year sum over 2 years percent change\tabularnewline
-Radius Average Years Since Last Sale sum over 2 years percent
-change\tabularnewline
-Radius Res Units Sold In Year sum over 2 years percent
-change\tabularnewline
-Radius All Units Sold In Year sum over 2 years percent
-change\tabularnewline
-Radius SF Sold In Year sum over 2 years percent change\tabularnewline
-Percent Com dist\tabularnewline
-Percent Res dist\tabularnewline
-Percent Office dist\tabularnewline
-Percent Retail dist\tabularnewline
-Percent Garage dist\tabularnewline
-Percent Storage dist\tabularnewline
-Percent Factory dist\tabularnewline
-Percent Other dist\tabularnewline
-Percent Com basic mean\tabularnewline
-Percent Res basic mean\tabularnewline
-Percent Office basic mean\tabularnewline
-Percent Retail basic mean\tabularnewline
-Percent Garage basic mean\tabularnewline
-Percent Storage basic mean\tabularnewline
-Percent Factory basic mean\tabularnewline
-Percent Other basic mean\tabularnewline
-Percent Com dist perc change\tabularnewline
-Percent Res dist perc change\tabularnewline
-Percent Office dist perc change\tabularnewline
-Percent Retail dist perc change\tabularnewline
-Percent Garage dist perc change\tabularnewline
-Percent Storage dist perc change\tabularnewline
-Percent Factory dist perc change\tabularnewline
-Percent Other dist perc change\tabularnewline
-SMA Price 2 year dist\tabularnewline
-SMA Price 3 year dist\tabularnewline
-SMA Price 5 year dist\tabularnewline
-Percent Change SMA 2 dist\tabularnewline
-Percent Change SMA 5 dist\tabularnewline
-EMA Price 2 year dist\tabularnewline
-EMA Price 3 year dist\tabularnewline
-EMA Price 5 year dist\tabularnewline
-Percent Change EMA 2 dist\tabularnewline
-Percent Change EMA 5 dist\tabularnewline
-SMA Price 2 year basic mean\tabularnewline
-SMA Price 3 year basic mean\tabularnewline
-SMA Price 5 year basic mean\tabularnewline
-Percent Change SMA 2 basic mean\tabularnewline
-Percent Change SMA 5 basic mean\tabularnewline
-EMA Price 2 year basic mean\tabularnewline
-EMA Price 3 year basic mean\tabularnewline
-EMA Price 5 year basic mean\tabularnewline
-Percent Change EMA 2 basic mean\tabularnewline
-Percent Change EMA 5 basic mean\tabularnewline
-SMA Price 2 year dist perc change\tabularnewline
-SMA Price 3 year dist perc change\tabularnewline
-SMA Price 5 year dist perc change\tabularnewline
-Percent Change SMA 2 dist perc change\tabularnewline
-Percent Change SMA 5 dist perc change\tabularnewline
-EMA Price 2 year dist perc change\tabularnewline
-EMA Price 3 year dist perc change\tabularnewline
-EMA Price 5 year dist perc change\tabularnewline
-Percent Change EMA 2 dist perc change\tabularnewline
-Percent Change EMA 5 dist perc change\tabularnewline
-SMA Price 2 year basic mean perc change\tabularnewline
-SMA Price 3 year basic mean perc change\tabularnewline
-SMA Price 5 year basic mean perc change\tabularnewline
-Percent Change SMA 2 basic mean perc change\tabularnewline
-Percent Change SMA 5 basic mean perc change\tabularnewline
-EMA Price 2 year basic mean perc change\tabularnewline
-EMA Price 3 year basic mean perc change\tabularnewline
-EMA Price 5 year basic mean perc change\tabularnewline
-Percent Change EMA 2 basic mean perc change\tabularnewline
-Percent Change EMA 5 basic mean perc change\tabularnewline
-\bottomrule
-\end{longtable}
+\begin{table}
 
-\section*{References}\label{references}
+\caption{\label{tab:Appendix A}Appendix A: All Spatial Lag Features}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{l|l|l|l|l}
+\hline
+Feature & Min & Median & Mean & Max\\
+\hline
+Radius\_Total\_Sold\_In\_Year & 1.00 & 20.00 & 24.00 & 201.00\\
+\hline
+Radius\_Average\_Years\_Since\_Last\_Sale & 1.00 & 4.43 & 4.27 & 14.00\\
+\hline
+Radius\_Res\_Units\_Sold\_In\_Year & 0.00 & 226.00 & 289.10 & 2,920.00\\
+\hline
+Radius\_All\_Units\_Sold\_In\_Year & 0.00 & 255.00 & 325.94 & 2,923.00\\
+\hline
+Radius\_SF\_Sold\_In\_Year & 0.00 & 259,403.00 & 430,891.57 & 8,603,639.00\\
+\hline
+Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years & 2.00 & 41.00 & 48.15 & 256.00\\
+\hline
+Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years & 2.00 & 9.25 & 8.70 & 26.00\\
+\hline
+Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years & 0.00 & 493.00 & 584.67 & 3,397.00\\
+\hline
+Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years & 1.00 & 555.00 & 660.67 & 4,265.00\\
+\hline
+Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years & 2,917.00 & 580,947.00 & 872,816.44 & 14,036,469.00\\
+\hline
+Radius\_Total\_Sold\_In\_Year\_percent\_change & -0.99 & 0.00 & 0.27 & 77.00\\
+\hline
+Radius\_Average\_Years\_Since\_Last\_Sale\_percent\_change & -0.91 & 0.13 & 0.26 & 8.00\\
+\hline
+Radius\_Res\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
+\hline
+Radius\_All\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
+\hline
+Radius\_SF\_Sold\_In\_Year\_percent\_change & -1.00 & -0.02 & Inf & Inf\\
+\hline
+Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.96 & -0.03 & 0.03 & 15.00\\
+\hline
+Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\_percent\_change & -0.72 & 0.12 & 0.17 & 2.50\\
+\hline
+Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
+\hline
+Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.99 & -0.04 & 0.12 & 84.00\\
+\hline
+Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.98 & -0.04 & 0.18 & 361.55\\
+\hline
+Percent\_Com\_dist & 0.00 & 0.04 & 0.07 & 0.56\\
+\hline
+Percent\_Res\_dist & 0.00 & 0.46 & 0.43 & 0.66\\
+\hline
+Percent\_Office\_dist & 0.00 & 0.01 & 0.03 & 0.48\\
+\hline
+Percent\_Retail\_dist & 0.00 & 0.02 & 0.02 & 0.09\\
+\hline
+Percent\_Garage\_dist & 0.00 & 0.00 & 0.00 & 0.27\\
+\hline
+Percent\_Storage\_dist & 0.00 & 0.00 & 0.01 & 0.26\\
+\hline
+Percent\_Factory\_dist & 0.00 & 0.00 & 0.00 & 0.04\\
+\hline
+Percent\_Other\_dist & 0.00 & 0.00 & 0.00 & 0.09\\
+\hline
+Percent\_Com\_basic\_mean & 0.00 & 0.04 & 0.07 & 0.54\\
+\hline
+Percent\_Res\_basic\_mean & 0.00 & 0.46 & 0.43 & 0.66\\
+\hline
+Percent\_Office\_basic\_mean & 0.00 & 0.01 & 0.03 & 0.44\\
+\hline
+Percent\_Retail\_basic\_mean & 0.00 & 0.02 & 0.02 & 0.08\\
+\hline
+Percent\_Garage\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.29\\
+\hline
+Percent\_Storage\_basic\_mean & 0.00 & 0.00 & 0.01 & 0.23\\
+\hline
+Percent\_Factory\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.03\\
+\hline
+Percent\_Other\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.04\\
+\hline
+Percent\_Com\_dist\_perc\_change & -0.90 & 0.00 & 0.00 & 6.18\\
+\hline
+Percent\_Res\_dist\_perc\_change & -0.50 & 0.00 & 0.03 & 36.73\\
+\hline
+Percent\_Office\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
+\hline
+Percent\_Retail\_dist\_perc\_change & -0.82 & 0.00 & Inf & Inf\\
+\hline
+Percent\_Garage\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
+\hline
+Percent\_Storage\_dist\_perc\_change & -1.00 & -0.01 & Inf & Inf\\
+\hline
+Percent\_Factory\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
+\hline
+Percent\_Other\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
+\hline
+SMA\_Price\_2\_year\_dist & 0.00 & 400.01 & 496.30 & 3,816.57\\
+\hline
+SMA\_Price\_3\_year\_dist & 0.00 & 396.94 & 492.00 & 3,816.57\\
+\hline
+SMA\_Price\_5\_year\_dist & 8.83 & 425.55 & 515.29 & 3,877.53\\
+\hline
+Percent\_Change\_SMA\_2\_dist & -0.13 & 0.03 & 552.33 & 804,350.67\\
+\hline
+Percent\_Change\_SMA\_5\_dist & -0.09 & 0.02 & 317.46 & 322,504.58\\
+\hline
+EMA\_Price\_2\_year\_dist & 0.00 & 378.63 & 475.54 & 3,431.17\\
+\hline
+EMA\_Price\_3\_year\_dist & 8.83 & 382.25 & 476.05 & 3,296.46\\
+\hline
+EMA\_Price\_5\_year\_dist & 7.88 & 386.34 & 468.91 & 2,813.34\\
+\hline
+Percent\_Change\_EMA\_2\_dist & -0.09 & 0.06 & 346.51 & 480,829.57\\
+\hline
+Percent\_Change\_EMA\_5\_dist & -0.02 & 0.06 & 303.55 & 273,458.42\\
+\hline
+SMA\_Price\_2\_year\_basic\_mean & 0.02 & 412.46 & 496.75 & 2,509.79\\
+\hline
+SMA\_Price\_3\_year\_basic\_mean & 0.02 & 409.00 & 492.43 & 2,509.79\\
+\hline
+SMA\_Price\_5\_year\_basic\_mean & 17.16 & 443.34 & 515.67 & 2,621.01\\
+\hline
+Percent\_Change\_SMA\_2\_basic\_mean & -0.13 & 0.04 & 543.51 & 393,749.99\\
+\hline
+Percent\_Change\_SMA\_5\_basic\_mean & -0.09 & 0.03 & 312.46 & 157,500.00\\
+\hline
+EMA\_Price\_2\_year\_basic\_mean & 0.02 & 390.30 & 475.96 & 2,259.21\\
+\hline
+EMA\_Price\_3\_year\_basic\_mean & 11.39 & 393.25 & 476.45 & 2,136.36\\
+\hline
+EMA\_Price\_5\_year\_basic\_mean & 15.30 & 402.06 & 469.09 & 1,848.27\\
+\hline
+Percent\_Change\_EMA\_2\_basic\_mean & -0.09 & 0.06 & 340.89 & 235,378.24\\
+\hline
+Percent\_Change\_EMA\_5\_basic\_mean & -0.02 & 0.06 & 296.78 & 133,547.59\\
+\hline
+SMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
+\hline
+SMA\_Price\_3\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
+\hline
+SMA\_Price\_5\_year\_dist\_perc\_change & -0.74 & 0.04 & 0.06 & 15.37\\
+\hline
+Percent\_Change\_SMA\_2\_dist\_perc\_change & -Inf & -0.24 & NaN & Inf\\
+\hline
+Percent\_Change\_SMA\_5\_dist\_perc\_change & -Inf & -0.14 & NaN & Inf\\
+\hline
+EMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.06 & 0.18 & 10,540.57\\
+\hline
+EMA\_Price\_3\_year\_dist\_perc\_change & -0.73 & 0.06 & 0.08 & 15.06\\
+\hline
+EMA\_Price\_5\_year\_dist\_perc\_change & -0.63 & 0.06 & 0.07 & 12.04\\
+\hline
+Percent\_Change\_EMA\_2\_dist\_perc\_change & -Inf & -0.13 & NaN & Inf\\
+\hline
+Percent\_Change\_EMA\_5\_dist\_perc\_change & -556.60 & -0.10 & Inf & Inf\\
+\hline
+SMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.12 & 9,375.77\\
+\hline
+SMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.11 & 9,375.77\\
+\hline
+SMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.50 & 0.04 & 0.06 & 5.90\\
+\hline
+Percent\_Change\_SMA\_2\_basic\_mean\_perc\_change & -Inf & -0.19 & NaN & Inf\\
+\hline
+Percent\_Change\_SMA\_5\_basic\_mean\_perc\_change & -Inf & -0.12 & NaN & Inf\\
+\hline
+EMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.53 & 0.06 & 0.12 & 9,375.78\\
+\hline
+EMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.47 & 0.06 & 0.08 & 23.54\\
+\hline
+EMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.37 & 0.06 & 0.07 & 4.81\\
+\hline
+Percent\_Change\_EMA\_2\_basic\_mean\_perc\_change & -Inf & -0.13 & NaN & Inf\\
+\hline
+Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change & -136.59 & -0.11 & Inf & Inf\\
+\hline
+\end{tabular}}
+\end{table}
+
+\hypertarget{references}{%
+\section*{References}\label{references}}
 \addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
-\hypertarget{ref-Almanie2015}{}
+\leavevmode\hypertarget{ref-Almanie2015}{}%
 Almanie, R.; Lor, T.; Mirza. 2015. ``Crime Prediction Based on Crime
 Types and Using Spatial and Temporal Criminal Hotspots.''
 \emph{International Journal of Data Mining \& Knowledge Management
 Process (IJDKP)} 5 (4).
 
-\hypertarget{ref-antipov12}{}
+\leavevmode\hypertarget{ref-antipov12}{}%
 Antipov, Evgeny A., and Elena B. Pokryshevskaya. 2012. ``Mass Appraisal
 of Residential Apartments: An Application of Random Forest for Valuation
 and a Cart-Based Approach for Model Diagnostics.'' \emph{Expert Systems
 with Applications}.
 
-\hypertarget{ref-Pollack2010}{}
+\leavevmode\hypertarget{ref-Pollack2010}{}%
 Barry Bluestone \& Chase Billingham, Stephanie Pollack \&. 2010.
 ``Maintaining Diversity in America's Transit-Rich Neighborhoods: Tools
 for Equitable Neighborhood Change.'' \emph{New England Community
 Developments, Federal Reserve Bank of Boston}, 1--6.
 
-\hypertarget{ref-Batty2013}{}
+\leavevmode\hypertarget{ref-Batty2013}{}%
 Batty, Michael. 2013. ``The New Science of Cities.'' \emph{MIT Press}.
 
-\hypertarget{ref-Breiman2001}{}
+\leavevmode\hypertarget{ref-Breiman2001}{}%
 Breiman, L. 2001. ``Random Forests.'' \emph{Machine Learning} 45 (1):
 5--32.
 
-\hypertarget{ref-Chapple2009}{}
+\leavevmode\hypertarget{ref-Chapple2009}{}%
 Chapple, Karen. 2009. ``Mapping Susceptibility to Gentrification: The
 Early Warning Toolkit.'' \emph{Berkeley, CA: Center for Community
 Innovation.}
 
-\hypertarget{ref-Chapple2016}{}
+\leavevmode\hypertarget{ref-Chapple2016}{}%
 Chapple, Miriam, Karen; Zuk. 2016. ``Forewarned: The Use of Neighborhood
 Early Warning Systems for Gentrification and Displacement.''
 \emph{Cityscape: A Journal of Policy Development and Research} 18 (3).
 
-\hypertarget{ref-Clay1979}{}
+\leavevmode\hypertarget{ref-Clay1979}{}%
 Clay, Phillip L. 1979. \emph{Neighborhood Renewal: Middle-Class
 Resettlement and Incumbent Upgrading in American Neighborhoods}.
 Lexington Books.
 
-\hypertarget{ref-Dietzell2014}{}
+\leavevmode\hypertarget{ref-Springer2017}{}%
+d'Amato, Tom, Maurizio; Kauko, ed. 2017. \emph{Advances in Automated
+Valuation Modeling}. Springer International Publishing.
+
+\leavevmode\hypertarget{ref-Dietzell2014}{}%
 Dietzell, Nicole; Schäfers, Marian Alexander; Braun. 2014.
 ``Sentiment-Based Commercial Real Estate Forecasting with Google Search
 Volume Data.'' \emph{Journal of Property Investment \& Finance,} 32 (6):
 540--69.
 
-\hypertarget{ref-Dreier2004}{}
+\leavevmode\hypertarget{ref-Dreier2004}{}%
 Dreier, John; Swanstrom, Peter; Mollenkopf. 2004. \emph{Place Matters:
 Metropolitics for the Twenty-First Century.} University Press of Kansas.
 
-\hypertarget{ref-Springer2017}{}
-d'Amato, Tom, Maurizio; Kauko, ed. 2017. \emph{Advances in Automated
-Valuation Modeling}. Springer International Publishing.
-
-\hypertarget{ref-Eckert1990}{}
+\leavevmode\hypertarget{ref-Eckert1990}{}%
 Eckert, J. K. 1990. \emph{Property Appraisal and Assessment
 Administration}. Chicago, IL.: International Association of Assessing
 Officers.
 
-\hypertarget{ref-Fotheringham2015}{}
+\leavevmode\hypertarget{ref-Fotheringham2015}{}%
 Fotheringham, R; Yao, A.S.; Crespo. 2015. ``Exploring, Modelling and
 Predicting Spatiotemporal Variations in House Prices.'' \emph{The Annals
 of Regional Science} 54.
 
-\hypertarget{ref-Friedman2001}{}
+\leavevmode\hypertarget{ref-Friedman2001}{}%
 Friedman, Jerome H. 2001. ``Greedy Function Approximation: A Gradient
 Boosting Machine.'' \emph{The Annals of Statistics} 29 (5): 1189--1232.
 
-\hypertarget{ref-Fu2014}{}
+\leavevmode\hypertarget{ref-Fu2014}{}%
 Fu, Yanjie; et al. 2014. \emph{Exploiting Geographic Dependencies for
 Real Estate Appraisal: A Mutual Perspective of Ranking and Clustering}.
 Proceedings of the 20th ACM SIGKDD international conference on Knowledge
 discovery; data mining.
 
-\hypertarget{ref-Geltner2017}{}
+\leavevmode\hypertarget{ref-Geltner2017}{}%
 Geltner, David, and Alex Van de Minne. 2017. ``Do Different Price Points
 Exhibit Different Investment Risk and Return Commercial Real Estate.''
 Real Estate Research Institute.
 
-\hypertarget{ref-Guan2014}{}
+\leavevmode\hypertarget{ref-Guan2014}{}%
 Guan, Jian, Donghui Shi, Jozef M. Zurada, and Alan S. Levitan. 2014.
 ``Analyzing Massive Data Sets: An Adaptive Fuzzy Neural Approach for
 Prediction, with a Real Estate Illustration.'' \emph{Journal of
 Organizational Computing and Electronic Commerce} 24 (1). Taylor \&
-Francis: 94--112.
-doi:\href{https://doi.org/10.1080/10919392.2014.866505}{10.1080/10919392.2014.866505}.
+Francis: 94--112. \url{https://doi.org/10.1080/10919392.2014.866505}.
 
-\hypertarget{ref-Helbich2013}{}
+\leavevmode\hypertarget{ref-Helbich2013}{}%
 Helbich, et al., Marco. 2013. ``Boosting the Predictive Accuracy of
 Urban Hedonic House Price Models Through Airborne Laser Scanning.''
 \emph{Computers, Environment and Urban Systems} 39: 81--92.
 
-\hypertarget{ref-Johnson2007}{}
+\leavevmode\hypertarget{ref-Johnson2007}{}%
 Johnson, Ken, Justin Benefield, and Jonathan Wiley. 2007. ``The
 Probability of Sale for Residential Real Estate.'' \emph{Journal of
 Housing Research} 16 (2): 131--42.
-doi:\href{https://doi.org/10.5555/jhor.16.2.0234g75800h5k8x6}{10.5555/jhor.16.2.0234g75800h5k8x6}.
+\url{https://doi.org/10.5555/jhor.16.2.0234g75800h5k8x6}.
 
-\hypertarget{ref-Kontrimasa2011}{}
+\leavevmode\hypertarget{ref-Kontrimasa2011}{}%
 Kontrimasa, Antanas, Vilius; Verikasb. 2011. ``The Mass Appraisal of the
 Real Estate by Computational Intelligence.'' \emph{Applied Soft
 Computing}.
 
-\hypertarget{ref-Koschinsky2012}{}
+\leavevmode\hypertarget{ref-Koschinsky2012}{}%
 Koschinsky, J. et al. 2012. ``The Welfare Benefit of a Home's Location:
 An Empirical Comparison of Spatial and Non-Spatial Model Estimates.''
 \emph{Journal of Geographical Systems} 10109.
 
-\hypertarget{ref-Lees2008}{}
+\leavevmode\hypertarget{ref-Lees2008}{}%
 Lees, Tom; Wyly, Loretta; Slater. 2008. ``Gentrification.'' \emph{Growth
 and Change} 39 (3): 536--39.
-doi:\href{https://doi.org/10.1111/j.1468-2257.2008.00443.x}{10.1111/j.1468-2257.2008.00443.x}.
+\url{https://doi.org/10.1111/j.1468-2257.2008.00443.x}.
 
-\hypertarget{ref-Miller2015}{}
+\leavevmode\hypertarget{ref-Miller2015}{}%
 Miller, J.; Aspinall, J.; Franklin. 2007. ``Incorporating Spatial
 Dependence in Predictive Vegetation Models.'' \emph{Ecological
 Modelling} 202 (3): 225--42.
 
-\hypertarget{ref-Park2015}{}
+\leavevmode\hypertarget{ref-Park2015}{}%
 Park, Jae Kwon, Byeonghwa; Bae. 2015. ``Using Machine Learning
 Algorithms for Housing Price Prediction: The Case of Fairfax County,
 Virginia Housing Data.'' \emph{Expert Systems with Applications} 42 (6):
 2928--34.
 
-\hypertarget{ref-Pivo2011}{}
+\leavevmode\hypertarget{ref-Pivo2011}{}%
 Pivo, Gary, and Jeffrey D. Fisher. 2011. ``The Walkability Premium in
 Commercial Real Estate Investments.'' \emph{Real Estate Economics} 39
-(2): 185--219.
-doi:\href{https://doi.org/10.1111/j.1540-6229.2010.00296.x}{10.1111/j.1540-6229.2010.00296.x}.
+(2): 185--219. \url{https://doi.org/10.1111/j.1540-6229.2010.00296.x}.
 
-\hypertarget{ref-Quintos2013}{}
+\leavevmode\hypertarget{ref-Quintos2013}{}%
 Quintos, Carmela. 2013. ``Estimating Latent Effects in Commercial
 Property Models.'' \emph{Journal of Property Tax Assessment \&
 Administration} 12 (2).
 
-\hypertarget{ref-Rafiei2016}{}
+\leavevmode\hypertarget{ref-Rafiei2016}{}%
 Rafiei, Hojjat, Mohammad Hossein; Adeli. 2016. ``A Novel Machine
 Learning Model for Estimation of Sale Prices of Real Estate Units.''
 \emph{Journal of Construction Engineering and Management} 142 (2).
 
-\hypertarget{ref-Reardon2011}{}
+\leavevmode\hypertarget{ref-Reardon2011}{}%
 Reardon, Kendra, Sean F.; Bischoff. 2011. ``Income Inequality and Income
 Segregation.'' \emph{American Journal of Sociology}.
 
-\hypertarget{ref-Ritter2013}{}
+\leavevmode\hypertarget{ref-Ritter2013}{}%
 Ritter, Nancy. 2013. ``Predicting Recidivism Risk: New Tool in
 Philadelphia Shows Great Promise.'' \emph{National Institute of Justice
 Journal} 271.
 
-\hypertarget{ref-Schernthanner2016}{}
+\leavevmode\hypertarget{ref-Schernthanner2016}{}%
 Schernthanner H., Gonschorek J., Asche H. 2016. ``Spatial Modeling and
 Geovisualization of Rental Prices for Real Estate Portals.''
 \emph{Computational Science and Its Applications} 9788.
 
-\hypertarget{ref-Silverherz1936}{}
+\leavevmode\hypertarget{ref-Silverherz1936}{}%
 Silverherz, J. D. 1936. ``The Assessment of Real Property in the United
 States.'' \emph{Albany: J.B. Lyon Co. Printers}.
 
-\hypertarget{ref-Smith1979}{}
+\leavevmode\hypertarget{ref-Smith1979}{}%
 Smith, Neil. 1979. ``Toward a Theory of Gentrification a Back to the
 City Movement by Capital, Not People.'' \emph{Journal of the American
 Planning Association} 45 (4). Routledge: 538--48.
-doi:\href{https://doi.org/10.1080/01944367908977002}{10.1080/01944367908977002}.
+\url{https://doi.org/10.1080/01944367908977002}.
 
-\hypertarget{ref-urban2016}{}
+\leavevmode\hypertarget{ref-urban2016}{}%
 Solomon Greene, Molly Scott, Rolf Pendall, and Serena Lei. 2016. ``Open
 Cities: From Economic Exclusion to Urban Inclusion.'' \emph{Urban
-Institue Brief}, June. Urban Institue Brief.
+Institue Brief}. Urban Institue Brief.
 
-\hypertarget{ref-Turner2001}{}
+\leavevmode\hypertarget{ref-Turner2001}{}%
 Turner, Margery Austin, and Christopher Snow. 2001. \emph{Leading
-Indicators of Gentrification in d.C. Neighborhoods}.
+Indicators of Gentrification in D.c. Neighborhoods}.
 
-\hypertarget{ref-Watson2009}{}
+\leavevmode\hypertarget{ref-Watson2009}{}%
 Watson, Tara. 2009. ``Inequality and the Measurement of Residential
 Segregation by Income in American Neighborhoods.'' \emph{Review of
 Income and Wealth}.
 
-\hypertarget{ref-Zuk2015}{}
+\leavevmode\hypertarget{ref-Zuk2015}{}%
 Zuk, Miriam; et al. 2015. ``Gentrification, Displacement and the Role of
 Public Investment: A Literature Review.''
 

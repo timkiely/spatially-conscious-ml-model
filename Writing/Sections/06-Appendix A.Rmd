@@ -14,8 +14,6 @@ suppressPackageStartupMessages(library(tidyverse))
 #                , style = "rmarkdown"
 #                , justify = "left")
 
-readr::read_rds("tables and figures/table3.rds") %>% #select(Feature)
-  knitr::kable(
-    caption = "Appendix A: All Spatial Lag Features"
-  ) %>% kable_styling(latex_options = "scale_down")
+readr::read_rds("tables and figures/table3.rds") %>%
+  my_kable(caption = "Appendix A: All Spatial Lag Features", label = "AppendixA")
 ```

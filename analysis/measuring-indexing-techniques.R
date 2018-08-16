@@ -2,8 +2,10 @@
 
 library(sf)
 library(tidyverse)
+library(sp)
 
-nn <- c(1000, 3000, 5000, 10000, 15000, 30000, 50000, 80000, 100000,150000)
+nn <- c(1000)
+nn <- c(1000, 3000, 5000, 10000, 15000, 30000, 50000, 80000)
 
 
 times <- NULL
@@ -13,6 +15,19 @@ for(nn in nn){
   pts$neighbors_found <- FALSE
   x <- sf::st_as_sf(pts, coords = c("x", "y"), remove = F)
   x$buffer_geom <- st_buffer(x$geometry, dist = 50) # NOTE: switch the active column with st_set_geometry("buffer_geom")
+  
+  bbox_polygon <- function(x) {
+    bb <- sf::st_bbox(x)
+    p <- matrix(
+      c(bb["xmin"], bb["ymin"], 
+        bb["xmin"], bb["ymax"],
+        bb["xmax"], bb["ymax"], 
+        bb["xmax"], bb["ymin"], 
+        bb["xmin"], bb["ymin"]),
+      ncol = 2, byrow = T
+    )
+    sf::st_polygon(list(p))
+  }
   outer_border <- bbox_polygon(x) %>% st_cast(to = "MULTILINESTRING")
   
   
@@ -38,6 +53,7 @@ for(nn in nn){
     grid_xcrs <- ceiling(sqrt(grid_number))
     #message("Making a ",grid_xcrs," by ",grid_xcrs," grid...")
     grid <- st_make_grid(outer_border, n = grid_xcrs)
+    plot.new()
     plot(grid, add = T)
     
     list_out <- list()
@@ -105,11 +121,15 @@ for(nn in nn){
 
 
 times %>% 
-  gather(Method, Time, -points) %>% 
+  gather(Method, Time, -points) %>%
+  mutate(Method = ifelse(Method=="grid_method","Grid Method", "Basic Point-in-polygon")) %>% 
   ggplot()+
   aes(x = points, y = Time, group = Method, color = Method)+
-  geom_line(size = 2)+
-  geom_point()+
-  theme_bw()
+  geom_line(size = 1)+
+  geom_point(size = 2)+
+  theme_bw()+
+  labs(y = "Time (in seconds)"
+       , x = "Number of Points"
+       , title = "Comparison of Spatial Indexing Techniques")
 
 

@@ -27,7 +27,6 @@
             pdfborder={0 0 0},
             breaklinks=true}
 \urlstyle{same}  % don't use monospace font for urls
-\usepackage{longtable,booktabs}
 \usepackage{graphicx,grffile}
 \makeatletter
 \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
@@ -96,7 +95,7 @@
 \usepackage[normalem]{ulem}
 \usepackage{makecell}
 
-\setlength{\parindent}{4em}
+\setlength{\parindent}{2em}
 \setlength{\parskip}{0em}
 \usepackage{placeins}
 \usepackage{fancyhdr}
@@ -106,6 +105,9 @@
 \usepackage{ragged2e}
 \usepackage{amsmath}
 \usepackage{indentfirst}
+\usepackage{longtable}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 \onehalfspacing
 \counterwithin{figure}{section}
 \counterwithin{table}{section}
@@ -176,19 +178,22 @@ Candice Bradley, Second Reader
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-\hypertarget{background}{%
-\subsection{Background}\label{background}}
-
 Income inequality may be one of the most pressing challenges of our
-time, yet, its causes remain unclear. As discussed by Zuk (2015),
-``Neighborhoods change slowly, but over time {[}they{]} are becoming
-more segregated by income, due in part to macro-level increases in
-income inequality''. Researchers at the Urban Institute (Solomon Greene
-and Lei 2016) recently identified the socio-economic phenomenon of
-``Economic Exclusion'' as an explanation for income inequality in the
-US.
+time, yet, its causes remain unclear. What is clear is that,
+increasingly, the places where people live ``over time are becoming more
+segregated by income, due in part to macro-level increases in income
+inequality'' (Zuk 2015). Income inequality has many dimensions: social,
+economic, political, philosphical. But one key dimension remains
+under-explored despite its potential for positive impact: geo-spatial.
+The locations where people live (by choice or not) have a dramatic
+impact on their quality of life and ability to progress. Yet, many who
+are displaced by gentrification find themselves in self-reinforcing
+cycles of displacment and poverty.
 
-Economic Exclusion can be defined as follows: vulnerable
+Researchers at the Urban Institute (Solomon Greene and Lei 2016)
+recently identified the socio-economic phenomenon of ``Economic
+Exclusion'' as a direct cause of income inequality in the US. ``Economic
+Exclusion'' can be defined as follows: vulnerable
 populations--disproportionately communities of color, immigrants,
 refugees, and women--who are physically displaced by local economic
 prosperity can enter into a gradual cycle of diminished access to good
@@ -200,9 +205,10 @@ generations.
 
 One practical way to combat Economic Exclusion is to focus on preventing
 displacement, i.e., the physical relocation of populations away from
-economic resources. As argued by Clay (1979), displacement is the
-negative consequence of gentrification. Predicting gentrification at an
-early stage, however, has proven to be a difficult task historically.
+economic resources. As defined by Clay (1979), Displacement is the
+negative consequence of gentrification. Reliably predicting
+gentrification would be a valuable tool for preventing displacment at an
+early stage, however, such a task has proven difficult historically.
 
 When an area experiences economic growth, increased housing demands and
 subsequent affordability pressures can lead to voluntary or involuntary
@@ -231,21 +237,22 @@ an emerging trend known as the ``science of cities'' which aims to use
 large datasets and advanced simulation and modeling techniques to
 understand urban patterns and how cities function (Batty 2013).
 
-In this paper, we explore a technique to more accurately predict real
+In this paper, we explore techniques that can dramatically boost the
+accuracy of existing gentrification prediction models. We use real
 estate transactions, both their occurrence (probability of sale) and
-their dollar amount (sale price per square foot). We explain how this
-predictive technique may be applied to practically combat Economic
-Exclusion, a precursor and contributor to Income Inequality. The
-technique marries the use of machine-learning predictive modeling (using
-Random Forrest) with ``spatial-lag'' features typically seen in
-geographically-weighted regressions (GWR). We find that, while the
-addition of many new variables to a modeling data set can inhibit the
-models' ability to generalize into the future, spatial-lag features 1)
-consistently outperform zip-code level aggregation features, and 2)
-outperform all models for specific types of properties in specific
-areas. We conclude that spatial-lag features, while computationally
-expensive, can be used to increase the accuracy of spatially-conscious
-predictive models.
+their dollar amount (sale price per square foot) as a proxy for
+gentrification. We explain how this predictive technique may be applied
+to practically combat Economic Exclusion, a precursor and contributor to
+Income Inequality. The technique marries the use of machine-learning
+predictive modeling (using Random Forrest) with ``spatial-lag'' features
+typically seen in geographically-weighted regressions (GWR). We find
+that, while the addition of many new variables to a modeling data set
+can inhibit the models' ability to generalize into the future,
+spatial-lag features 1) consistently outperform zip-code level
+aggregation features, and 2) outperform all models for specific types of
+properties in specific areas. We conclude that spatial-lag features,
+while computationally expensive, can be used to greatly increase the
+accuracy of spatially-conscious predictive models.
 
 \hypertarget{literature-review}{%
 \section{Literature Review}\label{literature-review}}
@@ -255,8 +262,8 @@ Displacement as it has been addressed in academia, primarily in relation
 to the study of gentrification. We also examine ``mass appraisal
 techniques'', which are automated analytical techniques used for valuing
 large numbers of real estate properties. Finally, we will briefly
-examine machine learning as it relates to the problem of predicting
-gentrification and/or Economic Displacement.
+examine the literary treatment of machine learning as it relates to the
+problem of predicting gentrification and/or Economic Displacement.
 
 \hypertarget{how-has-economic-displacement-been-addressed-in-the-past}{%
 \subsection{How Has Economic Displacement Been Addressed in the
@@ -282,17 +289,21 @@ in the literature: supply-side and demand-side, or ``the flows of
 capital versus flows of people to neighborhoods'', respectively (Zuk
 2015). Supply side arguments for gentrification tend to focus on
 ``private capital investment, public policies, and public investments''
-(Zuk 2015). (Smith 1979) argued that the return of capital from the
-suburbs to the city drives gentrification. He describes a ``political
-economy of capital flows into urban areas'' (Zuk 2015) as largely
-responsible for both the positive and negative consequences of
-gentrification. According to (Dreier 2004), public policies that have
-been linked to increased Economic Displacement have been, among others,
-automobile-oriented transportation infrastructure spending and mortgage
-interest tax deductions for home owners.
+(Zuk 2015), and are much more often the subject of academic literature
+on Economic Displacement. This kind of research is more common because
+it has the advantage of being more directly linked to influencing public
+policy (as opposed to controlling the flows of people). According to
+Dreier (2004), public policies that have been negatively linked to
+Economic Displacement have been, among others, automobile-oriented
+transportation infrastructure spending and mortgage interest tax
+deductions for home owners. Others that have argued for supply-side
+gentification include Smith (1979), who stated that the return of
+capital from the suburbs to the city, or the ``political economy of
+capital flows into urban areas'' are what primarily drive both the
+positive and negative consequences of urban gentrification.
 
 More recently, income inequality has been explored as a major
-contributor to Economic Displacement, specifically, ``higher
+consequence of Economic Displacement. Specifically, ``higher
 compensation in the top quintile and the lack of jobs for the bottom
 quintile'' (Reardon 2011); (Watson 2009). The concentration of wealth
 allows ``certain households to sort themselves according to their
@@ -301,8 +312,6 @@ exclusion'' (Reardon 2011). This results in a self-reinforcing feedback
 loop where wealthier households influence public policy toward their
 self interest. Gentrification prediction tools could be used to help
 break such feedback loops through early identification and intervention.
-Reardon (2011) also argues that ``were income inequality to stop rising,
-the number of segregated neighborhoods would decline.''
 
 Many studies conclude that gentrification in most forms leads to
 exclusionary economic displacement, however, Zuk (2015) characterizes
@@ -339,11 +348,11 @@ Ordinary Least Squares (OLS) (d'Amato 2017). The primary drawbacks of
 MRA techniques are ``excessive multicollinearity among attributes'' and
 ``spatial autocorrelation among residuals'' (d'Amato 2017). Another
 group of models that seek to correct for spatial dependence are known as
-Spatial Auto Regressive (SAR) models, chief among them the Spatial Lag
+Spatial Auto Regressive models (SAR), chief among them the Spatial Lag
 Model, which aggregates weighted summaries of nearby properties in order
 to create independent regression variables (d'Amato 2017).
 
-Hedonic regression models generally seek to break down the price of a
+S0-called ``Hedonic'' regression models seek to decompose the price of a
 good based on the intrinsic and extrinsic components. Koschinsky (2012)
 is a recent and thorough discussion of parametric hedonic regression
 techniques. Some of the variables included in Koschinsky's models are
@@ -365,7 +374,7 @@ locational characteristics \(L\). Specifically, the model calculates
 spatial lags on properties of interest using neighboring properties
 within 1,000 feet of a sale. The derived variables include
 characteristics like average age, quantity of poor condition homes,
-percent of homes with electric heating, construction grade, etc. within
+percent of homes with electric heating, construction grade, etc., within
 1,000 feet of the property in question. Koschinsky found that in all
 cases, ``the relation between a home's price and the average price of
 its neighboring homes is characterized by positive spatial
@@ -383,32 +392,23 @@ bandwidths'' of local data to be included, i.e., for each estimate, the
 number of data points included varies and can be optimized using
 cross-validation.
 
-Automated valuation modeling got a legal update in the aftermath of the
-2008 financial crisis by way of the The Dodd Frank Act. In particular,
-the Title XIV, subtitle F distinguishes the ``appraisal'' process from
-automated valuation modelling, and reorganized both (d'Amato 2017). The
-Act asserts that appraisal, or valuation conducted by a human being,
-cannot be replaced by AVM. At current, AVM is ``increasingly adaptable
-in describing real estate market behavior'' but has yet to supersede the
-importance and necessity of local information and human evaluation.
-
-\hypertarget{has-machine-learning-been-applied-to-this-problem-before}{%
-\subsection{Has Machine Learning Been Applied to this Problem
-Before?}\label{has-machine-learning-been-applied-to-this-problem-before}}
+\hypertarget{a-review-of-machine-learning-applied-to-predicting-gentrification}{%
+\subsection{A Review of Machine Learning Applied to Predicting
+Gentrification}\label{a-review-of-machine-learning-applied-to-predicting-gentrification}}
 
 Both Mass Appraisal techniques and Automated Valuation Modeling seek to
 predict real estate prices using data and statistical methods, however,
-traditional techniques typically fall short of reality. This is because
-property valuation is inherently a ``chaotic'' process that does not
-lend itself to binary or linear analysis (Zuk 2015). The value of any
-given property is a complex combination of perceived value and
-speculation. The value of any building or plot of land belongs to a rich
-network where decisions about and perceptions of neighboring properties
-influence the final market value. Guan et al. (2014) compared
-traditional MRA techniques to alternative ``data mining techniques''
-resulting in ``mixed results''. However, as Helbich (2013) states,
-hedonic pricing models ``can be improved in two ways: (a) Through novel
-estimation techniques, and (b) by ancillary structural, locational, and
+traditional techniques typically fall short. This is because property
+valuation is inherently a ``chaotic'' process that does not lend itself
+to binary or linear analysis (Zuk 2015). The value of any given property
+is a complex combination of perceived value and speculation. The value
+of any building or plot of land belongs to a rich network where
+decisions about and perceptions of neighboring properties influence the
+final market value. Guan et al. (2014) compared traditional MRA
+techniques to alternative ``data mining techniques'' resulting in
+``mixed results''. However, as Helbich (2013) states, hedonic pricing
+models ``can be improved in two ways: (a) Through novel estimation
+techniques, and (b) by ancillary structural, locational, and
 neighborhood variables on the basis of Geographic Information System
 (GIS)''. Recent research generally falls into these two buckets: better
 analysis algorithms and/or better data.
@@ -450,8 +450,8 @@ SVM technique and found the latter to outperform. Schernthanner H.
 techniques such as krigging (stochastic interpolation) and Random
 Forest. They concluded that the more advanced techniques, particularly
 random forest, are sound and more accurate when compared to traditional
-statistical methods. Antipov and Pokryshevskaya (2012) comes to a
-similar conclusion about the superiority of Random Forest to real estate
+statistical methods. Antipov and Pokryshevskaya (2012) came to a similar
+conclusion about the superiority of Random Forest for real estate
 valuation after comparing 10 algorithms: multiple regression, CHAID,
 Exhaustive CHAID, CART, 2 types of k-Nearest Neighbors, Multilayer
 Perceptron neural network (MLP), Radial Basis Function neural network
@@ -469,12 +469,11 @@ the RIPPER algorithm, based on accuracy, consistently outperformed the
 other models in the performance of housing price prediction. Rafiei
 (2016) employed a restricted boltzmann machine (neural network with back
 propagation) to predict the sale price of residential condos in Tehran,
-Iran. Rather than focusing on predictive performance, their paper
-focuses on computational efficiency. A non-mating genetic algorithm is
-used for dimensionality reduction. The paper concludes that two primary
-strategies help in this regard: weighting property sales by temporal
-proximity (sales which happened closer in time are more important), and
-also using a learner to accelerate the recognition of important
+Iran, using a non-mating genetic algorithm for dimensionality reduction
+with a focus on computational efficiency. The paper concludes that two
+primary strategies help in this regard: weighting property sales by
+temporal proximity (sales which happened closer in time are more alike),
+and also using a learner to accelerate the recognition of important
 features. The paper compares this technique to several other common
 neural network approaches and finds that while not necessarily the only
 way to get the best answer, it is the fastest way to get to the best
@@ -501,62 +500,60 @@ generally outperform.
 
 Our goal is to compare the use of spatial lags as features in a machine
 learning predictive model against traditional feature engineering
-techniques. We will create three modeling data sets:
+techniques. We created three modeling data sets:
 
 \begin{itemize}
 \tightlist
 \item
-  Base
+  Base modeling data
 \item
-  Zip Code
+  Zip Code modeling data
 \item
-  Spatial Lag
+  Spatial Lag modeling data
 \end{itemize}
 
-We will then create 2 predictive models for each modeling data set,
+\noindent The second and third modeling datasets are variations of the
+first, using competing feature engineering techniques to extract value
+from the data. In addition to measuring performance across three
+datasets, we also create 2 predictive models for each modeling data set,
 using a different outcome variable for each:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  Probability of Sale. The probability that a given property in New York
-  City will sell in a given year
+  \textbf{Probability of Sale} The probability that a given property in
+  New York City will sell in a given year
 \item
-  Amount of Sale. Given that a property sells, how much is the sale
-  value?
+  \textbf{Amount of Sale (\$)} Given that a property sells, how much is
+  the sale value?
 \end{enumerate}
-
-There will be six predictive models built in total, as follows:
 
 \begin{table}
 
-\caption{\label{tab:model table}Six Predictive Models}
+\caption{\label{tab:model table}\label{tab:modeltable} Six Predictive Models}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{r|l|l|l|l|l|l}
-\hline
+\begin{tabular}[t]{rllllll}
+\toprule
 \# & Model & Model Type & Data & Outcome Var & Outcome Type & Eval Metric\\
-\hline
+\midrule
 1 & Probability of Sale & Classification & Base & Building Sold & Binary & AUC\\
-\hline
 2 & Probability of Sale & Classification & Zip Code & Building Sold & Binary & AUC\\
-\hline
 3 & Probability of Sale & Classification & Spatial Lags & Building Sold & Binary & AUC\\
-\hline
 4 & Sale Price & Regression & Base & Sale Price per SF & Continuous & RMSE\\
-\hline
 5 & Sale Price & Regression & Zip Code & Sale Price per SF & Continuous & RMSE\\
-\hline
 6 & Sale Price & Regression & Spatial Lag & Sale Price per SF & Continuous & RMSE\\
-\hline
+\bottomrule
 \end{tabular}}
 \end{table}
 
-To accomplish this, we combine three open-source data repositories
-provided by New York City via \url{nyc.gov} and
-\url{data.cityofnewyork.us}. Our base modeling data set includes all
-building records and associated sales information from 2003-2017.
+\noindent There will be six predictive models built in total, as shown
+in Table \ref{tab:modeltable}. To accomplish this, we combine three
+open-source data repositories provided by New York City via
+\url{nyc.gov} and \url{data.cityofnewyork.us}. Our base modeling data
+set includes all building records and associated sales information from
+2003-2017.
 
 Following the creation of the base modeling data, we create two
 additional data sets through feature engineering: a ``Zip Code
@@ -576,10 +573,11 @@ number of building and tax-related attributes such as Year Built,
 Assessed Value, Square Footage, number of stories, and many more. At the
 time of this writing, NYC has made this data set available for all years
 between 2002-2017, excluding 2008. For convenience, we also exclude the
-2002 data set from our analysis because sales information is not
-available for that year. Importantly for our analysis, the latitude and
-longitude of the tax lots are also made available, allowing us to locate
-in space each building and to build geospatial features from the data.
+2002 data set from our analysis because corresponding sales information
+is not available for that year. Importantly for our analysis, the
+latitude and longitude of the tax lots are also made available, allowing
+us to locate in space each building and to build geospatial features
+from the data.
 
 Ultimately, we are interested in sales transactions--both frequency, and
 amount. Sales transactions are also made available by the New York City
@@ -617,28 +615,29 @@ year between 2003-2017, whether that building was sold, for what amount,
 and several other additional variables.
 
 Only building categories of significant interest are included in the
-data. The following building types are included:
+data. The included building types are displayed in Table
+\ref{tab:categoryTable}.
 
-\begin{longtable}[]{@{}ll@{}}
-\caption{Building Types Included in Modeling Data}\tabularnewline
+\begin{table}
+
+\caption{\label{tab:unnamed-chunk-7}\label{tab:categoryTable} Building Cateogory Codes}
+\centering
+\begin{tabular}[t]{ll}
 \toprule
-Category & Description\tabularnewline
+Category & Description\\
 \midrule
-\endfirsthead
-\toprule
-Category & Description\tabularnewline
-\midrule
-\endhead
-A & ONE FAMILY DWELLINGS\tabularnewline
-B & TWO FAMILY DWELLINGS\tabularnewline
-C & WALK UP APARTMENTS\tabularnewline
-D & ELEVATOR APARTMENTS\tabularnewline
-F & FACTORY AND INDUSTRIAL BUILDINGS\tabularnewline
-G & GARAGES AND GASOLINE STATIONS\tabularnewline
-L & LOFT BUILDINGS\tabularnewline
-O & OFFICES\tabularnewline
+A & ONE FAMILY DWELLINGS\\
+B & TWO FAMILY DWELLINGS\\
+C & WALK UP APARTMENTS\\
+D & ELEVATOR APARTMENTS\\
+F & FACTORY AND INDUSTRIAL BUILDINGS\\
+\addlinespace
+G & GARAGES AND GASOLINE STATIONS\\
+L & LOFT BUILDINGS\\
+O & OFFICES\\
 \bottomrule
-\end{longtable}
+\end{tabular}
+\end{table}
 
 The data is further filtered to include only records with equal to or
 less than 2 buildings per tax lot. The global filtering of the data set
@@ -652,69 +651,52 @@ reduces the base modeling data from 12,012,780 records down to
 \subsubsection{Base modeling data}\label{base-modeling-data}}
 
 The base modeling data set is enhanced to include additional features. A
-summary table of the additional features are presented below:
+summary table of the additional features are presented in Table
+\ref{tab:baseModelDataFeats}. A binary variable is created to indicate
+whether a tax lot has a building on it (i.e., whether it is an empty
+plot of land or not). In addition, building types are quantified by what
+percent of the square footage belongs to the major property types:
+Commercial, Residential, Office, Retail, Garage, Storage, Factory and
+Other.
 
 \begin{table}
 
-\caption{\label{tab:Table 1}Base Modeling Data Features}
+\caption{\label{tab:Table 1}\label{tab:baseModelDataFeats} Base Modeling Data Features}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{l|l|l|l|l}
-\hline
+\begin{tabular}[t]{lllll}
+\toprule
 Feature & Min & Median & Mean & Max\\
-\hline
+\midrule
 has\_building\_area & 0 & 1.00 & 1.00 & 1.00\\
-\hline
 Percent\_Com & 0 & 0.00 & 0.16 & 1.00\\
-\hline
 Percent\_Res & 0 & 1.00 & 0.82 & 1.00\\
-\hline
 Percent\_Office & 0 & 0.00 & 0.07 & 1.00\\
-\hline
 Percent\_Retail & 0 & 0.00 & 0.04 & 1.00\\
-\hline
+\addlinespace
 Percent\_Garage & 0 & 0.00 & 0.01 & 1.00\\
-\hline
 Percent\_Storage & 0 & 0.00 & 0.02 & 1.00\\
-\hline
 Percent\_Factory & 0 & 0.00 & 0.00 & 1.00\\
-\hline
 Percent\_Other & 0 & 0.00 & 0.00 & 1.00\\
-\hline
 Last\_Sale\_Price & 0 & 312.68 & 531.02 & 62,055.59\\
-\hline
+\addlinespace
 Last\_Sale\_Price\_Total & 2 & 2,966,835.00 & 12,844,252.00 & 1,932,900,000.00\\
-\hline
 Years\_Since\_Last\_Sale & 1 & 4.00 & 5.05 & 14.00\\
-\hline
 SMA\_Price\_2\_year & 0 & 296.92 & 500.89 & 62,055.59\\
-\hline
 SMA\_Price\_3\_year & 0 & 294.94 & 495.29 & 62,055.59\\
-\hline
 SMA\_Price\_5\_year & 0 & 300.12 & 498.82 & 62,055.59\\
-\hline
+\addlinespace
 Percent\_Change\_SMA\_2 & -1 & 0.00 & 685.69 & 15,749,999.50\\
-\hline
 Percent\_Change\_SMA\_5 & -1 & 0.00 & 337.77 & 6,299,999.80\\
-\hline
 EMA\_Price\_2\_year & 0 & 288.01 & 482.69 & 62,055.59\\
-\hline
 EMA\_Price\_3\_year & 0 & 283.23 & 471.98 & 62,055.59\\
-\hline
 EMA\_Price\_5\_year & 0 & 278.67 & 454.15 & 62,055.59\\
-\hline
+\addlinespace
 Percent\_Change\_EMA\_2 & -1 & 0.00 & 422.50 & 9,415,128.85\\
-\hline
 Percent\_Change\_EMA\_5 & -1 & 0.06 & 308.05 & 5,341,901.60\\
-\hline
+\bottomrule
 \end{tabular}}
 \end{table}
-
-A binary variable is created to indicate whether a tax lot has a
-building on it (i.e., whether it is an empty plot of land or not). In
-addition, building types are quantified by what percent of the square
-footage belongs to the major property types: Commercial, Residential,
-Office, Retail, Garage, Storage, Factory and Other.
 
 Importantly, two variables are created from the Sales Prices: A
 price-per-square-foot figure (``Last\_Sale\_Price'') and a total Sale
@@ -732,94 +714,59 @@ by 8,247,499 rows.
 \hypertarget{zip-code-modeling-data}{%
 \subsubsection{Zip Code Modeling Data}\label{zip-code-modeling-data}}
 
-The first of the comparative modeling data sets is the Zip code modeling
-data. Using the base data as a starting point, several features are
-generated to describe characteristics of the zip code where the tax lot
-resides. A summary table of the Zip code level features is presented
-below.
+The first of the two comparative modeling data sets is the Zip Code
+modeling data. Using the base data as a starting point, several features
+are generated to describe characteristics of the zip code where the tax
+lot resides. A summary table of the Zip code level features is presented
+in \ref{tab:zipcodemodelfeats}.
 
-\begin{longtable}[]{@{}lll@{}}
-\caption{Zip Code Modeling Data Features (continued
-below)}\tabularnewline
-\toprule
-Feature & Min & Median\tabularnewline
-\midrule
-\endfirsthead
-\toprule
-Feature & Min & Median\tabularnewline
-\midrule
-\endhead
-Last Year Zip Sold & 0.00 & 27.00\tabularnewline
-Last Year Zip Sold Percent Ch & -1.00 & 0.00\tabularnewline
-Last Sale Price zip code average & 0.00 & 440.95\tabularnewline
-Last Sale Price Total zip code average & 10.00 &
-5,312,874.67\tabularnewline
-Last Sale Date zip code average & 12,066.00 & 13,338.21\tabularnewline
-Years Since Last Sale zip code average & 1.00 & 4.84\tabularnewline
-SMA Price 2 year zip code average & 34.31 & 429.26\tabularnewline
-SMA Price 3 year zip code average & 34.31 & 422.04\tabularnewline
-SMA Price 5 year zip code average & 39.48 & 467.04\tabularnewline
-Percent Change SMA 2 zip code average & -0.20 & 0.04\tabularnewline
-Percent Change SMA 5 zip code average & -0.09 & 0.03\tabularnewline
-EMA Price 2 year zip code average & 30.77 & 401.43\tabularnewline
-EMA Price 3 year zip code average & 33.48 & 419.11\tabularnewline
-EMA Price 5 year zip code average & 29.85 & 431.89\tabularnewline
-Percent Change EMA 2 zip code average & -0.16 & 0.06\tabularnewline
-Percent Change EMA 5 zip code average & -0.08 & 0.07\tabularnewline
-Last Sale Price bt only & 0.00 & 357.71\tabularnewline
-Last Sale Price Total bt only & 10.00 & 3,797,461.46\tabularnewline
-Last Sale Date bt only & 12,055.00 & 13,331.92\tabularnewline
-Years Since Last Sale bt only & 1.00 & 4.78\tabularnewline
-SMA Price 2 year bt only & 0.00 & 347.59\tabularnewline
-SMA Price 3 year bt only & 0.00 & 345.40\tabularnewline
-SMA Price 5 year bt only & 0.00 & 372.30\tabularnewline
-Percent Change SMA 2 bt only & -0.55 & 0.03\tabularnewline
-Percent Change SMA 5 bt only & -0.33 & 0.02\tabularnewline
-EMA Price 2 year bt only & 0.00 & 332.98\tabularnewline
-EMA Price 3 year bt only & 0.00 & 332.79\tabularnewline
-EMA Price 5 year bt only & 0.00 & 340.57\tabularnewline
-Percent Change EMA 2 bt only & -0.47 & 0.06\tabularnewline
-Percent Change EMA 5 bt only & -0.34 & 0.06\tabularnewline
-\bottomrule
-\end{longtable}
+\begin{table}
 
-\begin{longtable}[]{@{}ll@{}}
+\caption{\label{tab:Table 2}\label{tab:zipcodemodelfeats} Zip Code Modeling Data Features}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lllll}
 \toprule
-Mean & Max\tabularnewline
+Feature & Min & Median & Mean & Max\\
 \midrule
-\endhead
-31.14 & 112.00\tabularnewline
-Inf & Inf\tabularnewline
-522.87 & 1,961.21\tabularnewline
-11,877,688.55 & 1,246,450,000.00\tabularnewline
-13,484.39 & 17,149.00\tabularnewline
-4.26 & 11.00\tabularnewline
-501.15 & 2,092.41\tabularnewline
-496.47 & 2,090.36\tabularnewline
-520.86 & 2,090.36\tabularnewline
-616.47 & 169,999.90\tabularnewline
-341.68 & 113,333.27\tabularnewline
-479.38 & 1,883.81\tabularnewline
-479.95 & 1,781.38\tabularnewline
-472.80 & 1,506.46\tabularnewline
-388.90 & 107,368.37\tabularnewline
-326.17 & 107,368.38\tabularnewline
-485.97 & 6,401.01\tabularnewline
-11,745,130.56 & 1,246,450,000.00\tabularnewline
-13,497.75 & 17,149.00\tabularnewline
-4.30 & 14.00\tabularnewline
-462.67 & 5,519.39\tabularnewline
-458.50 & 5,104.51\tabularnewline
-481.09 & 4,933.05\tabularnewline
-600.10 & 425,675.69\tabularnewline
-338.15 & 188,888.78\tabularnewline
-442.79 & 5,103.51\tabularnewline
-443.02 & 4,754.95\tabularnewline
-436.70 & 4,270.37\tabularnewline
-377.17 & 254,462.97\tabularnewline
-335.17 & 178,947.30\tabularnewline
+Last Year Zip Sold & 0.00 & 27.00 & 31.14 & 112.00\\
+Last Year Zip Sold Percent Ch & -1.00 & 0.00 & Inf & Inf\\
+Last Sale Price zip code average & 0.00 & 440.95 & 522.87 & 1,961.21\\
+Last Sale Price Total zip code average & 10.00 & 5,312,874.67 & 11,877,688.55 & 1,246,450,000.00\\
+Last Sale Date zip code average & 12,066.00 & 13,338.21 & 13,484.39 & 17,149.00\\
+\addlinespace
+Years Since Last Sale zip code average & 1.00 & 4.84 & 4.26 & 11.00\\
+SMA Price 2 year zip code average & 34.31 & 429.26 & 501.15 & 2,092.41\\
+SMA Price 3 year zip code average & 34.31 & 422.04 & 496.47 & 2,090.36\\
+SMA Price 5 year zip code average & 39.48 & 467.04 & 520.86 & 2,090.36\\
+Percent Change SMA 2 zip code average & -0.20 & 0.04 & 616.47 & 169,999.90\\
+\addlinespace
+Percent Change SMA 5 zip code average & -0.09 & 0.03 & 341.68 & 113,333.27\\
+EMA Price 2 year zip code average & 30.77 & 401.43 & 479.38 & 1,883.81\\
+EMA Price 3 year zip code average & 33.48 & 419.11 & 479.95 & 1,781.38\\
+EMA Price 5 year zip code average & 29.85 & 431.89 & 472.80 & 1,506.46\\
+Percent Change EMA 2 zip code average & -0.16 & 0.06 & 388.90 & 107,368.37\\
+\addlinespace
+Percent Change EMA 5 zip code average & -0.08 & 0.07 & 326.17 & 107,368.38\\
+Last Sale Price bt only & 0.00 & 357.71 & 485.97 & 6,401.01\\
+Last Sale Price Total bt only & 10.00 & 3,797,461.46 & 11,745,130.56 & 1,246,450,000.00\\
+Last Sale Date bt only & 12,055.00 & 13,331.92 & 13,497.75 & 17,149.00\\
+Years Since Last Sale bt only & 1.00 & 4.78 & 4.30 & 14.00\\
+\addlinespace
+SMA Price 2 year bt only & 0.00 & 347.59 & 462.67 & 5,519.39\\
+SMA Price 3 year bt only & 0.00 & 345.40 & 458.50 & 5,104.51\\
+SMA Price 5 year bt only & 0.00 & 372.30 & 481.09 & 4,933.05\\
+Percent Change SMA 2 bt only & -0.55 & 0.03 & 600.10 & 425,675.69\\
+Percent Change SMA 5 bt only & -0.33 & 0.02 & 338.15 & 188,888.78\\
+\addlinespace
+EMA Price 2 year bt only & 0.00 & 332.98 & 442.79 & 5,103.51\\
+EMA Price 3 year bt only & 0.00 & 332.79 & 443.02 & 4,754.95\\
+EMA Price 5 year bt only & 0.00 & 340.57 & 436.70 & 4,270.37\\
+Percent Change EMA 2 bt only & -0.47 & 0.06 & 377.17 & 254,462.97\\
+Percent Change EMA 5 bt only & -0.34 & 0.06 & 335.17 & 178,947.30\\
 \bottomrule
-\end{longtable}
+\end{tabular}}
+\end{table}
 
 In general, the base model data features are aggregated to a zip code
 level and attached to the individual observations, including SMA and EMA
@@ -839,74 +786,142 @@ spatial lag. Creating spatial lags presents both advantages and
 disadvantages in the modeling process. Spatial lags allow for much more
 fine-tuned measurements of a building's surrounding area. Knowing the
 average sale price of all buildings within 500 meters of a building can
-be much informative than knowing the sale prices of all buildings in the
-same zip code. However, building spatial lags is computationally
+be much more informative than knowing the sale prices of all buildings
+in the same zip code. However, building spatial lags is computationally
 expensive.
 
 To build spatial lags for all 8,247,499 observations in our modeling
-data, we created a spatial indexing technique that sped up the process
-by allowing for parallelization of the operation. Since tax lots rarely
-if ever move, we reduced the indexing task to 514,124 points (the number
-of unique tax lots in New York City). Then, for each point, we
-calculated and cached every other tax lot within 500 meters of that
-building. The result was an origin-destination relationship graph that
-connected each tax lot to its surrounding tax lots.
+data, we created a spatial indexing technique that greatly speeds up the
+process by allowing for parallelization of the point-in-polygon
+operations. Since tax lots rarely if ever move, we first reduced the
+indexing task to 514,124 unique points (the number of unique tax lots in
+New York City). Then, for each building, we calculated and cached every
+other tax lot within 500 meters of that building. The result was an
+origin-destination relationship graph that connected each tax lot to its
+surrounding tax lots. This process is illustrated in Figure
+\ref{fig:Spatial Lag Feataure Process}.
+
+A spatial indexing task takes the form of a point-in-polygon operation.
+As defined by Huang (1996), point-in-polygon is defined as ``with a
+given polygon P and an arbitrary point q, determine whether point q is
+enclosed by the edges of the polygon.'' Given that, for every point
+\(q_i\) in our dataset, we need to determine whether every other point
+\(q_i\) falls within a given radius. This means that the time-complexity
+of our operation, without pre-processing, can be approximated as:
+
+\[
+O(N)^{N-1}
+\]
+
+\noindent Despite having reduced the search space to \(N=514,124\),
+having the number of operations approaching \(N^N\) is infeasible from a
+computation and time standpoint. To overcome this, we add a
+pre-processing step of gridding the data and parallelizing the
+operation, allowing us to significantly reduce the time required. The
+gridded spatial indexing process is outlined in Algorithm
+\ref{alg:spatial1}.
+
+\begin{algorithm}
+  \caption{Gridded Spatial Indexing}
+  \label{alg:spatial1}
+  \begin{algorithmic}[1]
+      \For{\texttt{each grid partition $G$}}
+        \State \texttt{Extract all points points $G_i$ contained within partition $G$}
+        \State \texttt{Calculate convex hull $H(G)$ such that the buffer extends to distance $d$}
+        \State \texttt{Define Search space $S$ as all points within Convex hull $H(G)$}
+        \State \texttt{Extract all points $S_i$ contained within $S$}
+          \For{\texttt{each data point $G_i$}}
+            \State \texttt{Identify all points points in $S_i$ that fall within $abs(G_i+d)$}
+        \EndFor
+      \EndFor
+  \end{algorithmic}
+\end{algorithm}
+
+\noindent Each partition of the data is married with a corresponding
+search space \(S\), which is the convex hull of the partition space
+buffered by the maximum distance \(d\). In our case, we are buffering
+the search space by 500 meters, since we are interested in identifying
+all points within 500 meters of all other points. By gridding the data,
+we are able to reduce the search-space for each operation by an
+arbitrary number of partitions \(G\). This improves the base run-time
+complexity to:
+
+\[
+O(N)^\frac{N-1}{G}
+\]
+
+\noindent By making G arbitrarily large (bounded by computational
+resources only), we can reduce runtime substantially. Furthermore,
+binning the operations into grids allows us to parallelize the
+computation, substantially reducing the overall run time. Figure
+\ref{fig:Spatial Indexing Process} shows a comparison of run times
+between different spatial indexing procedures. Note how the sequential
+Grid method starts out as slower than the basic Point-in-polygon
+technique due to pre-processing overhead, but wins out in terms of speed
+as complexity increases
+
+\begin{figure}[h]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/Example Spatial Indexing Techniques} \caption{Spatial Index Time Comparison}\label{fig:Spatial Indexing Process}
+\end{figure}
+
+\begin{figure}[h]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/Spatial Lag Creation} \caption{Spatial Lag Feature Creation Process}\label{fig:Spatial Lag Feataure Process}
+\end{figure}
 
 Next, we used the spatial index to create spatial lag features. One
-advantage to using spatial lags is the rich number of potential features
-which can be created. Spatial lags can be weighted based on a distance
-function, i.e., physically closer observations can be given more weight.
-For our modeling purposes, we created two sets of features: distance
-weighted features (denoted with a "\_dist``) and simple average features
-(denoted with''\_basic"). SMA and EMA as well as percent changes were
-also calculated. In total, the spatial lag feature engineering process
-input 92 variables and output 194 variables. A summary of the Spatial
-Lag features are presented in Table 6.
+advantage of using spatial lags is the rich number of potential features
+which can be engineered. Spatial lags can be weighted based on a
+distance function, e.g., physically closer observations can be given
+more weight. For our modeling purposes, we created two sets of features:
+distance weighted features (denoted with a "\_dist" in Appendix A Table
+\ref{tab:AppendixA}) and simple average features (denoted with "\_basic"
+in Appendix A Table \ref{tab:AppendixA}). SMA and EMA as well as percent
+changes were also calculated. Temporal and spatial derivatives of the
+Spatial Lag features presented in Table \ref{tab:summarySLfeats} were
+also added to the model, including: variables weighted by euclidean
+distance (``dist''), basic averages of the spatial lag radius (``basic
+mean''), Simple Moving Averages (``SMA'') for 2 years, 3 years and 5
+years, exponential moving averages (``EMA'') for 2 years, 3 years and 5
+years, and year-over-year percent changes for all variables (``perc
+change''). In total, the spatial lag feature engineering process input
+92 variables and output 194 variables. A summary of the Spatial Lag
+features are presented in Appendix A Table \ref{tab:AppendixA}.
 
-\begin{longtable}[]{@{}l@{}}
-\caption{Summary of Spatial Lag Features}\tabularnewline
+\begin{table}
+
+\caption{\label{tab:Table 3}\label{tab:summarySLfeats} Summary of Spatial Lag Features (See Appendix A for full list)}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{l}
 \toprule
-Spatial Lag Features\tabularnewline
+Spatial Lag Features\\
 \midrule
-\endfirsthead
-\toprule
-Spatial Lag Features\tabularnewline
-\midrule
-\endhead
-Radius Total Sold In Year\tabularnewline
-Radius Average Years Since Last Sale\tabularnewline
-Radius Res Units Sold In Year\tabularnewline
-Radius All Units Sold In Year\tabularnewline
-Radius SF Sold In Year\tabularnewline
-Radius Total Sold In Year sum over 2 years\tabularnewline
-Radius Average Years Since Last Sale sum over 2 years\tabularnewline
-Radius Res Units Sold In Year sum over 2 years\tabularnewline
-Radius All Units Sold In Year sum over 2 years\tabularnewline
-Radius SF Sold In Year sum over 2 years\tabularnewline
-Radius Total Sold In Year percent change\tabularnewline
-Radius Average Years Since Last Sale percent change\tabularnewline
-Radius Res Units Sold In Year percent change\tabularnewline
-Radius All Units Sold In Year percent change\tabularnewline
-Radius SF Sold In Year percent change\tabularnewline
-Radius Total Sold In Year sum over 2 years percent change\tabularnewline
-Radius Average Years Since Last Sale sum over 2 years percent
-change\tabularnewline
-Radius Res Units Sold In Year sum over 2 years percent
-change\tabularnewline
-Radius All Units Sold In Year sum over 2 years percent
-change\tabularnewline
-Radius SF Sold In Year sum over 2 years percent change\tabularnewline
+Radius Total Sold In Year\\
+Radius Average Years Since Last Sale\\
+Radius Res Units Sold In Year\\
+Radius All Units Sold In Year\\
+Radius SF Sold In Year\\
+\addlinespace
+Radius Total Sold In Year sum over 2 years\\
+Radius Average Years Since Last Sale sum over 2 years\\
+Radius Res Units Sold In Year sum over 2 years\\
+Radius All Units Sold In Year sum over 2 years\\
+Radius SF Sold In Year sum over 2 years\\
+\addlinespace
+Radius Total Sold In Year percent change\\
+Radius Average Years Since Last Sale percent change\\
+Radius Res Units Sold In Year percent change\\
+Radius All Units Sold In Year percent change\\
+Radius SF Sold In Year percent change\\
+\addlinespace
+Radius Total Sold In Year sum over 2 years percent change\\
+Radius Average Years Since Last Sale sum over 2 years percent change\\
+Radius Res Units Sold In Year sum over 2 years percent change\\
+Radius All Units Sold In Year sum over 2 years percent change\\
+Radius SF Sold In Year sum over 2 years percent change\\
 \bottomrule
-\end{longtable}
-
-Temporal and spatial derivatives of the Spatial Lag features presented
-in Table 5 are also added to the model, including: variables weighted by
-euclidean distance (``dist''), basic averages of the spatial lag radius
-(``basic mean''), Simple Moving Averages (``SMA'') for 2 years, 3 years
-and 5 years, exponential moving averages (``EMA'') for 2 years, 3 years
-and 5 years, and year-over-year percent changes for all variables
-(``perc change''). For a complete list of Spatial Lag features, see
-Appendix A.
+\end{tabular}}
+\end{table}
 
 \hypertarget{outcome-variables}{%
 \subsection{Outcome Variables}\label{outcome-variables}}
@@ -914,37 +929,38 @@ Appendix A.
 The final step in creating the modeling data is to define the outcome
 variables. For our purposes, we create two dependent variables:
 
-\begin{itemize}
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  Sold. Whether a tax lot sold in a given year. Used in the Probability
-  of Sale classification model.
+  \textbf{Sold.} whether a tax lot sold in a given year. Used in the
+  Probability of Sale classification model.
 \item
-  Sale Price. The price-per-square foot associated with a transaction,
-  if a sale took place. Used in the Sale Price Regression model.
-\end{itemize}
+  \textbf{Sale Price.} The price-per-square foot associated with a
+  transaction, if a sale took place. Used in the Sale Price Regression
+  model.
+\end{enumerate}
 
-The following table describes the distributions of both outcome
-variables:
+\noindent Table \ref{tab:OutcomeDistro} describes the distributions of
+both outcome variables:
 
-\begin{longtable}[]{@{}lll@{}}
-\caption{Distributions for Outcome Variables}\tabularnewline
+\begin{table}
+
+\caption{\label{tab:table 4}\label{tab:OutcomeDistro} Distributions for Outcome Variables}
+\centering
+\begin{tabular}[t]{lll}
 \toprule
-& Sold & Sale Price per SF\tabularnewline
+  & Sold & Sale Price per SF\\
 \midrule
-\endfirsthead
-\toprule
-& Sold & Sale Price per SF\tabularnewline
-\midrule
-\endhead
-Min. & 0.00 & 0.0\tabularnewline
-1st Qu. & 0.00 & 163.5\tabularnewline
-Median & 0.00 & 375.2\tabularnewline
-Mean & 0.04 & 644.8\tabularnewline
-3rd Qu. & 0.00 & 783.3\tabularnewline
-Max. & 1.00 & 83,598.7\tabularnewline
+Min. & 0.00 & 0.0\\
+1st Qu. & 0.00 & 163.5\\
+Median & 0.00 & 375.2\\
+Mean & 0.04 & 644.8\\
+3rd Qu. & 0.00 & 783.3\\
+Max. & 1.00 & 83,598.7\\
 \bottomrule
-\end{longtable}
+\end{tabular}
+\end{table}
 
 \hypertarget{algorithm}{%
 \subsection{Algorithm}\label{algorithm}}
@@ -956,23 +972,25 @@ algorithms exist that may marginally outperform Random Forest in terms
 of predictive accuracy (such as neural networks and functional gradient
 descent algorithms), Random Forest is highly scalable and
 parallelizable, and therefore a natural choice for comparing different
-feature engineering strategies (such as in this paper).
+feature engineering strategies. For these reasons and more outlined
+below, we select Random Forrest as the primary algorithm for comparrison
+in this paper.
 
-Random Forest can be used for both classification and regression tasks.
-The Random Forest algorithm works by generating a large number of
-independent classification or regression decision trees and then
-employing majority voting (for classification) or averaging (for
-regression) to generate predictions. Over a data set of N rows by M
-predictors, a bootstrap sample of the data is chosen (n \textless{} N)
-as well as a subset of the predictors (m \textless{} M). Individual
-decision/regression trees are built on the n by m sample. Because the
-trees can be built independently (and not sequentially, as is the case
-with most functional gradient descent algorithms), the tree building
-process can be executed in parallel across an arbitrary number of
-computer cores. With a sufficiently large number of cores, the model
-training time can be significantly reduced. This provides a highly
-accurate, robust prediction model that avoids many of the drawbacks of
-traditional parametric techniques, such as OLS.
+Random Forest can be used for both classification and regression tasks,
+both of which we undertake in this paper. The Random Forest algorithm
+works by generating a large number of independent classification or
+regression decision trees and then employing majority voting (for
+classification) or averaging (for regression) to generate predictions.
+Over a data set of N rows by M predictors, a bootstrap sample of the
+data is chosen (n \textless{} N) as well as a subset of the predictors
+(m \textless{} M). Individual decision/regression trees are built on the
+n by m sample. Because the trees can be built independently (and not
+sequentially, as is the case with most functional gradient descent
+algorithms), the tree building process can be executed in parallel
+across an arbitrary number of computer cores. With a sufficiently large
+number of cores, the model training time can be significantly reduced.
+This provides a highly accurate, robust prediction model that avoids
+many of the drawbacks of traditional parametric techniques, such as OLS.
 
 The primary advantages to using Random Forest with real estate data are:
 
@@ -1135,21 +1153,20 @@ consistently outperform the Zip Code features, while the Base modeling
 data tends to outperform both, as shown in the following Table (lower
 RMSE is better):
 
-\begin{longtable}[]{@{}llll@{}}
-\caption{Sale Price Model RMSE For Validation and Test Hold-out
-Data}\tabularnewline
+\begin{table}
+
+\caption{\label{tab:Sale Price Evaluations}\label{tab:SalePriceEval} Sale Price Model RMSE For Validation and Test Hold-out Data}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lrrr}
 \toprule
-type & base & zip & spatial lag\tabularnewline
+type & base & zip & spatial lag\\
 \midrule
-\endfirsthead
-\toprule
-type & base & zip & spatial lag\tabularnewline
-\midrule
-\endhead
-Validation & 280.6 & 298 & 286.2\tabularnewline
-Test & 287.8 & 300.6 & 297.9\tabularnewline
+Validation & 280.6314 & 297.9717 & 286.2295\\
+Test & 287.8305 & 300.6031 & 297.9202\\
 \bottomrule
-\end{longtable}
+\end{tabular}}
+\end{table}
 
 Interestingly, both the Spatial Lag modeling data and the Zip Code
 modeling data are extensions of the Base data, yet the Base data tends
@@ -1209,22 +1226,21 @@ combination, we find that the Spatial Lag models outperform the Zip Code
 models in 72\% of cases. Table 9 shows the average ranking by model type
 as well as the percent distribution by model type across rankings.
 
-\begin{longtable}[]{@{}lllll@{}}
-\caption{Sale Price Model Rankings, RMSE by Borough and Building
-Type}\tabularnewline
+\begin{table}
+
+\caption{\label{tab:Sale Price Model Rank Distributions}\label{tab:SalePriceModelRank} Sale Price Model Rankings, RMSE by Borough and Building Type}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llllr}
 \toprule
-Model Rank & 1 & 2 & 3 & Average Rank\tabularnewline
+Model Rank & 1 & 2 & 3 & Average Rank\\
 \midrule
-\endfirsthead
-\toprule
-Model Rank & 1 & 2 & 3 & Average Rank\tabularnewline
-\midrule
-\endhead
-Base & 22.2\% & 9.3\% & 1.9\% & 1.39\tabularnewline
-Spatial Lag & 5.6\% & 18.5\% & 9.3\% & 2.11\tabularnewline
-Zip & 5.6\% & 5.6\% & 22.2\% & 2.5\tabularnewline
+Base & 22.2\% & 9.3\% & 1.9\% & 1.39\\
+Spatial Lag & 5.6\% & 18.5\% & 9.3\% & 2.11\\
+Zip & 5.6\% & 5.6\% & 22.2\% & 2.50\\
 \bottomrule
-\end{longtable}
+\end{tabular}}
+\end{table}
 
 \hypertarget{probability-of-sale-model}{%
 \subsection{Probability of Sale Model}\label{probability-of-sale-model}}
@@ -1237,41 +1253,41 @@ continues to outperform the Spatial Lag and Zip Code modeling data
 overall, however, when broken down by Borough and Building Type, some
 interesting patterns emerge.
 
-\begin{longtable}[]{@{}llll@{}}
-\caption{Probability of Sale Models AUC}\tabularnewline
+\begin{table}
+
+\caption{\label{tab:Prob Model AUC}\label{tab:ProbSaleModelAUC} Probability of Sale Models AUC}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lrrr}
 \toprule
-Model AUC & Base & Zip & Spatial Lag\tabularnewline
+Model AUC & Base & Zip & Spatial Lag\\
 \midrule
-\endfirsthead
-\toprule
-Model AUC & Base & Zip & Spatial Lag\tabularnewline
-\midrule
-\endhead
-Validation & 0.832 & 0.8292 & 0.8287\tabularnewline
-Test & 0.83 & 0.8246 & 0.8279\tabularnewline
+Validation & 0.832 & 0.8292 & 0.8287\\
+Test & 0.830 & 0.8246 & 0.8279\\
 \bottomrule
-\end{longtable}
+\end{tabular}}
+\end{table}
 
 Looking at the predictions by the models made on the 2017 validation
 hold-out data, we see the Spatial Lag model performs best of any model
 for three out of five Boroughs: Manhattan, Bronx and Staten Island
 (Table 11).
 
-\begin{longtable}[]{@{}llllll@{}}
-\caption{Probability of Sale Models AUC by Borough}\tabularnewline
+\begin{table}
+
+\caption{\label{tab:Prob Model AUC by Boro}\label{tab:ProbSaleModelAUCbyBoro} Probability of Sale Models AUC by Borough}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{lrrrrr}
 \toprule
-Model & BK & BX & MN & QN & SI\tabularnewline
+Model & BK & BX & MN & QN & SI\\
 \midrule
-\endfirsthead
-\toprule
-Model & BK & BX & MN & QN & SI\tabularnewline
-\midrule
-\endhead
-Base & 0.8309 & 0.8288 & 0.7926 & 0.8338 & 0.8336\tabularnewline
-Zip & 0.8234 & 0.8215 & 0.7796 & 0.8283 & 0.8281\tabularnewline
-Spatial Lag & 0.8257 & 0.8312 & 0.8031 & 0.8327 & 0.8348\tabularnewline
+Base & 0.8309 & 0.8288 & 0.7926 & 0.8338 & 0.8336\\
+Zip & 0.8234 & 0.8215 & 0.7796 & 0.8283 & 0.8281\\
+Spatial Lag & 0.8257 & 0.8312 & 0.8031 & 0.8327 & 0.8348\\
 \bottomrule
-\end{longtable}
+\end{tabular}}
+\end{table}
 
 Figure \ref{fig:AUC by boro and build type} shows a breakdown of model
 AUC faceted along the x-axis by Building Type and along the y-axis by
@@ -1302,22 +1318,21 @@ If we rank model the probability models' performance for each Borough
 and Building Type, we see that the Spatial Lag models consistently
 outperform the Zip Code models, as shown in Table 12.
 
-\begin{longtable}[]{@{}lllll@{}}
-\caption{Distribution and Average Model Rank for Probability of Sale by
-AUC across Borough and Building Types}\tabularnewline
+\begin{table}
+
+\caption{\label{tab:Prob Model AUC Average Rank}\label{tab:} Distribution and Average Model Rank for Probability of Sale by AUC across Borough and Building Types}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llllr}
 \toprule
-Model Rank & 1 & 2 & 3 & Average Rank\tabularnewline
+Model Rank & 1 & 2 & 3 & Average Rank\\
 \midrule
-\endfirsthead
-\toprule
-Model Rank & 1 & 2 & 3 & Average Rank\tabularnewline
-\midrule
-\endhead
-Base & 16.2\% & 12.0\% & 5.1\% & 2.22\tabularnewline
-Spatial Lag & 11.1\% & 13.7\% & 8.5\% & 2.09\tabularnewline
-Zip & 6.0\% & 7.7\% & 19.7\% & 1.69\tabularnewline
+Base & 16.2\% & 12.0\% & 5.1\% & 2.22\\
+Spatial Lag & 11.1\% & 13.7\% & 8.5\% & 2.09\\
+Zip & 6.0\% & 7.7\% & 19.7\% & 1.69\\
 \bottomrule
-\end{longtable}
+\end{tabular}}
+\end{table}
 
 \hypertarget{conclusions-and-future-research}{%
 \section{Conclusions and Future
@@ -1389,181 +1404,114 @@ Features}\label{appendix-a-list-of-spatial-lag-features}}
 
 \begin{table}
 
-\caption{\label{tab:Appendix A}Appendix A: All Spatial Lag Features}
+\caption{\label{tab:Appendix A}\label{tab:AppendixA} Appendix A: All Spatial Lag Features}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{l|l|l|l|l}
-\hline
+\begin{tabular}[t]{lllll}
+\toprule
 Feature & Min & Median & Mean & Max\\
-\hline
+\midrule
 Radius\_Total\_Sold\_In\_Year & 1.00 & 20.00 & 24.00 & 201.00\\
-\hline
 Radius\_Average\_Years\_Since\_Last\_Sale & 1.00 & 4.43 & 4.27 & 14.00\\
-\hline
 Radius\_Res\_Units\_Sold\_In\_Year & 0.00 & 226.00 & 289.10 & 2,920.00\\
-\hline
 Radius\_All\_Units\_Sold\_In\_Year & 0.00 & 255.00 & 325.94 & 2,923.00\\
-\hline
 Radius\_SF\_Sold\_In\_Year & 0.00 & 259,403.00 & 430,891.57 & 8,603,639.00\\
-\hline
+\addlinespace
 Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years & 2.00 & 41.00 & 48.15 & 256.00\\
-\hline
 Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years & 2.00 & 9.25 & 8.70 & 26.00\\
-\hline
 Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years & 0.00 & 493.00 & 584.67 & 3,397.00\\
-\hline
 Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years & 1.00 & 555.00 & 660.67 & 4,265.00\\
-\hline
 Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years & 2,917.00 & 580,947.00 & 872,816.44 & 14,036,469.00\\
-\hline
+\addlinespace
 Radius\_Total\_Sold\_In\_Year\_percent\_change & -0.99 & 0.00 & 0.27 & 77.00\\
-\hline
 Radius\_Average\_Years\_Since\_Last\_Sale\_percent\_change & -0.91 & 0.13 & 0.26 & 8.00\\
-\hline
 Radius\_Res\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
-\hline
 Radius\_All\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
-\hline
 Radius\_SF\_Sold\_In\_Year\_percent\_change & -1.00 & -0.02 & Inf & Inf\\
-\hline
+\addlinespace
 Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.96 & -0.03 & 0.03 & 15.00\\
-\hline
 Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\_percent\_change & -0.72 & 0.12 & 0.17 & 2.50\\
-\hline
 Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
-\hline
 Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.99 & -0.04 & 0.12 & 84.00\\
-\hline
 Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.98 & -0.04 & 0.18 & 361.55\\
-\hline
+\addlinespace
 Percent\_Com\_dist & 0.00 & 0.04 & 0.07 & 0.56\\
-\hline
 Percent\_Res\_dist & 0.00 & 0.46 & 0.43 & 0.66\\
-\hline
 Percent\_Office\_dist & 0.00 & 0.01 & 0.03 & 0.48\\
-\hline
 Percent\_Retail\_dist & 0.00 & 0.02 & 0.02 & 0.09\\
-\hline
 Percent\_Garage\_dist & 0.00 & 0.00 & 0.00 & 0.27\\
-\hline
+\addlinespace
 Percent\_Storage\_dist & 0.00 & 0.00 & 0.01 & 0.26\\
-\hline
 Percent\_Factory\_dist & 0.00 & 0.00 & 0.00 & 0.04\\
-\hline
 Percent\_Other\_dist & 0.00 & 0.00 & 0.00 & 0.09\\
-\hline
 Percent\_Com\_basic\_mean & 0.00 & 0.04 & 0.07 & 0.54\\
-\hline
 Percent\_Res\_basic\_mean & 0.00 & 0.46 & 0.43 & 0.66\\
-\hline
+\addlinespace
 Percent\_Office\_basic\_mean & 0.00 & 0.01 & 0.03 & 0.44\\
-\hline
 Percent\_Retail\_basic\_mean & 0.00 & 0.02 & 0.02 & 0.08\\
-\hline
 Percent\_Garage\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.29\\
-\hline
 Percent\_Storage\_basic\_mean & 0.00 & 0.00 & 0.01 & 0.23\\
-\hline
 Percent\_Factory\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.03\\
-\hline
+\addlinespace
 Percent\_Other\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.04\\
-\hline
 Percent\_Com\_dist\_perc\_change & -0.90 & 0.00 & 0.00 & 6.18\\
-\hline
 Percent\_Res\_dist\_perc\_change & -0.50 & 0.00 & 0.03 & 36.73\\
-\hline
 Percent\_Office\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-\hline
 Percent\_Retail\_dist\_perc\_change & -0.82 & 0.00 & Inf & Inf\\
-\hline
+\addlinespace
 Percent\_Garage\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-\hline
 Percent\_Storage\_dist\_perc\_change & -1.00 & -0.01 & Inf & Inf\\
-\hline
 Percent\_Factory\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-\hline
 Percent\_Other\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-\hline
 SMA\_Price\_2\_year\_dist & 0.00 & 400.01 & 496.30 & 3,816.57\\
-\hline
+\addlinespace
 SMA\_Price\_3\_year\_dist & 0.00 & 396.94 & 492.00 & 3,816.57\\
-\hline
 SMA\_Price\_5\_year\_dist & 8.83 & 425.55 & 515.29 & 3,877.53\\
-\hline
 Percent\_Change\_SMA\_2\_dist & -0.13 & 0.03 & 552.33 & 804,350.67\\
-\hline
 Percent\_Change\_SMA\_5\_dist & -0.09 & 0.02 & 317.46 & 322,504.58\\
-\hline
 EMA\_Price\_2\_year\_dist & 0.00 & 378.63 & 475.54 & 3,431.17\\
-\hline
+\addlinespace
 EMA\_Price\_3\_year\_dist & 8.83 & 382.25 & 476.05 & 3,296.46\\
-\hline
 EMA\_Price\_5\_year\_dist & 7.88 & 386.34 & 468.91 & 2,813.34\\
-\hline
 Percent\_Change\_EMA\_2\_dist & -0.09 & 0.06 & 346.51 & 480,829.57\\
-\hline
 Percent\_Change\_EMA\_5\_dist & -0.02 & 0.06 & 303.55 & 273,458.42\\
-\hline
 SMA\_Price\_2\_year\_basic\_mean & 0.02 & 412.46 & 496.75 & 2,509.79\\
-\hline
+\addlinespace
 SMA\_Price\_3\_year\_basic\_mean & 0.02 & 409.00 & 492.43 & 2,509.79\\
-\hline
 SMA\_Price\_5\_year\_basic\_mean & 17.16 & 443.34 & 515.67 & 2,621.01\\
-\hline
 Percent\_Change\_SMA\_2\_basic\_mean & -0.13 & 0.04 & 543.51 & 393,749.99\\
-\hline
 Percent\_Change\_SMA\_5\_basic\_mean & -0.09 & 0.03 & 312.46 & 157,500.00\\
-\hline
 EMA\_Price\_2\_year\_basic\_mean & 0.02 & 390.30 & 475.96 & 2,259.21\\
-\hline
+\addlinespace
 EMA\_Price\_3\_year\_basic\_mean & 11.39 & 393.25 & 476.45 & 2,136.36\\
-\hline
 EMA\_Price\_5\_year\_basic\_mean & 15.30 & 402.06 & 469.09 & 1,848.27\\
-\hline
 Percent\_Change\_EMA\_2\_basic\_mean & -0.09 & 0.06 & 340.89 & 235,378.24\\
-\hline
 Percent\_Change\_EMA\_5\_basic\_mean & -0.02 & 0.06 & 296.78 & 133,547.59\\
-\hline
 SMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
-\hline
+\addlinespace
 SMA\_Price\_3\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
-\hline
 SMA\_Price\_5\_year\_dist\_perc\_change & -0.74 & 0.04 & 0.06 & 15.37\\
-\hline
 Percent\_Change\_SMA\_2\_dist\_perc\_change & -Inf & -0.24 & NaN & Inf\\
-\hline
 Percent\_Change\_SMA\_5\_dist\_perc\_change & -Inf & -0.14 & NaN & Inf\\
-\hline
 EMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.06 & 0.18 & 10,540.57\\
-\hline
+\addlinespace
 EMA\_Price\_3\_year\_dist\_perc\_change & -0.73 & 0.06 & 0.08 & 15.06\\
-\hline
 EMA\_Price\_5\_year\_dist\_perc\_change & -0.63 & 0.06 & 0.07 & 12.04\\
-\hline
 Percent\_Change\_EMA\_2\_dist\_perc\_change & -Inf & -0.13 & NaN & Inf\\
-\hline
 Percent\_Change\_EMA\_5\_dist\_perc\_change & -556.60 & -0.10 & Inf & Inf\\
-\hline
 SMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.12 & 9,375.77\\
-\hline
+\addlinespace
 SMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.11 & 9,375.77\\
-\hline
 SMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.50 & 0.04 & 0.06 & 5.90\\
-\hline
 Percent\_Change\_SMA\_2\_basic\_mean\_perc\_change & -Inf & -0.19 & NaN & Inf\\
-\hline
 Percent\_Change\_SMA\_5\_basic\_mean\_perc\_change & -Inf & -0.12 & NaN & Inf\\
-\hline
 EMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.53 & 0.06 & 0.12 & 9,375.78\\
-\hline
+\addlinespace
 EMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.47 & 0.06 & 0.08 & 23.54\\
-\hline
 EMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.37 & 0.06 & 0.07 & 4.81\\
-\hline
 Percent\_Change\_EMA\_2\_basic\_mean\_perc\_change & -Inf & -0.13 & NaN & Inf\\
-\hline
 Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change & -136.59 & -0.11 & Inf & Inf\\
-\hline
+\bottomrule
 \end{tabular}}
 \end{table}
 
@@ -1662,6 +1610,10 @@ Francis: 94--112. \url{https://doi.org/10.1080/10919392.2014.866505}.
 Helbich, et al., Marco. 2013. ``Boosting the Predictive Accuracy of
 Urban Hedonic House Price Models Through Airborne Laser Scanning.''
 \emph{Computers, Environment and Urban Systems} 39: 81--92.
+
+\leavevmode\hypertarget{ref-Huang1996}{}%
+Huang, Chong-Wei. 1996. ``On the Complexity of Point-in-Polygon
+Algorithms.'' \emph{Computers and Geosciences} 23.
 
 \leavevmode\hypertarget{ref-Johnson2007}{}%
 Johnson, Ken, Justin Benefield, and Jonathan Wiley. 2007. ``The

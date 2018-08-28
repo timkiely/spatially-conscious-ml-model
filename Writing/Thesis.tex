@@ -182,13 +182,13 @@ Income inequality may be one of the most pressing challenges of our
 time, yet, its causes remain unclear. What is clear is that,
 increasingly, the places where people live ``over time are becoming more
 segregated by income, due in part to macro-level increases in income
-inequality'' (Zuk 2015). Income inequality has many dimensions: social,
-economic, political, philosphical. But one key dimension remains
-under-explored despite its potential for positive impact: geo-spatial.
-The locations where people live (by choice or not) have a dramatic
-impact on their quality of life and ability to progress. Yet, many who
-are displaced by gentrification find themselves in self-reinforcing
-cycles of displacment and poverty.
+inequality'' (Zuk 2015). Income inequality has many well-explored
+dimensions: social, economic, political, philosophical. In this paper,
+we focus on an under-explored dimension, one with potential for
+tremendous impact: geo-spatial. The locations where people live (by
+choice or not) have a dramatic impact on their quality of life and
+ability to progress. Yet, many who are displaced by gentrification find
+themselves in self-reinforcing cycles of displacement and poverty.
 
 Researchers at the Urban Institute (Solomon Greene and Lei 2016)
 recently identified the socio-economic phenomenon of ``Economic
@@ -207,8 +207,8 @@ One practical way to combat Economic Exclusion is to focus on preventing
 displacement, i.e., the physical relocation of populations away from
 economic resources. As defined by Clay (1979), Displacement is the
 negative consequence of gentrification. Reliably predicting
-gentrification would be a valuable tool for preventing displacment at an
-early stage, however, such a task has proven difficult historically.
+gentrification would be a valuable tool for preventing displacement at
+an early stage, however, such a task has proven difficult historically.
 
 When an area experiences economic growth, increased housing demands and
 subsequent affordability pressures can lead to voluntary or involuntary
@@ -227,14 +227,14 @@ neighborhood changes'' (Solomon Greene and Lei 2016). This paper
 explores a technique to answer that call in part using free, open data
 and open-source software.
 
-Many government agencies have already become competant at using
+Many government agencies have already become competent at using
 predictive modeling to identify and address socio-economic challenges at
 the individual-level, ranging from prescription drug abuse to
 homelessness to recidivism (Ritter 2013). However, few, if any, examples
 exist of large-scale, systematic applications of data analysis to aid
 vulnerable populations experiencing displacement. This paper belongs to
 an emerging trend known as the ``science of cities'' which aims to use
-large datasets and advanced simulation and modeling techniques to
+large data sets and advanced simulation and modeling techniques to
 understand urban patterns and how cities function (Batty 2013).
 
 In this paper, we explore techniques that can dramatically boost the
@@ -244,20 +244,20 @@ their dollar amount (sale price per square foot) as a proxy for
 gentrification. We explain how this predictive technique may be applied
 to practically combat Economic Exclusion, a precursor and contributor to
 Income Inequality. The technique marries the use of machine-learning
-predictive modeling (using Random Forrest) with ``spatial-lag'' features
+predictive modeling (Random Forrest) with ``spatial-lag'' features
 typically seen in geographically-weighted regressions (GWR). We find
 that, while the addition of many new variables to a modeling data set
 can inhibit the models' ability to generalize into the future,
 spatial-lag features 1) consistently outperform zip-code level
-aggregation features, and 2) outperform all models for specific types of
-properties in specific areas. We conclude that spatial-lag features,
-while computationally expensive, can be used to greatly increase the
-accuracy of spatially-conscious predictive models.
+aggregation features, and 2) consistently outperform all models for
+specific property types. We conclude that spatial-lag features, while
+computationally expensive, can be used to greatly increase the accuracy
+of spatially-conscious predictive models.
 
 \hypertarget{literature-review}{%
 \section{Literature Review}\label{literature-review}}
 
-The literature review for this paper reviews the concept of Economic
+The literature review for this paper discusses the concept of Economic
 Displacement as it has been addressed in academia, primarily in relation
 to the study of gentrification. We also examine ``mass appraisal
 techniques'', which are automated analytical techniques used for valuing
@@ -648,7 +648,7 @@ reduces the base modeling data from 12,012,780 records down to
 \subsection{Feature Engineering}\label{feature-engineering}}
 
 \hypertarget{base-modeling-data}{%
-\subsubsection{Base modeling data}\label{base-modeling-data}}
+\subsubsection{Base Modeling Data}\label{base-modeling-data}}
 
 The base modeling data set is enhanced to include additional features. A
 summary table of the additional features are presented in Table
@@ -776,8 +776,8 @@ type. In total, the Zip code feature engineering process inputs 92
 variables and outputs 122 variables.
 
 \hypertarget{spatial-lag-modeling-data}{%
-\subsubsection{Spatial Lag modeling
-data}\label{spatial-lag-modeling-data}}
+\subsubsection{Spatial Lag Modeling
+Data}\label{spatial-lag-modeling-data}}
 
 Spatial lags are variables created from physically proximate
 observations. For example, taking the average building age from all
@@ -1041,8 +1041,8 @@ h2o R open source library. The h2o implementation of the Random Forest
 algorithm is particularly well-suited for high parallelization. For more
 information, see: \url{https://www.h2o.ai/}.
 
-\hypertarget{data-validation}{%
-\subsubsection{Data Validation}\label{data-validation}}
+\hypertarget{model-validation}{%
+\subsection{Model Validation}\label{model-validation}}
 
 The goal of the predictive models are to be able to successfully predict
 both the probability and amount of real estate sales into the near
@@ -1147,17 +1147,26 @@ be reasonably compared using RMSE.
 \hypertarget{sale-price-model}{%
 \subsection{Sale Price Model}\label{sale-price-model}}
 
-Using Root Mean Squared Error (RMSE) as an evaluation metric of
-predictive power, we find that the Spatial Lag modeling features
-consistently outperform the Zip Code features, while the Base modeling
-data tends to outperform both, as shown in the following Table (lower
-RMSE is better):
+The Root Mean Squared Error (RMSE) of all models predicting Sale Price
+is analyzed at the data set, Borough and Building Type level. Table
+\ref{tab:SalePriceEval} shows the average ranking by model type as well
+as the distribution of models that ranked first, second and third for
+each respective Borough/Building Type combination using RMSE as a
+ranking metric. If we rank the models by performance for each Borough,
+Building Type combination, we find that the Spatial Lag models
+outperform the Zip Code models in 72\% of cases with an average
+model-rank of 2.11 and 2.5, respectively. The Base modeling data set
+tends to outperform both enriched datasets, suggesting an issue with
+model over-fit in some areas. Despite this, the Spatial Lag feature data
+sets outperform all other models for certain building types, notably for
+Type A buildings (One Family Dwellings) and Type L buildings (Lofts) in
+Manhattan as well as Type O Buildings (Office) in Queens as shown in
+\ref{fig:RMSE by boro and build type}.
 
 \begin{table}
 
 \caption{\label{tab:Sale Price Evaluations}\label{tab:SalePriceEval} Sale Price Model RMSE For Validation and Test Hold-out Data}
 \centering
-\resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrr}
 \toprule
 type & base & zip & spatial lag\\
@@ -1165,44 +1174,13 @@ type & base & zip & spatial lag\\
 Validation & 280.6314 & 297.9717 & 286.2295\\
 Test & 287.8305 & 300.6031 & 297.9202\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
-Interestingly, both the Spatial Lag modeling data and the Zip Code
-modeling data are extensions of the Base data, yet the Base data tends
-to generalize to the hold-out data sets better. From this, we make two
-observations:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi})}
-\tightlist
-\item
-  Building characteristic data, which largely comprises the Base
-  modeling data, are the most important for predicting building sale
-  price per foot
-\item
-  The Zip Code and Spatial Lag models are suffering from over-fitting of
-  the data, which is limiting their ability to generalize to the
-  hold-out samples.
-\end{enumerate}
-
-It is possible that the over-fitting issue could be corrected through
-hyper-parameter tuning of the algorithms, as well as implementing
-stricter variable selection. Despite this, we can still safely conclude
-that the Spatial Lag features are superior to the Zip Code features in
-terms of predictive power.
-
-Taking a closer look at the data, we find that the models have varying
-performance across Building Types and Boroughs. Figure
-\ref{fig:RMSE by boro and build type} shows RMSE by Model, faceted by
-Borough across the y-axis and Building Type across the x-axis (See Table
-2 for a description of building type codes).
-
-\begin{figure}[h]
-\includegraphics[width=1\linewidth]{Sections/tables and figures/RMSE by boro and build type} \caption{RMSE By Borough and Building Type}\label{fig:RMSE by boro and build type}
-\end{figure}
-
-We make the following observations from Figure
+Figure \ref{fig:RMSE by boro and build type} shows RMSE by Model,
+faceted by Borough across the y-axis and Building Type across the x-axis
+(See Table 2 for a description of building type codes). We make the
+following observations from Figure
 \ref{fig:RMSE by boro and build type}:
 
 \begin{itemize}
@@ -1213,24 +1191,22 @@ We make the following observations from Figure
   buildings (Lofts) in Manhattan as well as Type O Buildings (Office) in
   Queens
 \item
-  It is generally harder to predict sale prices in Manhattan than other
-  Boroughs
+  It is generally harder to predict sale prices in Manhattan compared to
+  other Boroughs
 \item
   The ``residential'' building Types A (One Family Dwellings), B (Two
   Family Dwellings), C (Walk Up Apartments) and D (Elevator Apartments)
   have generally lower RMSE scores compared to the non-residential types
 \end{itemize}
 
-If we rank the models by performance for each Borough, Building Type
-combination, we find that the Spatial Lag models outperform the Zip Code
-models in 72\% of cases. Table 9 shows the average ranking by model type
-as well as the percent distribution by model type across rankings.
+\begin{figure}[h]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/RMSE by boro and build type} \caption{RMSE By Borough and Building Type}\label{fig:RMSE by boro and build type}
+\end{figure}
 
 \begin{table}
 
 \caption{\label{tab:Sale Price Model Rank Distributions}\label{tab:SalePriceModelRank} Sale Price Model Rankings, RMSE by Borough and Building Type}
 \centering
-\resizebox{\linewidth}{!}{
 \begin{tabular}[t]{llllr}
 \toprule
 Model Rank & 1 & 2 & 3 & Average Rank\\
@@ -1239,7 +1215,7 @@ Base & 22.2\% & 9.3\% & 1.9\% & 1.39\\
 Spatial Lag & 5.6\% & 18.5\% & 9.3\% & 2.11\\
 Zip & 5.6\% & 5.6\% & 22.2\% & 2.50\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
 \hypertarget{probability-of-sale-model}{%
@@ -1248,16 +1224,15 @@ Zip & 5.6\% & 5.6\% & 22.2\% & 2.50\\
 Similar to the results found in the Sale Price models, using Area Under
 the ROC Curve (AUC) as an evaluation metric, we find the Spatial Lag
 model performs better on the hold-out validation data compared to the
-Zip Code modeling data, as shown in Table 10. The Base Modeling data
-continues to outperform the Spatial Lag and Zip Code modeling data
-overall, however, when broken down by Borough and Building Type, some
-interesting patterns emerge.
+Zip Code modeling data, as shown in Table \ref{tab:ProbSaleModelAUC}.
+The Base Modeling data continues to outperform the Spatial Lag and Zip
+Code modeling data overall, however, when broken down by Borough and
+Building Type, some interesting patterns emerge.
 
 \begin{table}
 
-\caption{\label{tab:Prob Model AUC}\label{tab:ProbSaleModelAUC} Probability of Sale Models AUC}
+\caption{\label{tab:Prob Model AUC}\label{tab:ProbSaleModelAUC} Probability of Sale Model AUC}
 \centering
-\resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrr}
 \toprule
 Model AUC & Base & Zip & Spatial Lag\\
@@ -1265,19 +1240,18 @@ Model AUC & Base & Zip & Spatial Lag\\
 Validation & 0.832 & 0.8292 & 0.8287\\
 Test & 0.830 & 0.8246 & 0.8279\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
 Looking at the predictions by the models made on the 2017 validation
 hold-out data, we see the Spatial Lag model performs best of any model
-for three out of five Boroughs: Manhattan, Bronx and Staten Island
-(Table 11).
+for three out of five Boroughs: Manhattan, Bronx and Staten Island (see:
+Table \ref{tab:ProbSaleModelAUCbyBoro}).
 
 \begin{table}
 
 \caption{\label{tab:Prob Model AUC by Boro}\label{tab:ProbSaleModelAUCbyBoro} Probability of Sale Models AUC by Borough}
 \centering
-\resizebox{\linewidth}{!}{
 \begin{tabular}[t]{lrrrrr}
 \toprule
 Model & BK & BX & MN & QN & SI\\
@@ -1286,7 +1260,7 @@ Base & 0.8309 & 0.8288 & 0.7926 & 0.8338 & 0.8336\\
 Zip & 0.8234 & 0.8215 & 0.7796 & 0.8283 & 0.8281\\
 Spatial Lag & 0.8257 & 0.8312 & 0.8031 & 0.8327 & 0.8348\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
 Figure \ref{fig:AUC by boro and build type} shows a breakdown of model
@@ -1316,13 +1290,13 @@ We make the following observations about Figure
 
 If we rank model the probability models' performance for each Borough
 and Building Type, we see that the Spatial Lag models consistently
-outperform the Zip Code models, as shown in Table 12.
+outperform the Zip Code models, as shown in Table
+\ref{tab:ProbModelAUCRank}
 
 \begin{table}
 
-\caption{\label{tab:Prob Model AUC Average Rank}\label{tab:} Distribution and Average Model Rank for Probability of Sale by AUC across Borough and Building Types}
+\caption{\label{tab:Prob Model AUC Average Rank}\label{tab:ProbModelAUCRank} Distribution and Average Model Rank for Probability of Sale by AUC across Borough and Building Types}
 \centering
-\resizebox{\linewidth}{!}{
 \begin{tabular}[t]{llllr}
 \toprule
 Model Rank & 1 & 2 & 3 & Average Rank\\
@@ -1331,12 +1305,12 @@ Base & 16.2\% & 12.0\% & 5.1\% & 2.22\\
 Spatial Lag & 11.1\% & 13.7\% & 8.5\% & 2.09\\
 Zip & 6.0\% & 7.7\% & 19.7\% & 1.69\\
 \bottomrule
-\end{tabular}}
+\end{tabular}
 \end{table}
 
-\hypertarget{conclusions-and-future-research}{%
-\section{Conclusions and Future
-Research}\label{conclusions-and-future-research}}
+\hypertarget{future-research-and-conclusions}{%
+\section{Future Research and
+Conclusions}\label{future-research-and-conclusions}}
 
 \hypertarget{future-research}{%
 \subsection{Future Research}\label{future-research}}
@@ -1398,9 +1372,9 @@ prevent give a hope for a more equitable future.
 
 \newpage
 
-\hypertarget{appendix-a-list-of-spatial-lag-features}{%
-\section{Appendix A: List of Spatial Lag
-Features}\label{appendix-a-list-of-spatial-lag-features}}
+\hypertarget{appendix-a-full-list-of-spatial-lag-features}{%
+\section{Appendix A: Full List of Spatial Lag
+Features}\label{appendix-a-full-list-of-spatial-lag-features}}
 
 \begin{table}
 

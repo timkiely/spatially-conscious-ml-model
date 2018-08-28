@@ -77,14 +77,14 @@ source("Sections/tables and figures/my_kable.R")
 ```
 
 
-# Conclusions and Future Research
+# Future Research and Conclusions
 
 ```{r child = 'Sections/05-Conclusions.Rmd'}
 ```
 
 \newpage
 
-# Appendix A: List of Spatial Lag Features
+# Appendix A: Full List of Spatial Lag Features
 
 ```{r child = 'Sections/06-Appendix A.Rmd'}
 ```

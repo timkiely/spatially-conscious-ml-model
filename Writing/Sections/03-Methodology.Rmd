@@ -1,21 +1,23 @@
 ---
-title: "Methodology"
+title: "Data and Methodology"
 output: pdf_document
 bibliography: bib/bibliography.bib
 header-includes:
   - \usepackage{amsmath}
 ---
 
-Our goal is to compare the use of spatial lags as features in a machine learning predictive model against traditional feature engineering techniques. We created three modeling data sets: 
+## Methodology Overview
+
+Our goal is to compare the use of spatial lags as features in a machine learning predictive model against traditional feature engineering techniques. To accomplish this comparrisson, we will create three separate modeling data sets: 
 
 - Base modeling data
 - Zip Code modeling data
 - Spatial Lag modeling data
 
-\noindent The second and third modeling datasets are variations of the first, using competing feature engineering techniques to extract value from the data. In addition to measuring performance across three datasets, we also create 2 predictive models for each modeling data set, using a different outcome variable for each: 
+\noindent The second and third modeling datasets are variations of the first, using competing feature engineering techniques to extract additional predictive power from the data. In addition to measuring performance across three datasets, we also create 2 predictive models for each modeling data set, using a different outcome variable for each: 
 
 1) **Probability of Sale** The probability that a given property in New York City will sell in a given year
-2) **Amount of Sale ($)** Given that a property sells, how much is the sale value?
+2) **Amount of Sale ($/SF)** Given that a property sells, how much is the sale value?
 
 
 ```{r model table, fig.cap= "All Six Predictive Models", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -49,16 +51,37 @@ Following the creation of the base modeling data, we create two additional data 
 
 ## Data
 
-The New York City government makes available an annual data set which describes all tax lots in the five boroughs. The Primary Land Use and Tax Lot Output data set, known as [PLUTO](https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts[year]=0), contains a single record for every tax lot in the city along with a number of building and tax-related attributes such as Year Built, Assessed Value, Square Footage, number of stories, and many more. At the time of this writing, NYC has made this data set available for all years between 2002-2017, excluding 2008. For convenience, we also exclude the 2002 data set from our analysis because corresponding sales information is not available for that year. Importantly for our analysis, the latitude and longitude of the tax lots are also made available, allowing us to locate in space each building and to build geospatial features from the data. 
+### Data Sources
 
-Ultimately, we are interested in sales transactions--both frequency, and amount. Sales transactions are also made available by the New York City government, known as [NYC Rolling Sales Data](http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page). At the time of this writing, sales transactions are available for the years 2003-2017. The sales transactions data contains additional data fields describing time, place, and amount of sale as well as additional building characteristics. Crucially, the sales transaction data does not include geographical coordinates, making it impossible to perform geospatial analysis without first mapping the sales data to PLUTO.
+The New York City government makes available an annual data set which describes all tax lots in the five boroughs. The Primary Land Use and Tax Lot Output data set, known as [PLUTO](https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts[year]=0)[^1], contains a single record for every tax lot in the city along with a number of building and tax-related attributes such as Year Built, Assessed Value, Square Footage, number of stories, and many more. At the time of this writing, NYC has made this data set available for all years between 2002-2017, excluding 2008. For convenience, we also exclude the 2002 data set from our analysis because corresponding sales information is not available for that year. Importantly for our analysis, the latitude and longitude of the tax lots are also made available, allowing us to locate in space each building and to build geospatial features from the data. 
 
-Prior to mapping to PLUTO, the sales data must first be transformed to include the proper mapping key. New York City uses a standard key of Borough-Block-Lot to identify tax lots in the data. For example, 31 West 27th Street is located in Manhattan, on block 829 and lot 16, therefore, its Borough-Block-Lot (BBL) is 1_829_16 (the 1 represents Manhattan). The sales data contains BBL's at the building level, however, the sales transactions data does not appropriately designate condos as their own BBL's. Mapping the sales data directly to the PLUTO data results in a mapping error rate of 23.1%. Therefore, the sales transactions data must first be mapped to another data source, the NYC Property Address Directory, or [PAD](https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data), which contains an exhaustive list of all BBL's in NYC. Once the sales data is combined with PAD, the data can be mapped to PLUTO with an error rate of 0.291%.
+[^1]: https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts[year]=0
 
-After the Sales Transactions data has been mapped to PAD, it can then be mapped to PLUTO. The sales data is normalized and filtered so that only BBL's with less than or equal to 1 transactions in a year occur. The final data set is an exhaustive list of all tax lots in NYC for every year between 2003-2017, whether that building was sold, for what amount, and several other additional variables. 
+Ultimately, we are interested in both the ocuurance and the amount of real estate sales transactions. Sales transactions are also made available by the New York City government, known as [NYC Rolling Sales Data](http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page)[^2]. At the time of this writing, sales transactions are available for the years 2003-2017. The sales transactions data contains additional data fields describing time, place, and amount of sale as well as additional building characteristics. Crucially, the sales transaction data does not include geographical coordinates, making it impossible to perform geospatial analysis without first mapping the sales data to PLUTO.
+
+[^2]: http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page
+
+Prior to mapping to PLUTO, the sales data must first be transformed to include the proper mapping key. New York City uses a standard key of Borough-Block-Lot to identify tax lots in the data. For example, 31 West 27th Street is located in Manhattan, on block 829 and lot 16, therefore, its Borough-Block-Lot (BBL) is 1_829_16 (the 1 represents Manhattan). The sales data contains BBL's at the building level, however, the sales transactions data does not appropriately designate condos as their own BBL's. Mapping the sales data directly to the PLUTO data results in a mapping error rate of 23.1%. Therefore, the sales transactions data must first be mapped to another data source, the NYC Property Address Directory, or [PAD](https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data)[^3], which contains an exhaustive list of all BBL's in NYC. Once the sales data is combined with PAD, the data can be mapped to PLUTO with an error rate of 0.291% (See: Figure \ref{fig:Data Schema}).
+
+[^3]: https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data
 
 
-Only building categories of significant interest are included in the data. The included building types are displayed in Table \ref{tab:categoryTable}.
+```{r Data Schema, fig.cap="Overview of Data Sources",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
+knitr::include_graphics("Sections/tables and figures/Data Schema.png")
+```
+
+After the Sales Transactions data has been mapped to PAD, it can then be mapped to PLUTO. The sales data is normalized and filtered so that only BBL's with less than or equal to 1 transactions in a year occur. The final data set is an exhaustive list of all tax lots in NYC for every year between 2003-2017, whether that building was sold, for what amount, and several other additional variables. A description of all variables can be seen in Table \ref{tab:descripTable}.
+
+```{r descripTable,  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
+read_csv("tables and figures/desc_table.csv") %>% 
+  select(-contains("q")) %>% 
+  my_kable(caption = "Description of Base Data", label =  "modeltable")
+```
+
+
+### Global filtering of the data
+
+We will only include building categories of significant interest in the modeling data. Generally speaking, by significant interest we are referring to building types that are regularly bought and sold on the free market. These include residences, office buildings and industrial buildings, and exclude things like government-owned buildings, hospitals and hotels. The included building types are displayed in Table \ref{tab:categoryTable}.
 
 ```{r echo=FALSE, fig.cap= "Building Types Included in Modeling Data", message=FALSE, warning=FALSE, paged.print=FALSE}
 
@@ -81,13 +104,54 @@ category_table %>%
 ```
 
 
-The data is further filtered to include only records with equal to or less than 2 buildings per tax lot. The global filtering of the data set reduces the base modeling data from 12,012,780 records down to 8,247,499.
+The data is further filtered to include only records with equal to or less than 2 buildings per tax lot. The global filtering of the data set reduces the base modeling data from 12,012,780 records down to 8,247,499, retaining 68.6%% of the original data.
+
+### Exploratory Data Analysis
+
+
+```{r Load EDA tables, echo=FALSE, message=FALSE, warning=FALSE, eval = T}
+by_year <- read_csv("tables and figures/eda_by_year.csv")
+by_boro <- read_csv("tables and figures/eda_by_boro.csv")
+by_class <- read_csv("tables and figures/eda_by_class.csv")
+by_bt_boro_num_sales <- read_csv("tables and figures/eda_by_bt_by_boro_num_sales.csv")
+by_bt_boro_med_sales <- read_csv("tables and figures/eda_by_bt_by_boro_median_sales.csv")
+
+```
+
+The data contain building and sale records across the five boroughs of New York City for the years 2003-2017. One challenge with creating a predictive model of real estate sales data is the heterogeneity within the data in terms of frequency of sales and sale price. These two metrics (sale occurance and amount) vary greatly across year, borough and building classes (among other attributes). Table \ref{tab:by_year} displays statistics which describe the base data set (pre-filtered) by year. Note how the frequency of transactions (# of Sales) and the sale amount (Median Sale $/SF) tend to covary, particularly through the downturn of 2009-2012. This may be due to the fact that the reltive size of transactions tends to decrease as capital becomes more constrained. 
+
+```{r by_year, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+by_year %>% my_kable(caption = "Sales By Year", label = "by_year", latex_options = "basic")
+```
+
+Similar variance can be seen across asset types. Table \ref{tab:by_class} shows all buildings classes in the 2003-2017 period. As expected, residences tend to have the highest volume of sales while offices tend to have the highest sale prices. 
+
+```{r by_class, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+by_class %>% my_kable(caption = "Sales By Asset Class", label = "by_class", latex_options = "basic")
+```
+
+Sale price per square foot, in particular, varies greatly across geography and assett class. Table \ref{tab:by_class_boro} shows the breakdown of sales prices by borough and asset class. Manhattan tends to command the highest sale-price-per-square foot across assett types. "Comercial" asset types such as Office and Elevator Apartments tend to fetch much lower price-per-square foot than do residential classes such as one and two-family dwellings. Table \ref{tab:by_class_boro_num} shows the number of transactions across the same dimensions. 
+
+
+```{r by_class_boro, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+by_bt_boro_med_sales %>% my_kable(caption = "Sale Price Per Square Foot by Asset Class and Borough", label = "by_class_boro")
+
+```
+
+```{r by_class_boro_num, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+
+by_bt_boro_num_sales %>% 
+  mutate_at(vars(BK:SI), funs(scales::comma)) %>% 
+  my_kable(caption = "Number of Sales by Asset Class and Borough", label = "by_class_boro_num")
+
+```
 
 
 ## Feature Engineering
 
-
 ### Base Modeling Data
+
 The base modeling data set is enhanced to include additional features. A summary table of the additional features are presented in Table \ref{tab:baseModelDataFeats}. A binary variable is created to indicate whether a tax lot has a building on it (i.e., whether it is an empty plot of land or not). In addition, building types are quantified by what percent of the square footage belongs to the major property types: Commercial, Residential, Office, Retail, Garage, Storage, Factory and Other. 
 
 
@@ -157,7 +221,7 @@ $$
 O(N)^\frac{N-1}{G}
 $$
 
-\noindent By making G arbitrarily large (bounded by computational resources only), we can reduce runtime substantially. Furthermore, binning the operations into grids allows us to parallelize the computation, substantially reducing the overall run time. Figure \ref{fig:Spatial Indexing Process} shows a comparison of run times between different spatial indexing procedures. Note how the sequential Grid method starts out as slower than the basic Point-in-polygon technique due to pre-processing overhead, but wins out in terms of speed as complexity increases
+\noindent By making G arbitrarily large (bounded by computational resources only), we can reduce runtime substantially. Furthermore, binning the operations into grids allows us to parallelize the computation, substantially reducing the overall run time. Figure \ref{fig:Spatial Indexing Process} shows a comparison of run times between different spatial indexing procedures. Note how the sequential Grid method starts out as slower than the basic Point-in-polygon technique due to pre-processing overhead, but wins out in terms of speed as complexity increases.
 
 ```{r Spatial Indexing Process, fig.cap="Spatial Index Time Comparison",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
 knitr::include_graphics("Sections/tables and figures/Example Spatial Indexing Techniques.png")
@@ -169,41 +233,16 @@ knitr::include_graphics("Sections/tables and figures/Example Spatial Indexing Te
 knitr::include_graphics("Sections/tables and figures/Spatial Lag Creation.png")
 ```
 
-Next, we used the spatial index to create spatial lag features. One advantage of using spatial lags is the rich number of potential features which can be engineered. Spatial lags can be weighted based on a distance function, e.g., physically closer observations can be given more weight. For our modeling purposes, we created two sets of features: distance weighted features (denoted with a "_dist" in Appendix A Table \ref{tab:AppendixA}) and simple average features (denoted with "_basic" in Appendix A Table \ref{tab:AppendixA}). SMA and EMA as well as percent changes were also calculated. 
-  Temporal and spatial derivatives of the Spatial Lag features presented in Table \ref{tab:summarySLfeats} were also added to the model, including: variables weighted by euclidean distance ("dist"), basic averages of the spatial lag radius ("basic mean"), Simple Moving Averages ("SMA") for 2 years, 3 years and 5 years, exponential moving averages ("EMA") for 2 years, 3 years and 5 years, and year-over-year percent changes for all variables ("perc change"). In total, the spatial lag feature engineering process input 92 variables and output 194 variables. A summary of the Spatial Lag features are presented in Appendix A Table \ref{tab:AppendixA}.
+Next, we used the spatial index to create spatial lag features. One advantage of using spatial lags is the rich number of potential features which can be engineered. Spatial lags can be weighted based on a distance function, e.g., physically closer observations can be given more weight. For our modeling purposes, we created two sets of features: distance weighted features (denoted with a "_dist" in Table \ref{tab:SpLAgFeats}) and simple average features (denoted with "_basic" in Table \ref{tab:SpLAgFeats}). SMA and EMA as well as percent changes were also calculated. 
 
-```{r Table 3, fig.cap= "Summary of Spatial Lag Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+Temporal and spatial derivatives of the Spatial Lag features presented in Table \ref{tab:SpLAgFeats} were also added to the model, including: variables weighted by euclidean distance ("dist"), basic averages of the spatial lag radius ("basic mean"), Simple Moving Averages ("SMA") for 2 years, 3 years and 5 years, exponential moving averages ("EMA") for 2 years, 3 years and 5 years, and year-over-year percent changes for all variables ("perc change"). In total, the spatial lag feature engineering process input 92 variables and output 194 variables. A summary of the Spatial Lag features are presented in Appendix A Table \ref{tab:SpLAgFeats}.
 
-Summary_SL_feats <- 
-  tribble(
-    ~`Spatial Lag Features`
-    ,"Radius Total Sold In Year"                                           
-    ,"Radius Average Years Since Last Sale"                                
-    ,"Radius Res Units Sold In Year"                                       
-    ,"Radius All Units Sold In Year"                                       
-    ,"Radius SF Sold In Year"                                              
-    ,"Radius Total Sold In Year sum over 2 years"                          
-    ,"Radius Average Years Since Last Sale sum over 2 years"               
-    ,"Radius Res Units Sold In Year sum over 2 years"                      
-    ,"Radius All Units Sold In Year sum over 2 years"                      
-    ,"Radius SF Sold In Year sum over 2 years"                             
-    ,"Radius Total Sold In Year percent change"                            
-    ,"Radius Average Years Since Last Sale percent change"                 
-    ,"Radius Res Units Sold In Year percent change"                        
-    ,"Radius All Units Sold In Year percent change"                        
-    ,"Radius SF Sold In Year percent change"                               
-    ,"Radius Total Sold In Year sum over 2 years percent change"           
-    ,"Radius Average Years Since Last Sale sum over 2 years percent change"
-    ,"Radius Res Units Sold In Year sum over 2 years percent change"       
-    ,"Radius All Units Sold In Year sum over 2 years percent change"       
-    ,"Radius SF Sold In Year sum over 2 years percent change"
-    )
+```{r SpLagFeats, fig.cap= "Spatial Lag Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, out.width = '100%'}
 
-Summary_SL_feats %>% my_kable(caption = "Summary of Spatial Lag Features (See Appendix A for full list)"
-                              , label = "summarySLfeats")
+readr::read_rds("tables and figures/table3.rds") %>%
+  my_kable(caption = "All Spatial Lag Features", label = "SpLAgFeats")
+
 ```
-
-
 
 
 ## Outcome Variables
@@ -213,7 +252,7 @@ The final step in creating the modeling data is to define the outcome variables.
 1) **Sold.** whether a tax lot sold in a given year. Used in the Probability of Sale classification model.
 2) **Sale Price.** The price-per-square foot associated with a transaction, if a sale took place. Used in the Sale Price Regression model. 
 
-\noindent Table \ref{tab:OutcomeDistro} describes the distributions of both outcome variables:
+\noindent Table \ref{tab:OutcomeDistro} describes the distributions of both outcome variables.
 
 
 ```{r table 4, fig.cap= "Distributions for Outcome Variables", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -237,7 +276,7 @@ The primary advantages to using Random Forest with real estate data are:
 1. Can handle an arbitrarily large number of variables while avoiding the curse of dimensionality associated with regression techniques. Increasing the number of predictors in a multiple regression can quickly lead to over-fitting. 
 2. Can accommodate categorical variables with many levels. Real estate data often contains information describing the location of the property, or the property itself, as one of a large set of possible choices, such as neighborhood, county, census tract, district, property type, and zoning information. Because factors need to be recoded as individual dummy variables in the model building process, factors with many levels will quickly encounter the curse of dimensionality in multiple regression techniques.
 3. Appropriately handles missing data. Predictions can be made with the parts of the tree which are successfully built, and therefore, there is no need to filter out incomplete observations or impute missing values. Since much real estate data is self reported, incomplete fields are common in the data.
-4. Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, are reduced in terms of importance. Real estate data, especially with regards to pricing, tends to contain outliers. For example, the dependent variable in one of our models, Sale Price (see: Table 7), shows a clear divergence in median and mean, as well as a maximum significantly higher than the third quartile.
+4. Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, are reduced in terms of importance. Real estate data, especially with regards to pricing, tends to contain outliers. For example, the dependent variable in one of our models, Sale Price, shows a clear divergence in median and mean, as well as a maximum significantly higher than the third quartile.
 5. Can recognize non-linear relationships in data, which is useful when modeling spatial relationships. 
 6. Is not affected by co-linearity in the data. This is highly valuable as real estate data can be highly correlated. 
 7. The algorithm can be parallelized and is relatively fast compared to neural networks and functional gradient descent algorithms. 

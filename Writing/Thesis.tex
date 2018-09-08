@@ -495,12 +495,16 @@ boundary-aggregation techniques (specifically, aggregating by zip codes)
 to spatial-lag techniques and finds the spatial lag techniques to
 generally outperform.
 
-\hypertarget{methodology}{%
-\section{Methodology}\label{methodology}}
+\hypertarget{data-and-methodology}{%
+\section{Data and Methodology}\label{data-and-methodology}}
+
+\hypertarget{methodology-overview}{%
+\subsection{Methodology Overview}\label{methodology-overview}}
 
 Our goal is to compare the use of spatial lags as features in a machine
 learning predictive model against traditional feature engineering
-techniques. We created three modeling data sets:
+techniques. To accomplish this comparrisson, we will create three
+separate modeling data sets:
 
 \begin{itemize}
 \tightlist
@@ -513,10 +517,10 @@ techniques. We created three modeling data sets:
 \end{itemize}
 
 \noindent The second and third modeling datasets are variations of the
-first, using competing feature engineering techniques to extract value
-from the data. In addition to measuring performance across three
-datasets, we also create 2 predictive models for each modeling data set,
-using a different outcome variable for each:
+first, using competing feature engineering techniques to extract
+additional predictive power from the data. In addition to measuring
+performance across three datasets, we also create 2 predictive models
+for each modeling data set, using a different outcome variable for each:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -525,8 +529,8 @@ using a different outcome variable for each:
   \textbf{Probability of Sale} The probability that a given property in
   New York City will sell in a given year
 \item
-  \textbf{Amount of Sale (\$)} Given that a property sells, how much is
-  the sale value?
+  \textbf{Amount of Sale (\$/SF)} Given that a property sells, how much
+  is the sale value?
 \end{enumerate}
 
 \begin{table}
@@ -564,10 +568,13 @@ lags vs.~the base and zip code features.
 \hypertarget{data}{%
 \subsection{Data}\label{data}}
 
+\hypertarget{data-sources}{%
+\subsubsection{Data Sources}\label{data-sources}}
+
 The New York City government makes available an annual data set which
 describes all tax lots in the five boroughs. The Primary Land Use and
 Tax Lot Output data set, known as
-\href{https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts\%5Byear\%5D=0}{PLUTO},
+\href{https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts\%5Byear\%5D=0}{PLUTO}\footnote{\url{https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts\%5Byear\%5D=0}},
 contains a single record for every tax lot in the city along with a
 number of building and tax-related attributes such as Year Built,
 Assessed Value, Square Footage, number of stories, and many more. At the
@@ -579,17 +586,17 @@ latitude and longitude of the tax lots are also made available, allowing
 us to locate in space each building and to build geospatial features
 from the data.
 
-Ultimately, we are interested in sales transactions--both frequency, and
-amount. Sales transactions are also made available by the New York City
-government, known as
+Ultimately, we are interested in both the ocuurance and the amount of
+real estate sales transactions. Sales transactions are also made
+available by the New York City government, known as
 \href{http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page}{NYC
-Rolling Sales Data}. At the time of this writing, sales transactions are
-available for the years 2003-2017. The sales transactions data contains
-additional data fields describing time, place, and amount of sale as
-well as additional building characteristics. Crucially, the sales
-transaction data does not include geographical coordinates, making it
-impossible to perform geospatial analysis without first mapping the
-sales data to PLUTO.
+Rolling Sales Data}\footnote{\url{http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page}}.
+At the time of this writing, sales transactions are available for the
+years 2003-2017. The sales transactions data contains additional data
+fields describing time, place, and amount of sale as well as additional
+building characteristics. Crucially, the sales transaction data does not
+include geographical coordinates, making it impossible to perform
+geospatial analysis without first mapping the sales data to PLUTO.
 
 Prior to mapping to PLUTO, the sales data must first be transformed to
 include the proper mapping key. New York City uses a standard key of
@@ -602,25 +609,132 @@ BBL's. Mapping the sales data directly to the PLUTO data results in a
 mapping error rate of 23.1\%. Therefore, the sales transactions data
 must first be mapped to another data source, the NYC Property Address
 Directory, or
-\href{https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data}{PAD},
+\href{https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data}{PAD}\footnote{\url{https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data}},
 which contains an exhaustive list of all BBL's in NYC. Once the sales
 data is combined with PAD, the data can be mapped to PLUTO with an error
-rate of 0.291\%.
+rate of 0.291\% (See: Figure \ref{fig:Data Schema}).
+
+\begin{figure}[h]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/Data Schema} \caption{Overview of Data Sources}\label{fig:Data Schema}
+\end{figure}
 
 After the Sales Transactions data has been mapped to PAD, it can then be
 mapped to PLUTO. The sales data is normalized and filtered so that only
 BBL's with less than or equal to 1 transactions in a year occur. The
 final data set is an exhaustive list of all tax lots in NYC for every
 year between 2003-2017, whether that building was sold, for what amount,
-and several other additional variables.
+and several other additional variables. A description of all variables
+can be seen in Table \ref{tab:descripTable}.
 
-Only building categories of significant interest are included in the
-data. The included building types are displayed in Table
+\begin{table}
+
+\caption{\label{tab:descripTable}\label{tab:modeltable} Description of Base Data}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llrrrlrrrr}
+\toprule
+variable & type & nobs & mean & sd & mode & min & max & median & n\_missing\\
+\midrule
+Annual\_Sales & Numeric & 12012780 & 1.604976e+00 & 8.244806e+00 & NA & 1.00000 & 2.591000e+03 & 1.00000 & 11208593\\
+AssessLand & Numeric & 12012780 & 9.349294e+04 & 2.870654e+06 & 103050 & 0.00000 & 2.146388e+09 & 10348.00000 & 65\\
+AssessTot & Numeric & 12012780 & 3.023752e+05 & 4.816339e+06 & 581400 & 0.00000 & 2.146388e+09 & 25159.00000 & 1703150\\
+BldgArea & Numeric & 12012780 & 6.228480e+03 & 7.016095e+04 & 18965 & 0.00000 & 4.954783e+07 & 2050.00000 & 45\\
+BldgDepth & Numeric & 12012780 & 4.554358e+01 & 3.442103e+01 & 50 & 0.00000 & 9.388000e+03 & 42.00000 & 44\\
+\addlinespace
+BldgFront & Numeric & 12012780 & 2.537632e+01 & 3.251236e+01 & 100 & 0.00000 & 9.702000e+03 & 20.00000 & 44\\
+Block & Numeric & 12012780 & 5.297416e+03 & 3.694555e+03 & 1 & 0.00000 & 7.172400e+04 & 4799.00000 & 44\\
+BoroCode & Numeric & 12012780 & 3.457095e+00 & 1.024522e+00 & 5 & 1.00000 & 5.000000e+00 & 4.00000 & 47\\
+BsmtCode & Numeric & 12012780 & 2.372776e+00 & 1.980954e+00 & 0 & 0.00000 & 3.213000e+03 & 2.00000 & 859406\\
+BuiltFAR & Numeric & 12012780 & 1.105683e+00 & 9.943710e+00 & 3.32 & 0.00000 & 8.695000e+03 & 0.76000 & 850554\\
+\addlinespace
+ComArea & Numeric & 12012780 & 2.159691e+03 & 5.819219e+04 & 18965 & 0.00000 & 2.760000e+07 & 0.00000 & 44\\
+CommFAR & Numeric & 12012780 & 2.090228e-01 & 1.104771e+00 & 3.4 & 0.00000 & 1.500000e+01 & 0.00000 & 7716603\\
+CondoNo & Numeric & 12012780 & 8.133609e+00 & 1.257844e+02 & 0 & 0.00000 & 3.000000e+04 & 0.00000 & 1703113\\
+Easements & Numeric & 12012780 & 9.253900e-03 & 2.175614e+00 & 0 & 0.00000 & 7.500000e+03 & 0.00000 & 48\\
+ExemptLand & Numeric & 12012780 & 3.707307e+04 & 2.718194e+06 & 0 & 0.00000 & 2.146388e+09 & 1290.00000 & 65\\
+\addlinespace
+ExemptTot & Numeric & 12012780 & 1.079414e+05 & 3.522172e+06 & 0 & 0.00000 & 2.146388e+09 & 1360.00000 & 1703149\\
+FacilFAR & Numeric & 12012780 & 2.234550e+00 & 1.692164e+00 & 4.8 & 0.00000 & 1.500000e+01 & 2.00000 & 7716603\\
+FactryArea & Numeric & 12012780 & 1.264845e+02 & 3.889916e+03 & 0 & 0.00000 & 1.324592e+06 & 0.00000 & 850555\\
+GarageArea & Numeric & 12012780 & 1.304629e+02 & 5.154002e+03 & 0 & 0.00000 & 2.677430e+06 & 0.00000 & 850554\\
+GROSS SQUARE FEET & Numeric & 12012780 & 4.422722e+03 & 4.569120e+04 & NA & 0.00000 & 1.496215e+07 & 1920.00000 & 11217669\\
+\addlinespace
+lat & Numeric & 12012780 & 4.069280e+01 & 8.347250e-02 & 40.6386175499986 & 40.11239 & 4.091408e+01 & 40.68632 & 427076\\
+lon & Numeric & 12012780 & -7.392032e+01 & 1.157930e-01 & -74.0754964873625 & -77.51958 & -7.370033e+01 & -73.91193 & 427076\\
+Lot & Numeric & 12012780 & 1.147434e+02 & 6.552905e+02 & 10 & 0.00000 & 9.999000e+03 & 38.00000 & 44\\
+LotArea & Numeric & 12012780 & 7.852065e+03 & 3.626183e+05 & 5716 & 0.00000 & 2.147557e+08 & 2514.00000 & 44\\
+LotDepth & Numeric & 12012780 & 1.040125e+02 & 6.877369e+01 & 84 & 0.00000 & 9.999000e+03 & 100.00000 & 45\\
+\addlinespace
+LotFront & Numeric & 12012780 & 3.998125e+01 & 7.394698e+01 & 112.58 & 0.00000 & 9.999000e+03 & 25.00000 & 44\\
+LotType & Numeric & 12012780 & 4.721511e+00 & 7.785866e-01 & 5 & 0.00000 & 9.000000e+00 & 5.00000 & 865340\\
+NumBldgs & Numeric & 12012780 & 1.165342e+00 & 3.871992e+00 & 1 & 0.00000 & 2.740000e+03 & 1.00000 & 46\\
+NumFloors & Numeric & 12012780 & 2.276888e+00 & 1.896832e+00 & 4 & 0.00000 & 3.000000e+02 & 2.00000 & 44\\
+OfficeArea & Numeric & 12012780 & 7.418082e+02 & 2.156605e+04 & 0 & 0.00000 & 5.009319e+06 & 0.00000 & 850556\\
+\addlinespace
+OtherArea & Numeric & 12012780 & 6.729491e+02 & 4.984848e+04 & 0 & 0.00000 & 2.760000e+07 & 0.00000 & 850555\\
+ProxCode & Numeric & 12012780 & 1.493663e+00 & 1.896008e+00 & 1 & 0.00000 & 5.469000e+03 & 1.00000 & 197927\\
+ResArea & Numeric & 12012780 & 3.921106e+03 & 3.188156e+04 & 0 & 0.00000 & 3.548502e+07 & 1776.00000 & 44\\
+ResidFAR & Numeric & 12012780 & 1.367863e+00 & 1.378265e+00 & 2.43 & 0.00000 & 1.200000e+01 & 0.90000 & 7716603\\
+RetailArea & Numeric & 12012780 & 3.088216e+02 & 1.439395e+04 & 6965 & 0.00000 & 2.199999e+07 & 0.00000 & 850554\\
+\addlinespace
+SALE PRICE & Numeric & 12012780 & 8.840359e+05 & 1.375771e+07 & NA & 0.00000 & 4.111112e+09 & 319000.00000 & 11208593\\
+sale\_psf & Numeric & 12012780 & 2.197222e+02 & 5.153011e+03 & NA & 0.00000 & 1.497500e+06 & 114.13043 & 11250396\\
+SALE\_YEAR & Numeric & 12012780 & 2.009369e+03 & 4.657541e+00 & NA & 2003.00000 & 2.017000e+03 & 2009.00000 & 11208593\\
+Sold & Numeric & 12012780 & 6.694430e-02 & 2.499255e-01 & 0 & 0.00000 & 1.000000e+00 & 0.00000 & 0\\
+StrgeArea & Numeric & 12012780 & 1.689647e+02 & 5.810140e+03 & 12000 & 0.00000 & 1.835150e+06 & 0.00000 & 850554\\
+\addlinespace
+TOTAL\_SALES & Numeric & 12012780 & 8.840359e+05 & 1.375771e+07 & NA & 0.00000 & 4.111112e+09 & 319000.00000 & 11208593\\
+UnitsRes & Numeric & 12012780 & 3.957497e+00 & 3.644067e+01 & 0 & 0.00000 & 2.081100e+04 & 1.00000 & 45\\
+UnitsTotal & Numeric & 12012780 & 4.322610e+00 & 4.183565e+01 & 1 & 0.00000 & 4.427600e+04 & 2.00000 & 47\\
+Year & Numeric & 12012780 & 2.010154e+03 & 4.433053e+00 & 2017 & 2003.00000 & 2.017000e+03 & 2011.00000 & 0\\
+YearAlter1 & Numeric & 12012780 & 1.585123e+02 & 5.395276e+02 & 2000 & 0.00000 & 2.017000e+03 & 0.00000 & 45\\
+\addlinespace
+YearAlter2 & Numeric & 12012780 & 2.049166e+01 & 2.015257e+02 & 0 & 0.00000 & 2.017000e+03 & 0.00000 & 48\\
+YearBuilt & Numeric & 12012780 & 1.829838e+03 & 4.487283e+02 & 1884 & 0.00000 & 2.040000e+03 & 1930.00000 & 47\\
+ZipCode & Numeric & 12012780 & 1.100664e+04 & 5.373392e+02 & 10301 & 0.00000 & 1.169700e+04 & 11221.00000 & 59956\\
+Address & Character & 12012780 & NA & NA & 139 BAY STREET & NA & NA & NA & 17902\\
+AssessTotal & Character & 12012780 & NA & NA & NA & NA & NA & NA & 10309712\\
+\addlinespace
+bbl & Character & 12012780 & NA & NA & 5\_1\_10 & NA & NA & NA & 0\\
+BldgClass & Character & 12012780 & NA & NA & E1 & NA & NA & NA & 16372\\
+Borough & Character & 12012780 & NA & NA & SI & NA & NA & NA & 0\\
+BUILDING CLASS AT PRESENT & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11219514\\
+BUILDING CLASS AT TIME OF SALE & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11208593\\
+\addlinespace
+BUILDING CLASS CATEGORY & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11208765\\
+Building\_Type & Character & 12012780 & NA & NA & E & NA & NA & NA & 16372\\
+CornerLot & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11163751\\
+ExemptTotal & Character & 12012780 & NA & NA & NA & NA & NA & NA & 10309712\\
+FAR & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11162270\\
+\addlinespace
+IrrLotCode & Character & 12012780 & NA & NA & Y & NA & NA & NA & 16310\\
+MaxAllwFAR & Character & 12012780 & NA & NA & NA & NA & NA & NA & 4296221\\
+OwnerName & Character & 12012780 & NA & NA & 139 BAY POINTE PROPER & NA & NA & NA & 137048\\
+OwnerType & Character & 12012780 & NA & NA & NA & NA & NA & NA & 10445328\\
+TAX CLASS AT PRESENT & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11219514\\
+\addlinespace
+TAX CLASS AT TIME OF SALE & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11208593\\
+ZoneDist1 & Character & 12012780 & NA & NA & C4-2 & NA & NA & NA & 18970\\
+ZoneDist2 & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11715653\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\hypertarget{global-filtering-of-the-data}{%
+\subsubsection{Global filtering of the
+data}\label{global-filtering-of-the-data}}
+
+We will only include building categories of significant interest in the
+modeling data. Generally speaking, by significant interest we are
+referring to building types that are regularly bought and sold on the
+free market. These include residences, office buildings and industrial
+buildings, and exclude things like government-owned buildings, hospitals
+and hotels. The included building types are displayed in Table
 \ref{tab:categoryTable}.
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-7}\label{tab:categoryTable} Building Cateogory Codes}
+\caption{\label{tab:unnamed-chunk-6}\label{tab:categoryTable} Building Cateogory Codes}
 \centering
 \begin{tabular}[t]{ll}
 \toprule
@@ -642,7 +756,151 @@ O & OFFICES\\
 The data is further filtered to include only records with equal to or
 less than 2 buildings per tax lot. The global filtering of the data set
 reduces the base modeling data from 12,012,780 records down to
-8,247,499.
+8,247,499, retaining 68.6\%\% of the original data.
+
+\hypertarget{exploratory-data-analysis}{%
+\subsubsection{Exploratory Data
+Analysis}\label{exploratory-data-analysis}}
+
+The data contain building and sale records across the five boroughs of
+New York City for the years 2003-2017. One challenge with creating a
+predictive model of real estate sales data is the heterogeneity within
+the data in terms of frequency of sales and sale price. These two
+metrics (sale occurance and amount) vary greatly across year, borough
+and building classes (among other attributes). Table \ref{tab:by_year}
+displays statistics which describe the base data set (pre-filtered) by
+year. Note how the frequency of transactions (\# of Sales) and the sale
+amount (Median Sale \$/SF) tend to covary, particularly through the
+downturn of 2009-2012. This may be due to the fact that the reltive size
+of transactions tends to decrease as capital becomes more constrained.
+
+\begin{table}
+
+\caption{\label{tab:by_year}\label{tab:by_year} Sales By Year}
+\centering
+\begin{tabular}[t]{rrrll}
+\toprule
+Year & N & \# Sales & Median Sale & Median Sale \$/SF\\
+\midrule
+2003 & 850515 & 78919 & \$218,000 & \$79.37\\
+2004 & 852563 & 81794 & \$292,000 & \$124.05\\
+2005 & 854862 & 77815 & \$360,500 & \$157.76\\
+2006 & 857473 & 70928 & \$400,000 & \$168.07\\
+2007 & 860480 & 61880 & \$385,000 & \$139.05\\
+\addlinespace
+2009 & 860519 & 43304 & \$245,000 & \$41.25\\
+2010 & 860541 & 41826 & \$273,000 & \$75.35\\
+2011 & 860320 & 40852 & \$263,333 & \$56.99\\
+2012 & 859329 & 47036 & \$270,708 & \$52.72\\
+2013 & 859372 & 50408 & \$315,000 & \$89.44\\
+\addlinespace
+2014 & 858914 & 51386 & \$350,000 & \$115.71\\
+2015 & 859464 & 53208 & \$375,000 & \$135.62\\
+2016 & 859205 & 53772 & \$385,530 & \$147.06\\
+2017 & 859223 & 51059 & \$430,000 & \$171.71\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Similar variance can be seen across asset types. Table
+\ref{tab:by_class} shows all buildings classes in the 2003-2017 period.
+As expected, residences tend to have the highest volume of sales while
+offices tend to have the highest sale prices.
+
+\begin{table}
+
+\caption{\label{tab:by_class}\label{tab:by_class} Sales By Asset Class}
+\centering
+\begin{tabular}[t]{llrrll}
+\toprule
+Bldg Code & Build Type & N & \# Sales & Median Sale & Median Sale \$/SF\\
+\midrule
+A & One Family Dwellings & 4435615 & 252283 & \$320,000 & \$215.85\\
+B & Two Family Dwellings & 3431762 & 219492 & \$340,000 & \$155.79\\
+C & Walk Up Apartments & 1873447 & 135203 & \$330,000 & \$67.20\\
+D & Elevator Apartments & 188689 & 45635 & \$398,000 & \$4.69\\
+E & Warehouses & 84605 & 5126 & \$200,000 & \$31.48\\
+\addlinespace
+F & Factory & 67174 & 4440 & \$350,000 & \$56.44\\
+G & Garages & 221620 & 13965 & \$0 & \$78.57\\
+H & Hotels & 10807 & 619 & \$5,189,884 & \$184.82\\
+I & Hospitals & 17650 & 687 & \$600,000 & \$62.66\\
+J & Theatres & 2662 & 152 & \$113,425 & \$4.01\\
+\addlinespace
+K & Retail & 265101 & 14841 & \$200,000 & \$60.63\\
+L & Loft & 18239 & 1259 & \$1,937,500 & \$101.36\\
+M & Religious & 78063 & 1320 & \$375,000 & \$91.78\\
+N & Asylum & 8498 & 190 & \$275,600 & \$35.90\\
+O & Office & 93973 & 5294 & \$550,000 & \$143.29\\
+\addlinespace
+P & Public Assembly & 15292 & 437 & \$350,000 & \$85.47\\
+Q & Recreation & 55193 & 232 & \$0 & \$0\\
+R & Condo & 78188 & 40157 & \$444,750 & \$12.65\\
+S & Mixed Use Residence & 467555 & 29396 & \$250,000 & \$78.29\\
+T & Transportation & 4012 & 49 & \$0 & \$0\\
+\addlinespace
+U & Utility & 32802 & 129 & \$0 & \$175\\
+V & Vacant & 449667 & 29091 & \$0 & \$134.70\\
+W & Educational & 38993 & 704 & \$0 & \$0\\
+Y & Gov't & 7216 & 44 & \$21,451.50 & \$0.30\\
+Z & Misc & 49583 & 2740 & \$0 & \$0\\
+NA & NA & 16372 & 702 & \$394,723 & \$145.86\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Sale price per square foot, in particular, varies greatly across
+geography and assett class. Table \ref{tab:by_class_boro} shows the
+breakdown of sales prices by borough and asset class. Manhattan tends to
+command the highest sale-price-per-square foot across assett types.
+``Comercial'' asset types such as Office and Elevator Apartments tend to
+fetch much lower price-per-square foot than do residential classes such
+as one and two-family dwellings. Table \ref{tab:by_class_boro_num} shows
+the number of transactions across the same dimensions.
+
+\begin{table}
+
+\caption{\label{tab:by_class_boro}\label{tab:by_class_boro} Sale Price Per Square Foot by Asset Class and Borough}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llllll}
+\toprule
+Build Type & BK & BX & MN & QN & SI\\
+\midrule
+Elevator Apartments & \$2.65 & \$1.74 & \$10.80 & \$1.87 & \$1.23\\
+Factory & \$33.33 & \$53.19 & \$135.62 & \$92.42 & \$55.01\\
+Garages & \$78.94 & \$80.57 & \$94.43 & \$71.11 & \$67.46\\
+Loft & \$46.32 & \$78.26 & \$141.56 & \$150.37 & \$61.82\\
+Office & \$118.52 & \$123.04 & \$225.96 & \$148.45 & \$105\\
+\addlinespace
+One Family Dwellings & \$221.26 & \$176.98 & \$757.58 & \$232.69 & \$203.88\\
+Two Family Dwellings & \$140.95 & \$131.06 & \$296.10 & \$181.84 & \$160.76\\
+Walk Up Apartments & \$69.97 & \$84.05 & \$50.61 & \$36.94 & \$75.38\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}
+
+\caption{\label{tab:by_class_boro_num}\label{tab:by_class_boro_num} Number of Sales by Asset Class and Borough}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llllll}
+\toprule
+Build Type & BK & BX & MN & QN & SI\\
+\midrule
+Elevator Apartments & 8,377 & 4,252 & 23,641 & 9,196 & 169\\
+Factory & 2,265 & 453 & 109 & 1,520 & 93\\
+Garages & 5,386 & 2,659 & 1,097 & 4,000 & 823\\
+Loft & 119 & 21 & 1,108 & 8 & 3\\
+Office & 1,112 & 340 & 2,081 & 1,162 & 599\\
+\addlinespace
+One Family Dwellings & 45,009 & 17,508 & 1,654 & 126,333 & 61,779\\
+Two Family Dwellings & 83,547 & 25,920 & 1,566 & 83,940 & 24,519\\
+Walk Up Apartments & 63,552 & 18,075 & 19,824 & 31,932 & 1,820\\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \hypertarget{feature-engineering}{%
 \subsection{Feature Engineering}\label{feature-engineering}}
@@ -858,7 +1116,7 @@ computation, substantially reducing the overall run time. Figure
 between different spatial indexing procedures. Note how the sequential
 Grid method starts out as slower than the basic Point-in-polygon
 technique due to pre-processing overhead, but wins out in terms of speed
-as complexity increases
+as complexity increases.
 
 \begin{figure}[h]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Example Spatial Indexing Techniques} \caption{Spatial Index Time Comparison}\label{fig:Spatial Indexing Process}
@@ -873,52 +1131,131 @@ advantage of using spatial lags is the rich number of potential features
 which can be engineered. Spatial lags can be weighted based on a
 distance function, e.g., physically closer observations can be given
 more weight. For our modeling purposes, we created two sets of features:
-distance weighted features (denoted with a "\_dist" in Appendix A Table
-\ref{tab:AppendixA}) and simple average features (denoted with "\_basic"
-in Appendix A Table \ref{tab:AppendixA}). SMA and EMA as well as percent
-changes were also calculated. Temporal and spatial derivatives of the
-Spatial Lag features presented in Table \ref{tab:summarySLfeats} were
-also added to the model, including: variables weighted by euclidean
-distance (``dist''), basic averages of the spatial lag radius (``basic
-mean''), Simple Moving Averages (``SMA'') for 2 years, 3 years and 5
-years, exponential moving averages (``EMA'') for 2 years, 3 years and 5
-years, and year-over-year percent changes for all variables (``perc
-change''). In total, the spatial lag feature engineering process input
-92 variables and output 194 variables. A summary of the Spatial Lag
-features are presented in Appendix A Table \ref{tab:AppendixA}.
+distance weighted features (denoted with a "\_dist" in Table
+\ref{tab:SpLAgFeats}) and simple average features (denoted with
+"\_basic" in Table \ref{tab:SpLAgFeats}). SMA and EMA as well as percent
+changes were also calculated.
+
+Temporal and spatial derivatives of the Spatial Lag features presented
+in Table \ref{tab:SpLAgFeats} were also added to the model, including:
+variables weighted by euclidean distance (``dist''), basic averages of
+the spatial lag radius (``basic mean''), Simple Moving Averages
+(``SMA'') for 2 years, 3 years and 5 years, exponential moving averages
+(``EMA'') for 2 years, 3 years and 5 years, and year-over-year percent
+changes for all variables (``perc change''). In total, the spatial lag
+feature engineering process input 92 variables and output 194 variables.
+A summary of the Spatial Lag features are presented in Appendix A Table
+\ref{tab:SpLAgFeats}.
 
 \begin{table}
 
-\caption{\label{tab:Table 3}\label{tab:summarySLfeats} Summary of Spatial Lag Features (See Appendix A for full list)}
+\caption{\label{tab:SpLagFeats}\label{tab:SpLAgFeats} All Spatial Lag Features}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{l}
+\begin{tabular}[t]{lllll}
 \toprule
-Spatial Lag Features\\
+Feature & Min & Median & Mean & Max\\
 \midrule
-Radius Total Sold In Year\\
-Radius Average Years Since Last Sale\\
-Radius Res Units Sold In Year\\
-Radius All Units Sold In Year\\
-Radius SF Sold In Year\\
+Radius\_Total\_Sold\_In\_Year & 1.00 & 20.00 & 24.00 & 201.00\\
+Radius\_Average\_Years\_Since\_Last\_Sale & 1.00 & 4.43 & 4.27 & 14.00\\
+Radius\_Res\_Units\_Sold\_In\_Year & 0.00 & 226.00 & 289.10 & 2,920.00\\
+Radius\_All\_Units\_Sold\_In\_Year & 0.00 & 255.00 & 325.94 & 2,923.00\\
+Radius\_SF\_Sold\_In\_Year & 0.00 & 259,403.00 & 430,891.57 & 8,603,639.00\\
 \addlinespace
-Radius Total Sold In Year sum over 2 years\\
-Radius Average Years Since Last Sale sum over 2 years\\
-Radius Res Units Sold In Year sum over 2 years\\
-Radius All Units Sold In Year sum over 2 years\\
-Radius SF Sold In Year sum over 2 years\\
+Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years & 2.00 & 41.00 & 48.15 & 256.00\\
+Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years & 2.00 & 9.25 & 8.70 & 26.00\\
+Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years & 0.00 & 493.00 & 584.67 & 3,397.00\\
+Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years & 1.00 & 555.00 & 660.67 & 4,265.00\\
+Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years & 2,917.00 & 580,947.00 & 872,816.44 & 14,036,469.00\\
 \addlinespace
-Radius Total Sold In Year percent change\\
-Radius Average Years Since Last Sale percent change\\
-Radius Res Units Sold In Year percent change\\
-Radius All Units Sold In Year percent change\\
-Radius SF Sold In Year percent change\\
+Radius\_Total\_Sold\_In\_Year\_percent\_change & -0.99 & 0.00 & 0.27 & 77.00\\
+Radius\_Average\_Years\_Since\_Last\_Sale\_percent\_change & -0.91 & 0.13 & 0.26 & 8.00\\
+Radius\_Res\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
+Radius\_All\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
+Radius\_SF\_Sold\_In\_Year\_percent\_change & -1.00 & -0.02 & Inf & Inf\\
 \addlinespace
-Radius Total Sold In Year sum over 2 years percent change\\
-Radius Average Years Since Last Sale sum over 2 years percent change\\
-Radius Res Units Sold In Year sum over 2 years percent change\\
-Radius All Units Sold In Year sum over 2 years percent change\\
-Radius SF Sold In Year sum over 2 years percent change\\
+Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.96 & -0.03 & 0.03 & 15.00\\
+Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\_percent\_change & -0.72 & 0.12 & 0.17 & 2.50\\
+Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
+Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.99 & -0.04 & 0.12 & 84.00\\
+Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.98 & -0.04 & 0.18 & 361.55\\
+\addlinespace
+Percent\_Com\_dist & 0.00 & 0.04 & 0.07 & 0.56\\
+Percent\_Res\_dist & 0.00 & 0.46 & 0.43 & 0.66\\
+Percent\_Office\_dist & 0.00 & 0.01 & 0.03 & 0.48\\
+Percent\_Retail\_dist & 0.00 & 0.02 & 0.02 & 0.09\\
+Percent\_Garage\_dist & 0.00 & 0.00 & 0.00 & 0.27\\
+\addlinespace
+Percent\_Storage\_dist & 0.00 & 0.00 & 0.01 & 0.26\\
+Percent\_Factory\_dist & 0.00 & 0.00 & 0.00 & 0.04\\
+Percent\_Other\_dist & 0.00 & 0.00 & 0.00 & 0.09\\
+Percent\_Com\_basic\_mean & 0.00 & 0.04 & 0.07 & 0.54\\
+Percent\_Res\_basic\_mean & 0.00 & 0.46 & 0.43 & 0.66\\
+\addlinespace
+Percent\_Office\_basic\_mean & 0.00 & 0.01 & 0.03 & 0.44\\
+Percent\_Retail\_basic\_mean & 0.00 & 0.02 & 0.02 & 0.08\\
+Percent\_Garage\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.29\\
+Percent\_Storage\_basic\_mean & 0.00 & 0.00 & 0.01 & 0.23\\
+Percent\_Factory\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.03\\
+\addlinespace
+Percent\_Other\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.04\\
+Percent\_Com\_dist\_perc\_change & -0.90 & 0.00 & 0.00 & 6.18\\
+Percent\_Res\_dist\_perc\_change & -0.50 & 0.00 & 0.03 & 36.73\\
+Percent\_Office\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
+Percent\_Retail\_dist\_perc\_change & -0.82 & 0.00 & Inf & Inf\\
+\addlinespace
+Percent\_Garage\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
+Percent\_Storage\_dist\_perc\_change & -1.00 & -0.01 & Inf & Inf\\
+Percent\_Factory\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
+Percent\_Other\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
+SMA\_Price\_2\_year\_dist & 0.00 & 400.01 & 496.30 & 3,816.57\\
+\addlinespace
+SMA\_Price\_3\_year\_dist & 0.00 & 396.94 & 492.00 & 3,816.57\\
+SMA\_Price\_5\_year\_dist & 8.83 & 425.55 & 515.29 & 3,877.53\\
+Percent\_Change\_SMA\_2\_dist & -0.13 & 0.03 & 552.33 & 804,350.67\\
+Percent\_Change\_SMA\_5\_dist & -0.09 & 0.02 & 317.46 & 322,504.58\\
+EMA\_Price\_2\_year\_dist & 0.00 & 378.63 & 475.54 & 3,431.17\\
+\addlinespace
+EMA\_Price\_3\_year\_dist & 8.83 & 382.25 & 476.05 & 3,296.46\\
+EMA\_Price\_5\_year\_dist & 7.88 & 386.34 & 468.91 & 2,813.34\\
+Percent\_Change\_EMA\_2\_dist & -0.09 & 0.06 & 346.51 & 480,829.57\\
+Percent\_Change\_EMA\_5\_dist & -0.02 & 0.06 & 303.55 & 273,458.42\\
+SMA\_Price\_2\_year\_basic\_mean & 0.02 & 412.46 & 496.75 & 2,509.79\\
+\addlinespace
+SMA\_Price\_3\_year\_basic\_mean & 0.02 & 409.00 & 492.43 & 2,509.79\\
+SMA\_Price\_5\_year\_basic\_mean & 17.16 & 443.34 & 515.67 & 2,621.01\\
+Percent\_Change\_SMA\_2\_basic\_mean & -0.13 & 0.04 & 543.51 & 393,749.99\\
+Percent\_Change\_SMA\_5\_basic\_mean & -0.09 & 0.03 & 312.46 & 157,500.00\\
+EMA\_Price\_2\_year\_basic\_mean & 0.02 & 390.30 & 475.96 & 2,259.21\\
+\addlinespace
+EMA\_Price\_3\_year\_basic\_mean & 11.39 & 393.25 & 476.45 & 2,136.36\\
+EMA\_Price\_5\_year\_basic\_mean & 15.30 & 402.06 & 469.09 & 1,848.27\\
+Percent\_Change\_EMA\_2\_basic\_mean & -0.09 & 0.06 & 340.89 & 235,378.24\\
+Percent\_Change\_EMA\_5\_basic\_mean & -0.02 & 0.06 & 296.78 & 133,547.59\\
+SMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
+\addlinespace
+SMA\_Price\_3\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
+SMA\_Price\_5\_year\_dist\_perc\_change & -0.74 & 0.04 & 0.06 & 15.37\\
+Percent\_Change\_SMA\_2\_dist\_perc\_change & -Inf & -0.24 & NaN & Inf\\
+Percent\_Change\_SMA\_5\_dist\_perc\_change & -Inf & -0.14 & NaN & Inf\\
+EMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.06 & 0.18 & 10,540.57\\
+\addlinespace
+EMA\_Price\_3\_year\_dist\_perc\_change & -0.73 & 0.06 & 0.08 & 15.06\\
+EMA\_Price\_5\_year\_dist\_perc\_change & -0.63 & 0.06 & 0.07 & 12.04\\
+Percent\_Change\_EMA\_2\_dist\_perc\_change & -Inf & -0.13 & NaN & Inf\\
+Percent\_Change\_EMA\_5\_dist\_perc\_change & -556.60 & -0.10 & Inf & Inf\\
+SMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.12 & 9,375.77\\
+\addlinespace
+SMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.11 & 9,375.77\\
+SMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.50 & 0.04 & 0.06 & 5.90\\
+Percent\_Change\_SMA\_2\_basic\_mean\_perc\_change & -Inf & -0.19 & NaN & Inf\\
+Percent\_Change\_SMA\_5\_basic\_mean\_perc\_change & -Inf & -0.12 & NaN & Inf\\
+EMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.53 & 0.06 & 0.12 & 9,375.78\\
+\addlinespace
+EMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.47 & 0.06 & 0.08 & 23.54\\
+EMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.37 & 0.06 & 0.07 & 4.81\\
+Percent\_Change\_EMA\_2\_basic\_mean\_perc\_change & -Inf & -0.13 & NaN & Inf\\
+Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change & -136.59 & -0.11 & Inf & Inf\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -942,7 +1279,7 @@ variables. For our purposes, we create two dependent variables:
 \end{enumerate}
 
 \noindent Table \ref{tab:OutcomeDistro} describes the distributions of
-both outcome variables:
+both outcome variables.
 
 \begin{table}
 
@@ -1022,9 +1359,9 @@ The primary advantages to using Random Forest with real estate data are:
   appear in individual trees less often, and therefore, are reduced in
   terms of importance. Real estate data, especially with regards to
   pricing, tends to contain outliers. For example, the dependent
-  variable in one of our models, Sale Price (see: Table 7), shows a
-  clear divergence in median and mean, as well as a maximum
-  significantly higher than the third quartile.
+  variable in one of our models, Sale Price, shows a clear divergence in
+  median and mean, as well as a maximum significantly higher than the
+  third quartile.
 \item
   Can recognize non-linear relationships in data, which is useful when
   modeling spatial relationships.
@@ -1371,123 +1708,6 @@ and grave issue of our time, but new tools and tecnhiques to inform and
 prevent give a hope for a more equitable future.
 
 \newpage
-
-\hypertarget{appendix-a-full-list-of-spatial-lag-features}{%
-\section{Appendix A: Full List of Spatial Lag
-Features}\label{appendix-a-full-list-of-spatial-lag-features}}
-
-\begin{table}
-
-\caption{\label{tab:Appendix A}\label{tab:AppendixA} Appendix A: All Spatial Lag Features}
-\centering
-\resizebox{\linewidth}{!}{
-\begin{tabular}[t]{lllll}
-\toprule
-Feature & Min & Median & Mean & Max\\
-\midrule
-Radius\_Total\_Sold\_In\_Year & 1.00 & 20.00 & 24.00 & 201.00\\
-Radius\_Average\_Years\_Since\_Last\_Sale & 1.00 & 4.43 & 4.27 & 14.00\\
-Radius\_Res\_Units\_Sold\_In\_Year & 0.00 & 226.00 & 289.10 & 2,920.00\\
-Radius\_All\_Units\_Sold\_In\_Year & 0.00 & 255.00 & 325.94 & 2,923.00\\
-Radius\_SF\_Sold\_In\_Year & 0.00 & 259,403.00 & 430,891.57 & 8,603,639.00\\
-\addlinespace
-Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years & 2.00 & 41.00 & 48.15 & 256.00\\
-Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years & 2.00 & 9.25 & 8.70 & 26.00\\
-Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years & 0.00 & 493.00 & 584.67 & 3,397.00\\
-Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years & 1.00 & 555.00 & 660.67 & 4,265.00\\
-Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years & 2,917.00 & 580,947.00 & 872,816.44 & 14,036,469.00\\
-\addlinespace
-Radius\_Total\_Sold\_In\_Year\_percent\_change & -0.99 & 0.00 & 0.27 & 77.00\\
-Radius\_Average\_Years\_Since\_Last\_Sale\_percent\_change & -0.91 & 0.13 & 0.26 & 8.00\\
-Radius\_Res\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
-Radius\_All\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
-Radius\_SF\_Sold\_In\_Year\_percent\_change & -1.00 & -0.02 & Inf & Inf\\
-\addlinespace
-Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.96 & -0.03 & 0.03 & 15.00\\
-Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\_percent\_change & -0.72 & 0.12 & 0.17 & 2.50\\
-Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
-Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.99 & -0.04 & 0.12 & 84.00\\
-Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.98 & -0.04 & 0.18 & 361.55\\
-\addlinespace
-Percent\_Com\_dist & 0.00 & 0.04 & 0.07 & 0.56\\
-Percent\_Res\_dist & 0.00 & 0.46 & 0.43 & 0.66\\
-Percent\_Office\_dist & 0.00 & 0.01 & 0.03 & 0.48\\
-Percent\_Retail\_dist & 0.00 & 0.02 & 0.02 & 0.09\\
-Percent\_Garage\_dist & 0.00 & 0.00 & 0.00 & 0.27\\
-\addlinespace
-Percent\_Storage\_dist & 0.00 & 0.00 & 0.01 & 0.26\\
-Percent\_Factory\_dist & 0.00 & 0.00 & 0.00 & 0.04\\
-Percent\_Other\_dist & 0.00 & 0.00 & 0.00 & 0.09\\
-Percent\_Com\_basic\_mean & 0.00 & 0.04 & 0.07 & 0.54\\
-Percent\_Res\_basic\_mean & 0.00 & 0.46 & 0.43 & 0.66\\
-\addlinespace
-Percent\_Office\_basic\_mean & 0.00 & 0.01 & 0.03 & 0.44\\
-Percent\_Retail\_basic\_mean & 0.00 & 0.02 & 0.02 & 0.08\\
-Percent\_Garage\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.29\\
-Percent\_Storage\_basic\_mean & 0.00 & 0.00 & 0.01 & 0.23\\
-Percent\_Factory\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.03\\
-\addlinespace
-Percent\_Other\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.04\\
-Percent\_Com\_dist\_perc\_change & -0.90 & 0.00 & 0.00 & 6.18\\
-Percent\_Res\_dist\_perc\_change & -0.50 & 0.00 & 0.03 & 36.73\\
-Percent\_Office\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-Percent\_Retail\_dist\_perc\_change & -0.82 & 0.00 & Inf & Inf\\
-\addlinespace
-Percent\_Garage\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-Percent\_Storage\_dist\_perc\_change & -1.00 & -0.01 & Inf & Inf\\
-Percent\_Factory\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-Percent\_Other\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-SMA\_Price\_2\_year\_dist & 0.00 & 400.01 & 496.30 & 3,816.57\\
-\addlinespace
-SMA\_Price\_3\_year\_dist & 0.00 & 396.94 & 492.00 & 3,816.57\\
-SMA\_Price\_5\_year\_dist & 8.83 & 425.55 & 515.29 & 3,877.53\\
-Percent\_Change\_SMA\_2\_dist & -0.13 & 0.03 & 552.33 & 804,350.67\\
-Percent\_Change\_SMA\_5\_dist & -0.09 & 0.02 & 317.46 & 322,504.58\\
-EMA\_Price\_2\_year\_dist & 0.00 & 378.63 & 475.54 & 3,431.17\\
-\addlinespace
-EMA\_Price\_3\_year\_dist & 8.83 & 382.25 & 476.05 & 3,296.46\\
-EMA\_Price\_5\_year\_dist & 7.88 & 386.34 & 468.91 & 2,813.34\\
-Percent\_Change\_EMA\_2\_dist & -0.09 & 0.06 & 346.51 & 480,829.57\\
-Percent\_Change\_EMA\_5\_dist & -0.02 & 0.06 & 303.55 & 273,458.42\\
-SMA\_Price\_2\_year\_basic\_mean & 0.02 & 412.46 & 496.75 & 2,509.79\\
-\addlinespace
-SMA\_Price\_3\_year\_basic\_mean & 0.02 & 409.00 & 492.43 & 2,509.79\\
-SMA\_Price\_5\_year\_basic\_mean & 17.16 & 443.34 & 515.67 & 2,621.01\\
-Percent\_Change\_SMA\_2\_basic\_mean & -0.13 & 0.04 & 543.51 & 393,749.99\\
-Percent\_Change\_SMA\_5\_basic\_mean & -0.09 & 0.03 & 312.46 & 157,500.00\\
-EMA\_Price\_2\_year\_basic\_mean & 0.02 & 390.30 & 475.96 & 2,259.21\\
-\addlinespace
-EMA\_Price\_3\_year\_basic\_mean & 11.39 & 393.25 & 476.45 & 2,136.36\\
-EMA\_Price\_5\_year\_basic\_mean & 15.30 & 402.06 & 469.09 & 1,848.27\\
-Percent\_Change\_EMA\_2\_basic\_mean & -0.09 & 0.06 & 340.89 & 235,378.24\\
-Percent\_Change\_EMA\_5\_basic\_mean & -0.02 & 0.06 & 296.78 & 133,547.59\\
-SMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
-\addlinespace
-SMA\_Price\_3\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
-SMA\_Price\_5\_year\_dist\_perc\_change & -0.74 & 0.04 & 0.06 & 15.37\\
-Percent\_Change\_SMA\_2\_dist\_perc\_change & -Inf & -0.24 & NaN & Inf\\
-Percent\_Change\_SMA\_5\_dist\_perc\_change & -Inf & -0.14 & NaN & Inf\\
-EMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.06 & 0.18 & 10,540.57\\
-\addlinespace
-EMA\_Price\_3\_year\_dist\_perc\_change & -0.73 & 0.06 & 0.08 & 15.06\\
-EMA\_Price\_5\_year\_dist\_perc\_change & -0.63 & 0.06 & 0.07 & 12.04\\
-Percent\_Change\_EMA\_2\_dist\_perc\_change & -Inf & -0.13 & NaN & Inf\\
-Percent\_Change\_EMA\_5\_dist\_perc\_change & -556.60 & -0.10 & Inf & Inf\\
-SMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.12 & 9,375.77\\
-\addlinespace
-SMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.11 & 9,375.77\\
-SMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.50 & 0.04 & 0.06 & 5.90\\
-Percent\_Change\_SMA\_2\_basic\_mean\_perc\_change & -Inf & -0.19 & NaN & Inf\\
-Percent\_Change\_SMA\_5\_basic\_mean\_perc\_change & -Inf & -0.12 & NaN & Inf\\
-EMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.53 & 0.06 & 0.12 & 9,375.78\\
-\addlinespace
-EMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.47 & 0.06 & 0.08 & 23.54\\
-EMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.37 & 0.06 & 0.07 & 4.81\\
-Percent\_Change\_EMA\_2\_basic\_mean\_perc\_change & -Inf & -0.13 & NaN & Inf\\
-Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change & -136.59 & -0.11 & Inf & Inf\\
-\bottomrule
-\end{tabular}}
-\end{table}
 
 \hypertarget{references}{%
 \section*{References}\label{references}}

@@ -563,7 +563,7 @@ Following the creation of the base modeling data, we create two
 additional data sets through feature engineering: a ``Zip Code
 features'' data set and a ``Spatial Lag features'' data set. The primary
 goal of this study is to compare the predictive power of the spatial
-lags vs.~the base and zip code features.
+lags vs.~the base and Zip Code features.
 
 \hypertarget{data}{%
 \subsection{Data}\label{data}}
@@ -628,94 +628,94 @@ can be seen in Table \ref{tab:descripTable}.
 
 \begin{table}
 
-\caption{\label{tab:descripTable}\label{tab:modeltable} Description of Base Data}
+\caption{\label{tab:descripTable}\label{tab:descripTable} Description of Base Data}
 \centering
 \resizebox{\linewidth}{!}{
-\begin{tabular}[t]{llrrrlrrrr}
+\begin{tabular}[t]{llllllllll}
 \toprule
 variable & type & nobs & mean & sd & mode & min & max & median & n\_missing\\
 \midrule
-Annual\_Sales & Numeric & 12012780 & 1.604976e+00 & 8.244806e+00 & NA & 1.00000 & 2.591000e+03 & 1.00000 & 11208593\\
-AssessLand & Numeric & 12012780 & 9.349294e+04 & 2.870654e+06 & 103050 & 0.00000 & 2.146388e+09 & 10348.00000 & 65\\
-AssessTot & Numeric & 12012780 & 3.023752e+05 & 4.816339e+06 & 581400 & 0.00000 & 2.146388e+09 & 25159.00000 & 1703150\\
-BldgArea & Numeric & 12012780 & 6.228480e+03 & 7.016095e+04 & 18965 & 0.00000 & 4.954783e+07 & 2050.00000 & 45\\
-BldgDepth & Numeric & 12012780 & 4.554358e+01 & 3.442103e+01 & 50 & 0.00000 & 9.388000e+03 & 42.00000 & 44\\
+Annual\_Sales & Numeric & 12,012,780 & 1.60 & 8.24 & NA & 1.00 & 2,591.00 & 1.00 & 11,208,593\\
+AssessLand & Numeric & 12,012,780 & 93,492.94 & 2,870,654.30 & 103050 & 0.00 & 2,146,387,500.00 & 10,348.00 & 65\\
+AssessTot & Numeric & 12,012,780 & 302,375.19 & 4,816,339.21 & 581400 & 0.00 & 2,146,387,500.00 & 25,159.00 & 1,703,150\\
+BldgArea & Numeric & 12,012,780 & 6,228.48 & 70,160.95 & 18965 & 0.00 & 49,547,830.00 & 2,050.00 & 45\\
+BldgDepth & Numeric & 12,012,780 & 45.54 & 34.42 & 50 & 0.00 & 9,388.00 & 42.00 & 44\\
 \addlinespace
-BldgFront & Numeric & 12012780 & 2.537632e+01 & 3.251236e+01 & 100 & 0.00000 & 9.702000e+03 & 20.00000 & 44\\
-Block & Numeric & 12012780 & 5.297416e+03 & 3.694555e+03 & 1 & 0.00000 & 7.172400e+04 & 4799.00000 & 44\\
-BoroCode & Numeric & 12012780 & 3.457095e+00 & 1.024522e+00 & 5 & 1.00000 & 5.000000e+00 & 4.00000 & 47\\
-BsmtCode & Numeric & 12012780 & 2.372776e+00 & 1.980954e+00 & 0 & 0.00000 & 3.213000e+03 & 2.00000 & 859406\\
-BuiltFAR & Numeric & 12012780 & 1.105683e+00 & 9.943710e+00 & 3.32 & 0.00000 & 8.695000e+03 & 0.76000 & 850554\\
+BldgFront & Numeric & 12,012,780 & 25.38 & 32.51 & 100 & 0.00 & 9,702.00 & 20.00 & 44\\
+Block & Numeric & 12,012,780 & 5,297.42 & 3,694.56 & 1 & 0.00 & 71,724.00 & 4,799.00 & 44\\
+BoroCode & Numeric & 12,012,780 & 3.46 & 1.02 & 5 & 1.00 & 5.00 & 4.00 & 47\\
+BsmtCode & Numeric & 12,012,780 & 2.37 & 1.98 & 0 & 0.00 & 3,213.00 & 2.00 & 859,406\\
+BuiltFAR & Numeric & 12,012,780 & 1.11 & 9.94 & 3.32 & 0.00 & 8,695.00 & 0.76 & 850,554\\
 \addlinespace
-ComArea & Numeric & 12012780 & 2.159691e+03 & 5.819219e+04 & 18965 & 0.00000 & 2.760000e+07 & 0.00000 & 44\\
-CommFAR & Numeric & 12012780 & 2.090228e-01 & 1.104771e+00 & 3.4 & 0.00000 & 1.500000e+01 & 0.00000 & 7716603\\
-CondoNo & Numeric & 12012780 & 8.133609e+00 & 1.257844e+02 & 0 & 0.00000 & 3.000000e+04 & 0.00000 & 1703113\\
-Easements & Numeric & 12012780 & 9.253900e-03 & 2.175614e+00 & 0 & 0.00000 & 7.500000e+03 & 0.00000 & 48\\
-ExemptLand & Numeric & 12012780 & 3.707307e+04 & 2.718194e+06 & 0 & 0.00000 & 2.146388e+09 & 1290.00000 & 65\\
+ComArea & Numeric & 12,012,780 & 2,159.69 & 58,192.19 & 18965 & 0.00 & 27,600,000.00 & 0.00 & 44\\
+CommFAR & Numeric & 12,012,780 & 0.21 & 1.10 & 3.4 & 0.00 & 15.00 & 0.00 & 7,716,603\\
+CondoNo & Numeric & 12,012,780 & 8.13 & 125.78 & 0 & 0.00 & 30,000.00 & 0.00 & 1,703,113\\
+Easements & Numeric & 12,012,780 & 0.01 & 2.18 & 0 & 0.00 & 7,500.00 & 0.00 & 48\\
+ExemptLand & Numeric & 12,012,780 & 37,073.07 & 2,718,193.73 & 0 & 0.00 & 2,146,387,500.00 & 1,290.00 & 65\\
 \addlinespace
-ExemptTot & Numeric & 12012780 & 1.079414e+05 & 3.522172e+06 & 0 & 0.00000 & 2.146388e+09 & 1360.00000 & 1703149\\
-FacilFAR & Numeric & 12012780 & 2.234550e+00 & 1.692164e+00 & 4.8 & 0.00000 & 1.500000e+01 & 2.00000 & 7716603\\
-FactryArea & Numeric & 12012780 & 1.264845e+02 & 3.889916e+03 & 0 & 0.00000 & 1.324592e+06 & 0.00000 & 850555\\
-GarageArea & Numeric & 12012780 & 1.304629e+02 & 5.154002e+03 & 0 & 0.00000 & 2.677430e+06 & 0.00000 & 850554\\
-GROSS SQUARE FEET & Numeric & 12012780 & 4.422722e+03 & 4.569120e+04 & NA & 0.00000 & 1.496215e+07 & 1920.00000 & 11217669\\
+ExemptTot & Numeric & 12,012,780 & 107,941.41 & 3,522,172.08 & 0 & 0.00 & 2,146,387,500.00 & 1,360.00 & 1,703,149\\
+FacilFAR & Numeric & 12,012,780 & 2.23 & 1.69 & 4.8 & 0.00 & 15.00 & 2.00 & 7,716,603\\
+FactryArea & Numeric & 12,012,780 & 126.48 & 3,889.92 & 0 & 0.00 & 1,324,592.00 & 0.00 & 850,555\\
+GarageArea & Numeric & 12,012,780 & 130.46 & 5,154.00 & 0 & 0.00 & 2,677,430.00 & 0.00 & 850,554\\
+GROSS SQUARE FEET & Numeric & 12,012,780 & 4,422.72 & 45,691.20 & NA & 0.00 & 14,962,152.00 & 1,920.00 & 11,217,669\\
 \addlinespace
-lat & Numeric & 12012780 & 4.069280e+01 & 8.347250e-02 & 40.6386175499986 & 40.11239 & 4.091408e+01 & 40.68632 & 427076\\
-lon & Numeric & 12012780 & -7.392032e+01 & 1.157930e-01 & -74.0754964873625 & -77.51958 & -7.370033e+01 & -73.91193 & 427076\\
-Lot & Numeric & 12012780 & 1.147434e+02 & 6.552905e+02 & 10 & 0.00000 & 9.999000e+03 & 38.00000 & 44\\
-LotArea & Numeric & 12012780 & 7.852065e+03 & 3.626183e+05 & 5716 & 0.00000 & 2.147557e+08 & 2514.00000 & 44\\
-LotDepth & Numeric & 12012780 & 1.040125e+02 & 6.877369e+01 & 84 & 0.00000 & 9.999000e+03 & 100.00000 & 45\\
+lat & Numeric & 12,012,780 & 40.69 & 0.08 & 40.6386175499986 & 40.11 & 40.91 & 40.69 & 427,076\\
+lon & Numeric & 12,012,780 & -73.92 & 0.12 & -74.0754964873625 & -77.52 & -73.70 & -73.91 & 427,076\\
+Lot & Numeric & 12,012,780 & 114.74 & 655.29 & 10 & 0.00 & 9,999.00 & 38.00 & 44\\
+LotArea & Numeric & 12,012,780 & 7,852.07 & 362,618.31 & 5716 & 0.00 & 214,755,710.00 & 2,514.00 & 44\\
+LotDepth & Numeric & 12,012,780 & 104.01 & 68.77 & 84 & 0.00 & 9,999.00 & 100.00 & 45\\
 \addlinespace
-LotFront & Numeric & 12012780 & 3.998125e+01 & 7.394698e+01 & 112.58 & 0.00000 & 9.999000e+03 & 25.00000 & 44\\
-LotType & Numeric & 12012780 & 4.721511e+00 & 7.785866e-01 & 5 & 0.00000 & 9.000000e+00 & 5.00000 & 865340\\
-NumBldgs & Numeric & 12012780 & 1.165342e+00 & 3.871992e+00 & 1 & 0.00000 & 2.740000e+03 & 1.00000 & 46\\
-NumFloors & Numeric & 12012780 & 2.276888e+00 & 1.896832e+00 & 4 & 0.00000 & 3.000000e+02 & 2.00000 & 44\\
-OfficeArea & Numeric & 12012780 & 7.418082e+02 & 2.156605e+04 & 0 & 0.00000 & 5.009319e+06 & 0.00000 & 850556\\
+LotFront & Numeric & 12,012,780 & 39.98 & 73.95 & 112.58 & 0.00 & 9,999.00 & 25.00 & 44\\
+LotType & Numeric & 12,012,780 & 4.72 & 0.78 & 5 & 0.00 & 9.00 & 5.00 & 865,340\\
+NumBldgs & Numeric & 12,012,780 & 1.17 & 3.87 & 1 & 0.00 & 2,740.00 & 1.00 & 46\\
+NumFloors & Numeric & 12,012,780 & 2.28 & 1.90 & 4 & 0.00 & 300.00 & 2.00 & 44\\
+OfficeArea & Numeric & 12,012,780 & 741.81 & 21,566.05 & 0 & 0.00 & 5,009,319.00 & 0.00 & 850,556\\
 \addlinespace
-OtherArea & Numeric & 12012780 & 6.729491e+02 & 4.984848e+04 & 0 & 0.00000 & 2.760000e+07 & 0.00000 & 850555\\
-ProxCode & Numeric & 12012780 & 1.493663e+00 & 1.896008e+00 & 1 & 0.00000 & 5.469000e+03 & 1.00000 & 197927\\
-ResArea & Numeric & 12012780 & 3.921106e+03 & 3.188156e+04 & 0 & 0.00000 & 3.548502e+07 & 1776.00000 & 44\\
-ResidFAR & Numeric & 12012780 & 1.367863e+00 & 1.378265e+00 & 2.43 & 0.00000 & 1.200000e+01 & 0.90000 & 7716603\\
-RetailArea & Numeric & 12012780 & 3.088216e+02 & 1.439395e+04 & 6965 & 0.00000 & 2.199999e+07 & 0.00000 & 850554\\
+OtherArea & Numeric & 12,012,780 & 672.95 & 49,848.48 & 0 & 0.00 & 27,600,000.00 & 0.00 & 850,555\\
+ProxCode & Numeric & 12,012,780 & 1.49 & 1.90 & 1 & 0.00 & 5,469.00 & 1.00 & 197,927\\
+ResArea & Numeric & 12,012,780 & 3,921.11 & 31,881.56 & 0 & 0.00 & 35,485,021.00 & 1,776.00 & 44\\
+ResidFAR & Numeric & 12,012,780 & 1.37 & 1.38 & 2.43 & 0.00 & 12.00 & 0.90 & 7,716,603\\
+RetailArea & Numeric & 12,012,780 & 308.82 & 14,393.95 & 6965 & 0.00 & 21,999,988.00 & 0.00 & 850,554\\
 \addlinespace
-SALE PRICE & Numeric & 12012780 & 8.840359e+05 & 1.375771e+07 & NA & 0.00000 & 4.111112e+09 & 319000.00000 & 11208593\\
-sale\_psf & Numeric & 12012780 & 2.197222e+02 & 5.153011e+03 & NA & 0.00000 & 1.497500e+06 & 114.13043 & 11250396\\
-SALE\_YEAR & Numeric & 12012780 & 2.009369e+03 & 4.657541e+00 & NA & 2003.00000 & 2.017000e+03 & 2009.00000 & 11208593\\
-Sold & Numeric & 12012780 & 6.694430e-02 & 2.499255e-01 & 0 & 0.00000 & 1.000000e+00 & 0.00000 & 0\\
-StrgeArea & Numeric & 12012780 & 1.689647e+02 & 5.810140e+03 & 12000 & 0.00000 & 1.835150e+06 & 0.00000 & 850554\\
+SALE PRICE & Numeric & 12,012,780 & 884,035.89 & 13,757,705.99 & NA & 0.00 & 4,111,111,766.00 & 319,000.00 & 11,208,593\\
+sale\_psf & Numeric & 12,012,780 & 219.72 & 5,153.01 & NA & 0.00 & 1,497,500.00 & 114.13 & 11,250,396\\
+SALE\_YEAR & Numeric & 12,012,780 & 2,009.37 & 4.66 & NA & 2,003.00 & 2,017.00 & 2,009.00 & 11,208,593\\
+Sold & Numeric & 12,012,780 & 0.07 & 0.25 & 0 & 0.00 & 1.00 & 0.00 & 0\\
+StrgeArea & Numeric & 12,012,780 & 168.96 & 5,810.14 & 12000 & 0.00 & 1,835,150.00 & 0.00 & 850,554\\
 \addlinespace
-TOTAL\_SALES & Numeric & 12012780 & 8.840359e+05 & 1.375771e+07 & NA & 0.00000 & 4.111112e+09 & 319000.00000 & 11208593\\
-UnitsRes & Numeric & 12012780 & 3.957497e+00 & 3.644067e+01 & 0 & 0.00000 & 2.081100e+04 & 1.00000 & 45\\
-UnitsTotal & Numeric & 12012780 & 4.322610e+00 & 4.183565e+01 & 1 & 0.00000 & 4.427600e+04 & 2.00000 & 47\\
-Year & Numeric & 12012780 & 2.010154e+03 & 4.433053e+00 & 2017 & 2003.00000 & 2.017000e+03 & 2011.00000 & 0\\
-YearAlter1 & Numeric & 12012780 & 1.585123e+02 & 5.395276e+02 & 2000 & 0.00000 & 2.017000e+03 & 0.00000 & 45\\
+TOTAL\_SALES & Numeric & 12,012,780 & 884,035.89 & 13,757,705.99 & NA & 0.00 & 4,111,111,766.00 & 319,000.00 & 11,208,593\\
+UnitsRes & Numeric & 12,012,780 & 3.96 & 36.44 & 0 & 0.00 & 20,811.00 & 1.00 & 45\\
+UnitsTotal & Numeric & 12,012,780 & 4.32 & 41.84 & 1 & 0.00 & 44,276.00 & 2.00 & 47\\
+Year & Numeric & 12,012,780 & 2,010.15 & 4.43 & 2017 & 2,003.00 & 2,017.00 & 2,011.00 & 0\\
+YearAlter1 & Numeric & 12,012,780 & 158.51 & 539.53 & 2000 & 0.00 & 2,017.00 & 0.00 & 45\\
 \addlinespace
-YearAlter2 & Numeric & 12012780 & 2.049166e+01 & 2.015257e+02 & 0 & 0.00000 & 2.017000e+03 & 0.00000 & 48\\
-YearBuilt & Numeric & 12012780 & 1.829838e+03 & 4.487283e+02 & 1884 & 0.00000 & 2.040000e+03 & 1930.00000 & 47\\
-ZipCode & Numeric & 12012780 & 1.100664e+04 & 5.373392e+02 & 10301 & 0.00000 & 1.169700e+04 & 11221.00000 & 59956\\
-Address & Character & 12012780 & NA & NA & 139 BAY STREET & NA & NA & NA & 17902\\
-AssessTotal & Character & 12012780 & NA & NA & NA & NA & NA & NA & 10309712\\
+YearAlter2 & Numeric & 12,012,780 & 20.49 & 201.53 & 0 & 0.00 & 2,017.00 & 0.00 & 48\\
+YearBuilt & Numeric & 12,012,780 & 1,829.84 & 448.73 & 1884 & 0.00 & 2,040.00 & 1,930.00 & 47\\
+ZipCode & Numeric & 12,012,780 & 11,006.64 & 537.34 & 10301 & 0.00 & 11,697.00 & 11,221.00 & 59,956\\
+Address & Character & 12,012,780 & NA & NA & 139 BAY STREET & NA & NA & NA & 17,902\\
+AssessTotal & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 10,309,712\\
 \addlinespace
-bbl & Character & 12012780 & NA & NA & 5\_1\_10 & NA & NA & NA & 0\\
-BldgClass & Character & 12012780 & NA & NA & E1 & NA & NA & NA & 16372\\
-Borough & Character & 12012780 & NA & NA & SI & NA & NA & NA & 0\\
-BUILDING CLASS AT PRESENT & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11219514\\
-BUILDING CLASS AT TIME OF SALE & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11208593\\
+bbl & Character & 12,012,780 & NA & NA & 5\_1\_10 & NA & NA & NA & 0\\
+BldgClass & Character & 12,012,780 & NA & NA & E1 & NA & NA & NA & 16,372\\
+Borough & Character & 12,012,780 & NA & NA & SI & NA & NA & NA & 0\\
+BUILDING CLASS AT PRESENT & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,219,514\\
+BUILDING CLASS AT TIME OF SALE & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,208,593\\
 \addlinespace
-BUILDING CLASS CATEGORY & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11208765\\
-Building\_Type & Character & 12012780 & NA & NA & E & NA & NA & NA & 16372\\
-CornerLot & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11163751\\
-ExemptTotal & Character & 12012780 & NA & NA & NA & NA & NA & NA & 10309712\\
-FAR & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11162270\\
+BUILDING CLASS CATEGORY & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,208,765\\
+Building\_Type & Character & 12,012,780 & NA & NA & E & NA & NA & NA & 16,372\\
+CornerLot & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,163,751\\
+ExemptTotal & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 10,309,712\\
+FAR & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,162,270\\
 \addlinespace
-IrrLotCode & Character & 12012780 & NA & NA & Y & NA & NA & NA & 16310\\
-MaxAllwFAR & Character & 12012780 & NA & NA & NA & NA & NA & NA & 4296221\\
-OwnerName & Character & 12012780 & NA & NA & 139 BAY POINTE PROPER & NA & NA & NA & 137048\\
-OwnerType & Character & 12012780 & NA & NA & NA & NA & NA & NA & 10445328\\
-TAX CLASS AT PRESENT & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11219514\\
+IrrLotCode & Character & 12,012,780 & NA & NA & Y & NA & NA & NA & 16,310\\
+MaxAllwFAR & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 4,296,221\\
+OwnerName & Character & 12,012,780 & NA & NA & 139 BAY POINTE PROPER & NA & NA & NA & 137,048\\
+OwnerType & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 10,445,328\\
+TAX CLASS AT PRESENT & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,219,514\\
 \addlinespace
-TAX CLASS AT TIME OF SALE & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11208593\\
-ZoneDist1 & Character & 12012780 & NA & NA & C4-2 & NA & NA & NA & 18970\\
-ZoneDist2 & Character & 12012780 & NA & NA & NA & NA & NA & NA & 11715653\\
+TAX CLASS AT TIME OF SALE & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,208,593\\
+ZoneDist1 & Character & 12,012,780 & NA & NA & C4-2 & NA & NA & NA & 18,970\\
+ZoneDist2 & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,715,653\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -734,7 +734,7 @@ and hotels. The included building types are displayed in Table
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-6}\label{tab:categoryTable} Building Cateogory Codes}
+\caption{\label{tab:unnamed-chunk-6}\label{tab:categoryTable} Included Building Cateogory Codes}
 \centering
 \begin{tabular}[t]{ll}
 \toprule
@@ -844,7 +844,6 @@ V & Vacant & 449667 & 29091 & \$0 & \$134.70\\
 W & Educational & 38993 & 704 & \$0 & \$0\\
 Y & Gov't & 7216 & 44 & \$21,451.50 & \$0.30\\
 Z & Misc & 49583 & 2740 & \$0 & \$0\\
-NA & NA & 16372 & 702 & \$394,723 & \$145.86\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -974,8 +973,8 @@ by 8,247,499 rows.
 
 The first of the two comparative modeling data sets is the Zip Code
 modeling data. Using the base data as a starting point, several features
-are generated to describe characteristics of the zip code where the tax
-lot resides. A summary table of the Zip code level features is presented
+are generated to describe characteristics of the Zip Code where each tax
+lot resides. A summary table of the Zip Code level features is presented
 in \ref{tab:zipcodemodelfeats}.
 
 \begin{table}
@@ -1026,12 +1025,12 @@ Percent Change EMA 5 bt only & -0.34 & 0.06 & 335.17 & 178,947.30\\
 \end{tabular}}
 \end{table}
 
-In general, the base model data features are aggregated to a zip code
+In general, the base model data features are aggregated to a Zip Code
 level and attached to the individual observations, including SMA and EMA
 calculations. Additionally, a second set of features are added, denoted
 as ``bt\_only'', which filter only for tax lots of the same building
-type. In total, the Zip code feature engineering process inputs 92
-variables and outputs 122 variables.
+type and aggregate to the Zip Code level. In total, the Zip Code feature
+engineering process inputs 92 variables and outputs 122 variables.
 
 \hypertarget{spatial-lag-modeling-data}{%
 \subsubsection{Spatial Lag Modeling
@@ -1045,7 +1044,7 @@ disadvantages in the modeling process. Spatial lags allow for much more
 fine-tuned measurements of a building's surrounding area. Knowing the
 average sale price of all buildings within 500 meters of a building can
 be much more informative than knowing the sale prices of all buildings
-in the same zip code. However, building spatial lags is computationally
+in the same Zip Code. However, building spatial lags is computationally
 expensive.
 
 To build spatial lags for all 8,247,499 observations in our modeling
@@ -1055,9 +1054,13 @@ operations. Since tax lots rarely if ever move, we first reduced the
 indexing task to 514,124 unique points (the number of unique tax lots in
 New York City). Then, for each building, we calculated and cached every
 other tax lot within 500 meters of that building. The result was an
-origin-destination relationship graph that connected each tax lot to its
-surrounding tax lots. This process is illustrated in Figure
+origin-destination relationship graph that relates each tax lot to its
+neighboring tax lots. This process is illustrated in Figure
 \ref{fig:Spatial Lag Feataure Process}.
+
+\begin{figure}[h]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/Example Spatial Indexing Techniques} \caption{Spatial Index Time Comparison}\label{fig:Spatial Indexing Process}
+\end{figure}
 
 A spatial indexing task takes the form of a point-in-polygon operation.
 As defined by Huang (1996), point-in-polygon is defined as ``with a
@@ -1117,10 +1120,6 @@ between different spatial indexing procedures. Note how the sequential
 Grid method starts out as slower than the basic Point-in-polygon
 technique due to pre-processing overhead, but wins out in terms of speed
 as complexity increases.
-
-\begin{figure}[h]
-\includegraphics[width=1\linewidth]{Sections/tables and figures/Example Spatial Indexing Techniques} \caption{Spatial Index Time Comparison}\label{fig:Spatial Indexing Process}
-\end{figure}
 
 \begin{figure}[h]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Spatial Lag Creation} \caption{Spatial Lag Feature Creation Process}\label{fig:Spatial Lag Feataure Process}
@@ -1387,7 +1386,7 @@ future. As such, our models will use out-of-time validation to assess
 performance. As shown in Figure \ref{fig:Train Test Validate} The models
 will be trained using data from 2003-2015. 2016 modeling data will be
 used during the model training process as cross-validation data.
-Finally, we will score our model using 2017 as a held-out sample. Using
+Finally, we will score our model using 2017 as a hold-out sample. Using
 out-of-time validation should ensure that the models generalize well
 into the immediate future.
 

@@ -47,7 +47,7 @@ model_desc_table %>% my_kable(caption = "Six Predictive Models", label =  "model
 
 \noindent There will be six predictive models built in total, as shown in Table \ref{tab:modeltable}. To accomplish this, we combine three open-source data repositories provided by New York City via [nyc.gov](nyc.gov) and [data.cityofnewyork.us](data.cityofnewyork.us). Our base modeling data set includes all building records and associated sales information from 2003-2017. 
 
-Following the creation of the base modeling data, we create two additional data sets through feature engineering: a "Zip Code features" data set and a "Spatial Lag features" data set. The primary goal of this study is to compare the predictive power of the spatial lags vs. the base and zip code features.
+Following the creation of the base modeling data, we create two additional data sets through feature engineering: a "Zip Code features" data set and a "Spatial Lag features" data set. The primary goal of this study is to compare the predictive power of the spatial lags vs. the base and Zip Code features.
 
 ## Data
 
@@ -73,9 +73,17 @@ knitr::include_graphics("Sections/tables and figures/Data Schema.png")
 After the Sales Transactions data has been mapped to PAD, it can then be mapped to PLUTO. The sales data is normalized and filtered so that only BBL's with less than or equal to 1 transactions in a year occur. The final data set is an exhaustive list of all tax lots in NYC for every year between 2003-2017, whether that building was sold, for what amount, and several other additional variables. A description of all variables can be seen in Table \ref{tab:descripTable}.
 
 ```{r descripTable,  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
+options(scipen = 999)
 read_csv("tables and figures/desc_table.csv") %>% 
   select(-contains("q")) %>% 
-  my_kable(caption = "Description of Base Data", label =  "modeltable")
+  mutate(nobs = scales::comma(nobs)
+         , mean = round(mean, 2)
+         , sd = round(sd, 2)
+         , min = round(min, 2)
+         , max = round(max, 2)
+         , median = round(median, 2)) %>% 
+  mutate_at(vars(nobs:n_missing), funs(scales::comma)) %>% 
+  my_kable(caption = "Description of Base Data", label =  "descripTable")
 ```
 
 
@@ -99,7 +107,7 @@ category_table <- tribble(
 
 
 category_table %>% 
-  my_kable(caption = "Building Cateogory Codes", label = "categoryTable", latex_options = "basic")
+  my_kable(caption = "Included Building Cateogory Codes", label = "categoryTable", latex_options = "basic")
 
 ```
 
@@ -127,7 +135,9 @@ by_year %>% my_kable(caption = "Sales By Year", label = "by_year", latex_options
 Similar variance can be seen across asset types. Table \ref{tab:by_class} shows all buildings classes in the 2003-2017 period. As expected, residences tend to have the highest volume of sales while offices tend to have the highest sale prices. 
 
 ```{r by_class, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
-by_class %>% my_kable(caption = "Sales By Asset Class", label = "by_class", latex_options = "basic")
+by_class %>% 
+  filter(!is.na(`Bldg Code`)) %>% 
+  my_kable(caption = "Sales By Asset Class", label = "by_class", latex_options = "basic")
 ```
 
 Sale price per square foot, in particular, varies greatly across geography and assett class. Table \ref{tab:by_class_boro} shows the breakdown of sales prices by borough and asset class. Manhattan tends to command the highest sale-price-per-square foot across assett types. "Comercial" asset types such as Office and Elevator Apartments tend to fetch much lower price-per-square foot than do residential classes such as one and two-family dwellings. Table \ref{tab:by_class_boro_num} shows the number of transactions across the same dimensions. 
@@ -170,7 +180,7 @@ Importantly, two variables are created from the Sales Prices: A price-per-square
 
 ### Zip Code Modeling Data
 
-The first of the two comparative modeling data sets is the Zip Code modeling data. Using the base data as a starting point, several features are generated to describe characteristics of the zip code where the tax lot resides. A summary table of the Zip code level features is presented in \ref{tab:zipcodemodelfeats}. 
+The first of the two comparative modeling data sets is the Zip Code modeling data. Using the base data as a starting point, several features are generated to describe characteristics of the Zip Code where each tax lot resides. A summary table of the Zip Code level features is presented in \ref{tab:zipcodemodelfeats}. 
 
 
 ```{r Table 2, fig.cap= "Zip Code Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -181,14 +191,18 @@ my_kable(caption = "Zip Code Modeling Data Features", label = "zipcodemodelfeats
 
 ```
 
-In general, the base model data features are aggregated to a zip code level and attached to the individual observations, including SMA and EMA calculations. Additionally, a second set of features are added, denoted as "bt_only", which filter only for tax lots of the same building type. In total, the Zip code feature engineering process inputs 92 variables and outputs 122 variables. 
+In general, the base model data features are aggregated to a Zip Code level and attached to the individual observations, including SMA and EMA calculations. Additionally, a second set of features are added, denoted as "bt_only", which filter only for tax lots of the same building type and aggregate to the Zip Code level. In total, the Zip Code feature engineering process inputs 92 variables and outputs 122 variables. 
 
 
 ### Spatial Lag Modeling Data
 
-Spatial lags are variables created from physically proximate observations. For example, taking the average building age from all buildings within 100 meters of the tax lot in question would be a spatial lag. Creating spatial lags presents both advantages and disadvantages in the modeling process. Spatial lags allow for much more fine-tuned measurements of a building's surrounding area. Knowing the average sale price of all buildings within 500 meters of a building can be much more informative than knowing the sale prices of all buildings in the same zip code. However, building spatial lags is computationally expensive. 
+Spatial lags are variables created from physically proximate observations. For example, taking the average building age from all buildings within 100 meters of the tax lot in question would be a spatial lag. Creating spatial lags presents both advantages and disadvantages in the modeling process. Spatial lags allow for much more fine-tuned measurements of a building's surrounding area. Knowing the average sale price of all buildings within 500 meters of a building can be much more informative than knowing the sale prices of all buildings in the same Zip Code. However, building spatial lags is computationally expensive. 
 
-To build spatial lags for all 8,247,499 observations in our modeling data, we created a spatial indexing technique that greatly speeds up the process by allowing for parallelization of the point-in-polygon operations. Since tax lots rarely if ever move, we first reduced the indexing task to 514,124 unique points (the number of unique tax lots in New York City). Then, for each building, we calculated and cached every other tax lot within 500 meters of that building. The result was an origin-destination relationship graph that connected each tax lot to its surrounding tax lots. This process is illustrated in Figure \ref{fig:Spatial Lag Feataure Process}.
+To build spatial lags for all 8,247,499 observations in our modeling data, we created a spatial indexing technique that greatly speeds up the process by allowing for parallelization of the point-in-polygon operations. Since tax lots rarely if ever move, we first reduced the indexing task to 514,124 unique points (the number of unique tax lots in New York City). Then, for each building, we calculated and cached every other tax lot within 500 meters of that building. The result was an origin-destination relationship graph that relates each tax lot to its neighboring tax lots. This process is illustrated in Figure \ref{fig:Spatial Lag Feataure Process}.
+
+```{r Spatial Indexing Process, fig.cap="Spatial Index Time Comparison",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
+knitr::include_graphics("Sections/tables and figures/Example Spatial Indexing Techniques.png")
+```
 
 A spatial indexing task takes the form of a point-in-polygon operation. As defined by @Huang1996, point-in-polygon is defined as "with a given polygon P and an arbitrary point q, determine whether point q is enclosed by the edges of the polygon." Given that, for every point $q_i$ in our dataset, we need to determine whether every other point $q_i$ falls within a given radius. This means that the time-complexity of our operation, without pre-processing, can be approximated as:
 
@@ -222,10 +236,6 @@ O(N)^\frac{N-1}{G}
 $$
 
 \noindent By making G arbitrarily large (bounded by computational resources only), we can reduce runtime substantially. Furthermore, binning the operations into grids allows us to parallelize the computation, substantially reducing the overall run time. Figure \ref{fig:Spatial Indexing Process} shows a comparison of run times between different spatial indexing procedures. Note how the sequential Grid method starts out as slower than the basic Point-in-polygon technique due to pre-processing overhead, but wins out in terms of speed as complexity increases.
-
-```{r Spatial Indexing Process, fig.cap="Spatial Index Time Comparison",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
-knitr::include_graphics("Sections/tables and figures/Example Spatial Indexing Techniques.png")
-```
 
 
 
@@ -285,7 +295,7 @@ To run the model, we have chosen the h2o.randomForest function from the h2o R op
 
 ## Model Validation
 
-The goal of the predictive models are to be able to successfully predict both the probability and amount of real estate sales into the near future. As such, our models will use out-of-time validation to assess performance. As shown in Figure  \ref{fig:Train Test Validate} The models will be trained using data from 2003-2015. 2016 modeling data will be used during the model training process as cross-validation data. Finally, we will score our model using 2017 as a held-out sample. Using out-of-time validation should ensure that the models generalize well into the immediate future. 
+The goal of the predictive models are to be able to successfully predict both the probability and amount of real estate sales into the near future. As such, our models will use out-of-time validation to assess performance. As shown in Figure  \ref{fig:Train Test Validate} The models will be trained using data from 2003-2015. 2016 modeling data will be used during the model training process as cross-validation data. Finally, we will score our model using 2017 as a hold-out sample. Using out-of-time validation should ensure that the models generalize well into the immediate future. 
 
 
 ```{r Train Test Validate, fig.cap="Out-of-time validation",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}

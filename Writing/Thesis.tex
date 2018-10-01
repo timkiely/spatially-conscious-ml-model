@@ -392,9 +392,9 @@ bandwidths'' of local data to be included, i.e., for each estimate, the
 number of data points included varies and can be optimized using
 cross-validation.
 
-\hypertarget{a-review-of-machine-learning-applied-to-predicting-gentrification}{%
-\subsection{A Review of Machine Learning Applied to Predicting
-Gentrification}\label{a-review-of-machine-learning-applied-to-predicting-gentrification}}
+\hypertarget{a-review-of-machine-learning-applied-to-gentrification-prediction}{%
+\subsection{A Review of Machine Learning Applied to Gentrification
+Prediction}\label{a-review-of-machine-learning-applied-to-gentrification-prediction}}
 
 Both Mass Appraisal techniques and Automated Valuation Modeling seek to
 predict real estate prices using data and statistical methods, however,
@@ -1071,11 +1071,11 @@ enclosed by the edges of the polygon.'' Given that, for every point
 of our operation, without pre-processing, can be approximated as:
 
 \[
-O(N)^{N-1}
+O(N(N-1))
 \]
 
 \noindent Despite having reduced the search space to \(N=514,124\),
-having the number of operations approaching \(N^N\) is infeasible from a
+having the number of operations approaching \(N^2\) is infeasible from a
 computation and time standpoint. To overcome this, we add a
 pre-processing step of gridding the data and parallelizing the
 operation, allowing us to significantly reduce the time required. The
@@ -1108,7 +1108,7 @@ arbitrary number of partitions \(G\). This improves the base run-time
 complexity to:
 
 \[
-O(N)^\frac{N-1}{G}
+O(N(\frac{N-1}{G})
 \]
 
 \noindent By making G arbitrarily large (bounded by computational

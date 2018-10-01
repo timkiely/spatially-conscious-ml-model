@@ -207,10 +207,10 @@ knitr::include_graphics("Sections/tables and figures/Example Spatial Indexing Te
 A spatial indexing task takes the form of a point-in-polygon operation. As defined by @Huang1996, point-in-polygon is defined as "with a given polygon P and an arbitrary point q, determine whether point q is enclosed by the edges of the polygon." Given that, for every point $q_i$ in our dataset, we need to determine whether every other point $q_i$ falls within a given radius. This means that the time-complexity of our operation, without pre-processing, can be approximated as:
 
 $$
-O(N)^{N-1}
+O(N(N-1))
 $$
 
-\noindent Despite having reduced the search space to $N=514,124$, having the number of operations approaching $N^N$ is infeasible from a computation and time standpoint. To overcome this, we add a pre-processing step of gridding the data and parallelizing the operation, allowing us to significantly reduce the time required. The gridded spatial indexing process is outlined in Algorithm \ref{alg:spatial1}.
+\noindent Despite having reduced the search space to $N=514,124$, having the number of operations approaching $N^2$ is infeasible from a computation and time standpoint. To overcome this, we add a pre-processing step of gridding the data and parallelizing the operation, allowing us to significantly reduce the time required. The gridded spatial indexing process is outlined in Algorithm \ref{alg:spatial1}.
 
 \begin{algorithm}
   \caption{Gridded Spatial Indexing}
@@ -232,7 +232,7 @@ $$
 \noindent Each partition of the data is married with a corresponding search space $S$, which is the convex hull of the partition space buffered by the maximum distance $d$. In our case, we are buffering the search space by 500 meters, since we are interested in identifying all points within 500 meters of all other points. By gridding the data, we are able to reduce the search-space for each operation by an arbitrary number of partitions $G$. This improves the base run-time complexity to:
 
 $$
-O(N)^\frac{N-1}{G}
+O(N(\frac{N-1}{G})
 $$
 
 \noindent By making G arbitrarily large (bounded by computational resources only), we can reduce runtime substantially. Furthermore, binning the operations into grids allows us to parallelize the computation, substantially reducing the overall run time. Figure \ref{fig:Spatial Indexing Process} shows a comparison of run times between different spatial indexing procedures. Note how the sequential Grid method starts out as slower than the basic Point-in-polygon technique due to pre-processing overhead, but wins out in terms of speed as complexity increases.

@@ -11,7 +11,7 @@ run_glm_models <- function(data, model_name = NULL){
   # rm(data)
   
   suppressWarnings(suppressWarnings(h2o.init()))
-
+  
   train_x = as.h2o(data$train)
   test_x = as.h2o(data$test)
   
@@ -21,10 +21,10 @@ run_glm_models <- function(data, model_name = NULL){
   
   # Define the data for the model and display the results
   model <- h2o.glm(training_frame=train_x
-                       , x = X
-                       , y = Y
-                       , family = "binomial"
-                       , alpha = 0.5) 
+                   , x = X
+                   , y = Y
+                   , family = "binomial"
+                   , alpha = 0.5) 
   
   # Predict using GLM model
   h2o.perf = h2o.performance(model,  newdata = test_x)
@@ -62,6 +62,7 @@ run_glm_models <- function(data, model_name = NULL){
   names(out_list) <- c(paste0(model_name," ROC df")
                        ,paste0(model_name," var imp")
                        ,paste0(model_name," results"))
+  h2o.removeAll()
   return(out_list)
   
 }
@@ -91,7 +92,7 @@ run_rf_models <- function(data, model_name = NULL){
   # Predict using GLM model
   h2o.perf = h2o.performance(model,  newdata = test_x)
   
-
+  
   # Look at summary of predictions: probability of TRUE class (p1)
   vars_imp <- h2o.varimp(model)
   
@@ -124,6 +125,7 @@ run_rf_models <- function(data, model_name = NULL){
   names(out_list) <- c(paste0(model_name," ROC df")
                        ,paste0(model_name," var imp")
                        ,paste0(model_name," results"))
+  h2o.removeAll()
   return(out_list)
   
 }
@@ -146,9 +148,9 @@ run_gbm_models <- function(data, model_name = NULL){
   
   # Define the data for the model and display the results
   model <- h2o.gbm(training_frame=train_x
-                            , validation_frame = valid_x
-                            , x = X
-                            , y = Y) 
+                   , validation_frame = valid_x
+                   , x = X
+                   , y = Y) 
   
   # Predict using GLM model
   h2o.perf = h2o.performance(model,  newdata = test_x)
@@ -185,6 +187,7 @@ run_gbm_models <- function(data, model_name = NULL){
   names(out_list) <- c(paste0(model_name," ROC df")
                        ,paste0(model_name," var imp")
                        ,paste0(model_name," results"))
+  h2o.removeAll()
   return(out_list)
   
 }
@@ -208,9 +211,9 @@ run_dl_models <- function(data, model_name = NULL){
   
   # Define the data for the model and display the results
   model <- h2o.deeplearning(training_frame=train_x
-                   , validation_frame = valid_x
-                   , x = X
-                   , y = Y) 
+                            , validation_frame = valid_x
+                            , x = X
+                            , y = Y) 
   
   # Predict using GLM model
   h2o.perf = h2o.performance(model,  newdata = test_x)
@@ -246,6 +249,7 @@ run_dl_models <- function(data, model_name = NULL){
   names(out_list) <- c(paste0(model_name," ROC df")
                        ,paste0(model_name," var imp")
                        ,paste0(model_name," results"))
+  h2o.removeAll()
   return(out_list)
   
 }
@@ -293,6 +297,7 @@ run_glm_regression_models <- function(data, model_name = NULL){
   out_list <- list(vars_imp, glm_final_results) 
   names(out_list) <- c(paste0(model_name," var imp")
                        ,paste0(model_name," results"))
+  h2o.removeAll()
   return(out_list)
   
 }
@@ -338,6 +343,7 @@ run_rf_regression_models <- function(data, model_name = NULL){
   out_list <- list(vars_imp, final_results) 
   names(out_list) <- c(paste0(model_name," var imp")
                        ,paste0(model_name," results"))
+  h2o.removeAll()
   return(out_list)
   
 }
@@ -381,6 +387,7 @@ run_gbm_regression_models <- function(data, model_name = NULL){
   out_list <- list(vars_imp, final_results) 
   names(out_list) <- c(paste0(model_name," var imp")
                        ,paste0(model_name," results"))
+  h2o.removeAll()
   return(out_list)
   
 }
@@ -406,7 +413,16 @@ run_dl_regression_models <- function(data, model_name = NULL){
   model <- h2o.deeplearning(training_frame=train_x
                             , validation_frame = valid_x
                             , x = X
-                            , y = Y) 
+                            , y = Y
+                            , activation = "RectifierWithDropout"
+                            , hidden = c(1024,1024)
+                            , epochs = 100
+                            , l1 = 1e-5
+                            , input_dropout_ratio = 0.2
+                            , train_samples_per_iteration = -1
+                            , classification_stop = -1
+                            #, l1=1e-5
+  )
   
   # Predict using GLM model
   h2o.perf = h2o.performance(model,  newdata = test_x)
@@ -425,6 +441,7 @@ run_dl_regression_models <- function(data, model_name = NULL){
   out_list <- list(vars_imp, final_results) 
   names(out_list) <- c(paste0(model_name," var imp")
                        ,paste0(model_name," results"))
+  h2o.removeAll()
   return(out_list)
   
 }

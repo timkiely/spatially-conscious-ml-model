@@ -98,5 +98,24 @@ If we rank model the probability models' performance for each Borough and Buildi
 
 
 
+```{r Model AUC Comparrison, echo=FALSE, fig.cap="Model AUCs", message=FALSE, warning=FALSE, out.width='100%', paged.print=FALSE}
+
+knitr::include_graphics("Sections/tables and figures/compare_model_roc_curves.png")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

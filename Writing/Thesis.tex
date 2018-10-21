@@ -108,6 +108,7 @@
 \usepackage{longtable}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{float}
 \onehalfspacing
 \counterwithin{figure}{section}
 \counterwithin{table}{section}
@@ -392,9 +393,9 @@ bandwidths'' of local data to be included, i.e., for each estimate, the
 number of data points included varies and can be optimized using
 cross-validation.
 
-\hypertarget{a-review-of-machine-learning-applied-to-gentrification-prediction}{%
-\subsection{A Review of Machine Learning Applied to Gentrification
-Prediction}\label{a-review-of-machine-learning-applied-to-gentrification-prediction}}
+\hypertarget{a-review-of-machine-learning-applied-to-the-prediction-of-gentrification}{%
+\subsection{A Review of Machine Learning Applied to the Prediction of
+Gentrification}\label{a-review-of-machine-learning-applied-to-the-prediction-of-gentrification}}
 
 Both Mass Appraisal techniques and Automated Valuation Modeling seek to
 predict real estate prices using data and statistical methods, however,
@@ -614,7 +615,7 @@ which contains an exhaustive list of all BBL's in NYC. Once the sales
 data is combined with PAD, the data can be mapped to PLUTO with an error
 rate of 0.291\% (See: Figure \ref{fig:Data Schema}).
 
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Data Schema} \caption{Overview of Data Sources}\label{fig:Data Schema}
 \end{figure}
 
@@ -1058,7 +1059,7 @@ origin-destination relationship graph that relates each tax lot to its
 neighboring tax lots. This process is illustrated in Figure
 \ref{fig:Spatial Lag Feataure Process}.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Example Spatial Indexing Techniques} \caption{Spatial Index Time Comparison}\label{fig:Spatial Indexing Process}
 \end{figure}
 
@@ -1121,7 +1122,7 @@ Grid method starts out as slower than the basic Point-in-polygon
 technique due to pre-processing overhead, but wins out in terms of speed
 as complexity increases.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Spatial Lag Creation} \caption{Spatial Lag Feature Creation Process}\label{fig:Spatial Lag Feataure Process}
 \end{figure}
 
@@ -1390,7 +1391,7 @@ Finally, we will score our model using 2017 as a hold-out sample. Using
 out-of-time validation should ensure that the models generalize well
 into the immediate future.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Train Validate Test} \caption{Out-of-time validation}\label{fig:Train Test Validate}
 \end{figure}
 
@@ -1535,7 +1536,7 @@ following observations from Figure
   have generally lower RMSE scores compared to the non-residential types
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/RMSE by boro and build type} \caption{RMSE By Borough and Building Type}\label{fig:RMSE by boro and build type}
 \end{figure}
 
@@ -1604,7 +1605,7 @@ AUC faceted along the x-axis by Building Type and along the y-axis by
 Borough. The coloring indicated by how much a model's AUC diverges from
 the cell average.
 
-\begin{figure}[h]
+\begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/AUC by boro and build type} \caption{AUC By Borough and Building Type}\label{fig:AUC by boro and build type}
 \end{figure}
 
@@ -1643,6 +1644,10 @@ Zip & 6.0\% & 7.7\% & 19.7\% & 1.69\\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/compare_model_roc_curves} \caption{Model AUCs}\label{fig:Model AUC Comparrison}
+\end{figure}
 
 \hypertarget{future-research-and-conclusions}{%
 \section{Future Research and

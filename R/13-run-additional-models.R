@@ -4,7 +4,7 @@ global_time_start <- Sys.time()
 source("R/helper/load-packages.R")
 source("R/helper/source-files.R")
 source("R/helper/run-h2o-models.R")
-
+sample_percent <- 1
 
 
 # 3) ----------------------------------------------------------------------
@@ -60,7 +60,7 @@ radii_train_test <- split_train_test(radii_subset, name = "Radii")
 # for dev purposes
 set.seed(1987)
 model_data_list <- c(base_train_test, zip_train_test, radii_train_test)
-model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.01)})
+model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,sample_percent)})
 
 
 
@@ -79,7 +79,7 @@ input_data <- list("train" = model_data_list$`Base train`
 
 # zip 
 zip_input <- list("train" = model_data_list$`Zip train`
-                   ,"test" = model_data_list$`Zip test`
+                  ,"test" = model_data_list$`Zip test`
                   , "validate" = model_data_list$`Zip validate`) %>% 
   map(~.x %>% 
         select(-`SALE PRICE`,-Address
@@ -92,8 +92,8 @@ zip_input <- list("train" = model_data_list$`Zip train`
 
 # radii
 radii_input <- list("train" = model_data_list$`Radii train`
-                  ,"test" = model_data_list$`Radii test`
-                  ,"validate" = model_data_list$`Radii validate`) %>% 
+                    ,"test" = model_data_list$`Radii test`
+                    ,"validate" = model_data_list$`Radii validate`) %>% 
   map(~.x %>% 
         select(-`SALE PRICE`,-Address
                ,-bbl, -OwnerName, -ZoneDist1
@@ -145,7 +145,23 @@ classification_results <-
     , radii_ann$`Radii Prob ANN results`
   )
 
-
+classification_results_list <- 
+  list(
+    base_glm
+    , zip_glm
+    , radii_glm
+    , base_rf
+    , zip_rf
+    , radii_rf
+    , base_gbm
+    , zip_gbm
+    , radii_gbm
+    , base_ann
+    , zip_ann
+    , radii_ann
+  )
+write_rds(classification_results, 'data/aux data/many-models-classification-results.rds')
+write_rds(classification_results_list, 'data/aux data/many-models-classification-results-list.rds')
 
 
 # regression models -------------------------------------------------------
@@ -155,7 +171,7 @@ classification_results <-
 # for dev purposes
 set.seed(1987)
 model_data_list <- c(base_train_test, zip_train_test, radii_train_test)
-model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,0.01)})
+model_data_list <- map(model_data_list, .f = ~{sample_frac(.x,sample_percent)})
 
 
 
@@ -229,6 +245,8 @@ reg_base_ann <- run_dl_regression_models(input_data, model_name = "Base Price AN
 reg_zip_ann <- run_dl_regression_models(zip_input, model_name = "Zip Price ANN")
 reg_radii_ann <- run_dl_regression_models(radii_input, model_name = "Radii Price ANN")
 
+
+
 regression_results <- 
   bind_rows(
     reg_base_glm$`Base Price GLM results`
@@ -245,29 +263,48 @@ regression_results <-
     , reg_radii_ann$`Radii Price ANN results`
   )
 
-write_rds()
+regression_results_list <- 
+  list(reg_base_glm
+       , reg_zip_glm
+       , reg_radii_glm
+       , reg_base_rf
+       , reg_zip_rf
+       , reg_radii_rf
+       , reg_base_gbm
+       , reg_zip_gbm
+       , reg_radii_gbm
+       , reg_base_ann
+       , reg_zip_ann
+       , reg_radii_ann)
+
+write_rds(regression_results_list , 'data/aux data/many-models-regression-results-list.rds')
+write_rds(regression_results, 'data/aux data/many-models-regression-results.rds')
 
 
 global_time_end <- Sys.time()
+
+# 1% = ~5 mins
+# 5% = ~13 mins
+# 10% = ~20 mins
+# 100% = ~1..6 hours with 60GiB and 36 cores
 message("Total run time: ", round(difftime(global_time_end, global_time_start),2)," ",units(difftime(global_time_end, global_time_start)))
 
 
 ## AUTOM ML MODELS
 
-#train_x = as.h2o(input_data$train)
-#test_x = as.h2o(input_data$test)
-  
-# Set predictor and response variables
-#Y = "Sold"
-#X = setdiff(names(train_x), Y)
-  
-# Define the data for the model and display the results
-#automl_model <- h2o.automl(training_frame=train_x
+# train_x = as.h2o(input_data$train)
+# test_x = as.h2o(input_data$test)
+# 
+# # Set predictor and response variables
+# Y = "Sold"
+# X = setdiff(names(train_x), Y)
+# 
+# # Define the data for the model and display the results
+# automl_model <- h2o.automl(training_frame=train_x
 #                          , validation_frame = test_x
 #                          , x = X
 #                          , y = Y)
-  
-#automl_frame <- h2o::h2o.automl()
+
 
 
 

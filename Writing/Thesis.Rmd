@@ -23,6 +23,7 @@ header-includes:
   - \usepackage{longtable}
   - \usepackage{algorithm}
   - \usepackage{algpseudocode}
+  - \usepackage{float}
   - \onehalfspacing
   - \counterwithin{figure}{section}
   - \counterwithin{table}{section}
@@ -31,7 +32,7 @@ header-includes:
 
 
 ```{r global_options 1, include=FALSE}
-knitr::opts_chunk$set(fig.pos = 'h')
+knitr::opts_chunk$set(fig.pos = 'H')
 source("Sections/tables and figures/my_kable.R")
 ```
 

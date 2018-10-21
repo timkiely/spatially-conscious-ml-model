@@ -1,5 +1,3 @@
-
-
 # model list
 
 
@@ -16,15 +14,14 @@ linearRegModel <- function(X, Y) {
   ctrl <- trainControl(
     ## 5-fold CV
     method = "repeatedcv", 
-    number = 2
+    number = 5
   )
   train(
     x = X,
     y = Y,
     method = 'lm',
     trControl = ctrl,
-    preProc = c('center', 'scale'), 
-    na.rm = TRUE
+    preProc = c('center', 'scale')
     
   )
   
@@ -65,6 +62,7 @@ lassoRegModel <- function(X, Y) {
 
 # KNN mean ----------------------------------------------------------------
 
+
 KNNModel <- function(X, Y) {
   
   # tick the progress bar forward
@@ -73,17 +71,16 @@ KNNModel <- function(X, Y) {
   }
   
   ctrl <- trainControl(
-    method = "none"
+    ## 5-fold CV
+    method = "repeatedcv", 
+    number = 5
   )
   train(
     x = X,
     y = Y,
-    method = 'kknn',
+    method = 'knn',
     trControl = ctrl,
-    tuneGrid = expand.grid(kmax = c(50)
-                           , distance = 2
-                           , kernel = "optimal"
-    ),
+    tuneGrid = expand.grid(k = c(5,10,15,20)),
     preProc = c('center', 'scale')
     
   )
@@ -179,7 +176,7 @@ rpartModel <- function(X, Y) {
 
 
 
-# XGBoost (caret) -----------------------------------------------------------------
+# XGBoost -----------------------------------------------------------------
 xgbTreeModel <- function(X, Y){
   # tick the progress bar forward
   if(exists("pb",envir = globalenv())){
@@ -212,9 +209,7 @@ xgbTreeModel <- function(X, Y){
 
 
 
-
-# XGBoost GBM -------------------------------------------------------------
-
+# native implementation of xgboost with early stopping
 xgbTreeModel2 <- function(X, watchlist){
   
   # tick the progress bar forward
@@ -242,34 +237,8 @@ xgbTreeModel2 <- function(X, watchlist){
                    , nrounds = 500
                    , early_stopping_rounds = 100
                    , verbose = 0
+                   #, nthread = 1
   )
-}
-
-
-# H2O GBM -----------------------------------------------
-
-h2oGBMmodel <- function(X, Y, training_frame, validation_frame){
-  
-  # tick the progress bar forward
-  if(exists("pb",envir = globalenv())){
-    pb$tick(tokens = list(what = "h2o GBM Model"))
-  }
-  
-  
-  
-  bst <- h2o.gbm(x = X,
-                 y = Y,
-                 training_frame = training_frame,
-                 validation_frame = validation_frame, 
-                 model_id = "h2o_gbm_fit",
-                 ntrees = 500,
-                 max_depth = 6, 
-                 stopping_rounds = 50,
-                 stopping_metric = "AUTO",
-                 learn_rate = 0.01, 
-                 seed = 1)
-  
-  bst
 }
 
 
@@ -329,8 +298,7 @@ RFModel <- function(X, Y){
 
 
 
-
-# XGBoost Random Forrest --------------------------------------------------
+# native implementation of xgboost with early stopping
 xgbRFmodel <- function(X, Y){
   
   # tick the progress bar forward
@@ -352,34 +320,6 @@ xgbRFmodel <- function(X, Y){
 }
 
 
-
-# H2O Random Forrest ------------------------------------------------------
-h2oRFmodel <- function(X, Y, training_frame, validation_frame){
-  
-  # tick the progress bar forward
-  if(exists("pb",envir = globalenv())){
-    pb$tick(tokens = list(what = "h2o RF Model"))
-  }
-  
-  
-  
-  bst <- h2o.randomForest(x = X,
-                          y = Y,
-                          training_frame = training_frame,
-                          validation_frame = validation_frame, 
-                          model_id = "h2o_rf_fit",
-                          ntrees = 200,
-                          stopping_rounds = 5,
-                          stopping_metric = "AUTO",
-                          seed = 1)
-  
-  bst
-}
-
-
-
-
-
 # Model List --------------------------------------------------------------
 model_list <- 
   tibble::enframe(
@@ -394,11 +334,9 @@ model_list <-
       , lassoRegModel = lassoRegModel
       , KNNModel = KNNModel
       , MLPModel = MLPModel
-      , RBPModel = RBPModel 
-      , h2oRFmodel = h2oRFmodel
-      , h2oGBMmodel = h2oGBMmodel)
-      ,name = 'modelName',value = 'model'
+      #, RBPModel = RBPModel 
+      
     ) 
-  
+    ,name = 'modelName',value = 'model')
 
-readr::write_rds(model_list, 'data/aux data/model-list.rds')
+readr::write_rds(model_list, 'data/model-list.rds')

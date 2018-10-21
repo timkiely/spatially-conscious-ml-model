@@ -3,44 +3,13 @@
 # model list
 
 
-
-# Linear Regression -------------------------------------------------------
-
-linearRegModel <- function(X, Y) {
-  
-  # tick the progress bar forward
-  if(exists("pb",envir = globalenv())){
-    pb$tick(tokens = list(what = "Linear Regression Model"))
-  }
-  
-  ctrl <- trainControl(
-    ## 5-fold CV
-    method = "repeatedcv", 
-    number = 2
-  )
-  train(
-    x = X,
-    y = Y,
-    method = 'lm',
-    trControl = ctrl,
-    preProc = c('center', 'scale'), 
-    na.rm = TRUE
-    
-  )
-  
-  
-}
-
-
-
-
 # LASSO regression -------------------------------------------------------
 
-lassoRegModel <- function(X, Y) {
+logisticRegression <- function(X, Y) {
   
   # tick the progress bar forward
   if(exists("pb",envir = globalenv())){
-    pb$tick(tokens = list(what = "Lasso Regression Model"))
+    pb$tick(tokens = list(what = "Logistic Regression Model"))
   }
   
   ctrl <- trainControl(
@@ -51,9 +20,10 @@ lassoRegModel <- function(X, Y) {
   train(
     x = X,
     y = Y,
-    method = 'lasso',
+    method = 'plr',
     trControl = ctrl,
-    tuneGrid = expand.grid(fraction =0.9),
+    tuneGrid = expand.grid(cp = c(0, .5, 1),
+                           lambda = c(.1, 1)),
     preProc = c('center', 'scale')
     
   )
@@ -223,8 +193,9 @@ xgbTreeModel2 <- function(X, watchlist){
   }
   
   ctrl <- list(
-    "objective"           = "reg:linear",
-    "eval_metric"         = "rmse", #"mae"
+    #"objective"           = "reg:linear",
+    "objective"           = "binary:logistic",
+    "eval_metric"         = "error", #"rmse"
     "eta"                 = 0.1,
     "max_depth"           = 6,
     "min_child_weight"    = 2,
@@ -273,61 +244,6 @@ h2oGBMmodel <- function(X, Y, training_frame, validation_frame){
 }
 
 
-# XGBoost Linear -----------------------------------------------------------------
-xgbLinearModel <- function(X, Y){
-  # tick the progress bar forward
-  if(exists("pb",envir = globalenv())){
-    pb$tick(tokens = list(what = "XGBoost Linear Model"))
-  }
-  
-  ctrl <- trainControl(
-    ## 5-fold CV
-    method = "repeatedcv", 
-    number = 5
-  )
-  train(
-    x=X,
-    y=Y,
-    method = 'xgbLinear',
-    trControl = ctrl,
-    #objective = "reg:linear",
-    tuneGrid = expand.grid(nrounds = c(150),  
-                           lambda = c(0.5), 
-                           alpha = c(0.5), 
-                           eta = 0.1),
-    preProc = c('center', 'scale'),
-    allowParallel = TRUE
-    
-  )
-  
-}
-
-
-# Random Forrest ----------------------------------------------------------
-RFModel <- function(X, Y){
-  # tick the progress bar forward
-  if(exists("pb",envir = globalenv())){
-    pb$tick(tokens = list(what = "Random Forrest Model"))
-  }
-  
-  ctrl <- trainControl(
-    method = "repeatedcv",
-    number = 5
-  )
-  train(
-    x=X,
-    y=Y,
-    method = 'rf',
-    trControl = ctrl,
-    tuneGrid = expand.grid(.mtry =  sqrt(ncol(X))),
-    metric = 'RMSE',
-    preProc = c('center', 'scale')
-    
-  )
-  
-}
-
-
 
 
 # XGBoost Random Forrest --------------------------------------------------
@@ -345,7 +261,7 @@ xgbRFmodel <- function(X, Y){
                  , subsample = 0.2
                  , colsample_bytree = 0.2
                  , nrounds = 1
-                 , objective = "reg:linear"
+                 , objective = "binary:logistic"
                  , eta = 0.01
                  , verbose = 0)
   bst
@@ -387,11 +303,8 @@ model_list <-
       rpartModel = rpartModel
       , xgbModel = xgbTreeModel
       , xgbTreeModel2 = xgbTreeModel2
-      , xgbLinearModel = xgbLinearModel
-      , RFModel = RFModel
       , xgbRFmodel = xgbRFmodel
-      , linearRegModel = linearRegModel
-      , lassoRegModel = lassoRegModel
+      , logisticRegModel = logisticRegression
       , KNNModel = KNNModel
       , MLPModel = MLPModel
       , RBPModel = RBPModel 
@@ -401,4 +314,4 @@ model_list <-
     ) 
   
 
-readr::write_rds(model_list, 'data/aux data/model-list.rds')
+readr::write_rds(model_list, 'data/aux data/model-list-classification.rds')

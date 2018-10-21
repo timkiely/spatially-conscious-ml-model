@@ -21,15 +21,15 @@ pacman::p_load(
   gdata, caret, plyr 
   , magrittr, stringr
   , purrr, modelr, sf
-  , lubridate, Matrix, doMC
+  , lubridate, Matrix
   , parallel, foreach, doSNOW
   , doParallel
   , xgboost, randomForest, elasticnet
   , knitr, h2o, data.table
-  , htmlTable, pander, rPython, kknn
+  , htmlTable, pander, kknn
   , proj4, httr, RCurl, rvest, TTR, zoo, RcppRoll
   , e1071, progress, pROC, optparse, spdep, tidyverse
-  , data.table, tibble, dplyr, pander
+  , data.table, tibble, dplyr, pander, stepPlr
 )
 
 

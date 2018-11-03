@@ -275,7 +275,7 @@ The final step in creating the modeling data is to define the outcome variables.
 ```
 
 
-## Algorithm
+## Algorithms Comparison
 
 Previous works (see: @antipov12; also @Schernthanner2016) have found the Random Forest algorithm [@Breiman2001] suitable to prediction tasks involving real estate. While algorithms exist that may marginally outperform Random Forest in terms of predictive accuracy (such as neural networks and functional gradient descent algorithms), Random Forest is highly scalable and parallelizable, and therefore a natural choice for comparing different feature engineering strategies. For these reasons and more outlined below, we select Random Forrest as the primary algorithm for comparrison in this paper.  
 

@@ -236,6 +236,10 @@ bind_rows(by_both_base, by_both_zip, by_both_radii) %>%
   mutate(Group_Av = mean(AUC, na.rm = T)
          , `Difference From Group Average` = AUC-Group_Av) %>% 
   mutate(Model = ifelse(Model=="Radii", "Spatial Lag", Model)) %>% 
+  mutate(Model = ifelse(Model=="Spatial Lag","3) Spatial",Model)
+         , Model = ifelse(Model=="Base","1) Base",Model)
+         , Model = ifelse(Model=="Zip","2) Zip",Model)
+         ) %>% 
   ggplot()+
   aes(x = Model, y = AUC, fill = `Difference From Group Average`)+
   geom_col()+
@@ -411,14 +415,14 @@ sales_by_both_base <- data_frame(Building_Type = sales_base_data$Building_Type$B
                                  , bbl = sales_base_data$bbl$bbl
                                  , Actual = sales_base_data$actual
                                  , Pred = sales_base_data$pred) %>% 
-  mutate(Model = "Base")
+  mutate(Model = "1) Base")
 
 sales_by_both_zip <- data_frame(Building_Type = sales_zip_data$Building_Type$Building_Type
                                 , Borough = sales_zip_data$Borough$Borough
                                 , bbl = sales_zip_data$bbl$bbl
                                 , Actual = sales_zip_data$actual
                                 , Pred = sales_zip_data$pred) %>% 
-  mutate(Model = "Zip")
+  mutate(Model = "2) Zip")
 
 
 sales_by_both_radii <- data_frame(Building_Type = sales_radii_data$Building_Type$Building_Type
@@ -426,7 +430,7 @@ sales_by_both_radii <- data_frame(Building_Type = sales_radii_data$Building_Type
                                   , bbl = sales_radii_data$bbl$bbl
                                   , Actual = sales_radii_data$actual
                                   , Pred = sales_radii_data$pred) %>% 
-  mutate(Model = "Radii")
+  mutate(Model = "3) Spatial")
 
 
 bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>% 
@@ -434,7 +438,6 @@ bind_rows(sales_by_both_base, sales_by_both_zip, sales_by_both_radii) %>%
   group_by(Borough, Building_Type, Model) %>% 
   summarise(RMSE = rmse(error)
             , Count = n()) %>% 
-  mutate(Model = ifelse(Model=="Radii","Spatial Lag", Model)) %>% 
   filter(Building_Type!="G") %>% 
   mutate_all(function(x) ifelse(is.infinite(x), 0, x)) %>% 
   ggplot()+

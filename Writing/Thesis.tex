@@ -124,11 +124,12 @@
 \LARGE
 
 \bf 
-Predicting Real Estate Sales Using Machine Learning and Spatial Dependence
+Predicting Real Estate Sales in NYC: 
 
 \Large
 
-Boosting ML Predictive Accuracy Using Spatial Lags
+Combining Machine Learning with Spatial Analysis to Boost Predictive
+Accuracy
 
 \rm
 \normalsize
@@ -1299,8 +1300,8 @@ Max. & 1.00 & 83,598.7\\
 \end{tabular}
 \end{table}
 
-\hypertarget{algorithm}{%
-\subsection{Algorithm}\label{algorithm}}
+\hypertarget{algorithms-comparison}{%
+\subsection{Algorithms Comparison}\label{algorithms-comparison}}
 
 Previous works (see: Antipov and Pokryshevskaya (2012); also
 Schernthanner H. (2016)) have found the Random Forest algorithm (Breiman
@@ -1481,64 +1482,85 @@ be reasonably compared using RMSE.
 \hypertarget{results}{%
 \section{Results}\label{results}}
 
-\hypertarget{sale-price-model}{%
-\subsection{Sale Price Model}\label{sale-price-model}}
+\hypertarget{summary-of-results}{%
+\subsection{Summary of Results}\label{summary-of-results}}
 
-The Root Mean Squared Error (RMSE) of all models predicting Sale Price
-is analyzed at the data set, Borough and Building Type level. Table
-\ref{tab:SalePriceEval} shows the average ranking by model type as well
-as the distribution of models that ranked first, second and third for
-each respective Borough/Building Type combination using RMSE as a
-ranking metric. If we rank the models by performance for each Borough,
-Building Type combination, we find that the Spatial Lag models
+We have conducted comparative analyses across a two-stage modeling
+proces. In Stage 1, using the Random Forrest algorithm, we tested 3
+competing feature engineering techniques (base, zip-code aggregation and
+spatial-lag aggreation) for both a classification task (predicting the
+occurance of a building sale) and a regression task (predicting the sale
+price of a building). We analyzed the results of the first stage to
+identify which geographies and building types our model assumptions
+worked best. In Stage 2, using a high-performing subset of the modeling
+data (selected using analysis from Stage 1), we compared four
+algorithms--Generalized Linear Model (GLM), Random Forrest (RF),
+Gradient Boosted Machine (GBM) and Feed-Forward Multilayer Artificial
+Neural Network (ANN)--using the same 3 competing feature engineering
+techniques for both classification and regression tasks. We analyzed the
+performance of the different model/data combos and concluded with an
+analysis of the variable importances of the top performing models for
+both classification and regression.
+
+In the first stage (Random Forrest using all data), we found that models
+which utilized spatial features outperformed those models using zip-code
+features the majority of the time for both classification and
+regression. Of three models, the Sale Price Regression model using
+Spatial features finished 1st or 2nd 24.1\% of the time (using Root Mean
+Squared Error as a ranking criterion), while the Zip Code Regression
+model finished in the top two spots only 11.2\% of the time. Both models
+performed worse than the Base Regression model overall, which ranked in
+1st or 2nd place 31.5\% of the time. The story for the classification
+models was largely the same: the Spatial features tended to outperform
+the Zip Code data while the Base data won out overall. All models had
+similar performances on training data, but the Spatial and Zip Code
+datasets tended to underperform when generalizing to the hold-out test
+data, suggesting problems with overfitting.
+
+We then analyzed the performance of both the regression and
+classification Random Forrest models by geography and building type. We
+found that the models performed considerably better on Walk Up
+Apartments and Elevator Buildings (building types C and D) and in
+Manhattan, Brooklyn and the Bronx. Using these as filtering criteria, we
+created a subset of the modeling data for the subsequent modeling stage.
+
+During Stage 2 (Many algorithms using a subset of modeling data), we
+compared four algorithms across the same three competing feature
+engineering techniques using a filtered subset of the original modeling
+data. Unequivocally, the spatial features performed best across all
+models and tasks. For the classification task, the GBM algorithm ranked
+highest in terms of AUC, followed by ANN and Random Forrest. For
+regression, the ANN algorithm generally outperformed other algorithms
+(as measured by Mean Absolute Error, Root Mean Squared Error and
+R-squared) with the spatial features ANN model performing best.
+
+We conclude that when predicting commerical real estate sales and sale
+prices using machine learning, the addition of spatial lag features can
+significantly boost predictive accuracy. We find that model overfitting
+presents a challenge when using spatial features, but that this can be
+overcome by implementing different algorithms, specifically ANN and GBM.
+Finally, we find that our implementation of spatial-lag features works
+best for certain kinds of residential buildings in specific geographic
+areas, and we hypothesize that this is due to the assumptions made when
+building the spatial features.
+
+\hypertarget{stage-1-random-forrest-models-using-all-data}{%
+\subsection{Stage 1) Random Forrest Models Using All
+Data}\label{stage-1-random-forrest-models-using-all-data}}
+
+\hypertarget{results-of-random-forrest-sale-pice-regression-model}{%
+\subsubsection{Results of Random Forrest Sale Pice Regression
+Model}\label{results-of-random-forrest-sale-pice-regression-model}}
+
+We analyzed the the Root Mean Squared Errors (RMSE) of the Random
+Forrest models predicting Sale Price across feature engineering methods,
+Borough and Building Type. Table \ref{tab:SalePriceModelRank} displays
+the average ranking by model type as well as the distribution of models
+that ranked first, second and third for each respective Borough/Building
+Type combination. When we rank the models by performance for each
+Borough, Building Type combination, we find that the Spatial Lag models
 outperform the Zip Code models in 72\% of cases with an average
-model-rank of 2.11 and 2.5, respectively. The Base modeling data set
-tends to outperform both enriched datasets, suggesting an issue with
-model over-fit in some areas. Despite this, the Spatial Lag feature data
-sets outperform all other models for certain building types, notably for
-Type A buildings (One Family Dwellings) and Type L buildings (Lofts) in
-Manhattan as well as Type O Buildings (Office) in Queens as shown in
-\ref{fig:RMSE by boro and build type}.
-
-\begin{table}
-
-\caption{\label{tab:Sale Price Evaluations}\label{tab:SalePriceEval} Sale Price Model RMSE For Validation and Test Hold-out Data}
-\centering
-\begin{tabular}[t]{lrrr}
-\toprule
-type & base & zip & spatial lag\\
-\midrule
-Validation & 280.6314 & 297.9717 & 286.2295\\
-Test & 287.8305 & 300.6031 & 297.9202\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Figure \ref{fig:RMSE by boro and build type} shows RMSE by Model,
-faceted by Borough across the y-axis and Building Type across the x-axis
-(See Table 2 for a description of building type codes). We make the
-following observations from Figure
-\ref{fig:RMSE by boro and build type}:
-
-\begin{itemize}
-\tightlist
-\item
-  The Spatial Lag modeling data outperforms both Base and Zip Code in 6
-  cases, notably for Type A buildings (One Family Dwellings) and Type L
-  buildings (Lofts) in Manhattan as well as Type O Buildings (Office) in
-  Queens
-\item
-  It is generally harder to predict sale prices in Manhattan compared to
-  other Boroughs
-\item
-  The ``residential'' building Types A (One Family Dwellings), B (Two
-  Family Dwellings), C (Walk Up Apartments) and D (Elevator Apartments)
-  have generally lower RMSE scores compared to the non-residential types
-\end{itemize}
-
-\begin{figure}[H]
-\includegraphics[width=1\linewidth]{Sections/tables and figures/RMSE by boro and build type} \caption{RMSE By Borough and Building Type}\label{fig:RMSE by boro and build type}
-\end{figure}
+model-rank of 2.11 and 2.5, respectively.
 
 \begin{table}
 
@@ -1555,16 +1577,64 @@ Zip & 5.6\% & 5.6\% & 22.2\% & 2.50\\
 \end{tabular}
 \end{table}
 
-\hypertarget{probability-of-sale-model}{%
-\subsection{Probability of Sale Model}\label{probability-of-sale-model}}
+The Base modeling data set tends to outperform both enriched datasets,
+suggesting an issue with model overfitting in some areas. We see further
+evidence of overfit in Table \ref{tab:SalePriceEval} where, despite
+similar performances on Validation data, the Zip and Spatial models have
+higher validation-to-test-set spreads. Despite this, the Spatial Lag
+features outperform all other models in certain locations, notably in
+Manhattan as shown in Figure \ref{fig:RMSE by boro and build type}.
 
-Similar to the results found in the Sale Price models, using Area Under
-the ROC Curve (AUC) as an evaluation metric, we find the Spatial Lag
-model performs better on the hold-out validation data compared to the
-Zip Code modeling data, as shown in Table \ref{tab:ProbSaleModelAUC}.
-The Base Modeling data continues to outperform the Spatial Lag and Zip
-Code modeling data overall, however, when broken down by Borough and
-Building Type, some interesting patterns emerge.
+\begin{table}
+
+\caption{\label{tab:Sale Price Evaluations}\label{tab:SalePriceEval} Sale Price Model RMSE For Validation and Test Hold-out Data}
+\centering
+\begin{tabular}[t]{lrrr}
+\toprule
+type & base & zip & spatial lag\\
+\midrule
+Validation & 280.63 & 297.97 & 286.23\\
+Test & 287.83 & 300.60 & 297.92\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/RMSE by boro and build type} \caption{RMSE By Borough and Building Type}\label{fig:RMSE by boro and build type}
+\end{figure}
+
+Figure \ref{fig:RMSE by boro and build type} displays test RMSE by
+model, faceted by Borough on the y-axis and Building Type on the x-axis
+(See Table \ref{tab:categoryTable} and Table \ref{tab:by_class} for a
+description of building type codes). We make the following observations
+from Figure \ref{fig:RMSE by boro and build type}:
+
+\begin{itemize}
+\tightlist
+\item
+  The Spatial modeling data outperforms both Base and Zip Code in 6
+  cases, notably for Type A buildings (One Family Dwellings) and Type L
+  buildings (Lofts) in Manhattan as well as Type O Buildings (Office) in
+  Queens
+\item
+  The ``residential'' building Types A (One Family Dwellings), B (Two
+  Family Dwellings), C (Walk Up Apartments) and D (Elevator Apartments)
+  have generally lower RMSE scores compared to the non-residential types
+\item
+  Spatial features perform best in Brooklyn, Bronx and Manhattan and for
+  residential building types
+\end{itemize}
+
+\hypertarget{results-of-random-forrest-probability-of-sale-classification-model}{%
+\subsubsection{Results of Random Forrest Probability of Sale
+Classification
+Model}\label{results-of-random-forrest-probability-of-sale-classification-model}}
+
+Similar to the results of the Sale Price regression models we find the
+Spatial models perform better on the hold-out test data compared to the
+Zip Code data when using Area Under the ROC Curve (AUC) as an evaluation
+metric, as shown in Table \ref{tab:ProbSaleModelAUC}. The Base Modeling
+data continues to outperform the Spatial and Zip Code data overall.
 
 \begin{table}
 
@@ -1574,61 +1644,45 @@ Building Type, some interesting patterns emerge.
 \toprule
 Model AUC & Base & Zip & Spatial Lag\\
 \midrule
-Validation & 0.832 & 0.8292 & 0.8287\\
-Test & 0.830 & 0.8246 & 0.8279\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Looking at the predictions by the models made on the 2017 validation
-hold-out data, we see the Spatial Lag model performs best of any model
-for three out of five Boroughs: Manhattan, Bronx and Staten Island (see:
-Table \ref{tab:ProbSaleModelAUCbyBoro}).
-
-\begin{table}
-
-\caption{\label{tab:Prob Model AUC by Boro}\label{tab:ProbSaleModelAUCbyBoro} Probability of Sale Models AUC by Borough}
-\centering
-\begin{tabular}[t]{lrrrrr}
-\toprule
-Model & BK & BX & MN & QN & SI\\
-\midrule
-Base & 0.8309 & 0.8288 & 0.7926 & 0.8338 & 0.8336\\
-Zip & 0.8234 & 0.8215 & 0.7796 & 0.8283 & 0.8281\\
-Spatial Lag & 0.8257 & 0.8312 & 0.8031 & 0.8327 & 0.8348\\
+Validation & 0.832 & 0.829 & 0.829\\
+Test & 0.830 & 0.825 & 0.828\\
 \bottomrule
 \end{tabular}
 \end{table}
 
 Figure \ref{fig:AUC by boro and build type} shows a breakdown of model
 AUC faceted along the x-axis by Building Type and along the y-axis by
-Borough. The coloring indicated by how much a model's AUC diverges from
-the cell average.
-
-\begin{figure}[H]
-\includegraphics[width=1\linewidth]{Sections/tables and figures/AUC by boro and build type} \caption{AUC By Borough and Building Type}\label{fig:AUC by boro and build type}
-\end{figure}
-
-We make the following observations about Figure
+Borough. The coloring indicates by how much a model's AUC diverges from
+the cell average, which is useful for spotting overperformers. We make
+the following observations about Figure
 \ref{fig:AUC by boro and build type}:
 
 \begin{itemize}
 \tightlist
 \item
-  The Spatial Lag model outperforms all other models for Elevator
-  Buildings (Type D), particularly in the Bronx
+  The Spatial models outperform all other models for Elevator Buildings
+  (Type D) and Walk Up Apartments (Type C), particularly in Brooklyn,
+  the Bronx and Manhattan
 \item
-  The Probability of Sale model tends to perform poorly in Manhattan
-  vs.~other Boroughs
+  Classification tends to perform poorly in Manhattan vs.~other Boroughs
 \item
-  However, the Spatial Lag model performs well in Manhattan for the
-  residential building types (A, B, C and D)
+  The Spatial models performs well in Manhattan for the residential
+  building types (A, B, C and D)
 \end{itemize}
 
-If we rank model the probability models' performance for each Borough
-and Building Type, we see that the Spatial Lag models consistently
-outperform the Zip Code models, as shown in Table
-\ref{tab:ProbModelAUCRank}
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/AUC by boro and build type} \caption{AUC By Borough and Building Type}\label{fig:AUC by boro and build type}
+\end{figure}
+
+If we rank the classification models' performance for each Borough and
+Building Type, we see that the Spatial models consistently outperform
+the Zip Code models, as shown in Table \ref{tab:ProbModelAUCRank}. From
+this (as well as from similar patterns seen in the regression models) we
+can infer that the Spatial data is a superior data engineering
+technique, however, the algorithm used needs to account for potential
+model overfitting. In the next section, we discuss refining the data
+used as well as employing different algorithms to maximize predictive
+capability of the Spatial features.
 
 \begin{table}
 
@@ -1645,9 +1699,261 @@ Zip & 6.0\% & 7.7\% & 19.7\% & 1.69\\
 \end{tabular}
 \end{table}
 
+\hypertarget{model-comparisons-using-specific-geographies-and-building-types}{%
+\subsection{Model Comparisons Using Specific Geographies and Building
+Types}\label{model-comparisons-using-specific-geographies-and-building-types}}
+
+Using the results from the first modeling exercise, we conclude that
+Walk Up Apartments and Elevator Buildings in Manhattan, Brooklyn and the
+Bronx are suitable candidates for prediction using our current
+assumptions. These buildings share the characteristics of being
+residential as well as being fairly uniform in their geographic density.
+We analyze the performance of four algorithms (GLM, RF, GBM and ANN),
+using three feature engineering techniques, for both classification and
+regression, making the total number \texttt{4\ x\ 3\ x\ 2\ =\ 24}
+models.
+
+\hypertarget{regression-model-comparisons}{%
+\subsubsection{Regression Model
+Comparisons}\label{regression-model-comparisons}}
+
+The following criteria, described in detail in the Methodology section,
+were used to assess the predictive accuracy of the various regression
+models: Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), Mean
+Squared Error (MSE) and R-Squared. These four indicators are calculated
+using the hold-out test data, which allows us to ensure that the models
+perform well when predicting sale prices into the near future. The
+comparison metrics are presented in Table \ref{tab:RegModelTable} and
+Figure \ref{fig:Model RMSE Comparrison}.
+
+\noindent The following conclusions can be made from Table
+\ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\tightlist
+\item
+  The feed-forward Multilayer Artificial Neural Networks (ANN) perform
+  best in nearly every metric across nearly all feature sets, with
+  Gradient Boosted Machine (GBM) a close second in some circumstances
+\item
+  ANN and Generalized Linear Models (GLM) improve linearly in all
+  metrics as you move from Base to Zip to Spatial, with Spatial
+  performing the best. GBM and Random Forrest, on the other hand,
+  perform best on the Base and Spatial feature sets and poorly on the
+  Zip features
+\item
+  The highest model R-Squared is the ANN using Spatial features at
+  0.494, indicating that this model can account for nearly 50\% of the
+  variance in the test data
+\item
+  We see a similar pattern in the Random Forrest results compared to the
+  previous modeling exercise using the full dataset: Base Features
+  outperforming both Spatial and Zip, with Spatial coming in second
+  consistently. This further validates our reasoning that Spatial
+  features are highly predictive but suffer from overfitting and other
+  algorithm-related reasons
+\end{enumerate}
+
+\begin{table}
+
+\caption{\label{tab:Reg Model RMSE Compare}\label{tab:RegModelTable} Prediction Accuracy of Regression Models on Test Data}
+\centering
+\begin{tabular}[t]{llrrrr}
+\toprule
+Data & Model & RMSE & MAE & MSE & R2\\
+\midrule
+1) Base & GLM & 446.35 & 221.16 & 199227.6 & 0.12\\
+2) Zip & GLM & 426.93 & 206.49 & 182270.1 & 0.19\\
+3) Spatial & GLM & 382.32 & 195.00 & 146170.5 & 0.35\\
+1) Base & RF & 387.99 & 174.24 & 150536.3 & 0.33\\
+2) Zip & RF & 475.20 & 190.33 & 225811.7 & 0.00\\
+\addlinespace
+3) Spatial & RF & 430.92 & 180.17 & 185695.5 & 0.18\\
+1) Base & GBM & 384.11 & 179.27 & 147543.5 & 0.35\\
+2) Zip & GBM & 454.53 & 186.00 & 206593.1 & 0.09\\
+3) Spatial & GBM & 406.70 & 170.97 & 165408.0 & 0.27\\
+1) Base & ANN & 363.02 & 178.58 & 131782.5 & 0.42\\
+\addlinespace
+2) Zip & ANN & 360.88 & 171.22 & 130232.2 & 0.42\\
+3) Spatial & ANN & 337.94 & 158.91 & 114202.0 & 0.49\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{Sections/tables and figures/compare_model_roc_curves} \caption{Model AUCs}\label{fig:Model AUC Comparrison}
+\includegraphics[width=1\linewidth]{Sections/tables and figures/compare_reg_model_rmse} \caption{Comparative Regression Metrics}\label{fig:Model RMSE Comparrison}
 \end{figure}
+
+\noindent Figure \ref{fig:reg Models Scatterplot} shows clusters of
+performance across R-Squared and Mean Absolute Error, with the ANN
+models outperforming their peers. This figure also makes clear that the
+marriage of Spatial features with the ANN algorithm results in a
+dramatic reduction in error rate compared to the other techniques.
+
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/reg_model_results_scatterplot} \caption{Regression Model Performances On Test Data}\label{fig:reg Models Scatterplot}
+\end{figure}
+
+\hypertarget{classification-model-comparisons}{%
+\subsubsection{Classification Model
+Comparisons}\label{classification-model-comparisons}}
+
+The criteria used to assess the accuracy of the classification models
+are as follows: Area Under the ROC Curve (AUC), Mean Squared Error
+(MSE), Root Mean Squared Error (RMSE) and R-squared (R2). As with the
+regression models, these four indicators are calculated using the
+hold-out test data, allowing us to ensure that the models generalize
+well into the near future. The comparison metrics are presented in Table
+\ref{tab:ClassModelTable}. Figure \ref{fig:Model AUC Comparrison} shows
+the ROC curves and corrsponding AUC for each algorithm/feature set
+combination.
+
+\noindent The following conclusions can be made from Table
+\ref{tab:ClassModelTable} and Figure \ref{fig:Model AUC Comparrison}:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\tightlist
+\item
+  Unlike the regression models, the GBM algorithm with Spatial features
+  proved to be the best performing classifier. All Spatial models
+  performed relatively well with the exception of the GLM Spatial model
+\item
+  The error metrics tend to be quite low and frequently negative given
+  that they are calculated using probabilitites and classes (0,1)
+\item
+  Only 3 models have positive R-Squared values: ANN Spatial, RF Spatial
+  and GLM Base. This would indicate that these models are adept at
+  prediciting positive cases (occurances of sales) in the test data
+\item
+  GLM Spatial returned an AUC of less than 0.5, indicating a model that
+  is conceptually worse than random. This is likely a result of extreme
+  overfitting
+\end{enumerate}
+
+\begin{table}
+
+\caption{\label{tab:Class Model Compare}\label{tab:ClassModelTable} Prediction Accuracy of Classification Models on Test Data}
+\centering
+\begin{tabular}[t]{llrrrr}
+\toprule
+Data & Model & AUC & MSE & RMSE & R2\\
+\midrule
+1) Base & GLM & 0.57 & 0.03 & 0.17 & 0.00\\
+2) Zip & GLM & 0.58 & 0.03 & 0.17 & 0.00\\
+3) Spatial & GLM & 0.50 & 0.03 & 0.17 & -0.01\\
+1) Base & RF & 0.58 & 0.03 & 0.17 & -0.03\\
+2) Zip & RF & 0.56 & 0.03 & 0.17 & -0.06\\
+\addlinespace
+3) Spatial & RF & 0.78 & 0.03 & 0.17 & 0.00\\
+1) Base & GBM & 0.61 & 0.03 & 0.17 & -0.03\\
+2) Zip & GBM & 0.61 & 0.03 & 0.17 & -0.03\\
+3) Spatial & GBM & 0.82 & 0.03 & 0.16 & 0.04\\
+1) Base & ANN & 0.55 & 0.03 & 0.17 & -0.03\\
+\addlinespace
+2) Zip & ANN & 0.57 & 0.03 & 0.17 & -0.04\\
+3) Spatial & ANN & 0.76 & 0.03 & 0.17 & -0.01\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/compare_model_roc_curves} \caption{Comparison of Classification Model ROC Curves}\label{fig:Model AUC Comparrison}
+\end{figure}
+
+\noindent Figure \ref{fig:Class Models Scatterplot} plots the individual
+models by AUC and R-Squared. The Spatial models tend to outperform the
+other models by a significant margin. Interestingly, when compared to
+the regression model scatterplot, Figure
+\ref{fig:reg Models Scatterplot}, the classification models tend to
+cluster in their performance by feature set. In
+\ref{fig:reg Models Scatterplot}, we see the regression models tending
+to cluster by algorithm rather than features.
+
+\begin{figure}[H]
+\includegraphics[width=1\linewidth]{Sections/tables and figures/class_model_results_scatterplot} \caption{Scatterplot of Classification Models}\label{fig:Class Models Scatterplot}
+\end{figure}
+
+\hypertarget{variable-importance-analysis-of-top-performing-models}{%
+\subsection{Variable Importance Analysis of Top Performing
+Models}\label{variable-importance-analysis-of-top-performing-models}}
+
+Feature importance is calculated for each algorthm as being proportional
+to the average decrease in the squared error after including that
+variable in the model. The most important variable gets a score of 1;
+scores for other variables are derived by standardizing their measured
+reduction in error relative to the largest one. The top 10 variables for
+both the most successful regression and most successful classification
+models are presented in tables \ref{tab:RegVarImp} and
+\ref{tab:ClassVarImp}.
+
+\begin{table}
+
+\caption{\label{tab:Reg VarImp}\label{tab:RegVarImp} Feature Importance of Top Performing Regression Model}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llrl}
+\toprule
+Variable & Description & Scaled Importance (Max = 1) & Cumulative \%\\
+\midrule
+BuiltFAR & Floor area ratio built & 1.000 & 1.80\%\\
+FacilFAR & Maximum Allowable Floor Area Ratio & 0.922 & 3.40\%\\
+Last\_Sale\_Price\_Total & The previous sale price & 0.901 & 5.10\%\\
+Last\_Sale\_Date & Date of last sale & 0.893 & 6.70\%\\
+Last\_Sale\_Price & The previous sale price & 0.870 & 8.20\%\\
+\addlinespace
+Years\_Since\_Last\_Sale & Number of years since last sale & 0.823 & 9.70\%\\
+ResidFAR & Floor Area Ratio not yet built & 0.814 & 11.20\%\\
+lon & Longitude & 0.773 & 12.60\%\\
+Year & Year of record & 0.759 & 13.90\%\\
+BldgDepth & Square feet from font to back & 0.758 & 15.30\%\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\begin{table}
+
+\caption{\label{tab:Class VarImp}\label{tab:ClassVarImp} Feature Importance of Top Performing Classification Model}
+\centering
+\resizebox{\linewidth}{!}{
+\begin{tabular}[t]{llrl}
+\toprule
+Variable & Description & Scaled Importance (Max = 1) & Cumulative \%\\
+\midrule
+Percent\_Neighbords\_Sold & Percent of Nearby Properties Sold in the Previous Year & 1.000 & 21.90\%\\
+Percent\_Office & Percent of the build which is Office & 0.698 & 37.20\%\\
+Percent\_Garage & Percent of the build which is Garage & 0.634 & 51.10\%\\
+Percent\_Storage & Percent of the build which is Storage & 0.518 & 62.40\%\\
+Building\_Age & The Age of the building & 0.225 & 67.40\%\\
+\addlinespace
+Last\_Sale\_Price & Price of building last time is was sold & 0.165 & 71.00\%\\
+Percent\_Retail & Percent of the build which is Retail & 0.147 & 74.20\%\\
+Years\_Since\_Last\_Sale & Year since building last sold & 0.121 & 76.90\%\\
+ExemptTot & Total tax exempted value of the building & 0.069 & 78.40\%\\
+Radius\_Res\_Units\_Sold\_In\_Year & Residential units within 500 meters sold in past year & 0.056 & 79.60\%\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+We observe that the regression model has a much higher dispersion of
+feature importances compared to the classification model. The top
+variable in the regression model, BuiltFAR, which is a measure of how
+much of a building's floor to area ratio has been used (a proxy for
+overall building size) contributing only 1.8\% of the reduction in error
+rate in the overall model. Conversely, in the classification model, we
+see the top variable, ``Percent\_Neighbors\_Sold'' (a measure of how
+many buildings within 500 meters were sold in the past year) contributes
+21.9\% of the total reduction in squared error.
+
+Variable importance analysis of the regression model indicates that the
+model favors variables which reflect building size (BuiltFAR, FacilFAR,
+BldgDepth) as well as approximations for previous sale prices
+(Last\_Sale\_Price and Last\_Sale\_Date). The classification model tends
+to favor spatial lag features, such as how many buildings were sold in
+the past year within 500 meters (Percent\_Neighbors\_Sold and
+Radius\_Res\_Units\_Sold\_In\_Year) as well as characteristics of the
+building function (Percent\_Office, Percent\_Storage, etc.).
 
 \hypertarget{future-research-and-conclusions}{%
 \section{Future Research and
@@ -1656,24 +1962,29 @@ Conclusions}\label{future-research-and-conclusions}}
 \hypertarget{future-research}{%
 \subsection{Future Research}\label{future-research}}
 
-This research has shown that spatial-lag features can be worthwhile
-additions to machine learning predictive models in certain
-circumstances. There are several areas that could be further explored
-regarding spatial lag features, some of which are mentioned below.
+This research has shown that the addition of spatial-lag features can
+increase the predictive accuracy of machine learning models above and
+beyond traditional spatial aggregation techniques. There are several
+areas that could be further explored regarding spatial lag features,
+some of which are mentioned below.
 
 First, it became apparent in the research that generalization was a
-problem for the models overall, likely due to overfitting of the
-training data. Further research into proper varibale selection could be
-one remedy for such issues.
+problem for some of the models, likely due to overfitting of the
+training data. This issue was corrected by employing different
+algorithms, however, further work could be done to create variable
+selection processes and/or hyperparameter tuning to prevent overfit.
 
-Additionally, the spatial lag features seemd to perform best for outer
-boroughs (non-Manhattan) and for smaller, residential building types.
-One possible explanation for this is that these types of assetts are
-considerably more numerous and homogenous. It is possible that a 500
-meter radius, which was arbitrarily chosen, works best for this type of
-asset. Fotheringham (2015) used an ``Adaptive Bandwidth'' technique to
-adjust the spatial lag radius based on cross-validation. research into
-applying a similar technique to this research could be valuable.
+Additionally, the spatial lag features seemd to perform best for certain
+boroughs and for residential building types. One possible explanation
+for this is that these types of assetts are considerably more numerous
+and homogenous. We hypothesize that using a 500 meter radius to build
+spatial lag features, a distance which was arbitrarily chosen, works
+best for this type of asset in these areas. Fotheringham (2015) used an
+``Adaptive Bandwidth'' technique to adjust the spatial lag radius based
+on cross-validation with much success. The techniques presented in this
+paper could be expanded to use cross validation in a similar manner to
+assign the optimal spatial lag radius for each building type and
+location.
 
 Finally, this research aimed to predict real estate transactions 1 year
 into the future. While this is a promising start, 1-year of lead time
@@ -1697,19 +2008,20 @@ this paper has attempted to do.
 
 Spatial lags, typically seen in geographically weighted regression, were
 employed successfully to enhance the predictive power of machine
-learning models. The features suffered in some areas do to modeling and
-data shortcomings, but overall we found that spatial lags outperform
-zip-code level aggregations, and perform quite well for specific asset
-types and geographic locations, particularly residential buildings
-outside of Manhattan.
+learning models. THe spatial lag models performed best for particular
+building types and geographies, however, we feel confident that the
+techique could be expanded to work equally as well for all buildings
+with some additional research. Regarding algorithms, Artificaly Neural
+Networks performed the best for predicting sale price, while GBM
+performed best for predicting sale occurance.
 
 While this research is not intended to serve as a full early-warining
 system for gentrification and displacmenet, it is a step in that
 direction. More research is needed to help address the challenges faced
 by city planners and governments trying to help incumbent residents reap
 the benefits of local investments. Income inequallity is a complicated
-and grave issue of our time, but new tools and tecnhiques to inform and
-prevent give a hope for a more equitable future.
+and grave issue, but new tools and tecnhiques to inform and prevent will
+help ensure equality of opportunity for all.
 
 \newpage
 

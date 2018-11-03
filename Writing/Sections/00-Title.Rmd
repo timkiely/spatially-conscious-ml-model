@@ -9,10 +9,10 @@ output: pdf_document
 \vspace{4 cm}
 \LARGE
 \bf 
-Predicting Real Estate Sales Using Machine Learning and Spatial Dependence
+Predicting Real Estate Sales in NYC: 
 
 \Large
-Boosting ML Predictive Accuracy Using Spatial Lags
+Combining Machine Learning with Spatial Analysis to Boost Predictive Accuracy
 
 \rm
 \normalsize

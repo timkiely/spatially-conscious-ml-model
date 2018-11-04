@@ -24,6 +24,7 @@ header-includes:
   - \usepackage{algorithm}
   - \usepackage{algpseudocode}
   - \usepackage{float}
+  - \usepackage{enumitem}
   - \onehalfspacing
   - \counterwithin{figure}{section}
   - \counterwithin{table}{section}

@@ -109,6 +109,7 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{float}
+\usepackage{enumitem}
 \onehalfspacing
 \counterwithin{figure}{section}
 \counterwithin{table}{section}
@@ -354,7 +355,7 @@ Spatial Auto Regressive models (SAR), chief among them the Spatial Lag
 Model, which aggregates weighted summaries of nearby properties in order
 to create independent regression variables (d'Amato 2017).
 
-S0-called ``Hedonic'' regression models seek to decompose the price of a
+So-called ``Hedonic'' regression models seek to decompose the price of a
 good based on the intrinsic and extrinsic components. Koschinsky (2012)
 is a recent and thorough discussion of parametric hedonic regression
 techniques. Some of the variables included in Koschinsky's models are
@@ -456,8 +457,8 @@ statistical methods. Antipov and Pokryshevskaya (2012) came to a similar
 conclusion about the superiority of Random Forest for real estate
 valuation after comparing 10 algorithms: multiple regression, CHAID,
 Exhaustive CHAID, CART, 2 types of k-Nearest Neighbors, Multilayer
-Perceptron neural network (MLP), Radial Basis Function neural network
-(RBF)), Boosted Trees and finally Random Forest.
+Perceptron artificaial neural network (ANN), Radial Basis Function
+neural network (RBF), Boosted Trees and finally Random Forest.
 
 Guan et al. (2014) compared three different approaches to defining
 spatial neighbors: a simple radius technique, a k-nearest neighbors
@@ -503,37 +504,47 @@ generally outperform.
 \hypertarget{methodology-overview}{%
 \subsection{Methodology Overview}\label{methodology-overview}}
 
-Our goal is to compare the use of spatial lags as features in a machine
-learning predictive model against traditional feature engineering
-techniques. To accomplish this comparrisson, we will create three
-separate modeling data sets:
+Our goal is to compare ``spatially-concious'' machine learning
+predictive models to traditional feature engineering techniques. To
+accomplish this comparrisson, we create three separate modeling data
+sets:
 
 \begin{itemize}
 \tightlist
 \item
-  Base modeling data
+  \textbf{Base modeling data:} includes building characteristics such as
+  size, taxable value, usage and others
 \item
-  Zip Code modeling data
+  \textbf{Zip Code modeling data:} includes base data as well as
+  aggregations of data at the zip-code level
 \item
-  Spatial Lag modeling data
+  \textbf{Spatial Lag modeling data:} includes base data as well as
+  aggregations of data within 500-meters of each building
 \end{itemize}
 
-\noindent The second and third modeling datasets are variations of the
-first, using competing feature engineering techniques to extract
-additional predictive power from the data. In addition to measuring
-performance across three datasets, we also create 2 predictive models
-for each modeling data set, using a different outcome variable for each:
+\noindent The second and third modeling datasets are incremental
+variations of the first, using competing feature engineering techniques
+to extract additional predictive power from the data. To accomplish
+this, we combine three open-source data repositories provided by New
+York City via \url{nyc.gov} and \url{data.cityofnewyork.us}. Our base
+modeling data set includes all building records and associated sales
+information from 2003-2017. For each of the three modeling dataset, we
+also compare 2 predictive modeling tasks, using a different outcome
+variable for each:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  \textbf{Probability of Sale} The probability that a given property in
-  New York City will sell in a given year
+  \textbf{Classification task: Probability of Sale} The probability that
+  a given property will sell in a given year
 \item
-  \textbf{Amount of Sale (\$/SF)} Given that a property sells, how much
-  is the sale value?
+  \textbf{Regression task: Sale Price per square foot} Given that a
+  property sells, how much is the sale price per square foot?
 \end{enumerate}
+
+\noindent The six distinct modeling tasks/data combinations are shown in
+table \ref{tab:modeltable}.
 
 \begin{table}
 
@@ -542,7 +553,7 @@ for each modeling data set, using a different outcome variable for each:
 \resizebox{\linewidth}{!}{
 \begin{tabular}[t]{rllllll}
 \toprule
-\# & Model & Model Type & Data & Outcome Var & Outcome Type & Eval Metric\\
+\# & Model & Model Task & Data & Outcome Var & Outcome Type & Eval Metric\\
 \midrule
 1 & Probability of Sale & Classification & Base & Building Sold & Binary & AUC\\
 2 & Probability of Sale & Classification & Zip Code & Building Sold & Binary & AUC\\
@@ -554,18 +565,61 @@ for each modeling data set, using a different outcome variable for each:
 \end{tabular}}
 \end{table}
 
-\noindent There will be six predictive models built in total, as shown
-in Table \ref{tab:modeltable}. To accomplish this, we combine three
-open-source data repositories provided by New York City via
-\url{nyc.gov} and \url{data.cityofnewyork.us}. Our base modeling data
-set includes all building records and associated sales information from
-2003-2017.
+We conduct our analysis in a two-stage process. In Stage 1, we use the
+Random Forrest algorithm to evaluate the data's suitability for our
+feature engineering assumptions. In Stage 2, we create subsets of the
+modeling datasets based on analysis conducted in Stage 1. We then
+compare the performance of different algorithms across all modeling
+datasets and prediction tasks. The following is an outline of our
+complete analysis process:\newline
 
-Following the creation of the base modeling data, we create two
-additional data sets through feature engineering: a ``Zip Code
-features'' data set and a ``Spatial Lag features'' data set. The primary
-goal of this study is to compare the predictive power of the spatial
-lags vs.~the base and Zip Code features.
+\noindent \textbf{Stage 1: Random Forrest, all data}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\tightlist
+\item
+  Create a ``base'' modeling dataset by sourcing and combining building
+  characteristic and sales data from open-source New York City
+  repositories
+\item
+  Create a ``zip'' modeling dataset by aggregating the base data at a
+  Zip-Code level and appending these features to the base data
+\item
+  Create a ``spatial lag'' modeling dataset by aggregating the base data
+  within 500 meters of each building and appending these features to the
+  base data
+\item
+  Train a Random Forrest model on all three datasets, for both
+  classification and regression tasks
+\item
+  Evalutate the performance of the various Radom Forrest models on
+  hold-out test data
+\item
+  Analyze the prediction results by building type and geography,
+  identifying those buildings for which our feature-engineering
+  assumptions (e.g., 500 meter radii spatial lags) are most
+  appropriate\newline
+\end{enumerate}
+
+\noindent \textbf{Stage 2: Many algorithms, refined data}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi})}
+\setcounter{enumi}{6}
+\tightlist
+\item
+  Create subsets of the modeling data based on analysis conducted in
+  Stage 1
+\item
+  Train machine learning models on the refined modeling data sets using
+  several algorithms, for both classification and regression tasks
+\item
+  Evaluate the performance of the various models on hold-out test data
+\item
+  Analyze the prediction results of the various algorithm/data/task
+  combinations
+\end{enumerate}
 
 \hypertarget{data}{%
 \subsection{Data}\label{data}}
@@ -730,9 +784,10 @@ We will only include building categories of significant interest in the
 modeling data. Generally speaking, by significant interest we are
 referring to building types that are regularly bought and sold on the
 free market. These include residences, office buildings and industrial
-buildings, and exclude things like government-owned buildings, hospitals
-and hotels. The included building types are displayed in Table
-\ref{tab:categoryTable}.
+buildings, and exclude things like government-owned buildings and
+hospitals. We also exclude hotels as they tend to be comparatively rare
+in the data and exhibit unique sales characteristics. The included
+building types are displayed in Table \ref{tab:categoryTable}.
 
 \begin{table}
 
@@ -756,8 +811,10 @@ O & OFFICES\\
 \end{table}
 
 The data is further filtered to include only records with equal to or
-less than 2 buildings per tax lot. The global filtering of the data set
-reduces the base modeling data from 12,012,780 records down to
+less than 2 buildings per tax lot. This effectively excludes large
+outliers in the data, including multi-building tax lots such as the
+World Trade Center and Stuyvesant Town. The global filtering of the data
+set reduces the base modeling data from 12,012,780 records down to
 8,247,499, retaining 68.6\%\% of the original data.
 
 \hypertarget{exploratory-data-analysis}{%
@@ -806,8 +863,8 @@ Year & N & \# Sales & Median Sale & Median Sale \$/SF\\
 
 Similar variance can be seen across asset types. Table
 \ref{tab:by_class} shows all buildings classes in the 2003-2017 period.
-As expected, residences tend to have the highest volume of sales while
-offices tend to have the highest sale prices.
+Unsurprisingly, residences tend to have the highest volume of sales
+while offices tend to have the highest sale prices.
 
 \begin{table}
 
@@ -909,14 +966,16 @@ Walk Up Apartments & 63,552 & 18,075 & 19,824 & 31,932 & 1,820\\
 \hypertarget{base-modeling-data}{%
 \subsubsection{Base Modeling Data}\label{base-modeling-data}}
 
-The base modeling data set is enhanced to include additional features. A
-summary table of the additional features are presented in Table
-\ref{tab:baseModelDataFeats}. A binary variable is created to indicate
-whether a tax lot has a building on it (i.e., whether it is an empty
-plot of land or not). In addition, building types are quantified by what
-percent of the square footage belongs to the major property types:
-Commercial, Residential, Office, Retail, Garage, Storage, Factory and
-Other.
+The base modeling data set is constructed by combining several
+open-source data repositories, outlined in the Data Sources section. In
+addition to the data provided by New York City, several additional
+features are engineered and appended. A summary table of the additional
+features are presented in Table \ref{tab:baseModelDataFeats}. A binary
+variable is created to indicate whether a tax lot has a building on it
+(i.e., whether it is an empty plot of land or not). In addition,
+building types are quantified by what percent of the square footage
+belongs to the major property types: Commercial, Residential, Office,
+Retail, Garage, Storage, Factory and Other.
 
 \begin{table}
 
@@ -965,7 +1024,7 @@ even though it is referred to as Sale Price. Further features are
 derived which carry forward the previous sale price of a tax lot, if
 there is one, through successive years. Previous Sale Price is then used
 to create Simple Moving Averages (SMA), Exponential Moving Averages
-(SMA), and percent change measurements between the moving averages. In
+(EMA), and percent change measurements between the moving averages. In
 total, 69 variables are input to the feature engineering process and 92
 variables are output. The final base modeling data set is 92 variables
 by 8,247,499 rows.
@@ -1039,50 +1098,56 @@ engineering process inputs 92 variables and outputs 122 variables.
 Data}\label{spatial-lag-modeling-data}}
 
 Spatial lags are variables created from physically proximate
-observations. For example, taking the average building age from all
-buildings within 100 meters of the tax lot in question would be a
-spatial lag. Creating spatial lags presents both advantages and
-disadvantages in the modeling process. Spatial lags allow for much more
-fine-tuned measurements of a building's surrounding area. Knowing the
-average sale price of all buildings within 500 meters of a building can
-be much more informative than knowing the sale prices of all buildings
-in the same Zip Code. However, building spatial lags is computationally
-expensive.
+observations. For example, calculating the average age of all buildings
+within 100 meters of a tax lot constitutes a spatial lag. Creating
+spatial lags presents both advantages and disadvantages in the modeling
+process. Spatial lags allow for much more fine-tuned measurements of a
+building's surrounding area. Intuitively, knowing the average sale price
+of all buildings within 500 meters of a building can be more informative
+than knowing the sale prices of all buildings in the same Zip Code.
+However, creating spatial lags is computationally expensive. In
+addition, it can be difficult to set a proper radius for the spatial lag
+calculation; in a city, 500 meters may be appropriate (for certain
+building types), whereas several kilometers or more may be appropriate
+for less densley populated areas. In this paper, we present a solution
+for the computational challenges and suggest a potential approach to
+solving the radius-choice problem.
 
-To build spatial lags for all 8,247,499 observations in our modeling
-data, we created a spatial indexing technique that greatly speeds up the
-process by allowing for parallelization of the point-in-polygon
-operations. Since tax lots rarely if ever move, we first reduced the
-indexing task to 514,124 unique points (the number of unique tax lots in
-New York City). Then, for each building, we calculated and cached every
-other tax lot within 500 meters of that building. The result was an
-origin-destination relationship graph that relates each tax lot to its
-neighboring tax lots. This process is illustrated in Figure
+\hypertarget{creating-the-point-neighbor-relational-graph}{%
+\paragraph{Creating the Point-Neighbor Relational
+Graph}\label{creating-the-point-neighbor-relational-graph}}
+
+To build our spatial lags, for each point in the data, we must identify
+which of all other points in the data fall within a specified radius.
+This requires iteratively running point-in-polygon operations, i.e.,
+``given polygon P and an arbitrary point q, determine whether point q is
+enclosed by the edges of the polygon'' (Huang 1996). This process is
+conceptually illustrated in figure
 \ref{fig:Spatial Lag Feataure Process}.
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{Sections/tables and figures/Example Spatial Indexing Techniques} \caption{Spatial Index Time Comparison}\label{fig:Spatial Indexing Process}
+\includegraphics[width=1\linewidth]{Sections/tables and figures/Spatial Lag Creation} \caption{Spatial Lag Feature Creation Process}\label{fig:Spatial Lag Feataure Process}
 \end{figure}
 
-A spatial indexing task takes the form of a point-in-polygon operation.
-As defined by Huang (1996), point-in-polygon is defined as ``with a
-given polygon P and an arbitrary point q, determine whether point q is
-enclosed by the edges of the polygon.'' Given that, for every point
-\(q_i\) in our dataset, we need to determine whether every other point
-\(q_i\) falls within a given radius. This means that the time-complexity
-of our operation, without pre-processing, can be approximated as:
+Given that, for every point \(q_i\) in our dataset, we need to determine
+whether every other point \(q_i\) falls within a given radius, this
+means that the time-complexity of our operation can be approximated as:
 
 \[
 O(N(N-1))
 \]
 
-\noindent Despite having reduced the search space to \(N=514,124\),
-having the number of operations approaching \(N^2\) is infeasible from a
-computation and time standpoint. To overcome this, we add a
-pre-processing step of gridding the data and parallelizing the
-operation, allowing us to significantly reduce the time required. The
-gridded spatial indexing process is outlined in Algorithm
-\ref{alg:spatial1}.
+Since the number of operations approaches \(N^2\), calculating spatial
+lags for all 8,247,499 observations in our modeling data would be
+infeasible from a time and computation perspective. Assuming that tax
+lots rarely if ever move over time, we first reduced the task to the
+number of unique tax lots in New York City from 2003-2017, which is
+514,124 points. Next, we implemented an indexing technique that greatly
+speeds up the process of creating a point-neighbor relational graph. The
+indexing technique both reduces the relative search space for each
+computation and also allows for parallelization of the point-in-polygon
+operations by dividing the data into a gridded space. The gridded
+spatial indexing process is outlined in Algorithm \ref{alg:spatial1}.
 
 \begin{algorithm}
   \caption{Gridded Spatial Indexing}
@@ -1100,42 +1165,55 @@ gridded spatial indexing process is outlined in Algorithm
   \end{algorithmic}
 \end{algorithm}
 
-\noindent Each partition of the data is married with a corresponding
-search space \(S\), which is the convex hull of the partition space
-buffered by the maximum distance \(d\). In our case, we are buffering
-the search space by 500 meters, since we are interested in identifying
-all points within 500 meters of all other points. By gridding the data,
-we are able to reduce the search-space for each operation by an
-arbitrary number of partitions \(G\). This improves the base run-time
-complexity to:
+\noindent Each gridded partition of the data is married with a
+corresponding search space \(S\), which is the convex hull of the
+partition space buffered by the maximum distance \(d\). In our case, we
+are buffering the search space by 500 meters. Choosing an appropriate
+radius for buffering presents an additional challenge in creating
+spatially-concious machine learning predictive models. In this paper, we
+choose an arbitrary radius, and use a two-stage modeling process to test
+the appropriateness of that assumption. In future work, implementing an
+``adaptive bandwidth'' technique using cross-validation to determine the
+optimal radius could be done.
+
+By partitioning the data into spatial grids, we are able to reduce the
+search-space for each operation by an arbitrary number of partitions
+\(G\). This improves the base run-time complexity to:
 
 \[
 O(N(\frac{N-1}{G})
 \]
 
 \noindent By making G arbitrarily large (bounded by computational
-resources only), we can reduce runtime substantially. Furthermore,
-binning the operations into grids allows us to parallelize the
-computation, substantially reducing the overall run time. Figure
-\ref{fig:Spatial Indexing Process} shows a comparison of run times
-between different spatial indexing procedures. Note how the sequential
-Grid method starts out as slower than the basic Point-in-polygon
-technique due to pre-processing overhead, but wins out in terms of speed
-as complexity increases.
+resources only), we reduced runtime substantially. Furthermore, binning
+the operations into grids allowed us to parallelize the computation,
+further reducing the overall run time. Figure
+\ref{fig:Spatial Indexing Process} shows a comparison of computation
+times between the basic point-in-polygon technique and a sequential
+version of the grided indexing technique. Note that the grid method
+starts out as slower than the basic point-in-polygon technique due to
+pre-processing overhead, but wins out in terms of speed as complexity
+increases. This graph also does not reflect parallelization of the
+operation, which further reduces the time required to calculate the
+point-neighbor relational graph.
 
 \begin{figure}[H]
-\includegraphics[width=1\linewidth]{Sections/tables and figures/Spatial Lag Creation} \caption{Spatial Lag Feature Creation Process}\label{fig:Spatial Lag Feataure Process}
+\includegraphics[width=1\linewidth]{Sections/tables and figures/Example Spatial Indexing Techniques} \caption{Spatial Index Time Comparison}\label{fig:Spatial Indexing Process}
 \end{figure}
 
-Next, we used the spatial index to create spatial lag features. One
-advantage of using spatial lags is the rich number of potential features
-which can be engineered. Spatial lags can be weighted based on a
-distance function, e.g., physically closer observations can be given
-more weight. For our modeling purposes, we created two sets of features:
-distance weighted features (denoted with a "\_dist" in Table
-\ref{tab:SpLAgFeats}) and simple average features (denoted with
-"\_basic" in Table \ref{tab:SpLAgFeats}). SMA and EMA as well as percent
-changes were also calculated.
+\hypertarget{calculating-spatial-lags}{%
+\paragraph{Calculating Spatial Lags}\label{calculating-spatial-lags}}
+
+Once the origin-neighbor relational graph has been constructed, we can
+aggregate the data into spatial lag variables. One advantage of using
+spatial lags is the rich number of potential features which can be
+engineered. Spatial lags can be weighted based on a distance function,
+e.g., physically closer observations can be given more weight. For our
+modeling purposes, we created two sets of features: distance weighted
+features (denoted with a "\_dist" in Table \ref{tab:SpLAgFeats}) and
+simple average features (denoted with "\_basic" in Table
+\ref{tab:SpLAgFeats}). SMA and EMA as well as percent changes were also
+calculated.
 
 Temporal and spatial derivatives of the Spatial Lag features presented
 in Table \ref{tab:SpLAgFeats} were also added to the model, including:
@@ -1145,7 +1223,7 @@ the spatial lag radius (``basic mean''), Simple Moving Averages
 (``EMA'') for 2 years, 3 years and 5 years, and year-over-year percent
 changes for all variables (``perc change''). In total, the spatial lag
 feature engineering process input 92 variables and output 194 variables.
-A summary of the Spatial Lag features are presented in Appendix A Table
+A summary of the Spatial Lag features are presented in Table
 \ref{tab:SpLAgFeats}.
 
 \begin{table}
@@ -1265,18 +1343,19 @@ Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change & -136.59 & -0.11 & Inf & Inf
 \subsection{Outcome Variables}\label{outcome-variables}}
 
 The final step in creating the modeling data is to define the outcome
-variables. For our purposes, we create two dependent variables:
+variables. The outcome variables reflect the prediction tasks; a binary
+variable for classification and a continuous variable for regression:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  \textbf{Sold.} whether a tax lot sold in a given year. Used in the
-  Probability of Sale classification model.
+  \textbf{Binary: Sold} whether a tax lot sold in a given year. Used in
+  the Probability of Sale classification model.
 \item
-  \textbf{Sale Price.} The price-per-square foot associated with a
-  transaction, if a sale took place. Used in the Sale Price Regression
-  model.
+  \textbf{Continuous: Sale Price per SF} The price-per-square foot
+  associated with a transaction, if a sale took place. Used in the Sale
+  Price Regression model.
 \end{enumerate}
 
 \noindent Table \ref{tab:OutcomeDistro} describes the distributions of
@@ -1303,43 +1382,81 @@ Max. & 1.00 & 83,598.7\\
 \hypertarget{algorithms-comparison}{%
 \subsection{Algorithms Comparison}\label{algorithms-comparison}}
 
+We implemented and compared several algorithms across our two-stage
+process. In Stage 1, the Random Forrest algorithm was used to identify
+the optimal subset of building types and geographies for our spatial lag
+aggregation assumptions. In Stage 2, we analyze the performance of the
+Random Forrest algorithm again, as well as Generalized Linear Model
+(GLM), Gradient Boosting Machines (GBM), and a Feed-Forward Artificial
+Neural Network (ANN). Each algorithm is appropriate for both
+classification and regression tasks.
+
+\hypertarget{random-forrest}{%
+\subsubsection{Random Forrest}\label{random-forrest}}
+
+The Random Forest concept was proposed by Leo Breiman in 2001 as the
+ensembling of prediction decision trees iteratively trained across
+randomly generated subsets of data (Leo Breiman 2001). Algorithm
+\ref{alg:RandomForestAlo} outlines the procedure (Hastie, Tibshirani,
+and Friedman 2001).
+
+\begin{algorithm}
+  \caption{Random Forest for Regression or Classification}\label{alg:RandomForestAlo}
+
+\begin{enumerate}
+  \item For $b = 1$ to $B$
+  \begin{enumerate}
+    \item Draw a bootstrap sample $Z$ of the size $N$ from the training data.
+    \item Grow a random-forest tree $T_b$ to the bootstrapped data, by recursively repeating the following steps for each terminal node of the tree, until the minimum node size $n_{min}$ is reached.
+  \begin{enumerate}
+    \item Select $m$ variables at random from the $p$ variables
+    \item Pick the best variable/split-point among the $m$.
+    \item Split the node into two daughter nodes.
+  \end{enumerate}
+  \end{enumerate}
+  \item Output the ensemble of trees $\{T_b\}_1^B$.
+\end{enumerate}
+
+To make a prediction at a new point $x$:
+
+\textit{Regression:} $\hat{f}_{rf}^B(x) = \frac{1}{B}\sum_{b=1}^{B}T_b(x)$
+
+\textit{Classification:} Let $\hat{C_b}(x)$ be the class prediction of the $b$th random-forest tree. Then $\hat{C_{rf}^B}(x)=$ \textit{majority vote} $\{\hat{C}_{b}(x)\}_1^B $
+
+\end{algorithm}
+
 Previous works (see: Antipov and Pokryshevskaya (2012); also
-Schernthanner H. (2016)) have found the Random Forest algorithm (Breiman
-2001) suitable to prediction tasks involving real estate. While
+Schernthanner H. (2016)) have found the Random Forest algorithm (L.
+Breiman 2001) suitable to prediction tasks involving real estate. While
 algorithms exist that may marginally outperform Random Forest in terms
 of predictive accuracy (such as neural networks and functional gradient
 descent algorithms), Random Forest is highly scalable and
-parallelizable, and therefore a natural choice for comparing different
-feature engineering strategies. For these reasons and more outlined
-below, we select Random Forrest as the primary algorithm for comparrison
-in this paper.
+parallelizable, and therefore a natural choice for quickly assessing the
+predictive power of different feature engineering techniques. For these
+reasons and more outlined below, we selected Random Forrest as the
+primary algorithm for Stage 1 of our modeling process.
 
-Random Forest can be used for both classification and regression tasks,
-both of which we undertake in this paper. The Random Forest algorithm
-works by generating a large number of independent classification or
-regression decision trees and then employing majority voting (for
-classification) or averaging (for regression) to generate predictions.
-Over a data set of N rows by M predictors, a bootstrap sample of the
-data is chosen (n \textless{} N) as well as a subset of the predictors
-(m \textless{} M). Individual decision/regression trees are built on the
-n by m sample. Because the trees can be built independently (and not
-sequentially, as is the case with most functional gradient descent
-algorithms), the tree building process can be executed in parallel
-across an arbitrary number of computer cores. With a sufficiently large
-number of cores, the model training time can be significantly reduced.
-This provides a highly accurate, robust prediction model that avoids
-many of the drawbacks of traditional parametric techniques, such as OLS.
+Random Forest can be used for both classification and regression tasks.
+The Random Forest algorithm works by generating a large number of
+independent classification or regression decision trees and then
+employing majority voting (for classification) or averaging (for
+regression) to generate predictions. Over a data set of N rows by M
+predictors, a bootstrap sample of the data is chosen (n \textless{} N)
+as well as a subset of the predictors (m \textless{} M). Individual
+decision/regression trees are built on the n by m sample. Because the
+trees can be built independently (and not sequentially, as is the case
+with most functional gradient descent algorithms), the tree building
+process can be executed in parallel. With a sufficiently large number of
+cores, the model training time can be significantly reduced.
 
-The primary advantages to using Random Forest with real estate data are:
+We chose Random Forrest as the algorithm for Stage 1 because:
 
 \begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
+\def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  Can handle an arbitrarily large number of variables while avoiding the
-  curse of dimensionality associated with regression techniques.
-  Increasing the number of predictors in a multiple regression can
-  quickly lead to over-fitting.
+  The algorithm can be parallelized and is relatively fast compared to
+  neural networks and functional gradient descent algorithms
 \item
   Can accommodate categorical variables with many levels. Real estate
   data often contains information describing the location of the
@@ -1369,15 +1486,24 @@ The primary advantages to using Random Forest with real estate data are:
 \item
   Is not affected by co-linearity in the data. This is highly valuable
   as real estate data can be highly correlated.
-\item
-  The algorithm can be parallelized and is relatively fast compared to
-  neural networks and functional gradient descent algorithms.
 \end{enumerate}
 
-To run the model, we have chosen the h2o.randomForest function from the
-h2o R open source library. The h2o implementation of the Random Forest
-algorithm is particularly well-suited for high parallelization. For more
-information, see: \url{https://www.h2o.ai/}.
+To run the model, we have chosen the h2o.randomForest implementation
+from the h2o R open source library. The h2o implementation of the Random
+Forest algorithm is particularly well-suited for high parallelization.
+For more information, see: \url{https://www.h2o.ai/}.
+
+\hypertarget{generalized-linear-model-glm}{%
+\subsubsection{Generalized Linear Model
+(GLM)}\label{generalized-linear-model-glm}}
+
+\hypertarget{gradient-boosting-machine}{%
+\subsubsection{Gradient Boosting
+Machine}\label{gradient-boosting-machine}}
+
+\hypertarget{feed-forward-artificial-neural-netwrok-ann}{%
+\subsubsection{Feed-Forward Artificial Neural Netwrok
+(ANN)}\label{feed-forward-artificial-neural-netwrok-ann}}
 
 \hypertarget{model-validation}{%
 \subsection{Model Validation}\label{model-validation}}
@@ -1492,18 +1618,17 @@ spatial-lag aggreation) for both a classification task (predicting the
 occurance of a building sale) and a regression task (predicting the sale
 price of a building). We analyzed the results of the first stage to
 identify which geographies and building types our model assumptions
-worked best. In Stage 2, using a high-performing subset of the modeling
-data (selected using analysis from Stage 1), we compared four
+worked best. In Stage 2, using a subset of the modeling data (selected
+via an analysis of the output from Stage 1), we compared four
 algorithms--Generalized Linear Model (GLM), Random Forrest (RF),
 Gradient Boosted Machine (GBM) and Feed-Forward Multilayer Artificial
-Neural Network (ANN)--using the same 3 competing feature engineering
+Neural Network (ANN)--across our 3 competing feature engineering
 techniques for both classification and regression tasks. We analyzed the
-performance of the different model/data combos and concluded with an
-analysis of the variable importances of the top performing models for
-both classification and regression.
+performance of the different model/data combos as well as conducted an
+analysis of the variable importances for the top performing models.
 
-In the first stage (Random Forrest using all data), we found that models
-which utilized spatial features outperformed those models using zip-code
+In Stage 1 (Random Forrest, using all data), we found that models which
+utilized spatial features outperformed those models using zip-code
 features the majority of the time for both classification and
 regression. Of three models, the Sale Price Regression model using
 Spatial features finished 1st or 2nd 24.1\% of the time (using Root Mean
@@ -1524,25 +1649,24 @@ Apartments and Elevator Buildings (building types C and D) and in
 Manhattan, Brooklyn and the Bronx. Using these as filtering criteria, we
 created a subset of the modeling data for the subsequent modeling stage.
 
-During Stage 2 (Many algorithms using a subset of modeling data), we
+During Stage 2 (many algorithms using a subset of modeling data), we
 compared four algorithms across the same three competing feature
 engineering techniques using a filtered subset of the original modeling
 data. Unequivocally, the spatial features performed best across all
-models and tasks. For the classification task, the GBM algorithm ranked
-highest in terms of AUC, followed by ANN and Random Forrest. For
-regression, the ANN algorithm generally outperformed other algorithms
-(as measured by Mean Absolute Error, Root Mean Squared Error and
-R-squared) with the spatial features ANN model performing best.
+models and tasks. For the classification task, the GBM algorithms
+performed best in terms of AUC, followed by ANN and Random Forrest. For
+regression, the ANN algorithms performed best (as measured by Mean
+Absolute Error, Root Mean Squared Error and R-squared) with the spatial
+features ANN model performing best.
 
-We conclude that when predicting commerical real estate sales and sale
-prices using machine learning, the addition of spatial lag features can
-significantly boost predictive accuracy. We find that model overfitting
-presents a challenge when using spatial features, but that this can be
-overcome by implementing different algorithms, specifically ANN and GBM.
-Finally, we find that our implementation of spatial-lag features works
-best for certain kinds of residential buildings in specific geographic
-areas, and we hypothesize that this is due to the assumptions made when
-building the spatial features.
+We conclude that spatial lag features can significantly increase the
+accuracy of machine learning-based real estate sale prediction models.
+We find that model overfitting presents a challenge when using spatial
+features, but that this can be overcome by implementing different
+algorithms, specifically ANN and GBM. Finally, we find that our
+implementation of spatial-lag features works best for certain kinds of
+buildings in specific geographic areas, and we hypothesize that this is
+due to the assumptions made when building the spatial features.
 
 \hypertarget{stage-1-random-forrest-models-using-all-data}{%
 \subsection{Stage 1) Random Forrest Models Using All
@@ -2055,6 +2179,10 @@ Batty, Michael. 2013. ``The New Science of Cities.'' \emph{MIT Press}.
 Breiman, L. 2001. ``Random Forests.'' \emph{Machine Learning} 45 (1):
 5--32.
 
+\leavevmode\hypertarget{ref-breiman2001random}{}%
+Breiman, Leo. 2001. ``Random Forests.'' \emph{Machine Learning} 45 (1).
+Springer: 5--32.
+
 \leavevmode\hypertarget{ref-Chapple2009}{}%
 Chapple, Karen. 2009. ``Mapping Susceptibility to Gentrification: The
 Early Warning Toolkit.'' \emph{Berkeley, CA: Center for Community
@@ -2115,6 +2243,11 @@ Guan, Jian, Donghui Shi, Jozef M. Zurada, and Alan S. Levitan. 2014.
 Prediction, with a Real Estate Illustration.'' \emph{Journal of
 Organizational Computing and Electronic Commerce} 24 (1). Taylor \&
 Francis: 94--112. \url{https://doi.org/10.1080/10919392.2014.866505}.
+
+\leavevmode\hypertarget{ref-hastie01statisticallearning}{}%
+Hastie, Trevor, Robert Tibshirani, and Jerome Friedman. 2001. \emph{The
+Elements of Statistical Learning}. Springer Series in Statistics. New
+York, NY, USA: Springer New York Inc.
 
 \leavevmode\hypertarget{ref-Helbich2013}{}%
 Helbich, et al., Marco. 2013. ``Boosting the Predictive Accuracy of

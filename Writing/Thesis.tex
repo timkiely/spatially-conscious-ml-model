@@ -125,12 +125,12 @@
 \LARGE
 
 \bf 
-Predicting Real Estate Sales in NYC: 
+The Spatially-Conscious Machine Learning Model  
 
 \Large
 
-Combining Machine Learning with Spatial Analysis to Boost Predictive
-Accuracy
+Leveraging Spatial Analysis to Boost the Accuracy of Real Estate Sales
+Predictions
 
 \rm
 \normalsize
@@ -152,8 +152,6 @@ MASTER OF SCIENCE IN DATA SCIENCE
 ~
 
 Northwestern University
-
-August, 2018
 
 ~
 
@@ -268,9 +266,9 @@ large numbers of real estate properties. Finally, we will briefly
 examine the literary treatment of machine learning as it relates to the
 problem of predicting gentrification and/or Economic Displacement.
 
-\hypertarget{how-has-economic-displacement-been-addressed-in-the-past}{%
-\subsection{How Has Economic Displacement Been Addressed in the
-Past?}\label{how-has-economic-displacement-been-addressed-in-the-past}}
+\hypertarget{what-is-economic-displacement}{%
+\subsection{What is Economic
+Displacement?}\label{what-is-economic-displacement}}
 
 Economic Displacement has been intertwined with the study of
 gentrification since shortly after the latter became academically
@@ -395,9 +393,9 @@ bandwidths'' of local data to be included, i.e., for each estimate, the
 number of data points included varies and can be optimized using
 cross-validation.
 
-\hypertarget{a-review-of-machine-learning-applied-to-the-prediction-of-gentrification}{%
-\subsection{A Review of Machine Learning Applied to the Prediction of
-Gentrification}\label{a-review-of-machine-learning-applied-to-the-prediction-of-gentrification}}
+\hypertarget{prediction-of-gentrification-using-machine-learning}{%
+\subsection{Prediction of Gentrification Using Machine
+Learning}\label{prediction-of-gentrification-using-machine-learning}}
 
 Both Mass Appraisal techniques and Automated Valuation Modeling seek to
 predict real estate prices using data and statistical methods, however,
@@ -504,10 +502,9 @@ generally outperform.
 \hypertarget{methodology-overview}{%
 \subsection{Methodology Overview}\label{methodology-overview}}
 
-Our goal is to compare ``spatially-concious'' machine learning
+Our goal is to compare ``spatially-conscious'' machine learning
 predictive models to traditional feature engineering techniques. To
-accomplish this comparrisson, we create three separate modeling data
-sets:
+accomplish this comparison, we create three separate modeling data sets:
 
 \begin{itemize}
 \tightlist
@@ -522,13 +519,13 @@ sets:
   aggregations of data within 500-meters of each building
 \end{itemize}
 
-\noindent The second and third modeling datasets are incremental
+\noindent The second and third modeling data sets are incremental
 variations of the first, using competing feature engineering techniques
 to extract additional predictive power from the data. To accomplish
 this, we combine three open-source data repositories provided by New
 York City via \url{nyc.gov} and \url{data.cityofnewyork.us}. Our base
 modeling data set includes all building records and associated sales
-information from 2003-2017. For each of the three modeling dataset, we
+information from 2003-2017. For each of the three modeling data set, we
 also compare 2 predictive modeling tasks, using a different outcome
 variable for each:
 
@@ -566,12 +563,12 @@ table \ref{tab:modeltable}.
 \end{table}
 
 We conduct our analysis in a two-stage process. In Stage 1, we use the
-Random Forrest algorithm to evaluate the data's suitability for our
+Random Forrest algorithm to evaluate the suitability of the data for our
 feature engineering assumptions. In Stage 2, we create subsets of the
-modeling datasets based on analysis conducted in Stage 1. We then
-compare the performance of different algorithms across all modeling
-datasets and prediction tasks. The following is an outline of our
-complete analysis process:\newline
+modeling data sets based on analysis conducted in Stage 1. We then
+compare the performance of different algorithms across all modeling data
+sets and prediction tasks. The following is an outline of our complete
+analysis process:\newline
 
 \noindent \textbf{Stage 1: Random Forrest, all data}
 
@@ -579,21 +576,21 @@ complete analysis process:\newline
 \def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  Create a ``base'' modeling dataset by sourcing and combining building
+  Create a ``base'' modeling data set by sourcing and combining building
   characteristic and sales data from open-source New York City
   repositories
 \item
-  Create a ``zip'' modeling dataset by aggregating the base data at a
+  Create a ``zip'' modeling data set by aggregating the base data at a
   Zip-Code level and appending these features to the base data
 \item
-  Create a ``spatial lag'' modeling dataset by aggregating the base data
-  within 500 meters of each building and appending these features to the
-  base data
+  Create a ``spatial lag'' modeling data set by aggregating the base
+  data within 500 meters of each building and appending these features
+  to the base data
 \item
-  Train a Random Forrest model on all three datasets, for both
+  Train a Random Forrest model on all three data sets, for both
   classification and regression tasks
 \item
-  Evalutate the performance of the various Radom Forrest models on
+  Evaluate the performance of the various Random Forrest models on
   hold-out test data
 \item
   Analyze the prediction results by building type and geography,
@@ -642,7 +639,7 @@ latitude and longitude of the tax lots are also made available, allowing
 us to locate in space each building and to build geospatial features
 from the data.
 
-Ultimately, we are interested in both the ocuurance and the amount of
+Ultimately, we are interested in both the occurrence and the amount of
 real estate sales transactions. Sales transactions are also made
 available by the New York City government, known as
 \href{http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page}{NYC
@@ -825,13 +822,14 @@ The data contain building and sale records across the five boroughs of
 New York City for the years 2003-2017. One challenge with creating a
 predictive model of real estate sales data is the heterogeneity within
 the data in terms of frequency of sales and sale price. These two
-metrics (sale occurance and amount) vary greatly across year, borough
+metrics (sale occurrence and amount) vary greatly across year, borough
 and building classes (among other attributes). Table \ref{tab:by_year}
 displays statistics which describe the base data set (pre-filtered) by
 year. Note how the frequency of transactions (\# of Sales) and the sale
 amount (Median Sale \$/SF) tend to covary, particularly through the
-downturn of 2009-2012. This may be due to the fact that the reltive size
-of transactions tends to decrease as capital becomes more constrained.
+downturn of 2009-2012. This may be due to the fact that the relative
+size of transactions tends to decrease as capital becomes more
+constrained.
 
 \begin{table}
 
@@ -908,13 +906,13 @@ Z & Misc & 49583 & 2740 & \$0 & \$0\\
 \end{table}
 
 Sale price per square foot, in particular, varies greatly across
-geography and assett class. Table \ref{tab:by_class_boro} shows the
+geography and asset class. Table \ref{tab:by_class_boro} shows the
 breakdown of sales prices by borough and asset class. Manhattan tends to
-command the highest sale-price-per-square foot across assett types.
-``Comercial'' asset types such as Office and Elevator Apartments tend to
-fetch much lower price-per-square foot than do residential classes such
-as one and two-family dwellings. Table \ref{tab:by_class_boro_num} shows
-the number of transactions across the same dimensions.
+command the highest sale-price-per-square foot across asset types.
+``Commercial'' asset types such as Office and Elevator Apartments tend
+to fetch much lower price-per-square foot than do residential classes
+such as one and two-family dwellings. Table \ref{tab:by_class_boro_num}
+shows the number of transactions across the same dimensions.
 
 \begin{table}
 
@@ -1109,7 +1107,7 @@ However, creating spatial lags is computationally expensive. In
 addition, it can be difficult to set a proper radius for the spatial lag
 calculation; in a city, 500 meters may be appropriate (for certain
 building types), whereas several kilometers or more may be appropriate
-for less densley populated areas. In this paper, we present a solution
+for less densely populated areas. In this paper, we present a solution
 for the computational challenges and suggest a potential approach to
 solving the radius-choice problem.
 
@@ -1123,15 +1121,16 @@ This requires iteratively running point-in-polygon operations, i.e.,
 ``given polygon P and an arbitrary point q, determine whether point q is
 enclosed by the edges of the polygon'' (Huang 1996). This process is
 conceptually illustrated in figure
-\ref{fig:Spatial Lag Feataure Process}.
+\ref{fig:Spatial Lag Feature Process}.
 
 \begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Spatial Lag Creation} \caption{Spatial Lag Feature Creation Process}\label{fig:Spatial Lag Feataure Process}
 \end{figure}
 
-Given that, for every point \(q_i\) in our dataset, we need to determine
-whether every other point \(q_i\) falls within a given radius, this
-means that the time-complexity of our operation can be approximated as:
+Given that, for every point \(q_i\) in our data set, we need to
+determine whether every other point \(q_i\) falls within a given radius,
+this means that the time-complexity of our operation can be approximated
+as:
 
 \[
 O(N(N-1))
@@ -1139,7 +1138,7 @@ O(N(N-1))
 
 Since the number of operations approaches \(N^2\), calculating spatial
 lags for all 8,247,499 observations in our modeling data would be
-infeasible from a time and computation perspective. Assuming that tax
+unfeasible from a time and computation perspective. Assuming that tax
 lots rarely if ever move over time, we first reduced the task to the
 number of unique tax lots in New York City from 2003-2017, which is
 514,124 points. Next, we implemented an indexing technique that greatly
@@ -1170,11 +1169,11 @@ corresponding search space \(S\), which is the convex hull of the
 partition space buffered by the maximum distance \(d\). In our case, we
 are buffering the search space by 500 meters. Choosing an appropriate
 radius for buffering presents an additional challenge in creating
-spatially-concious machine learning predictive models. In this paper, we
-choose an arbitrary radius, and use a two-stage modeling process to test
-the appropriateness of that assumption. In future work, implementing an
-``adaptive bandwidth'' technique using cross-validation to determine the
-optimal radius could be done.
+spatially-conscious machine learning predictive models. In this paper,
+we choose an arbitrary radius, and use a two-stage modeling process to
+test the appropriateness of that assumption. In future work,
+implementing an ``adaptive bandwidth'' technique using cross-validation
+to determine the optimal radius could be done.
 
 By partitioning the data into spatial grids, we are able to reduce the
 search-space for each operation by an arbitrary number of partitions
@@ -1391,11 +1390,11 @@ Random Forrest algorithm again, as well as Generalized Linear Model
 Neural Network (ANN). Each algorithm is appropriate for both
 classification and regression tasks.
 
-\hypertarget{random-forrest}{%
-\subsubsection{Random Forrest}\label{random-forrest}}
+\hypertarget{random-forest}{%
+\subsubsection{Random Forest}\label{random-forest}}
 
 The Random Forest concept was proposed by Leo Breiman in 2001 as the
-ensembling of prediction decision trees iteratively trained across
+ensemble of prediction decision trees iteratively trained across
 randomly generated subsets of data (Leo Breiman 2001). Algorithm
 \ref{alg:RandomForestAlo} outlines the procedure (Hastie, Tibshirani,
 and Friedman 2001).
@@ -1493,17 +1492,17 @@ from the h2o R open source library. The h2o implementation of the Random
 Forest algorithm is particularly well-suited for high parallelization.
 For more information, see: \url{https://www.h2o.ai/}.
 
-\hypertarget{generalized-linear-model-glm}{%
-\subsubsection{Generalized Linear Model
-(GLM)}\label{generalized-linear-model-glm}}
+\hypertarget{generalized-linear-model}{%
+\subsubsection{Generalized Linear
+Model}\label{generalized-linear-model}}
 
 \hypertarget{gradient-boosting-machine}{%
 \subsubsection{Gradient Boosting
 Machine}\label{gradient-boosting-machine}}
 
-\hypertarget{feed-forward-artificial-neural-netwrok-ann}{%
-\subsubsection{Feed-Forward Artificial Neural Netwrok
-(ANN)}\label{feed-forward-artificial-neural-netwrok-ann}}
+\hypertarget{feed-forward-artificial-neural-netwrok}{%
+\subsubsection{Feed-Forward Artificial Neural
+Netwrok}\label{feed-forward-artificial-neural-netwrok}}
 
 \hypertarget{model-validation}{%
 \subsection{Model Validation}\label{model-validation}}
@@ -1612,11 +1611,11 @@ be reasonably compared using RMSE.
 \subsection{Summary of Results}\label{summary-of-results}}
 
 We have conducted comparative analyses across a two-stage modeling
-proces. In Stage 1, using the Random Forrest algorithm, we tested 3
+process. In Stage 1, using the Random Forrest algorithm, we tested 3
 competing feature engineering techniques (base, zip-code aggregation and
-spatial-lag aggreation) for both a classification task (predicting the
-occurance of a building sale) and a regression task (predicting the sale
-price of a building). We analyzed the results of the first stage to
+spatial-lag aggregation) for both a classification task (predicting the
+occurrence of a building sale) and a regression task (predicting the
+sale price of a building). We analyzed the results of the first stage to
 identify which geographies and building types our model assumptions
 worked best. In Stage 2, using a subset of the modeling data (selected
 via an analysis of the output from Stage 1), we compared four
@@ -1638,9 +1637,9 @@ performed worse than the Base Regression model overall, which ranked in
 1st or 2nd place 31.5\% of the time. The story for the classification
 models was largely the same: the Spatial features tended to outperform
 the Zip Code data while the Base data won out overall. All models had
-similar performances on training data, but the Spatial and Zip Code
-datasets tended to underperform when generalizing to the hold-out test
-data, suggesting problems with overfitting.
+similar performances on training data, but the Spatial and Zip Code data
+sets tended to underperform when generalizing to the hold-out test data,
+suggesting problems with overfitting.
 
 We then analyzed the performance of both the regression and
 classification Random Forrest models by geography and building type. We
@@ -1672,9 +1671,9 @@ due to the assumptions made when building the spatial features.
 \subsection{Stage 1) Random Forrest Models Using All
 Data}\label{stage-1-random-forrest-models-using-all-data}}
 
-\hypertarget{results-of-random-forrest-sale-pice-regression-model}{%
-\subsubsection{Results of Random Forrest Sale Pice Regression
-Model}\label{results-of-random-forrest-sale-pice-regression-model}}
+\hypertarget{sale-pice-regression-models}{%
+\subsubsection{Sale Pice Regression
+Models}\label{sale-pice-regression-models}}
 
 We analyzed the the Root Mean Squared Errors (RMSE) of the Random
 Forrest models predicting Sale Price across feature engineering methods,
@@ -1701,7 +1700,7 @@ Zip & 5.6\% & 5.6\% & 22.2\% & 2.50\\
 \end{tabular}
 \end{table}
 
-The Base modeling data set tends to outperform both enriched datasets,
+The Base modeling data set tends to outperform both enriched data sets,
 suggesting an issue with model overfitting in some areas. We see further
 evidence of overfit in Table \ref{tab:SalePriceEval} where, despite
 similar performances on Validation data, the Zip and Spatial models have
@@ -1749,10 +1748,9 @@ from Figure \ref{fig:RMSE by boro and build type}:
   residential building types
 \end{itemize}
 
-\hypertarget{results-of-random-forrest-probability-of-sale-classification-model}{%
-\subsubsection{Results of Random Forrest Probability of Sale
-Classification
-Model}\label{results-of-random-forrest-probability-of-sale-classification-model}}
+\hypertarget{probability-of-sale-classification-models}{%
+\subsubsection{Probability of Sale Classification
+Models}\label{probability-of-sale-classification-models}}
 
 Similar to the results of the Sale Price regression models we find the
 Spatial models perform better on the hold-out test data compared to the
@@ -1777,7 +1775,7 @@ Test & 0.830 & 0.825 & 0.828\\
 Figure \ref{fig:AUC by boro and build type} shows a breakdown of model
 AUC faceted along the x-axis by Building Type and along the y-axis by
 Borough. The coloring indicates by how much a model's AUC diverges from
-the cell average, which is useful for spotting overperformers. We make
+the cell average, which is useful for spotting over performers. We make
 the following observations about Figure
 \ref{fig:AUC by boro and build type}:
 
@@ -1823,9 +1821,10 @@ Zip & 6.0\% & 7.7\% & 19.7\% & 1.69\\
 \end{tabular}
 \end{table}
 
-\hypertarget{model-comparisons-using-specific-geographies-and-building-types}{%
-\subsection{Model Comparisons Using Specific Geographies and Building
-Types}\label{model-comparisons-using-specific-geographies-and-building-types}}
+\hypertarget{stage-2-model-comparisons-using-specific-geographies-and-building-types}{%
+\subsection{Stage 2) Model Comparisons Using Specific Geographies and
+Building
+Types}\label{stage-2-model-comparisons-using-specific-geographies-and-building-types}}
 
 Using the results from the first modeling exercise, we conclude that
 Walk Up Apartments and Elevator Buildings in Manhattan, Brooklyn and the
@@ -1848,7 +1847,7 @@ Squared Error (MSE) and R-Squared. These four indicators are calculated
 using the hold-out test data, which allows us to ensure that the models
 perform well when predicting sale prices into the near future. The
 comparison metrics are presented in Table \ref{tab:RegModelTable} and
-Figure \ref{fig:Model RMSE Comparrison}.
+Figure \ref{fig:Model RMSE Comparison}.
 
 \noindent The following conclusions can be made from Table
 \ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}:
@@ -1872,7 +1871,7 @@ Figure \ref{fig:Model RMSE Comparrison}.
   variance in the test data
 \item
   We see a similar pattern in the Random Forrest results compared to the
-  previous modeling exercise using the full dataset: Base Features
+  previous modeling exercise using the full data set: Base Features
   outperforming both Spatial and Zip, with Spatial coming in second
   consistently. This further validates our reasoning that Spatial
   features are highly predictive but suffer from overfitting and other
@@ -1930,7 +1929,7 @@ regression models, these four indicators are calculated using the
 hold-out test data, allowing us to ensure that the models generalize
 well into the near future. The comparison metrics are presented in Table
 \ref{tab:ClassModelTable}. Figure \ref{fig:Model AUC Comparrison} shows
-the ROC curves and corrsponding AUC for each algorithm/feature set
+the ROC curves and corresponding AUC for each algorithm/feature set
 combination.
 
 \noindent The following conclusions can be made from Table
@@ -1945,11 +1944,11 @@ combination.
   performed relatively well with the exception of the GLM Spatial model
 \item
   The error metrics tend to be quite low and frequently negative given
-  that they are calculated using probabilitites and classes (0,1)
+  that they are calculated using probabilities and classes (0,1)
 \item
   Only 3 models have positive R-Squared values: ANN Spatial, RF Spatial
   and GLM Base. This would indicate that these models are adept at
-  prediciting positive cases (occurances of sales) in the test data
+  predicting positive cases (occurrences of sales) in the test data
 \item
   GLM Spatial returned an AUC of less than 0.5, indicating a model that
   is conceptually worse than random. This is likely a result of extreme
@@ -2003,13 +2002,13 @@ to cluster by algorithm rather than features.
 \subsection{Variable Importance Analysis of Top Performing
 Models}\label{variable-importance-analysis-of-top-performing-models}}
 
-Feature importance is calculated for each algorthm as being proportional
-to the average decrease in the squared error after including that
-variable in the model. The most important variable gets a score of 1;
-scores for other variables are derived by standardizing their measured
-reduction in error relative to the largest one. The top 10 variables for
-both the most successful regression and most successful classification
-models are presented in tables \ref{tab:RegVarImp} and
+Feature importance is calculated for each algorithm as being
+proportional to the average decrease in the squared error after
+including that variable in the model. The most important variable gets a
+score of 1; scores for other variables are derived by standardizing
+their measured reduction in error relative to the largest one. The top
+10 variables for both the most successful regression and most successful
+classification models are presented in tables \ref{tab:RegVarImp} and
 \ref{tab:ClassVarImp}.
 
 \begin{table}

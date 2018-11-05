@@ -342,13 +342,11 @@ We chose Random Forrest as the algorithm for Stage 1 because:
 To run the model, we have chosen the h2o.randomForest implementation from the h2o R open source library. The h2o implementation of the Random Forest algorithm is particularly well-suited for high parallelization. For more information, see: [https://www.h2o.ai/](https://www.h2o.ai/).
 
 
-### Generalized Linear Model (GLM)
+### Generalized Linear Model
 
 ### Gradient Boosting Machine
 
-### Feed-Forward Artificial Neural Netwrok (ANN)
-
-
+### Feed-Forward Artificial Neural Netwrok
 
 
 

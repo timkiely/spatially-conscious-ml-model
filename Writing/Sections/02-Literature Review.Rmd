@@ -6,7 +6,7 @@ bibliography: bib/bibliography.bib
 
 The literature review for this paper discusses the concept of Economic Displacement as it has been addressed in academia, primarily in relation to the study of gentrification. We also examine "mass appraisal techniques", which are automated analytical techniques used for valuing large numbers of real estate properties. Finally, we will briefly examine the literary treatment of machine learning as it relates to the problem of predicting gentrification and/or Economic Displacement.
 
-## How Has Economic Displacement Been Addressed in the Past?
+## What is Economic Displacement?
 
 Economic Displacement has been intertwined with the study of gentrification since shortly after the latter became academically relevant in the 1960's.  The term "gentrification" was first used by Ruth Glass in 1964 to described the “gentry” in low income neighborhoods in London. Gentrification was originally understood as a "tool of revitalization for declining neighborhoods" [@Zuk2015], however, in 1979 Phillip Clay  made the distinction between two types of revitalization: "incumbent upgrading" and "gentrification", noting that Economic Displacement was the negative consequence of the latter [@Clay1979]. Today, the term has evolved to describe "a spatial organization and re-organization of human dwelling and activity" [@Zuk2015]. Specific to cities, gentrification is thought of as “the transformation of a working-class or vacant area of the central city into middle-class residential or commercial use” [@Lees2008].
 
@@ -35,7 +35,7 @@ Where $P_i$ represents the price of house $i$, which is a composite good compris
 As recently as 2015, much research has dealt with mitigating the drawbacks of MRA, including the use of multi-level hierarchical models. @Fotheringham2015 explored the combination of Geographically Weighted Regression (GWR) with time-series forecasting to predict home prices over time. GWR is a variation on OLS that allows for "adaptive bandwidths" of local data to be included, i.e., for each estimate, the number of data points included varies and can be optimized using cross-validation. 
 
 
-## A Review of Machine Learning Applied to the Prediction of Gentrification
+## Prediction of Gentrification Using Machine Learning
 
 Both Mass Appraisal techniques and Automated Valuation Modeling  seek to predict real estate prices using data and statistical methods, however, traditional techniques typically fall short. This is because property valuation is inherently a “chaotic” process that does not lend itself to binary or linear analysis [@Zuk2015]. The value of any given property is a complex combination of perceived value and speculation. The value of any building or plot of land belongs to a rich network where decisions about and perceptions of neighboring properties influence the final market value. @Guan2014 compared traditional MRA techniques to alternative "data mining techniques" resulting in "mixed results". However, as @Helbich2013 states, hedonic pricing models "can be improved in two ways: (a) Through novel estimation techniques, and (b) by ancillary structural, locational, and neighborhood variables on the basis of Geographic Information System (GIS)". Recent research generally falls into these two buckets: better analysis algorithms and/or better data. 
 

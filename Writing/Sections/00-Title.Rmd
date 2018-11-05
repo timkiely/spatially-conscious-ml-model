@@ -9,10 +9,10 @@ output: pdf_document
 \vspace{4 cm}
 \LARGE
 \bf 
-Predicting Real Estate Sales in NYC: 
+The Spatially-Conscious Machine Learning Model  
 
 \Large
-Combining Machine Learning with Spatial Analysis to Boost Predictive Accuracy
+Leveraging Spatial Analysis to Boost the Accuracy of Real Estate Sales Predictions
 
 \rm
 \normalsize
@@ -35,7 +35,6 @@ MASTER OF SCIENCE IN DATA SCIENCE
 
 Northwestern University 
 
-August, 2018 
 
 \  
 

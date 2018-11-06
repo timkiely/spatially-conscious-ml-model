@@ -31,6 +31,7 @@ We analyzed the the Root Mean Squared Errors (RMSE) of the Random Forrest models
 
 read.csv("tables and figures/model rank perc distribution table.csv"
          , check.names = FALSE) %>% 
+   mutate(`Model Rank` = as.character(`Model Rank`)) %>% 
   left_join(read_rds("tables and figures/average sales model rank rmse.rds")
             , by = c("Model Rank" = "Model")
             , sort = F) %>% 

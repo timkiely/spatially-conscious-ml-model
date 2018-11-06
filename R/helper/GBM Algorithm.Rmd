@@ -1,0 +1,55 @@
+---
+title: "Untitled"
+output: pdf_document
+header-includes:
+  - \setlength{\parindent}{2em}
+  - \setlength{\parskip}{0em}
+  - \usepackage{placeins}
+  - \usepackage{fancyhdr}
+  - \usepackage{setspace}
+  - \usepackage{chngcntr}
+  - \usepackage{microtype}
+  - \usepackage{ragged2e}
+  - \usepackage{amsmath}
+  - \usepackage{indentfirst}
+  - \usepackage{longtable}
+  - \usepackage{algorithm}
+  - \usepackage{algpseudocode}
+  - \usepackage{float}
+  - \usepackage{enumitem}
+  - \onehalfspacing
+  - \counterwithin{figure}{section}
+  - \counterwithin{table}{section}
+  - \linespread{2}
+---
+
+
+
+\begin{algorithm}
+  \caption{Gradient Boosting Algorithm}\label{alg:GBMAlo}
+\begin{enumerate}
+\item Initialize: $f_0(x) = \arg\min_\gamma \sum_{i=1}^N L(y_i, \gamma).$
+\item For $m$ = 1 to $M$:
+  \begin{enumerate}
+  \item For $1,2,...,N$ compute "pseudo-residuals":
+  $$
+   r_{im} = -\left[\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\right]_{f=f_{m-1}(x)} \quad
+  $$
+  \item Fit a regression tree to the targets $r_{im}$ giving terminal regions $R_{jm}, j = 1,2,...J_m$
+  \item For $j = 1,2,...,J_m$ compute:
+  
+  $$
+  \gamma_{jm} = \underset{\gamma}{\operatorname{arg\,min}} \sum_{xi \in R_{jm}} L\left(y_i, f_{m-1}(x_i) + \gamma \right).
+  $$
+  \item Update $f_m(x) = F_{m-1}(x) + \sum_{j=1}^{J_m}\gamma_{jm}I(x \in R_{jm})$
+  \end{enumerate}
+\item Output $\hat{f}(x) = f_m(x)$
+\end{enumerate}
+\end{algorithm}
+
+
+
+
+
+
+

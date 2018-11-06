@@ -33,7 +33,7 @@ header-includes:
 
 
 ```{r global_options 1, include=FALSE}
-knitr::opts_chunk$set(fig.pos = 'H')
+knitr::opts_chunk$set(fig.pos = "H")
 source("Sections/tables and figures/my_kable.R")
 ```
 

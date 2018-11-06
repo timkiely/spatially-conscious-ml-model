@@ -1121,7 +1121,7 @@ This requires iteratively running point-in-polygon operations, i.e.,
 ``given polygon P and an arbitrary point q, determine whether point q is
 enclosed by the edges of the polygon'' (Huang 1996). This process is
 conceptually illustrated in figure
-\ref{fig:Spatial Lag Feature Process}.
+\ref{fig:Spatial Lag Feataure Process}.
 
 \begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Spatial Lag Creation} \caption{Spatial Lag Feature Creation Process}\label{fig:Spatial Lag Feataure Process}
@@ -1384,16 +1384,17 @@ Max. & 1.00 & 83,598.7\\
 We implemented and compared several algorithms across our two-stage
 process. In Stage 1, the Random Forrest algorithm was used to identify
 the optimal subset of building types and geographies for our spatial lag
-aggregation assumptions. In Stage 2, we analyze the performance of the
-Random Forrest algorithm again, as well as Generalized Linear Model
-(GLM), Gradient Boosting Machines (GBM), and a Feed-Forward Artificial
-Neural Network (ANN). Each algorithm is appropriate for both
-classification and regression tasks.
+aggregation assumptions. In Stage 2, we analyzed the hold-out test
+performance several algorithms including Random Forrest, Generalized
+Linear Model (GLM), Gradient Boosting Machines (GBM), and a Feed-Forward
+Artificial Neural Network (ANN). Each algorithm was run over the three
+competeing feature engineering data sets and for both the classification
+and regression tasks.
 
 \hypertarget{random-forest}{%
 \subsubsection{Random Forest}\label{random-forest}}
 
-The Random Forest concept was proposed by Leo Breiman in 2001 as the
+The Random Forest concept was proposed by Leo Breiman in 2001 as an
 ensemble of prediction decision trees iteratively trained across
 randomly generated subsets of data (Leo Breiman 2001). Algorithm
 \ref{alg:RandomForestAlo} outlines the procedure (Hastie, Tibshirani,
@@ -1430,7 +1431,7 @@ Breiman 2001) suitable to prediction tasks involving real estate. While
 algorithms exist that may marginally outperform Random Forest in terms
 of predictive accuracy (such as neural networks and functional gradient
 descent algorithms), Random Forest is highly scalable and
-parallelizable, and therefore a natural choice for quickly assessing the
+parallelizable, and therefore a good choice for quickly assessing the
 predictive power of different feature engineering techniques. For these
 reasons and more outlined below, we selected Random Forrest as the
 primary algorithm for Stage 1 of our modeling process.
@@ -1496,13 +1497,114 @@ For more information, see: \url{https://www.h2o.ai/}.
 \subsubsection{Generalized Linear
 Model}\label{generalized-linear-model}}
 
+A generalized linear model (GLM) is an extension of the general linear
+model that estimates an independent variable \(y\) as the linear
+combination of one or more predictor variables. A GLM is made up of a
+linear predictor taking the form
+\(\eta_i = \beta_0+\beta_1x_{i1}+...+\beta_{p}x_{ip}\), a link function
+that describes how the mean, \(E(Y_i)=\mu_i\) depends on the linear
+predictor, and a variance function that describes how the variance,
+var\((Y_i)\) depends on the mean (Hoffmann 2004). The observed value of
+the dependent variable \(y\) for observation \(i\)
+\((i = 1, 2, ..., n)\) is modeled as a linear function of \((p - 1)\)
+indpeendent variables \(x1, x2,... ,xp-1\) as
+
+\[
+y_i = \beta_0+\beta_1x_{i1}+...+\beta_{p-1}x_{i(p-1)}+e_i
+\]
+
+Several family types of GLM's exist. For a binary independent variable,
+a binomial logistic regression is appropriate. For a continuous
+independent variable, the gaussian or another distribution is
+appropriate. For our purposes, the gaussian family is used for our
+regression task and binomial for the classification.
+
 \hypertarget{gradient-boosting-machine}{%
 \subsubsection{Gradient Boosting
 Machine}\label{gradient-boosting-machine}}
 
+Gradient Boosting Machine is one of the most popular machine learning
+algorithms available today. The algorithm uses iteratively refined
+approximations, obtained through cross-validation, to incremenetally
+increase predictive accuracy. Similar to Random Forrest, GBM is
+well-suited to using regression trees as the base learner. Gradient
+boosting constructs additive regression models by sequentially fitting a
+simple parameterized function (a ``base learner'', in our case, a
+regression tree) to ``pseudo''-residuals by least squares at each
+iteration (Friedman 2002). The pseudo-residuals are the gradient of the
+loss functional being minimized, with respect to the model values at
+each training data point evaluated at the current step. The tree-variant
+of the generic Gradient Boosting Algorithm is outlined in algorithm
+\ref{alg:GBMAlo} (Hastie, Tibshirani, and Friedman 2001).
+
+\begin{algorithm}
+  \caption{Gradient Tree Boosting Algorithm}\label{alg:GBMAlo}
+\begin{enumerate}
+\item Initialize: $f_0(x) = \arg\min_\gamma \sum_{i=1}^N L(y_i, \gamma).$
+\item For $m$ = 1 to $M$:
+  \begin{enumerate}
+  \item For $1,2,...,N$ compute "pseudo-residuals":
+  $$
+   r_{im} = -\left[\frac{\partial L(y_i, f(x_i))}{\partial f(x_i)}\right]_{f=f_{m-1}(x)} \quad
+  $$
+  \item Fit a regression tree to the targets $r_{im}$ giving terminal regions $R_{jm}, j = 1,2,...J_m$
+  \item For $j = 1,2,...,J_m$ compute:
+  
+  $$
+  \gamma_{jm} = \underset{\gamma}{\operatorname{arg\,min}} \sum_{xi \in R_{jm}} L\left(y_i, f_{m-1}(x_i) + \gamma \right).
+  $$
+  \item Update $f_m(x) = F_{m-1}(x) + \sum_{j=1}^{J_m}\gamma_{jm}I(x \in R_{jm})$
+  \end{enumerate}
+\item Output $\hat{f}(x) = f_m(x)$
+\end{enumerate}
+\end{algorithm}
+
 \hypertarget{feed-forward-artificial-neural-netwrok}{%
 \subsubsection{Feed-Forward Artificial Neural
 Netwrok}\label{feed-forward-artificial-neural-netwrok}}
+
+The Artificial Neural Network (ANN) implementation used in this paper is
+a multi-layer feedforward artificial neural network trained with
+stochastic gradient descent using back-propagation. An ANN model is
+sometimes referred to as a multi-layer perceptron or deep neural
+network. The feedforward ANN is one of the most common neural network
+algorithms, but other types exist, such as the Convolutional Neural
+Network (CNN) which performs well on image classification tasks, and the
+Recurrent Neural Network (RNN) which is well-suited for sequential data
+such as text and audio (Schmidhuber 2015). The feedforward ANN is
+typically best suited for tabular data.
+
+The neural network model has unknown parameters, often called weights,
+and we seek values for them that make the model fit the training data
+well (Hastie, Tibshirani, and Friedman 2001). We denote the complete set
+of weights by \(\theta\), which consists of
+
+\(\{\alpha_{0m},\alpha_m;m=1,2,...,M\} M(p+1)\) weights,
+\(\{\beta_{0k},\beta_k;k=1,2,...,K\} K(p+1)\) weights.
+
+For both classification and regression, we use sum-of-squared errors as
+our measure of fit (error function)
+
+\[
+R(\theta)=\sum_{k=1}^K\sum_{i=1}^N(y_{ik}-f_{k}(x_i))^2
+\] The generic approach to minimizing \(R(\theta)\) is by gradient
+descent, called back-propagation in this setting (Hastie, Tibshirani,
+and Friedman 2001). Because of the compositional form of the model, the
+gradient can be derived using the chain rule for differentiation. This
+can be computed by a forward and backward sweep over the network,
+keeping track only of quantities local to each unit. Here is
+back-propagation in detail for squared error loss:
+
+\[
+R(\theta) = \sum_{i=1}^NR_i
+\] \[
+\sum_{i=1}^N\sum_{k=1}^K(y_{ik}-f_{k}(x_i))^2
+\]
+
+For our implementations, we use the rectifier activation function with
+1024 hidden layers, 100 epochs and L1 regularization set to 0.00001. The
+algorithm use is the h2o.deeplearning open source implementation. For
+more information, see: \url{https://www.h2o.ai/}.
 
 \hypertarget{model-validation}{%
 \subsection{Model Validation}\label{model-validation}}
@@ -2221,6 +2323,11 @@ Fotheringham, R; Yao, A.S.; Crespo. 2015. ``Exploring, Modelling and
 Predicting Spatiotemporal Variations in House Prices.'' \emph{The Annals
 of Regional Science} 54.
 
+\leavevmode\hypertarget{ref-friedman2002stochastic}{}%
+Friedman, Jerome H. 2002. ``Stochastic Gradient Boosting.''
+\emph{Computational Statistics \& Data Analysis} 38 (4). Elsevier:
+367--78.
+
 \leavevmode\hypertarget{ref-Friedman2001}{}%
 Friedman, Jerome H. 2001. ``Greedy Function Approximation: A Gradient
 Boosting Machine.'' \emph{The Annals of Statistics} 29 (5): 1189--1232.
@@ -2252,6 +2359,10 @@ York, NY, USA: Springer New York Inc.
 Helbich, et al., Marco. 2013. ``Boosting the Predictive Accuracy of
 Urban Hedonic House Price Models Through Airborne Laser Scanning.''
 \emph{Computers, Environment and Urban Systems} 39: 81--92.
+
+\leavevmode\hypertarget{ref-hoffmann2004generalized}{}%
+Hoffmann, John Patrick. 2004. \emph{Generalized Linear Models: An
+Applied Approach}. Pearson College Division.
 
 \leavevmode\hypertarget{ref-Huang1996}{}%
 Huang, Chong-Wei. 1996. ``On the Complexity of Point-in-Polygon
@@ -2317,6 +2428,11 @@ Journal} 271.
 Schernthanner H., Gonschorek J., Asche H. 2016. ``Spatial Modeling and
 Geovisualization of Rental Prices for Real Estate Portals.''
 \emph{Computational Science and Its Applications} 9788.
+
+\leavevmode\hypertarget{ref-SCHMIDHUBER201585}{}%
+Schmidhuber, Jürgen. 2015. ``Deep Learning in Neural Networks: An
+Overview.'' \emph{Neural Networks} 61: 85--117.
+\url{https://doi.org/https://doi.org/10.1016/j.neunet.2014.09.003}.
 
 \leavevmode\hypertarget{ref-Silverherz1936}{}%
 Silverherz, J. D. 1936. ``The Assessment of Real Property in the United

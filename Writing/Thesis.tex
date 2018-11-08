@@ -179,35 +179,41 @@ Candice Bradley, Second Reader
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-Income inequality may be one of the most pressing challenges of our
-time, yet, its causes remain unclear. What is clear is that,
-increasingly, the places where people live ``over time are becoming more
-segregated by income, due in part to macro-level increases in income
-inequality'' (Zuk 2015). Income inequality has many well-explored
-dimensions: social, economic, political, philosophical. In this paper,
-we focus on an under-explored dimension, one with potential for
-tremendous impact: geo-spatial. The locations where people live (by
-choice or not) have a dramatic impact on their quality of life and
-ability to progress. Yet, many who are displaced by gentrification find
-themselves in self-reinforcing cycles of displacement and poverty.
+\hypertarget{the-spatially-concious-machine-learning-model}{%
+\subsection{The Spatially-Concious Machine Learning
+Model}\label{the-spatially-concious-machine-learning-model}}
+
+Things near each other tend to be like each other. This concept is a
+well-known problem in traditional spatial analysis and is typically
+referred to as \emph{spatial autocorrelation}. In statistics, this is
+said to ``reduce the amount of information'' pertaining to spatially
+proximate observations as they can, in part, be used to predict each
+other. But can spatial features be used in a machine-learning context to
+make better predictions? This work demonstrates that introducing
+``spatial lags'' as features in machine learning models greatly
+increases accuracy when predicting real estate sales and sale prices.
+
+\hypertarget{motivation-combatting-income-inequality-by-predicting-gentrification}{%
+\subsection{Motivation: Combatting Income Inequality by Predicting
+Gentrification}\label{motivation-combatting-income-inequality-by-predicting-gentrification}}
 
 Researchers at the Urban Institute (Solomon Greene and Lei 2016)
-recently identified the socio-economic phenomenon of ``Economic
-Exclusion'' as a direct cause of income inequality in the US. ``Economic
-Exclusion'' can be defined as follows: vulnerable
-populations--disproportionately communities of color, immigrants,
-refugees, and women--who are physically displaced by local economic
-prosperity can enter into a gradual cycle of diminished access to good
-jobs, good schools, health care facilities, public spaces and other
-physically proximate benefits. Diminished access leads to more poverty,
-which leads to more displacement. Such self-reinforcing poverty
-gradually exacerbates income inequality over the course years and even
-generations.
+recently identified ``Economic Exclusion'' as a powerful contributor to
+income inequality in the United States. ``Economic Exclusion'' can be
+defined as follows: vulnerable populations--disproportionately
+communities of color, immigrants, refugees, and women--who are
+physically displaced by local economic prosperity enter a gradual cycle
+of diminished access to good jobs, good schools, health care facilities,
+public spaces and other economic and social resources. Diminished access
+leads to more poverty, which leads to more displacement. This
+self-reinforcing cycle of poverty and exclusion gradually exacerbates
+income inequality over the course years and generations. What can be
+done to intervene?
 
-One practical way to combat Economic Exclusion is to focus on preventing
-displacement, i.e., the physical relocation of populations away from
-economic resources. As defined by Clay (1979), Displacement is the
-negative consequence of gentrification. Reliably predicting
+Stopping Economic Exclusion requires preventing displacement. As defined
+by Clay (1979), ``displacement'' can be thought of as the negative
+consequence of gentrification, where vulnerable populations are forcibly
+re-located due to localized economic prosperity. Reliably predicting
 gentrification would be a valuable tool for preventing displacement at
 an early stage, however, such a task has proven difficult historically.
 
@@ -218,42 +224,42 @@ agencies and nonprofits tend to intervene once displacement is already
 underway, and after-the-fact interventions can be costly and
 ineffective. As explained by Solomon Greene and Lei (2016), there are
 several preemptive actions that can be deployed to stem divestment and
-ensure that existing residents benefit from new investments. Not unlike
-medical treatment, early detection is the key to success.
+ensure that existing residents benefit from local prosperity. Potential
+actions include regulation, affordable housing, micro-financing, tax
+subsidies, vouchers, and more. Not unlike medical treatment, early
+detection is the key to success.
 
 Consequently, in 2016, the Urban Institute put forth a call for research
 into the creation of ``neighborhood-level early warning and response
 systems that can help city leaders and community advocates get ahead of
-neighborhood changes'' (Solomon Greene and Lei 2016). This paper
-explores a technique to answer that call in part using free, open data
-and open-source software.
+neighborhood changes'' (Solomon Greene and Lei 2016). This work seeks to
+answer that call in part by using free, open data, open-source software
+and cutting-edge techniques.
 
-Many government agencies have already become competent at using
-predictive modeling to identify and address socio-economic challenges at
-the individual-level, ranging from prescription drug abuse to
-homelessness to recidivism (Ritter 2013). However, few, if any, examples
-exist of large-scale, systematic applications of data analysis to aid
-vulnerable populations experiencing displacement. This paper belongs to
-an emerging trend known as the ``science of cities'' which aims to use
-large data sets and advanced simulation and modeling techniques to
-understand urban patterns and how cities function (Batty 2013).
+Many government agencies have, to date, demonstrated the benefits of
+applied predictive modeling, ranging from prescription drug abuse
+prevention to homelessness intervention to recidivism reduction (Ritter
+2013). However, few, if any, examples exist of large-scale, systematic
+applications of data analysis to aid vulnerable populations experiencing
+displacement. This paper belongs to an emerging trend known as the
+``science of cities'' which aims to use large data sets and advanced
+simulation and modeling techniques to understand and improve urban
+patterns and how cities function (Batty 2013).
 
-In this paper, we explore techniques that can dramatically boost the
-accuracy of existing gentrification prediction models. We use real
-estate transactions, both their occurrence (probability of sale) and
-their dollar amount (sale price per square foot) as a proxy for
-gentrification. We explain how this predictive technique may be applied
-to practically combat Economic Exclusion, a precursor and contributor to
-Income Inequality. The technique marries the use of machine-learning
-predictive modeling (Random Forrest) with ``spatial-lag'' features
-typically seen in geographically-weighted regressions (GWR). We find
-that, while the addition of many new variables to a modeling data set
-can inhibit the models' ability to generalize into the future,
-spatial-lag features 1) consistently outperform zip-code level
-aggregation features, and 2) consistently outperform all models for
-specific property types. We conclude that spatial-lag features, while
-computationally expensive, can be used to greatly increase the accuracy
-of spatially-conscious predictive models.
+This work explores techniques that can dramatically boost the accuracy
+of existing gentrification prediction models. We use real estate
+transactions in New York City, both their occurrence (probability of
+sale) and their dollar amount (sale price per square foot) as a proxy
+for gentrification. The technique marries the use of machine-learning
+predictive modeling with ``spatial-lag'' features typically seen in
+geographically-weighted regressions (GWR). We employ a two-step modeling
+process in which we 1) determine the optimal building types and
+geographies suited to our feature engineering assumptions and 2) perform
+a comparative analysis across several state-of-the-art algorithms
+(Generalized Linear Model, Random Forrest, Gradient Boosting Machine,
+Artificial Neural Network). We conclude that spatially-conscious machine
+learning models consistently outperform traditional real estate
+valuation and predictive modeling techniques.
 
 \hypertarget{literature-review}{%
 \section{Literature Review}\label{literature-review}}
@@ -262,9 +268,9 @@ The literature review for this paper discusses the concept of Economic
 Displacement as it has been addressed in academia, primarily in relation
 to the study of gentrification. We also examine ``mass appraisal
 techniques'', which are automated analytical techniques used for valuing
-large numbers of real estate properties. Finally, we will briefly
-examine the literary treatment of machine learning as it relates to the
-problem of predicting gentrification and/or Economic Displacement.
+large numbers of real estate properties. Finally, we examine recent
+applications of machine learning as it relates to predicting
+gentrification.
 
 \hypertarget{what-is-economic-displacement}{%
 \subsection{What is Economic
@@ -273,13 +279,13 @@ Displacement?}\label{what-is-economic-displacement}}
 Economic Displacement has been intertwined with the study of
 gentrification since shortly after the latter became academically
 relevant in the 1960's. The term ``gentrification'' was first used by
-Ruth Glass in 1964 to described the ``gentry'' in low income
-neighborhoods in London. Gentrification was originally understood as a
+Ruth Glass in 1964 to describe the ``gentry'' in low income
+neighborhoods in London. Gentrification was originally thought of as a
 ``tool of revitalization for declining neighborhoods'' (Zuk 2015),
-however, in 1979 Phillip Clay made the distinction between two types of
-revitalization: ``incumbent upgrading'' and ``gentrification'', noting
-that Economic Displacement was the negative consequence of the latter
-(Clay 1979). Today, the term has evolved to describe ``a spatial
+however, in 1979 Phillip Clay highlighted that gentrification brought
+both positive and negative consequences to local populations and
+described the negative as Economic Exclusion (Clay 1979). Today, the
+term has adopted a more neutral connotation, describing the ``spatial
 organization and re-organization of human dwelling and activity'' (Zuk
 2015). Specific to cities, gentrification is thought of as ``the
 transformation of a working-class or vacant area of the central city
@@ -291,23 +297,21 @@ capital versus flows of people to neighborhoods'', respectively (Zuk
 2015). Supply side arguments for gentrification tend to focus on
 ``private capital investment, public policies, and public investments''
 (Zuk 2015), and are much more often the subject of academic literature
-on Economic Displacement. This kind of research is more common because
-it has the advantage of being more directly linked to influencing public
-policy (as opposed to controlling the flows of people). According to
-Dreier (2004), public policies that have been negatively linked to
+on Economic Displacement. This kind of research may be more common
+because it has the advantage of being more directly linked to
+influencing public policy (as opposed to controlling the flows of
+people). According to Dreier (2004), public policies that can increase
 Economic Displacement have been, among others, automobile-oriented
 transportation infrastructure spending and mortgage interest tax
 deductions for home owners. Others that have argued for supply-side
-gentification include Smith (1979), who stated that the return of
+gentrification include Smith (1979), who stated that the return of
 capital from the suburbs to the city, or the ``political economy of
 capital flows into urban areas'' are what primarily drive both the
 positive and negative consequences of urban gentrification.
 
-More recently, income inequality has been explored as a major
-consequence of Economic Displacement. Specifically, ``higher
-compensation in the top quintile and the lack of jobs for the bottom
-quintile'' (Reardon 2011); (Watson 2009). The concentration of wealth
-allows ``certain households to sort themselves according to their
+More recently, Economic Displacement has been explored as a contributor
+to income inequality (Reardon 2011); (Watson 2009). Concentrations of
+wealth allow ``certain households to sort themselves according to their
 preferences -- and control local political processes that continue
 exclusion'' (Reardon 2011). This results in a self-reinforcing feedback
 loop where wealthier households influence public policy toward their
@@ -400,19 +404,19 @@ Learning}\label{prediction-of-gentrification-using-machine-learning}}
 Both Mass Appraisal techniques and Automated Valuation Modeling seek to
 predict real estate prices using data and statistical methods, however,
 traditional techniques typically fall short. This is because property
-valuation is inherently a ``chaotic'' process that does not lend itself
-to binary or linear analysis (Zuk 2015). The value of any given property
-is a complex combination of perceived value and speculation. The value
-of any building or plot of land belongs to a rich network where
-decisions about and perceptions of neighboring properties influence the
-final market value. Guan et al. (2014) compared traditional MRA
-techniques to alternative ``data mining techniques'' resulting in
-``mixed results''. However, as Helbich (2013) states, hedonic pricing
-models ``can be improved in two ways: (a) Through novel estimation
-techniques, and (b) by ancillary structural, locational, and
-neighborhood variables on the basis of Geographic Information System
-(GIS)''. Recent research generally falls into these two buckets: better
-analysis algorithms and/or better data.
+valuation is inherently a ``chaotic'' process that ``does not lend
+itself to binary or linear analysis'' (Zuk 2015). The value of any given
+property is a complex combination of fungible intrinsic characteristics,
+perceived value and speculation. The value of any building or plot of
+land belongs to a rich network where decisions about and perceptions of
+neighboring properties influence the final market value. Guan et al.
+(2014) compared traditional MRA techniques to alternative ``data mining
+techniques'' resulting in ``mixed results''. However, as Helbich (2013)
+states, hedonic pricing models ``can be improved in two ways: (a)
+Through novel estimation techniques, and (b) by ancillary structural,
+locational, and neighborhood variables on the basis of Geographic
+Information System (GIS)''. Recent research generally falls into these
+two buckets: better analysis algorithms and/or better data.
 
 In the ``better data'' category, researchers have been striving to
 introduce new independent variables to increase the accuracy of
@@ -450,13 +454,13 @@ SVM technique and found the latter to outperform. Schernthanner H.
 (2016) compared traditional linear regression techniques to several
 techniques such as krigging (stochastic interpolation) and Random
 Forest. They concluded that the more advanced techniques, particularly
-random forest, are sound and more accurate when compared to traditional
+Random Forest, are sound and more accurate when compared to traditional
 statistical methods. Antipov and Pokryshevskaya (2012) came to a similar
 conclusion about the superiority of Random Forest for real estate
 valuation after comparing 10 algorithms: multiple regression, CHAID,
 Exhaustive CHAID, CART, 2 types of k-Nearest Neighbors, Multilayer
-Perceptron artificaial neural network (ANN), Radial Basis Function
-neural network (RBF), Boosted Trees and finally Random Forest.
+Perceptron artificial neural network (ANN), Radial Basis Function neural
+network (RBF), Boosted Trees and finally Random Forest.
 
 Guan et al. (2014) compared three different approaches to defining
 spatial neighbors: a simple radius technique, a k-nearest neighbors
@@ -473,12 +477,12 @@ propagation) to predict the sale price of residential condos in Tehran,
 Iran, using a non-mating genetic algorithm for dimensionality reduction
 with a focus on computational efficiency. The paper concludes that two
 primary strategies help in this regard: weighting property sales by
-temporal proximity (sales which happened closer in time are more alike),
-and also using a learner to accelerate the recognition of important
-features. The paper compares this technique to several other common
-neural network approaches and finds that while not necessarily the only
-way to get the best answer, it is the fastest way to get to the best
-answer.
+temporal proximity (i.e., sales which happened closer in time are more
+alike), and also using a learner to accelerate the recognition of
+important features. The paper compares this technique to several other
+common neural network approaches and finds that while not necessarily
+the only way to get the best answer, it is the fastest way to get to the
+best answer.
 
 Finally, it should be noted that many studies, whether exploring
 advanced techniques, new data, or both, rely on aggregation of data by
@@ -502,9 +506,10 @@ generally outperform.
 \hypertarget{methodology-overview}{%
 \subsection{Methodology Overview}\label{methodology-overview}}
 
-Our goal is to compare ``spatially-conscious'' machine learning
+Our goal was to compare ``spatially-conscious'' machine learning
 predictive models to traditional feature engineering techniques. To
-accomplish this comparison, we create three separate modeling data sets:
+accomplish this comparison, we created three separate modeling data
+sets:
 
 \begin{itemize}
 \tightlist
@@ -512,32 +517,32 @@ accomplish this comparison, we create three separate modeling data sets:
   \textbf{Base modeling data:} includes building characteristics such as
   size, taxable value, usage and others
 \item
-  \textbf{Zip Code modeling data:} includes base data as well as
+  \textbf{Zip Code modeling data:} includes the base data as well as
   aggregations of data at the zip-code level
 \item
-  \textbf{Spatial Lag modeling data:} includes base data as well as
+  \textbf{Spatial Lag modeling data:} includes the base data as well as
   aggregations of data within 500-meters of each building
 \end{itemize}
 
 \noindent The second and third modeling data sets are incremental
 variations of the first, using competing feature engineering techniques
-to extract additional predictive power from the data. To accomplish
-this, we combine three open-source data repositories provided by New
-York City via \url{nyc.gov} and \url{data.cityofnewyork.us}. Our base
-modeling data set includes all building records and associated sales
-information from 2003-2017. For each of the three modeling data set, we
-also compare 2 predictive modeling tasks, using a different outcome
-variable for each:
+to extract additional predictive power from the data. We combined three
+open-source data repositories provided by New York City via
+\url{nyc.gov} and \url{data.cityofnewyork.us}. Our base modeling data
+set included all building records and associated sales information from
+2003-2017. For each of the three modeling data sets, we also compared
+two predictive modeling tasks, using a different dependent variable for
+each:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
   \textbf{Classification task: Probability of Sale} The probability that
-  a given property will sell in a given year
+  a given property will sell in a given year (0,1)
 \item
   \textbf{Regression task: Sale Price per square foot} Given that a
-  property sells, how much is the sale price per square foot?
+  property sells, how much is the sale price per square foot? (\$/SF)
 \end{enumerate}
 
 \noindent The six distinct modeling tasks/data combinations are shown in
@@ -562,15 +567,15 @@ table \ref{tab:modeltable}.
 \end{tabular}}
 \end{table}
 
-We conduct our analysis in a two-stage process. In Stage 1, we use the
-Random Forrest algorithm to evaluate the suitability of the data for our
-feature engineering assumptions. In Stage 2, we create subsets of the
-modeling data sets based on analysis conducted in Stage 1. We then
-compare the performance of different algorithms across all modeling data
-sets and prediction tasks. The following is an outline of our complete
-analysis process:\newline
+We conducted our analysis in a two-stage process. In Stage 1, we used
+the Random Forrest algorithm to evaluate the suitability of the data for
+our feature engineering assumptions. In Stage 2, we created subsets of
+the modeling data based on the analysis conducted in Stage 1. We then
+compared the performance of different algorithms across all modeling
+data sets and prediction tasks. The following is an outline of our
+complete analysis process:\newline
 
-\noindent \textbf{Stage 1: Random Forrest, all data}
+\noindent \textbf{Stage 1: Random Forrest algorithm using all data}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -588,7 +593,7 @@ analysis process:\newline
   to the base data
 \item
   Train a Random Forrest model on all three data sets, for both
-  classification and regression tasks
+  classification (probability of sale) and regression (sale price) tasks
 \item
   Evaluate the performance of the various Random Forrest models on
   hold-out test data
@@ -599,7 +604,7 @@ analysis process:\newline
   appropriate\newline
 \end{enumerate}
 
-\noindent \textbf{Stage 2: Many algorithms, refined data}
+\noindent \textbf{Stage 2: Many algorithms using refined data}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -631,7 +636,7 @@ Tax Lot Output data set, known as
 contains a single record for every tax lot in the city along with a
 number of building and tax-related attributes such as Year Built,
 Assessed Value, Square Footage, number of stories, and many more. At the
-time of this writing, NYC has made this data set available for all years
+time of this writing, NYC had made this data set available for all years
 between 2002-2017, excluding 2008. For convenience, we also exclude the
 2002 data set from our analysis because corresponding sales information
 is not available for that year. Importantly for our analysis, the
@@ -639,12 +644,12 @@ latitude and longitude of the tax lots are also made available, allowing
 us to locate in space each building and to build geospatial features
 from the data.
 
-Ultimately, we are interested in both the occurrence and the amount of
-real estate sales transactions. Sales transactions are also made
-available by the New York City government, known as
+Ultimately, we were interested in both the occurrence and the amount of
+real estate sales transactions. Sales transactions are made available
+separately by the New York City government, known as the
 \href{http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page}{NYC
 Rolling Sales Data}\footnote{\url{http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page}}.
-At the time of this writing, sales transactions are available for the
+At the time of this writing, sales transactions were available for the
 years 2003-2017. The sales transactions data contains additional data
 fields describing time, place, and amount of sale as well as additional
 building characteristics. Crucially, the sales transaction data does not
@@ -659,9 +664,9 @@ its Borough-Block-Lot (BBL) is 1\_829\_16 (the 1 represents Manhattan).
 The sales data contains BBL's at the building level, however, the sales
 transactions data does not appropriately designate condos as their own
 BBL's. Mapping the sales data directly to the PLUTO data results in a
-mapping error rate of 23.1\%. Therefore, the sales transactions data
-must first be mapped to another data source, the NYC Property Address
-Directory, or
+mapping error rate of 23.1\% (mainly due to condos). Therefore, the
+sales transactions data must first be mapped to another data source, the
+NYC Property Address Directory, or
 \href{https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data}{PAD}\footnote{\url{https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data}},
 which contains an exhaustive list of all BBL's in NYC. Once the sales
 data is combined with PAD, the data can be mapped to PLUTO with an error
@@ -671,13 +676,13 @@ rate of 0.291\% (See: Figure \ref{fig:Data Schema}).
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Data Schema} \caption{Overview of Data Sources}\label{fig:Data Schema}
 \end{figure}
 
-After the Sales Transactions data has been mapped to PAD, it can then be
-mapped to PLUTO. The sales data is normalized and filtered so that only
-BBL's with less than or equal to 1 transactions in a year occur. The
-final data set is an exhaustive list of all tax lots in NYC for every
-year between 2003-2017, whether that building was sold, for what amount,
-and several other additional variables. A description of all variables
-can be seen in Table \ref{tab:descripTable}.
+After combining the Sales Transactions data with PAD and PLUTO, the
+resulting data was normalized and filtered so that only BBL's with less
+than or equal to 1 transactions in a year occur. The final data set is
+an exhaustive list of all tax lots in NYC for every year between
+2003-2017, whether that building was sold, for what amount, and several
+other additional variables. A description of all variables can be seen
+in Table \ref{tab:descripTable}.
 
 \begin{table}
 
@@ -777,13 +782,13 @@ ZoneDist2 & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,715,653\\
 \subsubsection{Global filtering of the
 data}\label{global-filtering-of-the-data}}
 
-We will only include building categories of significant interest in the
-modeling data. Generally speaking, by significant interest we are
-referring to building types that are regularly bought and sold on the
-free market. These include residences, office buildings and industrial
-buildings, and exclude things like government-owned buildings and
-hospitals. We also exclude hotels as they tend to be comparatively rare
-in the data and exhibit unique sales characteristics. The included
+We only included building categories of significant interest in our
+initial modeling data. Generally speaking, by significant interest we
+are referring to building types that are regularly bought and sold on
+the free market. These include residences, office buildings and
+industrial buildings, and exclude things like government-owned buildings
+and hospitals. We also excluded hotels as they tend to be comparatively
+rare in the data and exhibit unique sales characteristics. The included
 building types are displayed in Table \ref{tab:categoryTable}.
 
 \begin{table}
@@ -807,8 +812,8 @@ O & OFFICES\\
 \end{tabular}
 \end{table}
 
-The data is further filtered to include only records with equal to or
-less than 2 buildings per tax lot. This effectively excludes large
+The data was further filtered to include only records with equal to or
+less than 2 buildings per tax lot. This effectively excluded large
 outliers in the data, including multi-building tax lots such as the
 World Trade Center and Stuyvesant Town. The global filtering of the data
 set reduces the base modeling data from 12,012,780 records down to
@@ -964,16 +969,17 @@ Walk Up Apartments & 63,552 & 18,075 & 19,824 & 31,932 & 1,820\\
 \hypertarget{base-modeling-data}{%
 \subsubsection{Base Modeling Data}\label{base-modeling-data}}
 
-The base modeling data set is constructed by combining several
+The base modeling data set was constructed by combining several
 open-source data repositories, outlined in the Data Sources section. In
 addition to the data provided by New York City, several additional
-features are engineered and appended. A summary table of the additional
-features are presented in Table \ref{tab:baseModelDataFeats}. A binary
-variable is created to indicate whether a tax lot has a building on it
-(i.e., whether it is an empty plot of land or not). In addition,
-building types are quantified by what percent of the square footage
-belongs to the major property types: Commercial, Residential, Office,
-Retail, Garage, Storage, Factory and Other.
+features were engineered and appended to the base data. A summary table
+of the additional features are presented in Table
+\ref{tab:baseModelDataFeats}. A binary variable was created to indicate
+whether a tax lot had a building on it (i.e., whether it was an empty
+plot of land). In addition, building types were quantified by what
+percent of their square footage belonged to the major property types:
+Commercial, Residential, Office, Retail, Garage, Storage, Factory and
+Other.
 
 \begin{table}
 
@@ -1014,27 +1020,26 @@ Percent\_Change\_EMA\_5 & -1 & 0.06 & 308.05 & 5,341,901.60\\
 \end{tabular}}
 \end{table}
 
-Importantly, two variables are created from the Sales Prices: A
-price-per-square-foot figure (``Last\_Sale\_Price'') and a total Sale
-Price (``Last\_Sale\_Price\_Total''). Sale Price per Square foot
-eventually becomes the outcome variable in one of the predictive models,
-even though it is referred to as Sale Price. Further features are
-derived which carry forward the previous sale price of a tax lot, if
-there is one, through successive years. Previous Sale Price is then used
-to create Simple Moving Averages (SMA), Exponential Moving Averages
+Importantly, two variables were created from the Sales Price: A
+price-per-square-foot figure (``Sale\_Price'') and a total Sale Price
+(``Sale\_Price\_Total''). Sale Price per square foot eventually became
+the outcome variable in one of the predictive models. Further features
+were derived which carry forward the previous sale price of a tax lot,
+if there was one, through successive years. Previous Sale Price was then
+used to create Simple Moving Averages (SMA), Exponential Moving Averages
 (EMA), and percent change measurements between the moving averages. In
-total, 69 variables are input to the feature engineering process and 92
-variables are output. The final base modeling data set is 92 variables
+total, 69 variables were input to the feature engineering process and 92
+variables were output. The final base modeling data set was 92 variables
 by 8,247,499 rows.
 
 \hypertarget{zip-code-modeling-data}{%
 \subsubsection{Zip Code Modeling Data}\label{zip-code-modeling-data}}
 
-The first of the two comparative modeling data sets is the Zip Code
+The first of the two comparative modeling data sets was the Zip Code
 modeling data. Using the base data as a starting point, several features
-are generated to describe characteristics of the Zip Code where each tax
-lot resides. A summary table of the Zip Code level features is presented
-in \ref{tab:zipcodemodelfeats}.
+were generated to describe characteristics of the Zip Code where each
+tax lot resides. A summary table of the Zip Code level features is
+presented in \ref{tab:zipcodemodelfeats}.
 
 \begin{table}
 
@@ -1046,7 +1051,7 @@ in \ref{tab:zipcodemodelfeats}.
 Feature & Min & Median & Mean & Max\\
 \midrule
 Last Year Zip Sold & 0.00 & 27.00 & 31.14 & 112.00\\
-Last Year Zip Sold Percent Ch & -1.00 & 0.00 & Inf & Inf\\
+Last Year Zip Sold Percent Ch & -1.00 & 0.00 &  & \\
 Last Sale Price zip code average & 0.00 & 440.95 & 522.87 & 1,961.21\\
 Last Sale Price Total zip code average & 10.00 & 5,312,874.67 & 11,877,688.55 & 1,246,450,000.00\\
 Last Sale Date zip code average & 12,066.00 & 13,338.21 & 13,484.39 & 17,149.00\\
@@ -1084,12 +1089,13 @@ Percent Change EMA 5 bt only & -0.34 & 0.06 & 335.17 & 178,947.30\\
 \end{tabular}}
 \end{table}
 
-In general, the base model data features are aggregated to a Zip Code
-level and attached to the individual observations, including SMA and EMA
-calculations. Additionally, a second set of features are added, denoted
-as ``bt\_only'', which filter only for tax lots of the same building
-type and aggregate to the Zip Code level. In total, the Zip Code feature
-engineering process inputs 92 variables and outputs 122 variables.
+In general, the base model data features were aggregated to a Zip Code
+level and appended, including the SMA, EMA and percent change
+calculations. Additionally, a second set of features were added, denoted
+as ``bt\_only'', which aggregated the data in a similar fashion but only
+included tax lots of the same building type in the calculations. In
+total, the Zip Code feature engineering process input 92 variables and
+output 122 variables.
 
 \hypertarget{spatial-lag-modeling-data}{%
 \subsubsection{Spatial Lag Modeling
@@ -1138,7 +1144,7 @@ O(N(N-1))
 
 Since the number of operations approaches \(N^2\), calculating spatial
 lags for all 8,247,499 observations in our modeling data would be
-unfeasible from a time and computation perspective. Assuming that tax
+infeasible from a time and computation perspective. Assuming that tax
 lots rarely if ever move over time, we first reduced the task to the
 number of unique tax lots in New York City from 2003-2017, which is
 514,124 points. Next, we implemented an indexing technique that greatly
@@ -1167,15 +1173,15 @@ spatial indexing process is outlined in Algorithm \ref{alg:spatial1}.
 \noindent Each gridded partition of the data is married with a
 corresponding search space \(S\), which is the convex hull of the
 partition space buffered by the maximum distance \(d\). In our case, we
-are buffering the search space by 500 meters. Choosing an appropriate
-radius for buffering presents an additional challenge in creating
+buffered the search space by 500 meters. Choosing an appropriate radius
+for buffering presents an additional challenge in creating
 spatially-conscious machine learning predictive models. In this paper,
-we choose an arbitrary radius, and use a two-stage modeling process to
+we chose an arbitrary radius, and use a two-stage modeling process to
 test the appropriateness of that assumption. In future work,
 implementing an ``adaptive bandwidth'' technique using cross-validation
 to determine the optimal radius could be done.
 
-By partitioning the data into spatial grids, we are able to reduce the
+By partitioning the data into spatial grids, we were able to reduce the
 search-space for each operation by an arbitrary number of partitions
 \(G\). This improves the base run-time complexity to:
 
@@ -1193,7 +1199,7 @@ version of the grided indexing technique. Note that the grid method
 starts out as slower than the basic point-in-polygon technique due to
 pre-processing overhead, but wins out in terms of speed as complexity
 increases. This graph also does not reflect parallelization of the
-operation, which further reduces the time required to calculate the
+operation, which further reduced the time required to calculate the
 point-neighbor relational graph.
 
 \begin{figure}[H]
@@ -1203,16 +1209,16 @@ point-neighbor relational graph.
 \hypertarget{calculating-spatial-lags}{%
 \paragraph{Calculating Spatial Lags}\label{calculating-spatial-lags}}
 
-Once the origin-neighbor relational graph has been constructed, we can
-aggregate the data into spatial lag variables. One advantage of using
+Once the point-neighbor relational graph had been constructed, we
+aggregated the data into spatial lag variables. One advantage of using
 spatial lags is the rich number of potential features which can be
 engineered. Spatial lags can be weighted based on a distance function,
 e.g., physically closer observations can be given more weight. For our
-modeling purposes, we created two sets of features: distance weighted
-features (denoted with a "\_dist" in Table \ref{tab:SpLAgFeats}) and
-simple average features (denoted with "\_basic" in Table
-\ref{tab:SpLAgFeats}). SMA and EMA as well as percent changes were also
-calculated.
+modeling purposes, we created two sets of features: inverse-distance
+weighted features (denoted with a "\_dist" in Table
+\ref{tab:SpLAgFeats}) and simple average features (denoted with
+"\_basic" in Table \ref{tab:SpLAgFeats}). SMA and EMA as well as percent
+changes were also calculated.
 
 Temporal and spatial derivatives of the Spatial Lag features presented
 in Table \ref{tab:SpLAgFeats} were also added to the model, including:
@@ -1248,13 +1254,13 @@ Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years & 2,917.00 & 580,947.00 & 872,81
 \addlinespace
 Radius\_Total\_Sold\_In\_Year\_percent\_change & -0.99 & 0.00 & 0.27 & 77.00\\
 Radius\_Average\_Years\_Since\_Last\_Sale\_percent\_change & -0.91 & 0.13 & 0.26 & 8.00\\
-Radius\_Res\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
-Radius\_All\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
-Radius\_SF\_Sold\_In\_Year\_percent\_change & -1.00 & -0.02 & Inf & Inf\\
+Radius\_Res\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 &  & \\
+Radius\_All\_Units\_Sold\_In\_Year\_percent\_change & -1.00 & -0.04 &  & \\
+Radius\_SF\_Sold\_In\_Year\_percent\_change & -1.00 & -0.02 &  & \\
 \addlinespace
 Radius\_Total\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.96 & -0.03 & 0.03 & 15.00\\
 Radius\_Average\_Years\_Since\_Last\_Sale\_sum\_over\_2\_years\_percent\_change & -0.72 & 0.12 & 0.17 & 2.50\\
-Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -1.00 & -0.04 & Inf & Inf\\
+Radius\_Res\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -1.00 & -0.04 &  & \\
 Radius\_All\_Units\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.99 & -0.04 & 0.12 & 84.00\\
 Radius\_SF\_Sold\_In\_Year\_sum\_over\_2\_years\_percent\_change & -0.98 & -0.04 & 0.18 & 361.55\\
 \addlinespace
@@ -1279,13 +1285,13 @@ Percent\_Factory\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.03\\
 Percent\_Other\_basic\_mean & 0.00 & 0.00 & 0.00 & 0.04\\
 Percent\_Com\_dist\_perc\_change & -0.90 & 0.00 & 0.00 & 6.18\\
 Percent\_Res\_dist\_perc\_change & -0.50 & 0.00 & 0.03 & 36.73\\
-Percent\_Office\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-Percent\_Retail\_dist\_perc\_change & -0.82 & 0.00 & Inf & Inf\\
+Percent\_Office\_dist\_perc\_change & -1.00 & 0.00 &  & \\
+Percent\_Retail\_dist\_perc\_change & -0.82 & 0.00 &  & \\
 \addlinespace
-Percent\_Garage\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-Percent\_Storage\_dist\_perc\_change & -1.00 & -0.01 & Inf & Inf\\
-Percent\_Factory\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
-Percent\_Other\_dist\_perc\_change & -1.00 & 0.00 & Inf & Inf\\
+Percent\_Garage\_dist\_perc\_change & -1.00 & 0.00 &  & \\
+Percent\_Storage\_dist\_perc\_change & -1.00 & -0.01 &  & \\
+Percent\_Factory\_dist\_perc\_change & -1.00 & 0.00 &  & \\
+Percent\_Other\_dist\_perc\_change & -1.00 & 0.00 &  & \\
 SMA\_Price\_2\_year\_dist & 0.00 & 400.01 & 496.30 & 3,816.57\\
 \addlinespace
 SMA\_Price\_3\_year\_dist & 0.00 & 396.94 & 492.00 & 3,816.57\\
@@ -1314,36 +1320,36 @@ SMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
 \addlinespace
 SMA\_Price\_3\_year\_dist\_perc\_change & -0.74 & 0.05 & 0.17 & 10,540.56\\
 SMA\_Price\_5\_year\_dist\_perc\_change & -0.74 & 0.04 & 0.06 & 15.37\\
-Percent\_Change\_SMA\_2\_dist\_perc\_change & -Inf & -0.24 & NaN & Inf\\
-Percent\_Change\_SMA\_5\_dist\_perc\_change & -Inf & -0.14 & NaN & Inf\\
+Percent\_Change\_SMA\_2\_dist\_perc\_change & -Inf & -0.24 & NaN & \\
+Percent\_Change\_SMA\_5\_dist\_perc\_change & -Inf & -0.14 & NaN & \\
 EMA\_Price\_2\_year\_dist\_perc\_change & -0.74 & 0.06 & 0.18 & 10,540.57\\
 \addlinespace
 EMA\_Price\_3\_year\_dist\_perc\_change & -0.73 & 0.06 & 0.08 & 15.06\\
 EMA\_Price\_5\_year\_dist\_perc\_change & -0.63 & 0.06 & 0.07 & 12.04\\
-Percent\_Change\_EMA\_2\_dist\_perc\_change & -Inf & -0.13 & NaN & Inf\\
-Percent\_Change\_EMA\_5\_dist\_perc\_change & -556.60 & -0.10 & Inf & Inf\\
+Percent\_Change\_EMA\_2\_dist\_perc\_change & -Inf & -0.13 & NaN & \\
+Percent\_Change\_EMA\_5\_dist\_perc\_change & -556.60 & -0.10 &  & \\
 SMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.12 & 9,375.77\\
 \addlinespace
 SMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.55 & 0.05 & 0.11 & 9,375.77\\
 SMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.50 & 0.04 & 0.06 & 5.90\\
-Percent\_Change\_SMA\_2\_basic\_mean\_perc\_change & -Inf & -0.19 & NaN & Inf\\
-Percent\_Change\_SMA\_5\_basic\_mean\_perc\_change & -Inf & -0.12 & NaN & Inf\\
+Percent\_Change\_SMA\_2\_basic\_mean\_perc\_change & -Inf & -0.19 & NaN & \\
+Percent\_Change\_SMA\_5\_basic\_mean\_perc\_change & -Inf & -0.12 & NaN & \\
 EMA\_Price\_2\_year\_basic\_mean\_perc\_change & -0.53 & 0.06 & 0.12 & 9,375.78\\
 \addlinespace
 EMA\_Price\_3\_year\_basic\_mean\_perc\_change & -0.47 & 0.06 & 0.08 & 23.54\\
 EMA\_Price\_5\_year\_basic\_mean\_perc\_change & -0.37 & 0.06 & 0.07 & 4.81\\
-Percent\_Change\_EMA\_2\_basic\_mean\_perc\_change & -Inf & -0.13 & NaN & Inf\\
-Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change & -136.59 & -0.11 & Inf & Inf\\
+Percent\_Change\_EMA\_2\_basic\_mean\_perc\_change & -Inf & -0.13 & NaN & \\
+Percent\_Change\_EMA\_5\_basic\_mean\_perc\_change & -136.59 & -0.11 &  & \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\hypertarget{outcome-variables}{%
-\subsection{Outcome Variables}\label{outcome-variables}}
+\hypertarget{dependent-variables}{%
+\subsection{Dependent Variables}\label{dependent-variables}}
 
-The final step in creating the modeling data is to define the outcome
-variables. The outcome variables reflect the prediction tasks; a binary
-variable for classification and a continuous variable for regression:
+The final step in creating the modeling data was to define the dependent
+variables reflective of the prediction tasks; a binary variable for
+classification and a continuous variable for regression:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -1385,10 +1391,10 @@ We implemented and compared several algorithms across our two-stage
 process. In Stage 1, the Random Forrest algorithm was used to identify
 the optimal subset of building types and geographies for our spatial lag
 aggregation assumptions. In Stage 2, we analyzed the hold-out test
-performance several algorithms including Random Forrest, Generalized
-Linear Model (GLM), Gradient Boosting Machines (GBM), and a Feed-Forward
+performance of several algorithms including Random Forrest, Generalized
+Linear Model (GLM), Gradient Boosting Machine (GBM), and Feed-Forward
 Artificial Neural Network (ANN). Each algorithm was run over the three
-competeing feature engineering data sets and for both the classification
+competing feature engineering data sets and for both the classification
 and regression tasks.
 
 \hypertarget{random-forest}{%
@@ -1396,7 +1402,7 @@ and regression tasks.
 
 The Random Forest concept was proposed by Leo Breiman in 2001 as an
 ensemble of prediction decision trees iteratively trained across
-randomly generated subsets of data (Leo Breiman 2001). Algorithm
+randomly generated subsets of data (Breiman 2001). Algorithm
 \ref{alg:RandomForestAlo} outlines the procedure (Hastie, Tibshirani,
 and Friedman 2001).
 
@@ -1426,15 +1432,15 @@ To make a prediction at a new point $x$:
 \end{algorithm}
 
 Previous works (see: Antipov and Pokryshevskaya (2012); also
-Schernthanner H. (2016)) have found the Random Forest algorithm (L.
-Breiman 2001) suitable to prediction tasks involving real estate. While
-algorithms exist that may marginally outperform Random Forest in terms
-of predictive accuracy (such as neural networks and functional gradient
-descent algorithms), Random Forest is highly scalable and
-parallelizable, and therefore a good choice for quickly assessing the
-predictive power of different feature engineering techniques. For these
-reasons and more outlined below, we selected Random Forrest as the
-primary algorithm for Stage 1 of our modeling process.
+Schernthanner H. (2016)) have found the Random Forest algorithm suitable
+to prediction tasks involving real estate. While algorithms exist that
+may outperform Random Forest in terms of predictive accuracy (such as
+neural networks and functional gradient descent algorithms), Random
+Forest is highly scalable and parallelizable, and therefore a good
+choice for quickly assessing the predictive power of different feature
+engineering techniques. For these reasons and more outlined below, we
+selected Random Forrest as the primary algorithm for Stage 1 of our
+modeling process.
 
 Random Forest can be used for both classification and regression tasks.
 The Random Forest algorithm works by generating a large number of
@@ -1488,10 +1494,10 @@ We chose Random Forrest as the algorithm for Stage 1 because:
   as real estate data can be highly correlated.
 \end{enumerate}
 
-To run the model, we have chosen the h2o.randomForest implementation
-from the h2o R open source library. The h2o implementation of the Random
-Forest algorithm is particularly well-suited for high parallelization.
-For more information, see: \url{https://www.h2o.ai/}.
+To run the model, we chose the h2o.randomForest implementation from the
+h2o R open source library. The h2o implementation of the Random Forest
+algorithm is particularly well-suited for high parallelization. For more
+information, see: \url{https://www.h2o.ai/}.
 
 \hypertarget{generalized-linear-model}{%
 \subsubsection{Generalized Linear
@@ -1507,7 +1513,7 @@ predictor, and a variance function that describes how the variance,
 var\((Y_i)\) depends on the mean (Hoffmann 2004). The observed value of
 the dependent variable \(y\) for observation \(i\)
 \((i = 1, 2, ..., n)\) is modeled as a linear function of \((p - 1)\)
-indpeendent variables \(x1, x2,... ,xp-1\) as
+independent variables \(x1, x2,... ,xp-1\) as
 
 \[
 y_i = \beta_0+\beta_1x_{i1}+...+\beta_{p-1}x_{i(p-1)}+e_i
@@ -1525,7 +1531,7 @@ Machine}\label{gradient-boosting-machine}}
 
 Gradient Boosting Machine is one of the most popular machine learning
 algorithms available today. The algorithm uses iteratively refined
-approximations, obtained through cross-validation, to incremenetally
+approximations, obtained through cross-validation, to incrementally
 increase predictive accuracy. Similar to Random Forrest, GBM is
 well-suited to using regression trees as the base learner. Gradient
 boosting constructs additive regression models by sequentially fitting a
@@ -1564,22 +1570,21 @@ of the generic Gradient Boosting Algorithm is outlined in algorithm
 Netwrok}\label{feed-forward-artificial-neural-netwrok}}
 
 The Artificial Neural Network (ANN) implementation used in this paper is
-a multi-layer feedforward artificial neural network trained with
+a multi-layer feed-forward artificial neural network trained with
 stochastic gradient descent using back-propagation. An ANN model is
 sometimes referred to as a multi-layer perceptron or deep neural
-network. The feedforward ANN is one of the most common neural network
+network. The feed-forward ANN is one of the most common neural network
 algorithms, but other types exist, such as the Convolutional Neural
 Network (CNN) which performs well on image classification tasks, and the
 Recurrent Neural Network (RNN) which is well-suited for sequential data
-such as text and audio (Schmidhuber 2015). The feedforward ANN is
+such as text and audio (Schmidhuber 2015). The feed-forward ANN is
 typically best suited for tabular data.
 
 The neural network model has unknown parameters, often called weights,
 and we seek values for them that make the model fit the training data
 well (Hastie, Tibshirani, and Friedman 2001). We denote the complete set
 of weights by \(\theta\), which consists of
-
-\(\{\alpha_{0m},\alpha_m;m=1,2,...,M\} M(p+1)\) weights,
+\(\{\alpha_{0m},\alpha_m;m=1,2,...,M\} M(p+1)\) weights and
 \(\{\beta_{0k},\beta_k;k=1,2,...,K\} K(p+1)\) weights.
 
 For both classification and regression, we use sum-of-squared errors as
@@ -1601,65 +1606,44 @@ R(\theta) = \sum_{i=1}^NR_i
 \sum_{i=1}^N\sum_{k=1}^K(y_{ik}-f_{k}(x_i))^2
 \]
 
-For our implementations, we use the rectifier activation function with
+For our implementations, we used the rectifier activation function with
 1024 hidden layers, 100 epochs and L1 regularization set to 0.00001. The
-algorithm use is the h2o.deeplearning open source implementation. For
-more information, see: \url{https://www.h2o.ai/}.
+implementation we chose was the h2o.deeplearning open source R library.
+For more information, see: \url{https://www.h2o.ai/}.
 
 \hypertarget{model-validation}{%
 \subsection{Model Validation}\label{model-validation}}
 
-The goal of the predictive models are to be able to successfully predict
-both the probability and amount of real estate sales into the near
-future. As such, our models will use out-of-time validation to assess
-performance. As shown in Figure \ref{fig:Train Test Validate} The models
-will be trained using data from 2003-2015. 2016 modeling data will be
-used during the model training process as cross-validation data.
-Finally, we will score our model using 2017 as a hold-out sample. Using
-out-of-time validation should ensure that the models generalize well
-into the immediate future.
+The goal of our predictive modeling efforts were to be able to
+successfully predict both the probability and amount of real estate
+sales into the near future. As such, trained and evaluated our models
+using use out-of-time validation to assess performance. As shown in
+Figure \ref{fig:Train Test Validate} The models were trained using data
+from 2003-2015. 2016 modeling data was used during the model training
+process as cross-validation data. Finally, we scored our models using
+2017 data as a hold-out sample. Using out-of-time validation ensures
+that the models generalize well into the immediate future.
 
 \begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Train Validate Test} \caption{Out-of-time validation}\label{fig:Train Test Validate}
 \end{figure}
 
-\hypertarget{variable-selection}{%
-\subsection{Variable Selection}\label{variable-selection}}
-
-For ease of processing and to improve the ability of the model to
-generalize into the future, a variable selection step is added to the
-modeling process. A Random Forest model is first trained on a 1\%
-sub-sample of the modeling data. Variable importance of the resulting
-model is calculated using the technique proposed by Friedman (2001),
-i.e., for a collection of decision trees \([T_m]_{1}^{m}\):
-
-\[
-  \hat{I_{j}^{2}} = \frac{1}{M} \sum_{m=1}^{M}\hat{I_{j}^{2}}(T_m)
-\]
-
-Where influence \(I\) for variable \(j\) is calculated as the sum of
-corresponding improvements in squared-error for node tree \(T\). After
-calculating variable importance for the model data subset, the variables
-are rank-ordered by descending importance. Variables which account for
-80\% of the total variable importance are chosen to advance to the model
-training round on the full modeling data sets.
-
 \hypertarget{evaluation-metrics}{%
 \subsection{Evaluation Metrics}\label{evaluation-metrics}}
 
-We have chosen evaluation metrics that will allow us to easily compare
-the performance of the models against other models with the same outcome
-variable. The classification models (Probability of Sale) will be
+We chose evaluation metrics that allowed us to easily compare the
+performance of the models against other similar models with the same
+dependent variable. The classification models (Probability of Sale) were
 compared using Area Under the ROC Curve (AUC). The regression models
-(Sale Price) will be compared using Root Mean Squared Error (RMSE). Both
+(Sale Price) were compared using Root Mean Squared Error (RMSE). Both
 evaluation metrics are common for their respective outcome variable
-types, and as such will be useful for comparing within model-groups.
+types, and as such were useful for comparing within model-groups.
 
 \hypertarget{area-under-roc-curve-auc}{%
 \subsubsection{Area Under ROC Curve
 (AUC)}\label{area-under-roc-curve-auc}}
 
-A classification model typically outputs a probability that a given row
+A classification model typically outputs a probability that a given case
 in the data belongs to a group. In the case of binary classification,
 the value falls between 0 and 1. There are many techniques for
 determining the cut off threshold for classification; a typical method
@@ -1720,11 +1704,11 @@ occurrence of a building sale) and a regression task (predicting the
 sale price of a building). We analyzed the results of the first stage to
 identify which geographies and building types our model assumptions
 worked best. In Stage 2, using a subset of the modeling data (selected
-via an analysis of the output from Stage 1), we compared four
-algorithms--Generalized Linear Model (GLM), Random Forrest (RF),
-Gradient Boosted Machine (GBM) and Feed-Forward Multilayer Artificial
-Neural Network (ANN)--across our 3 competing feature engineering
-techniques for both classification and regression tasks. We analyzed the
+via an analysis of the output from Stage 1), we compared four algorithms
+-- Generalized Linear Model (GLM), Random Forrest (RF), Gradient
+Boosting Machine (GBM) and Feed-Forward Multilayer Artificial Neural
+Network (ANN) -- across our 3 competing feature engineering techniques
+for both classification and regression tasks. We analyzed the
 performance of the different model/data combos as well as conducted an
 analysis of the variable importances for the top performing models.
 
@@ -1949,10 +1933,9 @@ Squared Error (MSE) and R-Squared. These four indicators are calculated
 using the hold-out test data, which allows us to ensure that the models
 perform well when predicting sale prices into the near future. The
 comparison metrics are presented in Table \ref{tab:RegModelTable} and
-Figure \ref{fig:Model RMSE Comparison}.
-
-\noindent The following conclusions can be made from Table
-\ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}:
+Figure \ref{fig:Model RMSE Comparrison}. We make the following
+observations about Table \ref{tab:RegModelTable} and Figure
+\ref{fig:Model RMSE Comparrison}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -1960,7 +1943,7 @@ Figure \ref{fig:Model RMSE Comparison}.
 \item
   The feed-forward Multilayer Artificial Neural Networks (ANN) perform
   best in nearly every metric across nearly all feature sets, with
-  Gradient Boosted Machine (GBM) a close second in some circumstances
+  Gradient Boosting Machine (GBM) a close second in some circumstances
 \item
   ANN and Generalized Linear Models (GLM) improve linearly in all
   metrics as you move from Base to Zip to Spatial, with Spatial
@@ -1968,16 +1951,18 @@ Figure \ref{fig:Model RMSE Comparison}.
   perform best on the Base and Spatial feature sets and poorly on the
   Zip features
 \item
-  The highest model R-Squared is the ANN using Spatial features at
-  0.494, indicating that this model can account for nearly 50\% of the
-  variance in the test data
-\item
   We see a similar pattern in the Random Forrest results compared to the
   previous modeling exercise using the full data set: Base Features
   outperforming both Spatial and Zip, with Spatial coming in second
   consistently. This further validates our reasoning that Spatial
   features are highly predictive but suffer from overfitting and other
   algorithm-related reasons
+\item
+  The highest model R-Squared is the ANN using Spatial features at
+  0.494, indicating that this model can account for nearly 50\% of the
+  variance in the test data. Compared to the R-Squared of the more
+  traditional Base GLM at 0.12, that is a 3-fold improvement in
+  predictive accuracy
 \end{enumerate}
 
 \begin{table}
@@ -2189,63 +2174,65 @@ Conclusions}\label{future-research-and-conclusions}}
 
 This research has shown that the addition of spatial-lag features can
 increase the predictive accuracy of machine learning models above and
-beyond traditional spatial aggregation techniques. There are several
-areas that could be further explored regarding spatial lag features,
-some of which are mentioned below.
+beyond traditional real estate valuation techniques. There are several
+areas that could be further explored regarding spatially-conscious
+machine learning models, some of which are mentioned below.
 
 First, it became apparent in the research that generalization was a
 problem for some of the models, likely due to overfitting of the
 training data. This issue was corrected by employing different
 algorithms, however, further work could be done to create variable
-selection processes and/or hyperparameter tuning to prevent overfit.
+selection processes and/or hyperparameter tuning to prevent overfit and
+generally accelerate model training and scoring.
 
-Additionally, the spatial lag features seemd to perform best for certain
-boroughs and for residential building types. One possible explanation
-for this is that these types of assetts are considerably more numerous
-and homogenous. We hypothesize that using a 500 meter radius to build
-spatial lag features, a distance which was arbitrarily chosen, works
-best for this type of asset in these areas. Fotheringham (2015) used an
-``Adaptive Bandwidth'' technique to adjust the spatial lag radius based
-on cross-validation with much success. The techniques presented in this
-paper could be expanded to use cross validation in a similar manner to
-assign the optimal spatial lag radius for each building type and
-location.
+Additionally, the spatial lag features seemed to perform best for
+certain boroughs and for residential building types. We hypothesize that
+using a 500 meter radius to build spatial lag features, a distance which
+was arbitrarily chosen, works best for this type of asset in these
+areas. Fotheringham (2015) used an ``Adaptive Bandwidth'' technique to
+adjust the spatial lag radius based on cross-validation with much
+success. The techniques presented in this paper could be expanded to use
+cross validation in a similar manner to assign the optimal spatial lag
+radius for each building type and location. Furthermore, additional work
+could be done using cross-validation or a similar technique to further
+refine the spatial lags to include appropriate building types and
+distance weights tailored to each property.
 
 Finally, this research aimed to predict real estate transactions 1 year
 into the future. While this is a promising start, 1-year of lead time
-may not be sufficient to respond to growing gentirifaction challenges.
-In addition, modeling at the annual level could be improved to quartlery
+may not be sufficient to respond to growing gentrification challenges.
+In addition, modeling at the annual level could be improved to quarterly
 or monthly, given that the sales data contains date information down to
-the day. To make this system practial for combatting displacement, it
+the day. To make this system practical for combating displacement, it
 may be helpful to predict at a more granular level and further into the
 future.
 
 \hypertarget{conclusion}{%
 \subsection{Conclusion}\label{conclusion}}
 
-Gentification is largely beneficial to societies and communities,
+Gentrification is largely beneficial to societies and communities,
 however, the downside should not be overlooked. Displacement causes
 Economic Exclusion, which over time can contribute to rising Income
-Inequality. Combatting displacement allows communities to benefit from
+Inequality. Combating displacement allows communities to benefit from
 gentrification without suffering the negative consequences. One way to
-practically combat displacement is to predict gentirification, which
-this paper has attempted to do.
+practically combat displacement is to predict gentrification, which this
+paper has attempted to do.
 
 Spatial lags, typically seen in geographically weighted regression, were
 employed successfully to enhance the predictive power of machine
-learning models. THe spatial lag models performed best for particular
+learning models. The spatial lag models performed best for particular
 building types and geographies, however, we feel confident that the
-techique could be expanded to work equally as well for all buildings
-with some additional research. Regarding algorithms, Artificaly Neural
+technique could be expanded to work equally as well for all buildings
+with some additional research. Regarding algorithms, Artificial Neural
 Networks performed the best for predicting sale price, while GBM
-performed best for predicting sale occurance.
+performed best for predicting sale occurrence.
 
-While this research is not intended to serve as a full early-warining
-system for gentrification and displacmenet, it is a step in that
+While this research is not intended to serve as a full early-warning
+system for gentrification and displacement, it is a step in that
 direction. More research is needed to help address the challenges faced
 by city planners and governments trying to help incumbent residents reap
-the benefits of local investments. Income inequallity is a complicated
-and grave issue, but new tools and tecnhiques to inform and prevent will
+the benefits of local investments. Income inequality is a complicated
+and grave issue, but new tools and techniques to inform and prevent will
 help ensure equality of opportunity for all.
 
 \newpage
@@ -2275,10 +2262,6 @@ Developments, Federal Reserve Bank of Boston}, 1--6.
 
 \leavevmode\hypertarget{ref-Batty2013}{}%
 Batty, Michael. 2013. ``The New Science of Cities.'' \emph{MIT Press}.
-
-\leavevmode\hypertarget{ref-Breiman2001}{}%
-Breiman, L. 2001. ``Random Forests.'' \emph{Machine Learning} 45 (1):
-5--32.
 
 \leavevmode\hypertarget{ref-breiman2001random}{}%
 Breiman, Leo. 2001. ``Random Forests.'' \emph{Machine Learning} 45 (1).
@@ -2327,10 +2310,6 @@ of Regional Science} 54.
 Friedman, Jerome H. 2002. ``Stochastic Gradient Boosting.''
 \emph{Computational Statistics \& Data Analysis} 38 (4). Elsevier:
 367--78.
-
-\leavevmode\hypertarget{ref-Friedman2001}{}%
-Friedman, Jerome H. 2001. ``Greedy Function Approximation: A Gradient
-Boosting Machine.'' \emph{The Annals of Statistics} 29 (5): 1189--1232.
 
 \leavevmode\hypertarget{ref-Fu2014}{}%
 Fu, Yanjie; et al. 2014. \emph{Exploiting Geographic Dependencies for

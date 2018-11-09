@@ -11,7 +11,7 @@ header-includes:
 
 Things near each other tend to be like each other. This concept is a well-known problem in traditional spatial analysis and is typically referred to as _spatial autocorrelation_. In statistics, this is said to “reduce the amount of information” pertaining to spatially proximate observations as they can, in part, be used to predict each other. But can spatial features be used in a machine-learning context to make better predictions? This work demonstrates that introducing "spatial lags" as features in machine learning models greatly increases accuracy when predicting real estate sales and sale prices. 
 
-## Motivation: Combatting Income Inequality by Predicting Gentrification
+## Motivation: Combating Income Inequality by Predicting Gentrification
 
 Researchers at the Urban Institute [@urban2016] recently identified “Economic Exclusion” as a powerful contributor to income inequality in the United States. "Economic Exclusion" can be defined as follows: vulnerable populations--disproportionately communities of color, immigrants, refugees, and women--who are physically displaced by local economic prosperity enter a gradual cycle of diminished access to good jobs, good schools, health care facilities, public spaces and other economic and social resources. Diminished access leads to more poverty, which leads to more displacement. This self-reinforcing cycle of poverty and exclusion gradually exacerbates income inequality over the course years and generations. What can be done to intervene?
 

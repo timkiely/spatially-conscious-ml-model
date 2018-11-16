@@ -42,15 +42,15 @@ tribble(
   ) %>% my_kable(caption = "Six Predictive Models", label =  "modeltable")
 ```
 
-We conducted our analysis in a two-stage process. In Stage 1, we used the Random Forrest algorithm to evaluate the suitability of the data for our feature engineering assumptions. In Stage 2, we created subsets of the modeling data based on the analysis conducted in Stage 1. We then compared the performance of different algorithms across all modeling data sets and prediction tasks. The following is an outline of our complete analysis process:\newline
+We conducted our analysis in a two-stage process. In Stage 1, we used the Random Forest algorithm to evaluate the suitability of the data for our feature engineering assumptions. In Stage 2, we created subsets of the modeling data based on the analysis conducted in Stage 1. We then compared the performance of different algorithms across all modeling data sets and prediction tasks. The following is an outline of our complete analysis process:\newline
 
-\noindent \textbf{Stage 1: Random Forrest algorithm using all data}
+\noindent \textbf{Stage 1: Random Forest algorithm using all data}
 
 1) Create a "base" modeling data set by sourcing and combining building characteristic and sales data from open-source New York City repositories
 2) Create a "zip" modeling data set by aggregating the base data at a Zip-Code level and appending these features to the base data
 3) Create a "spatial lag" modeling data set by aggregating the base data within 500 meters of each building and appending these features to the base data
-4) Train a Random Forrest model on all three data sets, for both classification (probability of sale) and regression (sale price) tasks
-5) Evaluate the performance of the various Random Forrest models on hold-out test data
+4) Train a Random Forest model on all three data sets, for both classification (probability of sale) and regression (sale price) tasks
+5) Evaluate the performance of the various Random Forest models on hold-out test data
 6) Analyze the prediction results by building type and geography, identifying those buildings for which our feature-engineering assumptions (e.g., 500 meter radii spatial lags) are most appropriate\newline
 
 
@@ -252,7 +252,7 @@ $$
 O(N(\frac{N-1}{G})
 $$
 
-\noindent By making G arbitrarily large (bounded by computational resources only), we reduced runtime substantially. Furthermore, binning the operations into grids allowed us to parallelize the computation, further reducing the overall run time. Figure \ref{fig:Spatial Indexing Process} shows a comparison of computation times between the basic point-in-polygon technique and a sequential version of the grided indexing technique. Note that the grid method starts out as slower than the basic point-in-polygon technique due to pre-processing overhead, but wins out in terms of speed as complexity increases. This graph also does not reflect parallelization of the operation, which further reduced the time required to calculate the point-neighbor relational graph. 
+\noindent By making G arbitrarily large (bounded by computational resources only), we reduced the runtime substantially. Furthermore, binning the operations into grids allowed us to parallelize the computation, further reducing the overall runtime. Figure \ref{fig:Spatial Indexing Process} shows a comparison of computation times between the basic point-in-polygon technique and a sequential version of the grided indexing technique. Note that the grid method starts out as slower than the basic point-in-polygon technique due to pre-processing overhead, but wins out in terms of speed as complexity increases. This graph also does not reflect parallelization of the operation, which further reduced the time required to calculate the point-neighbor relational graph. 
 
 ```{r Spatial Indexing Process, fig.cap="Spatial Index Time Comparison",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
 knitr::include_graphics("Sections/tables and figures/Example Spatial Indexing Techniques.png")
@@ -295,7 +295,7 @@ The final step in creating the modeling data was to define the dependent variabl
 
 ## Algorithms Comparison
 
-We implemented and compared several algorithms across our two-stage process. In Stage 1, the Random Forrest algorithm was used to identify the optimal subset of building types and geographies for our spatial lag aggregation assumptions. In Stage 2, we analyzed the hold-out test performance of several algorithms including Random Forrest, Generalized Linear Model (GLM), Gradient Boosting Machine (GBM), and Feed-Forward Artificial Neural Network (ANN). Each algorithm was run over the three competing feature engineering data sets and for both the classification and regression tasks. 
+We implemented and compared several algorithms across our two-stage process. In Stage 1, the Random Forest algorithm was used to identify the optimal subset of building types and geographies for our spatial lag aggregation assumptions. In Stage 2, we analyzed the hold-out test performance of several algorithms including Random Forest, Generalized Linear Model (GLM), Gradient Boosting Machine (GBM), and Feed-Forward Artificial Neural Network (ANN). Each algorithm was run over the three competing feature engineering data sets and for both the classification and regression tasks. 
 
 ### Random Forest
 
@@ -327,11 +327,11 @@ To make a prediction at a new point $x$:
 
 \end{algorithm}
 
-Previous works (see: @antipov12; also @Schernthanner2016) have found the Random Forest algorithm suitable to prediction tasks involving real estate. While algorithms exist that may outperform Random Forest in terms of predictive accuracy (such as neural networks and functional gradient descent algorithms), Random Forest is highly scalable and parallelizable, and therefore a good choice for quickly assessing the predictive power of different feature engineering techniques. For these reasons and more outlined below, we selected Random Forrest as the primary algorithm for Stage 1 of our modeling process.
+Previous works (see: @antipov12; also @Schernthanner2016) have found the Random Forest algorithm suitable to prediction tasks involving real estate. While algorithms exist that may outperform Random Forest in terms of predictive accuracy (such as neural networks and functional gradient descent algorithms), Random Forest is highly scalable and parallelizable, and therefore a good choice for quickly assessing the predictive power of different feature engineering techniques. For these reasons and more outlined below, we selected Random Forest as the primary algorithm for Stage 1 of our modeling process.
 
 Random Forest can be used for both classification and regression tasks. The Random Forest algorithm works by generating a large number of independent classification or regression decision trees and then employing  majority voting (for classification) or averaging (for regression) to generate predictions. Over a data set of N rows by M predictors, a bootstrap sample of the data is chosen (n < N) as well as a subset of the predictors (m < M). Individual decision/regression trees are built on the n by m sample. Because the trees can be built independently (and not sequentially, as is the case with most functional gradient descent algorithms), the tree building process can be executed in parallel. With a sufficiently large number of cores, the model training time can be significantly reduced.
 
-We chose Random Forrest as the algorithm for Stage 1 because: 
+We chose Random Forest as the algorithm for Stage 1 because: 
 
 1) The algorithm can be parallelized and is relatively fast compared to neural networks and functional gradient descent algorithms 
 2) Can accommodate categorical variables with many levels. Real estate data often contains information describing the location of the property, or the property itself, as one of a large set of possible choices, such as neighborhood, county, census tract, district, property type, and zoning information. Because factors need to be recoded as individual dummy variables in the model building process, factors with many levels will quickly encounter the curse of dimensionality in multiple regression techniques.
@@ -355,7 +355,7 @@ Several family types of GLM's exist. For a binary independent variable, a binomi
 
 ### Gradient Boosting Machine
 
-Gradient Boosting Machine is one of the most popular machine learning algorithms available today. The algorithm uses iteratively refined approximations, obtained through cross-validation, to incrementally increase predictive accuracy. Similar to Random Forrest, GBM is well-suited to using regression trees as the base learner. Gradient boosting constructs additive regression models by sequentially fitting a simple parameterized function (a "base learner", in our case, a regression tree) to "pseudo"-residuals by least squares at each iteration [@friedman2002stochastic]. The pseudo-residuals are the gradient of the loss functional being minimized, with respect to the model values at each training data point evaluated at the current step. The tree-variant of the generic Gradient Boosting Algorithm is outlined in algorithm \ref{alg:GBMAlo} [@hastie01statisticallearning].
+Gradient Boosting Machine (GBM) is one of the most popular machine learning algorithms available today. The algorithm uses iteratively refined approximations, obtained through cross-validation, to incrementally increase predictive accuracy. Similar to Random Forest, GBM is well-suited to using regression trees as the base learner. Gradient boosting constructs additive regression models by sequentially fitting a simple parameterized function (a "base learner", in our case, a regression tree) to "pseudo"-residuals by least squares at each iteration [@friedman2002stochastic]. The pseudo-residuals are the gradient of the loss functional being minimized, with respect to the model values at each training data point evaluated at the current step. The tree-variant of the generic Gradient Boosting Algorithm is outlined in algorithm \ref{alg:GBMAlo} [@hastie01statisticallearning].
 
 
 \begin{algorithm}
@@ -382,7 +382,7 @@ Gradient Boosting Machine is one of the most popular machine learning algorithms
 
 
 
-### Feed-Forward Artificial Neural Netwrok
+### Feed-Forward Artificial Neural Network
 
 The Artificial Neural Network (ANN) implementation used in this paper is a multi-layer feed-forward artificial neural network trained with stochastic gradient descent using back-propagation. An ANN model is sometimes referred to as a multi-layer perceptron or deep neural network. The feed-forward ANN is one of the most common neural network algorithms, but other types exist, such as the Convolutional Neural Network (CNN) which performs well on image classification tasks, and the Recurrent Neural Network (RNN) which is well-suited for sequential data such as text and audio [@SCHMIDHUBER201585]. The feed-forward ANN is typically best suited for tabular data. 
 
@@ -420,11 +420,11 @@ knitr::include_graphics("Sections/tables and figures/Train Validate Test.png")
 We chose evaluation metrics that allowed us to easily compare the performance of the models against other similar models with the same dependent variable. The classification models (Probability of Sale) were compared using Area Under the ROC Curve (AUC). The regression models (Sale Price) were compared using Root Mean Squared Error (RMSE). Both evaluation metrics are common for their respective outcome variable types, and as such were useful for comparing within model-groups. 
 
 
-### Area Under ROC Curve (AUC)
+### Area Under ROC Curve
 
 A classification model typically outputs a probability that a given case in the data belongs to a group. In the case of binary classification, the value falls between 0 and 1. There are many techniques for determining the cut off threshold for classification; a typical method is to assign anything above a 0.5 into the "1" or positive class. An ROC curve (receiver operating characteristic curve) plots the True Positive Rate vs. the False Positive rate at different classification thresholds; it is a measurement of the performance of a classification model across all possible thresholds, and therefore sidesteps the need to arbitrarily assign a cutoff. 
 
-Area Under the ROC Curve, or AUC measures the entire two-dimensional area underneath the ROC curve. It is the integration of the curve from (0,0) to (1,1), defined as $AUC = \int_{(0,0)}^{(1,1)} f(x)dx$. 
+AUC measures the entire two-dimensional area underneath the ROC curve. It is the integration of the curve from (0,0) to (1,1), defined as $AUC = \int_{(0,0)}^{(1,1)} f(x)dx$. 
 
 AUC provides a relatively standard measure of performance across all possible classification thresholds, and can be interpreted as the probability that the model ranks a random positive example more highly than a random negative example. A value of 0.5 represents a perfectly random model, while a value of 1.0 represents a model that can perfectly discriminate between the two classes. AUC is useful for comparing classification models against one another because they are both scale and threshold-invariant.
 
@@ -432,7 +432,7 @@ One of the drawbacks to AUC is that is does not describe the trade-offs between 
 
 ### Root Mean Squared Error
 
-The Root Mean Squared Error (RMSE) is a common measurement of the differences between values predicted by a regression model and the observed values. It is formally defined as $RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }$, where $\hat{y}$ represents the prediction and $y$ represents the observed value at observation $t$. 
+RMSE is a common measurement of the differences between values predicted by a regression model and the observed values. It is formally defined as $RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }$, where $\hat{y}$ represents the prediction and $y$ represents the observed value at observation $t$. 
 
 Lower RMSE scores are typically more desirable. An RMSE value of 0 would indicate a perfect fit to the data. RMSE can be difficult to interpret on its own, however, it is useful for comparing models with similar outcome variables. In our case, the outcome variables (Sales Price per Square Foot) are consistent across modeling data sets, and therefore can be reasonably compared using RMSE. 
 

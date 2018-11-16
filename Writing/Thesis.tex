@@ -162,6 +162,17 @@ Candice Bradley, Second Reader
 \newpage
 \normalsize
 \singlespace
+\begin{abstract}
+
+Successfully predicting gentrification could have many potential social and commercial applications, however, real estate sale prices are difficult to predict because they are chaotic systems comprised of intrinsic and extrinsic characteristics, perceived value and market speculation. We combine modern techniques of data science and machine learning with traditional spatial analysis to create robust real estate prediction models for both classification and regression tasks. We compare several cutting edge machine learning algorithms across spatial, semi-spatial and non-spatial feature engineering techniques, and we empirically show that spatially-conscious machine learning models outperform non-spatial models when married with advanced prediction techniques such as feed-forward artificial neural networks and gradient boosting machine models. 
+
+\textbf{Keywords:} Real estate, Artificial neural networks, Machine learning, Recommender systems, Supervised learning, Predictive modeling
+
+\end{abstract}
+
+\newpage
+\normalsize
+\singlespace
 \tableofcontents
 \doublespace
 \newpage
@@ -179,9 +190,9 @@ Candice Bradley, Second Reader
 \hypertarget{introduction}{%
 \section{Introduction}\label{introduction}}
 
-\hypertarget{the-spatially-concious-machine-learning-model}{%
-\subsection{The Spatially-Concious Machine Learning
-Model}\label{the-spatially-concious-machine-learning-model}}
+\hypertarget{the-spatially-conscious-machine-learning-model}{%
+\subsection{The Spatially-Conscious Machine Learning
+Model}\label{the-spatially-conscious-machine-learning-model}}
 
 Things near each other tend to be like each other. This concept is a
 well-known problem in traditional spatial analysis and is typically
@@ -256,7 +267,7 @@ geographically-weighted regressions (GWR). We employ a two-step modeling
 process in which we 1) determine the optimal building types and
 geographies suited to our feature engineering assumptions and 2) perform
 a comparative analysis across several state-of-the-art algorithms
-(Generalized Linear Model, Random Forrest, Gradient Boosting Machine,
+(Generalized Linear Model, Random Forest, Gradient Boosting Machine,
 Artificial Neural Network). We conclude that spatially-conscious machine
 learning models consistently outperform traditional real estate
 valuation and predictive modeling techniques.
@@ -567,14 +578,14 @@ table \ref{tab:modeltable}.
 \end{table}
 
 We conducted our analysis in a two-stage process. In Stage 1, we used
-the Random Forrest algorithm to evaluate the suitability of the data for
+the Random Forest algorithm to evaluate the suitability of the data for
 our feature engineering assumptions. In Stage 2, we created subsets of
 the modeling data based on the analysis conducted in Stage 1. We then
 compared the performance of different algorithms across all modeling
 data sets and prediction tasks. The following is an outline of our
 complete analysis process:\newline
 
-\noindent \textbf{Stage 1: Random Forrest algorithm using all data}
+\noindent \textbf{Stage 1: Random Forest algorithm using all data}
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -591,10 +602,10 @@ complete analysis process:\newline
   data within 500 meters of each building and appending these features
   to the base data
 \item
-  Train a Random Forrest model on all three data sets, for both
+  Train a Random Forest model on all three data sets, for both
   classification (probability of sale) and regression (sale price) tasks
 \item
-  Evaluate the performance of the various Random Forrest models on
+  Evaluate the performance of the various Random Forest models on
   hold-out test data
 \item
   Analyze the prediction results by building type and geography,
@@ -1189,9 +1200,9 @@ O(N(\frac{N-1}{G})
 \]
 
 \noindent By making G arbitrarily large (bounded by computational
-resources only), we reduced runtime substantially. Furthermore, binning
-the operations into grids allowed us to parallelize the computation,
-further reducing the overall run time. Figure
+resources only), we reduced the runtime substantially. Furthermore,
+binning the operations into grids allowed us to parallelize the
+computation, further reducing the overall runtime. Figure
 \ref{fig:Spatial Indexing Process} shows a comparison of computation
 times between the basic point-in-polygon technique and a sequential
 version of the grided indexing technique. Note that the grid method
@@ -1387,10 +1398,10 @@ Max. & 1.00 & 83,598.7\\
 \subsection{Algorithms Comparison}\label{algorithms-comparison}}
 
 We implemented and compared several algorithms across our two-stage
-process. In Stage 1, the Random Forrest algorithm was used to identify
+process. In Stage 1, the Random Forest algorithm was used to identify
 the optimal subset of building types and geographies for our spatial lag
 aggregation assumptions. In Stage 2, we analyzed the hold-out test
-performance of several algorithms including Random Forrest, Generalized
+performance of several algorithms including Random Forest, Generalized
 Linear Model (GLM), Gradient Boosting Machine (GBM), and Feed-Forward
 Artificial Neural Network (ANN). Each algorithm was run over the three
 competing feature engineering data sets and for both the classification
@@ -1438,7 +1449,7 @@ neural networks and functional gradient descent algorithms), Random
 Forest is highly scalable and parallelizable, and therefore a good
 choice for quickly assessing the predictive power of different feature
 engineering techniques. For these reasons and more outlined below, we
-selected Random Forrest as the primary algorithm for Stage 1 of our
+selected Random Forest as the primary algorithm for Stage 1 of our
 modeling process.
 
 Random Forest can be used for both classification and regression tasks.
@@ -1454,7 +1465,7 @@ with most functional gradient descent algorithms), the tree building
 process can be executed in parallel. With a sufficiently large number of
 cores, the model training time can be significantly reduced.
 
-We chose Random Forrest as the algorithm for Stage 1 because:
+We chose Random Forest as the algorithm for Stage 1 because:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -1528,16 +1539,16 @@ regression task and binomial for the classification.
 \subsubsection{Gradient Boosting
 Machine}\label{gradient-boosting-machine}}
 
-Gradient Boosting Machine is one of the most popular machine learning
-algorithms available today. The algorithm uses iteratively refined
-approximations, obtained through cross-validation, to incrementally
-increase predictive accuracy. Similar to Random Forrest, GBM is
-well-suited to using regression trees as the base learner. Gradient
-boosting constructs additive regression models by sequentially fitting a
-simple parameterized function (a ``base learner'', in our case, a
-regression tree) to ``pseudo''-residuals by least squares at each
-iteration (Friedman 2002). The pseudo-residuals are the gradient of the
-loss functional being minimized, with respect to the model values at
+Gradient Boosting Machine (GBM) is one of the most popular machine
+learning algorithms available today. The algorithm uses iteratively
+refined approximations, obtained through cross-validation, to
+incrementally increase predictive accuracy. Similar to Random Forest,
+GBM is well-suited to using regression trees as the base learner.
+Gradient boosting constructs additive regression models by sequentially
+fitting a simple parameterized function (a ``base learner'', in our
+case, a regression tree) to ``pseudo''-residuals by least squares at
+each iteration (Friedman 2002). The pseudo-residuals are the gradient of
+the loss functional being minimized, with respect to the model values at
 each training data point evaluated at the current step. The tree-variant
 of the generic Gradient Boosting Algorithm is outlined in algorithm
 \ref{alg:GBMAlo} (Hastie, Tibshirani, and Friedman 2001).
@@ -1564,9 +1575,9 @@ of the generic Gradient Boosting Algorithm is outlined in algorithm
 \end{enumerate}
 \end{algorithm}
 
-\hypertarget{feed-forward-artificial-neural-netwrok}{%
+\hypertarget{feed-forward-artificial-neural-network}{%
 \subsubsection{Feed-Forward Artificial Neural
-Netwrok}\label{feed-forward-artificial-neural-netwrok}}
+Network}\label{feed-forward-artificial-neural-network}}
 
 The Artificial Neural Network (ANN) implementation used in this paper is
 a multi-layer feed-forward artificial neural network trained with
@@ -1638,9 +1649,8 @@ compared using Area Under the ROC Curve (AUC). The regression models
 evaluation metrics are common for their respective outcome variable
 types, and as such were useful for comparing within model-groups.
 
-\hypertarget{area-under-roc-curve-auc}{%
-\subsubsection{Area Under ROC Curve
-(AUC)}\label{area-under-roc-curve-auc}}
+\hypertarget{area-under-roc-curve}{%
+\subsubsection{Area Under ROC Curve}\label{area-under-roc-curve}}
 
 A classification model typically outputs a probability that a given case
 in the data belongs to a group. In the case of binary classification,
@@ -1653,9 +1663,9 @@ thresholds; it is a measurement of the performance of a classification
 model across all possible thresholds, and therefore sidesteps the need
 to arbitrarily assign a cutoff.
 
-Area Under the ROC Curve, or AUC measures the entire two-dimensional
-area underneath the ROC curve. It is the integration of the curve from
-(0,0) to (1,1), defined as \(AUC = \int_{(0,0)}^{(1,1)} f(x)dx\).
+AUC measures the entire two-dimensional area underneath the ROC curve.
+It is the integration of the curve from (0,0) to (1,1), defined as
+\(AUC = \int_{(0,0)}^{(1,1)} f(x)dx\).
 
 AUC provides a relatively standard measure of performance across all
 possible classification thresholds, and can be interpreted as the
@@ -1675,9 +1685,8 @@ false negatives as equally undesirable outcomes.
 \hypertarget{root-mean-squared-error}{%
 \subsubsection{Root Mean Squared Error}\label{root-mean-squared-error}}
 
-The Root Mean Squared Error (RMSE) is a common measurement of the
-differences between values predicted by a regression model and the
-observed values. It is formally defined as
+RMSE is a common measurement of the differences between values predicted
+by a regression model and the observed values. It is formally defined as
 \(RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }\), where
 \(\hat{y}\) represents the prediction and \(y\) represents the observed
 value at observation \(t\).
@@ -1696,7 +1705,7 @@ be reasonably compared using RMSE.
 \subsection{Summary of Results}\label{summary-of-results}}
 
 We have conducted comparative analyses across a two-stage modeling
-process. In Stage 1, using the Random Forrest algorithm, we tested 3
+process. In Stage 1, using the Random Forest algorithm, we tested 3
 competing feature engineering techniques (base, zip-code aggregation and
 spatial-lag aggregation) for both a classification task (predicting the
 occurrence of a building sale) and a regression task (predicting the
@@ -1704,30 +1713,29 @@ sale price of a building). We analyzed the results of the first stage to
 identify which geographies and building types our model assumptions
 worked best. In Stage 2, using a subset of the modeling data (selected
 via an analysis of the output from Stage 1), we compared four algorithms
--- Generalized Linear Model (GLM), Random Forrest (RF), Gradient
-Boosting Machine (GBM) and Feed-Forward Multilayer Artificial Neural
-Network (ANN) -- across our 3 competing feature engineering techniques
-for both classification and regression tasks. We analyzed the
-performance of the different model/data combos as well as conducted an
-analysis of the variable importances for the top performing models.
+-- GLM, Random Forest, GBM and ANN -- across our 3 competing feature
+engineering techniques for both classification and regression tasks. We
+analyzed the performance of the different model/data combos as well as
+conducted an analysis of the variable importances for the top performing
+models.
 
-In Stage 1 (Random Forrest, using all data), we found that models which
+In Stage 1 (Random Forest, using all data), we found that models which
 utilized spatial features outperformed those models using zip-code
 features the majority of the time for both classification and
 regression. Of three models, the Sale Price Regression model using
-Spatial features finished 1st or 2nd 24.1\% of the time (using Root Mean
-Squared Error as a ranking criterion), while the Zip Code Regression
-model finished in the top two spots only 11.2\% of the time. Both models
-performed worse than the Base Regression model overall, which ranked in
-1st or 2nd place 31.5\% of the time. The story for the classification
-models was largely the same: the Spatial features tended to outperform
-the Zip Code data while the Base data won out overall. All models had
-similar performances on training data, but the Spatial and Zip Code data
-sets tended to underperform when generalizing to the hold-out test data,
-suggesting problems with overfitting.
+Spatial features finished 1st or 2nd 24.1\% of the time (using RMSE as a
+ranking criterion), while the Zip Code Regression model finished in the
+top two spots only 11.2\% of the time. Both models performed worse than
+the Base Regression model overall, which ranked in 1st or 2nd place
+31.5\% of the time. The story for the classification models was largely
+the same: the Spatial features tended to outperform the Zip Code data
+while the Base data won out overall. All models had similar performances
+on training data, but the Spatial and Zip Code data sets tended to
+underperform when generalizing to the hold-out test data, suggesting
+problems with overfitting.
 
 We then analyzed the performance of both the regression and
-classification Random Forrest models by geography and building type. We
+classification Random Forest models by geography and building type. We
 found that the models performed considerably better on Walk Up
 Apartments and Elevator Buildings (building types C and D) and in
 Manhattan, Brooklyn and the Bronx. Using these as filtering criteria, we
@@ -1738,10 +1746,10 @@ compared four algorithms across the same three competing feature
 engineering techniques using a filtered subset of the original modeling
 data. Unequivocally, the spatial features performed best across all
 models and tasks. For the classification task, the GBM algorithms
-performed best in terms of AUC, followed by ANN and Random Forrest. For
-regression, the ANN algorithms performed best (as measured by Mean
-Absolute Error, Root Mean Squared Error and R-squared) with the spatial
-features ANN model performing best.
+performed best in terms of AUC, followed by ANN and Random Forest. For
+regression, the ANN algorithms performed best (as measured by RMSE as
+well as Mean Absolute Error and R-squared) with the spatial features ANN
+model performing best.
 
 We conclude that spatial lag features can significantly increase the
 accuracy of machine learning-based real estate sale prediction models.
@@ -1752,23 +1760,23 @@ implementation of spatial-lag features works best for certain kinds of
 buildings in specific geographic areas, and we hypothesize that this is
 due to the assumptions made when building the spatial features.
 
-\hypertarget{stage-1-random-forrest-models-using-all-data}{%
-\subsection{Stage 1) Random Forrest Models Using All
-Data}\label{stage-1-random-forrest-models-using-all-data}}
+\hypertarget{stage-1-random-forest-models-using-all-data}{%
+\subsection{Stage 1) Random Forest Models Using All
+Data}\label{stage-1-random-forest-models-using-all-data}}
 
-\hypertarget{sale-pice-regression-models}{%
-\subsubsection{Sale Pice Regression
-Models}\label{sale-pice-regression-models}}
+\hypertarget{sale-price-regression-models}{%
+\subsubsection{Sale Price Regression
+Models}\label{sale-price-regression-models}}
 
-We analyzed the the Root Mean Squared Errors (RMSE) of the Random
-Forrest models predicting Sale Price across feature engineering methods,
-Borough and Building Type. Table \ref{tab:SalePriceModelRank} displays
-the average ranking by model type as well as the distribution of models
-that ranked first, second and third for each respective Borough/Building
-Type combination. When we rank the models by performance for each
-Borough, Building Type combination, we find that the Spatial Lag models
-outperform the Zip Code models in 72\% of cases with an average
-model-rank of 2.11 and 2.5, respectively.
+We analyzed the the RMSE of the Random Forest models predicting Sale
+Price across feature engineering methods, Borough and Building Type.
+Table \ref{tab:SalePriceModelRank} displays the average ranking by model
+type as well as the distribution of models that ranked first, second and
+third for each respective Borough/Building Type combination. When we
+rank the models by performance for each Borough, Building Type
+combination, we find that the Spatial Lag models outperform the Zip Code
+models in 72\% of cases with an average model-rank of 2.11 and 2.5,
+respectively.
 
 \begin{table}
 
@@ -1925,34 +1933,31 @@ models.
 \subsubsection{Regression Model
 Comparisons}\label{regression-model-comparisons}}
 
-The following criteria, described in detail in the Methodology section,
-were used to assess the predictive accuracy of the various regression
-models: Root Mean Squared Error (RMSE), Mean Absolute Error (MAE), Mean
-Squared Error (MSE) and R-Squared. These four indicators are calculated
-using the hold-out test data, which allows us to ensure that the models
-perform well when predicting sale prices into the near future. The
-comparison metrics are presented in Table \ref{tab:RegModelTable} and
-Figure \ref{fig:Model RMSE Comparrison}. We make the following
-observations about Table \ref{tab:RegModelTable} and Figure
-\ref{fig:Model RMSE Comparrison}:
+The predictive accuracy of the various regression models were evaluated
+using RMSE, described in detail in the methodology section, as well as
+Mean Absolute Error (MAE), Mean Squared Error (MSE) and R-Squared. These
+four indicators were calculated using the hold-out test data, which
+ensured that the models performed well when predicting sale prices into
+the near future. The comparison metrics are presented in Table
+\ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}. We
+make the following observations about Table \ref{tab:RegModelTable} and
+Figure \ref{fig:Model RMSE Comparrison}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  The feed-forward Multilayer Artificial Neural Networks (ANN) perform
-  best in nearly every metric across nearly all feature sets, with
-  Gradient Boosting Machine (GBM) a close second in some circumstances
+  The ANN models perform best in nearly every metric across nearly all
+  feature sets, with GBM a close second in some circumstances
 \item
-  ANN and Generalized Linear Models (GLM) improve linearly in all
-  metrics as you move from Base to Zip to Spatial, with Spatial
-  performing the best. GBM and Random Forrest, on the other hand,
-  perform best on the Base and Spatial feature sets and poorly on the
-  Zip features
+  ANN and GLM improve linearly in all metrics as you move from Base to
+  Zip to Spatial, with Spatial performing the best. GBM and Random
+  Forest, on the other hand, perform best on the Base and Spatial
+  feature sets and poorly on the Zip features
 \item
-  We see a similar pattern in the Random Forrest results compared to the
+  We see a similar pattern in the Random Forest results compared to the
   previous modeling exercise using the full data set: Base Features
-  outperforming both Spatial and Zip, with Spatial coming in second
+  outperform both Spatial and Zip, with Spatial coming in second
   consistently. This further validates our reasoning that Spatial
   features are highly predictive but suffer from overfitting and other
   algorithm-related reasons
@@ -2008,15 +2013,13 @@ dramatic reduction in error rate compared to the other techniques.
 \subsubsection{Classification Model
 Comparisons}\label{classification-model-comparisons}}
 
-The criteria used to assess the accuracy of the classification models
-are as follows: Area Under the ROC Curve (AUC), Mean Squared Error
-(MSE), Root Mean Squared Error (RMSE) and R-squared (R2). As with the
-regression models, these four indicators are calculated using the
-hold-out test data, allowing us to ensure that the models generalize
-well into the near future. The comparison metrics are presented in Table
-\ref{tab:ClassModelTable}. Figure \ref{fig:Model AUC Comparrison} shows
-the ROC curves and corresponding AUC for each algorithm/feature set
-combination.
+The classification models were assessed using AUC as well as MSE, RMSE
+and R-squared. As with the regression models, these four metrics were
+calculated using the hold-out test data, ensuring that the models
+generalize well into the near future. The comparison metrics are
+presented in Table \ref{tab:ClassModelTable}. Figure
+\ref{fig:Model AUC Comparrison} shows the ROC curves and corresponding
+AUC for each algorithm/feature set combination.
 
 \noindent The following conclusions can be made from Table
 \ref{tab:ClassModelTable} and Figure \ref{fig:Model AUC Comparrison}:
@@ -2029,15 +2032,12 @@ combination.
   proved to be the best performing classifier. All Spatial models
   performed relatively well with the exception of the GLM Spatial model
 \item
-  The error metrics tend to be quite low and frequently negative given
-  that they are calculated using probabilities and classes (0,1)
-\item
   Only 3 models have positive R-Squared values: ANN Spatial, RF Spatial
   and GLM Base. This would indicate that these models are adept at
   predicting positive cases (occurrences of sales) in the test data
 \item
   GLM Spatial returned an AUC of less than 0.5, indicating a model that
-  is conceptually worse than random. This is likely a result of extreme
+  is conceptually worse than random. This is likely a result of
   overfitting
 \end{enumerate}
 
@@ -2074,7 +2074,7 @@ Data & Model & AUC & MSE & RMSE & R2\\
 \noindent Figure \ref{fig:Class Models Scatterplot} plots the individual
 models by AUC and R-Squared. The Spatial models tend to outperform the
 other models by a significant margin. Interestingly, when compared to
-the regression model scatterplot, Figure
+the regression model scatterplot in Figure
 \ref{fig:reg Models Scatterplot}, the classification models tend to
 cluster in their performance by feature set. In
 \ref{fig:reg Models Scatterplot}, we see the regression models tending
@@ -2149,7 +2149,7 @@ We observe that the regression model has a much higher dispersion of
 feature importances compared to the classification model. The top
 variable in the regression model, BuiltFAR, which is a measure of how
 much of a building's floor to area ratio has been used (a proxy for
-overall building size) contributing only 1.8\% of the reduction in error
+overall building size) contributes only 1.8\% of the reduction in error
 rate in the overall model. Conversely, in the classification model, we
 see the top variable, ``Percent\_Neighbors\_Sold'' (a measure of how
 many buildings within 500 meters were sold in the past year) contributes
@@ -2223,8 +2223,8 @@ learning models. The spatial lag models performed best for particular
 building types and geographies, however, we feel confident that the
 technique could be expanded to work equally as well for all buildings
 with some additional research. Regarding algorithms, Artificial Neural
-Networks performed the best for predicting sale price, while GBM
-performed best for predicting sale occurrence.
+Networks performed the best for predicting sale price, while Gradient
+Boostin Machines performed best for predicting sale occurrence.
 
 While this research is not intended to serve as a full early-warning
 system for gentrification and displacement, it is a step in that

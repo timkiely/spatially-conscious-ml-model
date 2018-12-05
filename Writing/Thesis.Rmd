@@ -28,6 +28,7 @@ output:
     fig_caption: yes
     keep_tex: yes
     number_sections: yes
+  word_document: default
 spacing: double
 ---
 

@@ -28,7 +28,6 @@ output:
     fig_caption: yes
     keep_tex: yes
     number_sections: yes
-  word_document: default
 spacing: double
 ---
 
@@ -47,7 +46,7 @@ source("Sections/tables and figures/my_kable.R")
 \singlespace
 \begin{abstract}
 
-Successfully predicting gentrification could have many potential social and commercial applications, however, real estate sale prices are difficult to predict because they are chaotic systems comprised of intrinsic and extrinsic characteristics, perceived value and market speculation. We combine modern techniques of data science and machine learning with traditional spatial analysis to create robust real estate prediction models for both classification and regression tasks. We compare several cutting edge machine learning algorithms across spatial, semi-spatial and non-spatial feature engineering techniques, and we empirically show that spatially-conscious machine learning models outperform non-spatial models when married with advanced prediction techniques such as feed-forward artificial neural networks and gradient boosting machine models. 
+Successfully predicting gentrification could have many social and commercial applications, however, real estate sales are difficult to predict because they belong to a chaotic system comprised of intrinsic and extrinsic characteristics, perceived value, and market speculation. We combine modern techniques of data science and machine learning with traditional spatial analysis to create robust real estate prediction models for both classification and regression tasks. We compare several cutting edge machine learning algorithms across spatial, semi-spatial and non-spatial feature engineering techniques, and we empirically show that spatially-conscious machine learning models outperform non-spatial models when married with advanced prediction techniques such as feed-forward artificial neural networks and gradient boosting machine models. 
 
 \textbf{Keywords:} Real estate, Artificial neural networks, Machine learning, Recommender systems, Supervised learning, Predictive modeling
 

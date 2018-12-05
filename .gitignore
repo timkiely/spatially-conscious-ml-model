@@ -18,3 +18,5 @@ analysis/utils/*
 analysis/results/*
 analysis/utils/*
 /analysis/utils/*
+.dropbox
+desktop.ini

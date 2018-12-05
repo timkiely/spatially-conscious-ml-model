@@ -11,9 +11,9 @@ suppressPackageStartupMessages({library(tidyverse)})
 
 ## Summary of Results
 
-We have conducted comparative analyses across a two-stage modeling process. In Stage 1, using the Random Forest algorithm, we tested 3 competing feature engineering techniques (base, zip-code aggregation and spatial-lag aggregation) for both a classification task (predicting the occurrence of a building sale) and a regression task (predicting the sale price of a building). We analyzed the results of the first stage to identify which geographies and building types our model assumptions worked best. In Stage 2, using a subset of the modeling data (selected via an analysis of the output from Stage 1), we compared four algorithms -- GLM, Random Forest, GBM and ANN -- across our 3 competing feature engineering techniques for both classification and regression tasks. We analyzed the performance of the different model/data combos as well as conducted an analysis of the variable importances for the top performing models. 
+We have conducted comparative analyses across a two-stage modeling process. In Stage 1, using the Random Forest algorithm, we tested 3 competing feature engineering techniques (base, zip-code aggregation, and spatial-lag aggregation) for both a classification task (predicting the occurrence of a building sale) and a regression task (predicting the sale price of a building). We analyzed the results of the first stage to identify which geographies and building types our model assumptions worked best. In Stage 2, using a subset of the modeling data (selected via an analysis of the output from Stage 1), we compared four algorithms -- GLM, Random Forest, GBM and ANN -- across our 3 competing feature engineering techniques for both classification and regression tasks. We analyzed the performance of the different model/data combos as well as conducted an analysis of the variable importances for the top performing models. 
 
-In Stage 1 (Random Forest, using all data), we found that models which utilized spatial features outperformed those models using zip-code features the majority of the time for both classification and regression. Of three models, the Sale Price Regression model using Spatial features finished 1st or 2nd 24.1% of the time (using RMSE as a ranking criterion), while the Zip Code Regression model finished in the top two spots only 11.2% of the time. Both models performed worse than the Base Regression model overall, which ranked in 1st or 2nd place 31.5% of the time. The story for the classification models was largely the same: the Spatial features tended to outperform the Zip Code data while the Base data won out overall. All models had similar performances on training data, but the Spatial and Zip Code data sets tended to underperform when generalizing to the hold-out test data, suggesting problems with overfitting.
+In Stage 1 (Random Forest, using all data), we found that models which utilized spatial features outperformed those models using zip-code features the majority of the time for both classification and regression. Of three models, the Sale Price Regression model using Spatial features finished 1st or 2nd 24.1% of the time (using RMSE as a ranking criterion), while the Zip Code Regression model finished in the top two spots only 11.2% of the time. Both models performed worse than the Base Regression model overall, which ranked in 1st or 2nd place 31.5% of the time. The story for the classification models was largely the same: the Spatial features tended to outperform the Zip Code data while the Base data won out overall. All models had similar performances on training data, but the Spatial and Zip Code datasets tended to underperform when generalizing to the hold-out test data, suggesting problems with overfitting.
 
 We then analyzed the performance of both the regression and classification Random Forest models by geography and building type. We found that the models performed considerably better on Walk Up Apartments and Elevator Buildings (building types C and D) and in Manhattan, Brooklyn and the Bronx. Using these as filtering criteria, we created a subset of the modeling data for the subsequent modeling stage. 
 
@@ -25,7 +25,7 @@ We conclude that spatial lag features can significantly increase the accuracy of
 
 ### Sale Price Regression Models
 
-We analyzed the the RMSE of the Random Forest models predicting Sale Price across feature engineering methods, Borough and Building Type. Table \ref{tab:SalePriceModelRank} displays the average ranking by model type as well as the distribution of models that ranked first, second and third for each respective Borough/Building Type combination. When we rank the models by performance for each Borough, Building Type combination, we find that the Spatial Lag models outperform the Zip Code models in 72% of cases with an average model-rank of 2.11 and 2.5, respectively. 
+We analyzed the RMSE of the Random Forest models predicting Sale Price across feature engineering methods, Borough and Building Type. Table \ref{tab:SalePriceModelRank} displays the average ranking by model type as well as the distribution of models that ranked first, second and third for each respective Borough/Building Type combination. When we rank the models by performance for each Borough, Building Type combination, we find that the Spatial Lag models outperform the Zip Code models in 72% of cases with an average model-rank of 2.11 and 2.5, respectively. 
 
 ```{r Sale Price Model Rank Distributions, fig.cap= "Sale Price Model Evaluations", echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -43,7 +43,7 @@ read.csv("tables and figures/model rank perc distribution table.csv"
 ```
 
 
-The Base modeling data set tends to outperform both enriched data sets, suggesting an issue with model overfitting in some areas. We see further evidence of overfit in Table \ref{tab:SalePriceEval} where, despite similar performances on Validation data, the Zip and Spatial models have higher validation-to-test-set spreads. Despite this, the Spatial Lag features outperform all other models in certain locations, notably in Manhattan as shown in Figure \ref{fig:RMSE by boro and build type}. 
+The Base modeling dataset tends to outperform both enriched datasets, suggesting an issue with model overfitting in some areas. We see further evidence of overfitting in Table \ref{tab:SalePriceEval} where, despite similar performances on Validation data, the Zip and Spatial models have higher validation-to-test-set spreads. Despite this, the Spatial Lag features outperform all other models in specific locations, notably in Manhattan as shown in Figure \ref{fig:RMSE by boro and build type}. 
 
 
 ```{r Sale Price Evaluations, fig.cap= "Sale Price Model Evaluations", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -65,7 +65,7 @@ knitr::include_graphics("Sections/tables and figures/RMSE by boro and build type
 Figure \ref{fig:RMSE by boro and build type} displays test RMSE by model, faceted by Borough on the y-axis and Building Type on the x-axis (See Table \ref{tab:categoryTable} and Table \ref{tab:by_class} for a description of building type codes). We make the following observations from Figure \ref{fig:RMSE by boro and build type}:
 
 - The Spatial modeling data outperforms both Base and Zip Code in 6 cases, notably for Type A buildings (One Family Dwellings) and Type L buildings (Lofts) in Manhattan as well as Type O Buildings (Office) in Queens
-- The "residential" building Types A (One Family Dwellings), B (Two Family Dwellings), C (Walk Up Apartments) and D (Elevator Apartments) have generally lower RMSE scores compared to the non-residential types
+- The "residential" building Types A (One-family Dwellings), B (Two Family Dwellings), C (Walk Up Apartments) and D (Elevator Apartments) have generally lower RMSE scores compared to the non-residential types
 - Spatial features perform best in Brooklyn, Bronx and Manhattan and for residential building types
 
 
@@ -83,9 +83,9 @@ read.csv("tables and figures/Prob Models AUC evaluations.csv", check.names = FAL
 
 Figure \ref{fig:AUC by boro and build type} shows a breakdown of model AUC faceted along the x-axis by Building Type and along the y-axis by Borough. The coloring indicates by how much a model's AUC diverges from the cell average, which is useful for spotting over performers. We make the following observations about Figure \ref{fig:AUC by boro and build type}:
 
-- The Spatial models outperform all other models for Elevator Buildings (Type D) and Walk Up Apartments (Type C), particularly in Brooklyn, the Bronx and Manhattan
+- The Spatial models outperform all other models for Elevator Buildings (Type D) and Walk Up Apartments (Type C), particularly in Brooklyn, the Bronx, and Manhattan
 - Classification tends to perform poorly in Manhattan vs. other Boroughs
-- The Spatial models performs well in Manhattan for the residential building types (A, B, C and D)
+- The Spatial models perform well in Manhattan for the residential building types (A, B, C and D)
 
 
 ```{r AUC by boro and build type, echo=FALSE, fig.cap="AUC By Borough and Building Type", message=FALSE, warning=FALSE, out.width='100%', paged.print=FALSE}
@@ -93,7 +93,7 @@ knitr::include_graphics("Sections/tables and figures/AUC by boro and build type.
 ```
 
 
-If we rank the classification models' performance for each Borough and Building Type, we see that the Spatial models consistently outperform the Zip Code models, as shown in  Table \ref{tab:ProbModelAUCRank}. From this (as well as from similar patterns seen in the regression models) we can infer that the Spatial data is a superior data engineering technique, however, the algorithm used needs to account for potential model overfitting. In the next section, we discuss refining the data used as well as employing different algorithms to maximize predictive capability of the Spatial features.  
+If we rank the classification models' performance for each Borough and Building Type, we see that the Spatial models consistently outperform the Zip Code models, as shown in  Table \ref{tab:ProbModelAUCRank}. From this (as well as from similar patterns seen in the regression models) we can infer that the Spatial data is a superior data engineering technique; however, the algorithm used needs to account for potential model overfitting. In the next section, we discuss refining the data used as well as employing different algorithms to maximize the predictive capability of the Spatial features.  
 
 ```{r Prob Model AUC Average Rank, fig.cap= "Sale Price Model Evaluations", echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -112,17 +112,17 @@ read.csv("tables and figures/auc model rank perc distribution table.csv"
 
 ## Stage 2) Model Comparisons Using Specific Geographies and Building Types
 
-Using the results from the first modeling exercise, we conclude that Walk Up Apartments and Elevator Buildings in Manhattan, Brooklyn and the Bronx are suitable candidates for prediction using our current assumptions. These buildings share the characteristics of being residential as well as being fairly uniform in their geographic density. We analyze the performance of four algorithms (GLM, RF, GBM and ANN), using three feature engineering techniques, for both classification and regression, making the total number `4 x 3 x 2 = 24` models.
+Using the results from the first modeling exercise, we conclude that Walk Up Apartments and Elevator Buildings in Manhattan, Brooklyn and the Bronx are suitable candidates for prediction using our current assumptions. These buildings share the characteristics of being residential as well as being reasonably uniform in their geographic density. We analyze the performance of four algorithms (GLM, RF, GBM, and ANN), using three feature engineering techniques, for both classification and regression, making the total number `4 x 3 x 2 = 24` models.
 
 
 ### Regression Model Comparisons
 
-The predictive accuracy of the various regression models were evaluated using RMSE, described in detail in the methodology section, as well as Mean Absolute Error (MAE), Mean Squared Error (MSE) and R-Squared. These four indicators were calculated using the hold-out test data, which ensured that the models performed well when predicting sale prices into the near future. The comparison metrics are presented in Table \ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}. We make the following observations about Table \ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}: 
+The predictive accuracies of the various regression models were evaluated using RMSE, described in detail in the methodology section, as well as Mean Absolute Error (MAE), Mean Squared Error (MSE) and R-Squared. These four indicators were calculated using the hold-out test data, which ensured that the models performed well when predicting sale prices into the near future. The comparison metrics are presented in Table \ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}. We make the following observations about Table \ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}: 
 
 1) The ANN models perform best in nearly every metric across nearly all feature sets, with GBM a close second in some circumstances
 2) ANN and GLM improve linearly in all metrics as you move from Base to Zip to Spatial, with Spatial performing the best. GBM and Random Forest, on the other hand, perform best on the Base and Spatial feature sets and poorly on the Zip features 
-3) We see a similar pattern in the Random Forest results compared to the previous modeling exercise using the full data set: Base Features outperform both Spatial and Zip, with Spatial coming in second consistently. This further validates our reasoning that Spatial features are highly predictive but suffer from overfitting and other algorithm-related reasons
-4) The highest model R-Squared is the ANN using Spatial features at 0.494, indicating that this model can account for nearly 50% of the variance in the test data. Compared to the R-Squared of the more traditional Base GLM at 0.12, that is a 3-fold improvement in predictive accuracy
+3) We see a similar pattern in the Random Forest results compared to the previous modeling exercise using the full dataset: Base Features outperform both Spatial and Zip, with Spatial coming in second consistently. This pattern further validates our reasoning that Spatial features are highly predictive but suffer from overfitting and other algorithm-related reasons
+4) The highest model R-Squared is the ANN using Spatial features at 0.494, indicating that this model can account for nearly 50% of the variance in the test data. Compared to the R-Squared of the more traditional Base GLM at 0.12, this represents a more than 3-fold improvement in predictive accuracy
 
 ```{r Reg Model RMSE Compare, fig.cap= "Prediction Accuracy of Regression Models on Test Data", echo=FALSE, message=FALSE, warning=FALSE}
 
@@ -153,13 +153,13 @@ knitr::include_graphics("Sections/tables and figures/reg_model_results_scatterpl
 
 ### Classification Model Comparisons
 
-The classification models were assessed using AUC as well as MSE, RMSE and R-squared. As with the regression models, these four metrics were calculated using the hold-out test data, ensuring that the models generalize well into the near future. The comparison metrics are presented in Table \ref{tab:ClassModelTable}.  Figure \ref{fig:Model AUC Comparrison} shows the ROC curves and corresponding AUC for each algorithm/feature set combination. 
+The classification models were assessed using AUC as well as MSE, RMSE, and R-squared. As with the regression models, these four metrics were calculated using the hold-out test data, ensuring that the models generalize well into the near future. The comparison metrics are presented in Table \ref{tab:ClassModelTable}.  Figure \ref{fig:Model AUC Comparrison} shows the ROC curves and corresponding AUC for each algorithm/feature set combination. 
 
-\noindent The following conclusions can be made from Table \ref{tab:ClassModelTable} and Figure \ref{fig:Model AUC Comparrison}: 
+\noindent We make the following observations of Table \ref{tab:ClassModelTable} and Figure \ref{fig:Model AUC Comparrison}: 
 
-1) Unlike the regression models, the GBM algorithm with Spatial features proved to be the best performing classifier. All Spatial models performed relatively well with the exception of the GLM Spatial model
-2) Only 3 models have positive R-Squared values: ANN Spatial, RF Spatial and GLM Base. This would indicate that these models are adept at predicting positive cases (occurrences of sales) in the test data
-3) GLM Spatial returned an AUC of less than 0.5, indicating a model that is conceptually worse than random. This is likely a result of overfitting
+1) Unlike the regression models, the GBM algorithm with Spatial features proved to be the best performing classifier. All Spatial models performed relatively well except the GLM Spatial model
+2) Only 3 models have positive R-Squared values: ANN Spatial, RF Spatial, and GLM Base, indicating that these models are adept at predicting positive cases (occurrences of sales) in the test data
+3) GLM Spatial returned an AUC of less than 0.5, indicating a model that is conceptually worse than random. This is likely the result of overfitting
 
 
 ```{r Class Model Compare, fig.cap= "Prediction Accuracy of Classification Models on Test Data", echo=FALSE, message=FALSE, warning=FALSE}
@@ -193,7 +193,7 @@ knitr::include_graphics("Sections/tables and figures/class_model_results_scatter
 
 ## Variable Importance Analysis of Top Performing Models
 
-Feature importance is calculated for each algorithm as being proportional to the average decrease in the squared error after including that variable in the model. The most important variable gets a score of 1; scores for other variables are derived by standardizing their measured reduction in error relative to the largest one. The top 10 variables for both the most successful regression and most successful classification models are presented in tables \ref{tab:RegVarImp} and \ref{tab:ClassVarImp}. 
+We calculated feature importance for each variable as the proportional to the average decrease in the squared error after including that variable in the model. The most important variable gets a score of 1; scores for other variables are derived by standardizing their measured reduction in error relative to the largest one. The top 10 variables for both the most successful regression and most successful classification models are presented in tables \ref{tab:RegVarImp} and \ref{tab:ClassVarImp}. 
 
 
 ```{r Reg VarImp, fig.cap= "Feature Importance of Top Performing Regression Model", echo=FALSE, message=FALSE, warning=FALSE}
@@ -217,7 +217,7 @@ read.csv("tables and figures/classification_feat_impo_w_descr.csv"
 
 ```
 
-We observe that the regression model has a much higher dispersion of feature importances compared to the classification model. The top variable in the regression model, BuiltFAR, which is a measure of how much of a building's floor to area ratio has been used (a proxy for overall building size) contributes only 1.8% of the reduction in error rate in the overall model. Conversely, in the classification model, we see the top variable, "Percent_Neighbors_Sold" (a measure of how many buildings within 500 meters were sold in the past year) contributes 21.9% of the total reduction in squared error. 
+We observe that the regression model has a much higher dispersion of feature importances compared to the classification model. The top variable in the regression model, BuiltFAR, which is a measure of how much of a building's floor to area ratio has been used (a proxy for overall building size) contributes only 1.8% of the reduction in the error rate in the overall model. Conversely, in the classification model, we see the top variable, "Percent_Neighbors_Sold" (a measure of how many buildings within 500 meters were sold in the past year) contributes 21.9% of the total reduction in squared error. 
 
 Variable importance analysis of the regression model indicates that the model favors variables which reflect building size (BuiltFAR, FacilFAR, BldgDepth) as well as approximations for previous sale prices (Last_Sale_Price and Last_Sale_Date). The classification model tends to favor spatial lag features, such as how many buildings were sold in the past year within 500 meters (Percent_Neighbors_Sold and Radius_Res_Units_Sold_In_Year) as well as characteristics of the building function (Percent_Office, Percent_Storage, etc.). 
 

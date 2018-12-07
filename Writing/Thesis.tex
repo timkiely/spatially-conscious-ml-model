@@ -137,7 +137,7 @@ Predictions
 
 By
 
-\textbf{Tim Kiely}
+Tim Kiely
 
 Thesis Project
 
@@ -155,6 +155,8 @@ Northwestern University
 
 ~
 
+December, 2018
+
 Nathaniel D. Bastian, Ph.D., First Reader
 
 Candice Bradley, Second Reader
@@ -164,7 +166,7 @@ Candice Bradley, Second Reader
 \singlespace
 \begin{abstract}
 
-Successfully predicting gentrification could have many social and commercial applications, however, real estate sales are difficult to predict because they belong to a chaotic system comprised of intrinsic and extrinsic characteristics, perceived value, and market speculation. We combine modern techniques of data science and machine learning with traditional spatial analysis to create robust real estate prediction models for both classification and regression tasks. We compare several cutting edge machine learning algorithms across spatial, semi-spatial and non-spatial feature engineering techniques, and we empirically show that spatially-conscious machine learning models outperform non-spatial models when married with advanced prediction techniques such as feed-forward artificial neural networks and gradient boosting machine models. 
+Successfully predicting gentrification could have many social and commercial applications, however, real estate sales are difficult to predict because they belong to a chaotic system comprised of intrinsic and extrinsic characteristics, perceived value, and market speculation. Using New York City real estate as our subject, we combine modern techniques of data science and machine learning with traditional spatial analysis to create robust real estate prediction models for both classification and regression tasks. We compare several cutting edge machine learning algorithms across spatial, semi-spatial and non-spatial feature engineering techniques, and we empirically show that spatially-conscious machine learning models outperform non-spatial models when married with advanced prediction techniques such as feed-forward artificial neural networks and gradient boosting machine models. 
 
 \textbf{Keywords:} Real estate, Artificial neural networks, Machine learning, Recommender systems, Supervised learning, Predictive modeling
 
@@ -199,11 +201,11 @@ well-known problem in traditional spatial analysis and is typically
 referred to as \emph{spatial autocorrelation}. In statistics, this is
 said to ``reduce the amount of information'' pertaining to spatially
 proximate observations as they can, in part, be used to predict each
-other (DiMaggio, 2012). But can spatial features be used in a
-machine-learning context to make better predictions? This work
-demonstrates that the addition of ``spatial lag'' features to machine
-learning models significantly increases accuracy when predicting real
-estate sales and sale prices.
+other (DiMaggio, 2012). But can spatial features be used in a machine
+learning context to make better predictions? This work demonstrates that
+the addition of ``spatial lag'' features to machine learning models
+significantly increases accuracy when predicting real estate sales and
+sale prices.
 
 \hypertarget{motivation-combating-income-inequality-by-predicting-gentrification}{%
 \subsection{Motivation: Combating Income Inequality by Predicting
@@ -218,12 +220,12 @@ refugees, and women--who are physically displaced by local economic
 prosperity enter a continuous cycle of diminished access to good jobs,
 good schools, health care facilities, public spaces, and other economic
 and social resources. Diminished access leads to more poverty, which
-leads to more displacement. This self-reinforcing cycle of poverty and
+leads to more exclusion. This self-reinforcing cycle of poverty and
 exclusion gradually exacerbates income inequality over the course years
 and generations. What can be done to intervene?
 
-Stopping Economic Exclusion requires preventing displacement.
-\emph{Displacement} can be thought of as the negative consequence of
+Stopping economic exclusion requires preventing \emph{displacement}.
+Displacement can be thought of as the negative consequence of
 gentrification, where affordability pressures force vulnerable
 populations to relocate due to localized economic prosperity (Clay,
 1979). Reliably predicting gentrification would be a valuable tool for
@@ -243,13 +245,13 @@ programs, financial literacy coaching, homeowner assistance, housing
 vouchers, and more (Greene et al., 2016). Not unlike medical treatment,
 early detection is the key to success.
 
-Consequently the Urban Institute published a series of essays in 2016
+Consequently, the Urban Institute published a series of essays in 2016
 outlining the few ways city governments employ ``Big data and
 crowdsourced data'' to identify vulnerable individuals and connect them
 with the proper services and resources, noting that ``much more could be
-done'' (Greene et al., 2016). This work seeks to further the research
-into using free, open data, open-source software and cutting-edge
-techniques to predict trends in gentrification, with the aim of
+done'' (Greene et al., 2016). It it our hope that this work furthers the
+research behind gentrification prediction by combining open data,
+open-source software and cutting-edge techniques with the aim of
 identifying high-risk households and areas in need of intervention.
 
 To date, many government agencies have demonstrated the benefits of
@@ -257,22 +259,22 @@ applied predictive modeling, ranging from prescription drug abuse
 prevention to homelessness intervention to recidivism reduction (Ritter,
 2013). However, few if any examples exist of large-scale, systematic
 applications of data analysis to aid vulnerable populations experiencing
-displacement. This paper belongs to an emerging trend known as the
+displacement. This work belongs to an emerging trend known as the
 ``science of cities'' which aims to use large data sets and advanced
 simulation and modeling techniques to understand and improve urban
 patterns and how cities function (Batty, 2013).
 
-This work explores techniques that can dramatically boost the accuracy
-of existing gentrification prediction models. We use real estate
+Below we describe techniques that can dramatically boost the accuracy of
+existing gentrification prediction models. We use real estate
 transactions in New York City, both their occurrence (probability of
 sale) and their dollar amount (sale price per square foot) as a proxy
-for gentrification. The technique marries the use of machine-learning
-predictive modeling with ``spatial-lag'' features typically seen in
+for gentrification. The technique marries the use of machine learning
+predictive modeling with spatial lag features typically seen in
 geographically-weighted regressions (GWR). We employ a two-step modeling
 process in which we 1) determine the optimal building types and
 geographies suited to our feature engineering assumptions and 2) perform
 a comparative analysis across several state-of-the-art algorithms
-(generalized linear model, random forest, gradient boosting machine, and
+(generalized linear model, Random Forest, gradient boosting machine, and
 artificial neural network). We conclude that spatially-conscious machine
 learning models consistently outperform traditional real estate
 valuation and predictive modeling techniques.
@@ -310,18 +312,18 @@ Studies of gentrification and displacement generally take two approaches
 in the literature: supply-side and demand-side, or ``the flows of
 capital versus flows of people to neighborhoods,'' respectively (Zuk et
 al., 2015). Supply-side arguments for gentrification tend to focus on
-investments and policies (Zuk et al., 2015) and are much more often the
-subject of academic literature on economic displacement. This kind of
-research may be more common because it has the advantage of being more
-directly linked to influencing public policy. According to Dreier,
-Mollenkopf, \& Swanstrom (2004), public policies that can increase
-economic displacement have been, among others, automobile-oriented
-transportation infrastructure spending and mortgage interest tax
-deductions for homeowners. Others who have argued for supply-side
-gentrification include Smith (1979), who stated that the return of
-capital from the suburbs to the city, or the ``political economy of
-capital flows into urban areas'' are what primarily drive both the
-positive and negative consequences of urban gentrification.
+investments and policies and are much more often the subject of academic
+literature on economic displacement. This kind of research may be more
+common because it has the advantage of being more directly linked to
+influencing public policy. According to Dreier, Mollenkopf, \& Swanstrom
+(2004), public policies that can increase economic displacement have
+been, among others, automobile-oriented transportation infrastructure
+spending and mortgage interest tax deductions for homeowners. Others who
+have argued for supply-side gentrification include Smith (1979), who
+stated that the return of capital from the suburbs to the city, or the
+``political economy of capital flows into urban areas'' are what
+primarily drive both the positive and negative consequences of urban
+gentrification.
 
 More recently, researchers have explored economic displacement as a
 contributor to income inequality (Reardon \& Bischoff, 2011; Watson,
@@ -358,17 +360,16 @@ Scientific mass appraisal models date back to 1936 with the reappraisal
 of St.~Paul, Minnesota (Joseph, n.d.). Since that time, and accelerating
 with the advent of computers, much statistical research has been done
 relating property values and rent prices to various characteristics of
-those properties, including characteristics of their surrounding area.
-Multiple regression analysis (MRA) has been the most common set of
-statistical tools used in mass appraisal, including maximum likelihood,
-weighted least squares, and the most popular, ordinary least squares, or
-\emph{OLS} (d'Amato \& Kauko, 2017). The primary drawbacks of MRA
-techniques are excessive multicollinearity among attributes and spatial
-autocorrelation among residuals (d'Amato \& Kauko, 2017). Another group
-of models that seek to correct for spatial dependence are known as
-spatial auto-regressive models (SAR), chief among them the spatial lag
-model, which aggregates weighted summaries of nearby properties to
-create independent regression variables (d'Amato \& Kauko, 2017).
+those properties, including their surrounding area. Multiple regression
+analysis (MRA) has been the most common set of statistical tools used in
+mass appraisal, including maximum likelihood, weighted least squares,
+and the most popular, ordinary least squares, or OLS (d'Amato \& Kauko,
+2017). MRA techniques in particular are susceptible to spatial
+autocorrelation among residuals. Another group of models that seek to
+correct for spatial dependence are known as spatial auto-regressive
+models (SAR), chief among them the spatial lag model, which aggregates
+weighted summaries of nearby properties to create independent regression
+variables (d'Amato \& Kauko, 2017).
 
 So-called \emph{hedonic regression models} seek to decompose the price
 of a good based on the intrinsic and extrinsic components. Koschinsky,
@@ -376,8 +377,8 @@ Lozano-Gracia, \& Piras (2012) is a recent and thorough discussion of
 parametric hedonic regression techniques. Koschinsky derives some of the
 variables included in his models from nearby properties, similar to the
 techniques used in this work, and these spatial variables were found to
-be predictive. The basic real estate hedonic model explains the price of
-a given property as:
+be predictive. The basic real estate hedonic model describes the price
+of a given property as:
 
 \[
 \begin{aligned}
@@ -393,11 +394,11 @@ vector of locational characteristics \(L\) (Koschinsky et al., 2012 pg.
 interest using neighboring properties within 1,000 feet of a sale. The
 derived variables include characteristics like average age, the number
 of poor condition homes, percent of homes with electric heating,
-construction grades, and more, within 1,000 feet of the property in
-question. Koschinsky found that in all cases homes near each other were
-typically similar to each other and priced accordingly. Koschinsky
-concluded that locational characteristics should be valued at least as
-much ``if not more'' than intrinsic structural characteristics.
+construction grades, and more. Koschinsky found that in all cases homes
+near each other were typically similar to each other and priced
+accordingly, concluding that locational characteristics should be valued
+at least as much ``if not more'' than intrinsic structural
+characteristics.
 
 As recently as 2015, much research has dealt with mitigating the
 drawbacks of MRA, including the use of multi-level hierarchical models.
@@ -423,24 +424,24 @@ building or plot of land belongs to a rich network where decisions about
 and perceptions of neighboring properties influence the final market
 value. Guan, Shi, Zurada, \& Levitan (2014) compared traditional MRA
 techniques to alternative data mining techniques resulting in mixed
-results. However, as Helbich, Jochem, Mücke, \& Höfle (2013) states,
-hedonic pricing models might be improved upon in two primary ways:
-through novel estimation techniques, and by ancillary structural,
-locational, and neighborhood variables. Recent research generally falls
-into these two buckets: better algorithms and better data.
+results. However, as Helbich, Jochem, Mücke, \& Höfle (2013) state,
+hedonic pricing models can be improved in two primary ways: through
+novel estimation techniques, and by ancillary structural, locational,
+and neighborhood variables. Recent research generally falls into these
+two buckets: better algorithms and better data.
 
-In the ``better data'' category, researchers have been striving to
-introduce new independent variables to increase the accuracy of
-predictive models. Alexander Dietzel, Braun, \& Schäfers (2014)
-successfully used internet search query data provided by Google Trends
-to serve as a sentiment indicator and improve commercial real estate
-forecasting models. Pivo \& Fisher (2011) examined the effects of
-walkability on property values and investment returns. Pivo found that
-on a 100-point scale, a 10-point increase in walkability increased
-property investment values by up to 9\%.
+In the better data category, researchers have been striving to introduce
+new independent variables to increase the accuracy of predictive models.
+Alexander Dietzel, Braun, \& Schäfers (2014) successfully used internet
+search query data provided by Google Trends to serve as a sentiment
+indicator and improve commercial real estate forecasting models. Pivo \&
+Fisher (2011) examined the effects of walkability on property values and
+investment returns. Pivo found that on a 100-point scale, a 10-point
+increase in walkability increased property investment values by up to
+9\%.
 
-Research into better prediction algorithms does not necessarily happen
-at the exclusion of better data. For example, Fu et al. (2014) created a
+Research into better prediction algorithms and employing better data are
+not mutually exclusive. For example, Fu et al. (2014) created a
 prediction algorithm, called \emph{ClusRanking}, for real estate in
 Beijing, China. ClusRanking first estimates neighborhood characteristics
 using taxi cab traffic vector data, including relative access to
@@ -460,7 +461,7 @@ non-parametric techniques outperform traditional parametric techniques,
 while several conclude that the Random Forest algorithm is particularly
 well-suited to predicting real estate values.
 
-Kontrimas \& Verikas (2011) compares the accuracy of linear regression
+Kontrimas \& Verikas (2011) compared the accuracy of linear regression
 against the SVM technique and found the latter to outperform.
 Schernthanner, Asche, Gonschorek, \& Scheele (2016) compared traditional
 linear regression techniques to several techniques such as kriging
@@ -485,14 +486,11 @@ RIPPER algorithm consistently outperformed the other models. Rafiei \&
 Adeli (2015) employed a restricted Boltzmann machine (neural network
 with back propagation) to predict the sale price of residential condos
 in Tehran, Iran, using a non-mating genetic algorithm for dimensionality
-reduction with a focus on computational efficiency. The paper concludes
+reduction with a focus on computational efficiency. The paper concluded
 that two primary strategies help in this regard: weighting property
 sales by temporal proximity (i.e., sales which happened closer in time
 are more alike), and also using a learner to accelerate the recognition
-of important features. The paper compares this technique to several
-other common neural network approaches and finds that while not
-necessarily the only way to get the best answer, it is an efficient and
-fast way to get to the best answer.
+of important features.
 
 Finally, we note that many studies, whether exploring advanced
 techniques, new data, or both, rely on aggregation of data by some
@@ -506,9 +504,9 @@ States, studying changes between 1990 and 2000 for neighborhood
 socioeconomic and housing characteristics. All of these studies, and
 many more, relied on the aggregation of data at the census-tract or
 census-block level. In contrast, this paper compares
-boundary-aggregation techniques (specifically, aggregating by Zip Codes)
-to spatial lag techniques and finds the spatial lag techniques to
-generally outperform.
+boundary-aggregation techniques (specifically, aggregating by zip codes)
+to a boundary-agnositc spatial lag techniques and finds the latter to
+outperform.
 
 \hypertarget{data-and-methodology}{%
 \section{Data and Methodology}\label{data-and-methodology}}
@@ -516,7 +514,7 @@ generally outperform.
 \hypertarget{methodology-overview}{%
 \subsection{Methodology Overview}\label{methodology-overview}}
 
-Our goal was to compare ``spatially-conscious'' machine learning
+Our goal was to compare \emph{spatially-conscious} machine learning
 predictive models to traditional feature engineering techniques. To
 accomplish this comparison, we created three separate modeling datasets:
 
@@ -527,7 +525,7 @@ accomplish this comparison, we created three separate modeling datasets:
   size, taxable value, usage, and others
 \item
   \textbf{Zip code modeling data:} includes the base data as well as
-  aggregations of data at the zip-code level
+  aggregations of data at the zip code level
 \item
   \textbf{Spatial lag modeling data:} includes the base data as well as
   aggregations of data within 500-meters of each building
@@ -551,7 +549,7 @@ each:
   a given property will sell in a given year (0,1)
 \item
   \textbf{Regression task: sale-price-per-square-foot} Given that a
-  property sells, how much is the sale price per square foot? (\$/SF)
+  property sells, how much is the sale-price-per-square-foot? (\$/SF)
 \end{enumerate}
 
 \noindent Table \ref{tab:modeltable} shows the six distinct modeling
@@ -590,14 +588,14 @@ complete analysis process:\newline
 \def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  Create a ``base'' modeling dataset by sourcing and combining building
+  Create a base modeling dataset by sourcing and combining building
   characteristic and sales data from open-source New York City
   repositories
 \item
-  Create a ``zip'' modeling dataset by aggregating the base data at a
-  Zip-Code level and appending these features to the base data
+  Create a zip code modeling dataset by aggregating the base data at a
+  zip code level and appending these features to the base data
 \item
-  Create a ``spatial lag'' modeling dataset by aggregating the base data
+  Create a spatial lag modeling dataset by aggregating the base data
   within 500 meters of each building and appending these features to the
   base data
 \item
@@ -643,8 +641,8 @@ describes all tax lots in the five boroughs. The Primary Land Use and
 Tax Lot Output dataset, known as
 \href{https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts\%5Byear\%5D=0}{PLUTO}\footnote{\url{https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts\%5Byear\%5D=0}},
 contains a single record for every tax lot in the city along with a
-number of building-related and tax-related attributes such as Year
-Built, Assessed Value, Square Footage, number of stories, and many more.
+number of building-related and tax-related attributes such as year
+built, assessed value, square footage, number of stories, and many more.
 At the time of this writing, NYC had made this dataset available for all
 years between 2002-2017, excluding 2008. For convenience, we also
 exclude the 2002 dataset from our analysis because corresponding sales
@@ -824,8 +822,8 @@ O & OFFICES\\
 The data were further filtered to include only records with equal to or
 less than 2 buildings per tax lot, effectively excluding large outliers
 in the data such as the World Trade Center and Stuyvesant Town. The
-global filtering of the dataset reduces the base modeling data from
-12,012,780 records down to 8,247,499, retaining 68.6\%\% of the original
+global filtering of the dataset reduced the base modeling data from
+12,012,780 records down to 8,247,499, retaining 68.6\% of the original
 data.
 
 \hypertarget{exploratory-data-analysis}{%
@@ -837,7 +835,7 @@ New York City for the years 2003-2017. One challenge with creating a
 predictive model of real estate sales data is the heterogeneity within
 the data in terms of frequency of sales and sale price. These two
 metrics (sale occurrence and amount) vary meaningfully across year,
-borough and building classes (among other attributes). Table
+borough and building class (among other attributes). Table
 \ref{tab:by_year} displays statistics which describe the base dataset
 (pre-filtered) by year. Note how the frequency of transactions (\# of
 Sales) and the sale amount (Median Sale \$/SF) tend to covary,
@@ -919,12 +917,12 @@ Z & Misc & 49583 & 2740 & \$0 & \$0\\
 \end{tabular}
 \end{table}
 
-Sale price per square foot, in particular, varies considerably across
+Sale-price-per-square-foot, in particular, varies considerably across
 geography and asset class. Table \ref{tab:by_class_boro} shows the
 breakdown of sales prices by borough and asset class. Manhattan tends to
 command the highest sale-price-per-square-foot across asset types.
 ``Commercial'' asset types such as Office and Elevator Apartments tend
-to fetch much lower price-per-square foot than do residential classes
+to fetch much lower price-per-square-foot than do residential classes
 such as one and two-family dwellings. Table \ref{tab:by_class_boro_num}
 shows the number of transactions across the same dimensions.
 
@@ -1176,16 +1174,16 @@ spatial indexing process is outlined in Algorithm \ref{alg:spatial1}.
   \end{algorithmic}
 \end{algorithm}
 
-\noindent Each gridded partition of the data is married with a
-corresponding search space \(S\), which is the convex hull of the
-partition space buffered by the maximum distance \(d\). In our case, we
-buffered the search space by 500 meters. Choosing an appropriate radius
-for buffering presents an additional challenge in creating
-spatially-conscious machine learning predictive models. In this paper,
-we chose an arbitrary radius, and use a two-stage modeling process to
-test the appropriateness of that assumption. Future work may want to
-explore implementing an ``adaptive bandwidth'' technique using
-cross-validation to determine the optimal radius.
+Each gridded partition of the data is married with a corresponding
+search space \(S\), which is the convex hull of the partition space
+buffered by the maximum distance \(d\). In our case, we buffered the
+search space by 500 meters. Choosing an appropriate radius for buffering
+presents an additional challenge in creating spatially-conscious machine
+learning predictive models. In this paper, we chose an arbitrary radius,
+and use a two-stage modeling process to test the appropriateness of that
+assumption. Future work may want to explore implementing an adaptive
+bandwidth technique using cross-validation to determine the optimal
+radius for each property.
 
 By partitioning the data into spatial grids, we were able to reduce the
 search space for each operation by an arbitrary number of partitions
@@ -1215,12 +1213,12 @@ required to calculate the point-neighbor relational graph.
 \hypertarget{calculating-spatial-lags}{%
 \paragraph{Calculating Spatial Lags}\label{calculating-spatial-lags}}
 
-Once we contructed the point-neighbor relational graph, we then used the
-graph to aggregate the data into spatial lag variables. One advantage of
-using spatial lags is the abundant number of potential features which
-can be engineered. Spatial lags can be weighted based on a distance
-function, e.g., physically closer observations can be given more weight.
-For our modeling purposes, we created two sets of features:
+Once we constructed the point-neighbor relational graph, we then used
+the graph to aggregate the data into spatial lag variables. One
+advantage of using spatial lags is the abundant number of potential
+features which can be engineered. Spatial lags can be weighted based on
+a distance function, e.g., physically closer observations can be given
+more weight. For our modeling purposes, we created two sets of features:
 inverse-distance weighted features (denoted with a "\_dist" in Table
 \ref{tab:SpLAgFeats}) and simple average features (denoted with
 "\_basic" in Table \ref{tab:SpLAgFeats}).
@@ -1402,7 +1400,7 @@ and regression tasks.
 \hypertarget{random-forest}{%
 \subsubsection{Random Forest}\label{random-forest}}
 
-Random Forest was proposed by Breiman Breiman (2001) as an ensemble of
+Random Forest was proposed by Breiman (2001) as an ensemble of
 prediction decision trees iteratively trained across randomly generated
 subsets of data. Algorithm \ref{alg:RandomForestAlo} outlines the
 procedure (Hastie, Tibshirani, \& Friedman, 2001).
@@ -1450,8 +1448,8 @@ regression decision trees and then employing majority voting (for
 classification) or averaging (for regression) to generate predictions.
 Over a dataset of N rows by M predictors, a bootstrap sample of the data
 is chosen (n \textless{} N) as well as a subset of the predictors (m
-\textless{} M). Individual decision/regression trees are built on the n
-by m sample. Because the trees develop independently (and not
+\textless{} M). Individual decision or regression trees are built on the
+n by m sample. Because the trees develop independently (and not
 sequentially, as is the case with most functional gradient descent
 algorithms), the tree building process can be executed in parallel. With
 a sufficiently large number of computer cores, the model training time
@@ -1531,7 +1529,7 @@ regression task and binomial for the classification.
 \subsubsection{Gradient Boosting
 Machine}\label{gradient-boosting-machine}}
 
-Gradient Boosting Machine (GBM) is one of the most popular machine
+Gradient boosting machine (GBM) is one of the most popular machine
 learning algorithms available today. The algorithm uses iteratively
 refined approximations, obtained through cross-validation, to
 incrementally increase predictive accuracy. Similar to Random Forest,
@@ -1574,8 +1572,8 @@ Network}\label{feed-forward-artificial-neural-network}}
 The artificial neural network (ANN) implementation used in this work is
 a multi-layer feed-forward artificial neural network trained with
 stochastic gradient descent using back-propagation. Common synonyms for
-an ANN model are multi-layer perceptron and also deep neural network.
-The feed-forward ANN is one of the most common neural network
+ANN models are multi-layer perceptrons and, more recently, deep neural
+networks. The feed-forward ANN is one of the most common neural network
 algorithms, but other types exist, such as the convolutional neural
 network (CNN) which performs well on image classification tasks, and the
 recurrent neural network (RNN) which is well-suited for sequential data
@@ -1616,15 +1614,15 @@ For more information, see: \url{https://www.h2o.ai/}.
 \hypertarget{model-validation}{%
 \subsection{Model Validation}\label{model-validation}}
 
-The goal of our predictive modeling efforts were to be able to
-successfully predict both the probability and amount of real estate
-sales into the near future. As such, trained and evaluated our models
-using use out-of-time validation to assess performance. As shown in
-Figure \ref{fig:Train Test Validate} The models were trained using data
-from 2003-2015. We used 2016 data during the model training process for
-model validation purposes. Finally, we scored our models using 2017 data
-as a hold-out sample. Using out-of-time validation ensured that our
-models generalized well into the immediate future.
+Our goal was to be able to successfully predict both the probability and
+amount of real estate sales into the near future. As such, we trained
+and evaluated our models using out-of-time validation to assess
+performance. As shown in Figure \ref{fig:Train Test Validate} The models
+were trained using data from 2003-2015. We used 2016 data during the
+training process for model validation purposes. Finally, we scored our
+models using 2017 data as a hold-out sample. Using out-of-time
+validation ensured that our models generalized well into the immediate
+future.
 
 \begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Train Validate Test} \caption{Out-of-time validation}\label{fig:Train Test Validate}
@@ -1635,25 +1633,26 @@ models generalized well into the immediate future.
 
 We chose evaluation metrics that allowed us to easily compare the
 performance of the models against other similar models with the same
-dependent variable. The classification models (Probability of Sale) were
-compared using Area Under the ROC Curve (AUC). The regression models
-(Sale Price) were compared using Root Mean Squared Error (RMSE). Both
+dependent variable. The classification models (probability of sale) were
+compared using the area under the ROC curve (AUC). The regression models
+(sale price) were compared using root mean squared errors (RMSE). Both
 evaluation metrics are common for their respective outcome variable
 types, and as such were useful for comparing within model-groups.
 
-\hypertarget{area-under-roc-curve}{%
-\subsubsection{Area Under ROC Curve}\label{area-under-roc-curve}}
+\hypertarget{area-under-the-roc-curve}{%
+\subsubsection{Area Under the ROC
+Curve}\label{area-under-the-roc-curve}}
 
 A classification model typically outputs a probability that a given case
 in the data belongs to a group. In the case of binary classification,
 the value falls between 0 and 1. There are many techniques for
 determining the cut off threshold for classification; a typical method
-is to assign anything above a 0.5 into the ``1'' or ``positive'' class.
-An ROC curve (receiver operating characteristic curve) plots the True
-Positive Rate vs.~the False Positive rate at different classification
-thresholds; it is a measurement of the performance of a classification
-model across all possible thresholds, and therefore sidesteps the need
-to arbitrarily assign a cutoff.
+is to assign anything above a 0.5 into the 1 or positive class. An ROC
+curve (receiver operating characteristic curve) plots the True Positive
+Rate vs.~the False Positive rate at different classification thresholds;
+it is a measurement of the performance of a classification model across
+all possible thresholds, and therefore sidesteps the need to arbitrarily
+assign a cutoff.
 
 AUC measures the entire two-dimensional area underneath the ROC curve.
 It is the integration of the curve from (0,0) to (1,1), defined as
@@ -1683,9 +1682,9 @@ value at observation \(t\).
 Lower RMSE scores are typically more desirable. An RMSE value of 0 would
 indicate a perfect fit to the data. RMSE can be difficult to interpret
 on its own; however, it is useful for comparing models with similar
-outcome variables. In our case, the outcome variables (Sales Price per
-Square Foot) are consistent across modeling datasets, and therefore can
-be reasonably compared using RMSE.
+outcome variables. In our case, the outcome variables
+(sale-price-per-square-foot) are consistent across modeling datasets,
+and therefore can be reasonably compared using RMSE.
 
 \hypertarget{results}{%
 \section{Results}\label{results}}
@@ -1695,8 +1694,8 @@ be reasonably compared using RMSE.
 
 We have conducted comparative analyses across a two-stage modeling
 process. In Stage 1, using the Random Forest algorithm, we tested 3
-competing feature engineering techniques (base, zip-code aggregation,
-and spatial-lag aggregation) for both a classification task (predicting
+competing feature engineering techniques (base, zip code aggregation,
+and spatial lag aggregation) for both a classification task (predicting
 the occurrence of a building sale) and a regression task (predicting the
 sale price of a building). We analyzed the results of the first stage to
 identify which geographies and building types our model assumptions
@@ -1709,24 +1708,24 @@ conducted an analysis of the variable importances for the top performing
 models.
 
 In Stage 1 (Random Forest, using all data), we found that models which
-utilized spatial features outperformed those models using zip-code
+utilized spatial features outperformed those models using zip code
 features the majority of the time for both classification and
-regression. Of three models, the Sale Price Regression model using
-Spatial features finished 1st or 2nd 24.1\% of the time (using RMSE as a
-ranking criterion), while the Zip Code Regression model finished in the
+regression. Of three models, the sale price regression model using
+spatial features finished 1st or 2nd 24.1\% of the time (using RMSE as a
+ranking criterion), while the zip code regression model finished in the
 top two spots only 11.2\% of the time. Both models performed worse than
-the Base Regression model overall, which ranked in 1st or 2nd place
+the base regression model overall, which ranked in 1st or 2nd place
 31.5\% of the time. The story for the classification models was largely
-the same: the Spatial features tended to outperform the Zip Code data
-while the Base data won out overall. All models had similar performances
-on training data, but the Spatial and Zip Code datasets tended to
+the same: the spatial features tended to outperform the zip code data
+while the base data won out overall. All models had similar performances
+on training data, but the spatial and zip code datasets tended to
 underperform when generalizing to the hold-out test data, suggesting
 problems with overfitting.
 
 We then analyzed the performance of both the regression and
 classification Random Forest models by geography and building type. We
-found that the models performed considerably better on Walk Up
-Apartments and Elevator Buildings (building types C and D) and in
+found that the models performed considerably better on walk up
+apartments and elevator buildings (building types C and D) and in
 Manhattan, Brooklyn and the Bronx. Using these as filtering criteria, we
 created a subset of the modeling data for the subsequent modeling stage.
 
@@ -1745,7 +1744,7 @@ accuracy of machine learning-based real estate sale prediction models.
 We find that model overfitting presents a challenge when using spatial
 features, but that this can be overcome by implementing different
 algorithms, specifically ANN and GBM. Finally, we find that our
-implementation of spatial-lag features works best for certain kinds of
+implementation of spatial lag features works best for certain kinds of
 buildings in specific geographic areas, and we hypothesize that this is
 due to the assumptions made when building the spatial features.
 
@@ -1757,13 +1756,13 @@ Data}\label{stage-1-random-forest-models-using-all-data}}
 \subsubsection{Sale Price Regression
 Models}\label{sale-price-regression-models}}
 
-We analyzed the RMSE of the Random Forest models predicting Sale Price
-across feature engineering methods, Borough and Building Type. Table
+We analyzed the RMSE of the Random Forest models predicting sale price
+across feature engineering methods, borough and building type. Table
 \ref{tab:SalePriceModelRank} displays the average ranking by model type
 as well as the distribution of models that ranked first, second and
-third for each respective Borough/Building Type combination. When we
-rank the models by performance for each Borough, Building Type
-combination, we find that the Spatial Lag models outperform the Zip Code
+third for each respective borough/building type combination. When we
+rank the models by performance for each borough, building type
+combination, we find that the spatial lag models outperform the zip code
 models in 72\% of cases with an average model-rank of 2.11 and 2.5,
 respectively.
 
@@ -1782,13 +1781,13 @@ Zip & 5.6\% & 5.6\% & 22.2\% & 2.50\\
 \end{tabular}
 \end{table}
 
-The Base modeling dataset tends to outperform both enriched datasets,
+The base modeling dataset tends to outperform both enriched datasets,
 suggesting an issue with model overfitting in some areas. We see further
 evidence of overfitting in Table \ref{tab:SalePriceEval} where, despite
-similar performances on Validation data, the Zip and Spatial models have
-higher validation-to-test-set spreads. Despite this, the Spatial Lag
-features outperform all other models in specific locations, notably in
-Manhattan as shown in Figure \ref{fig:RMSE by boro and build type}.
+similar performances on the validation data, the zip and spatial models
+have higher validation-to-test-set spreads. Despite this, the spatial
+lag features outperform all other models in specific locations, notably
+in Manhattan as shown in Figure \ref{fig:RMSE by boro and build type}.
 
 \begin{table}
 
@@ -1809,7 +1808,7 @@ Test & 287.83 & 300.60 & 297.92\\
 \end{figure}
 
 Figure \ref{fig:RMSE by boro and build type} displays test RMSE by
-model, faceted by Borough on the y-axis and Building Type on the x-axis
+model, faceted by borough on the y-axis and building type on the x-axis
 (See Table \ref{tab:categoryTable} and Table \ref{tab:by_class} for a
 description of building type codes). We make the following observations
 from Figure \ref{fig:RMSE by boro and build type}:
@@ -1817,14 +1816,15 @@ from Figure \ref{fig:RMSE by boro and build type}:
 \begin{itemize}
 \tightlist
 \item
-  The Spatial modeling data outperforms both Base and Zip Code in 6
-  cases, notably for Type A buildings (One Family Dwellings) and Type L
-  buildings (Lofts) in Manhattan as well as Type O Buildings (Office) in
-  Queens
+  The spatial modeling data outperforms both base and zip code in 6
+  cases, notably for type A buildings (one family dwellings) and type L
+  buildings (lofts) in Manhattan as well as type O buildings (offices)
+  in Queens
 \item
-  The ``residential'' building Types A (One-family Dwellings), B (Two
-  Family Dwellings), C (Walk Up Apartments) and D (Elevator Apartments)
-  have generally lower RMSE scores compared to the non-residential types
+  The ``residential'' building types A (one-family dwellings), B
+  (two-family dwellings), C (walk up apartments) and D (elevator
+  apartments) have generally lower RMSE scores compared to the
+  non-residential types
 \item
   Spatial features perform best in Brooklyn, Bronx and Manhattan and for
   residential building types
@@ -1834,11 +1834,11 @@ from Figure \ref{fig:RMSE by boro and build type}:
 \subsubsection{Probability of Sale Classification
 Models}\label{probability-of-sale-classification-models}}
 
-Similar to the results of the Sale Price regression models we find the
-Spatial models perform better on the hold-out test data compared to the
-Zip Code data when using Area Under the ROC Curve (AUC) as an evaluation
-metric, as shown in Table \ref{tab:ProbSaleModelAUC}. The Base Modeling
-data continues to outperform the Spatial and Zip Code data overall.
+Similar to the results of the sale price regression models, we found
+that the spatial models performed better on the hold-out test data
+compared to the zip code data, as shown in Table
+\ref{tab:ProbSaleModelAUC}. The base modeling data continued to
+outperform the spatial and zip code data overall.
 
 \begin{table}
 
@@ -1855,22 +1855,21 @@ Test & 0.830 & 0.825 & 0.828\\
 \end{table}
 
 Figure \ref{fig:AUC by boro and build type} shows a breakdown of model
-AUC faceted along the x-axis by Building Type and along the y-axis by
-Borough. The coloring indicates by how much a model's AUC diverges from
-the cell average, which is useful for spotting over performers. We make
-the following observations about Figure
-\ref{fig:AUC by boro and build type}:
+AUC faceted along the x-axis by building type and along the y-axis by
+borough. The coloring indicates by how much a model's AUC diverges from
+the cell average, which is useful for spotting over performers. We
+observed the following from Figure \ref{fig:AUC by boro and build type}:
 
 \begin{itemize}
 \tightlist
 \item
-  The Spatial models outperform all other models for Elevator Buildings
-  (Type D) and Walk Up Apartments (Type C), particularly in Brooklyn,
+  The spatial models outperform all other models for elevator buildings
+  (type D) and walk up apartments (type C), particularly in Brooklyn,
   the Bronx, and Manhattan
 \item
   Classification tends to perform poorly in Manhattan vs.~other Boroughs
 \item
-  The Spatial models perform well in Manhattan for the residential
+  The spatial models perform well in Manhattan for the residential
   building types (A, B, C and D)
 \end{itemize}
 
@@ -1878,15 +1877,15 @@ the following observations about Figure
 \includegraphics[width=1\linewidth]{Sections/tables and figures/AUC by boro and build type} \caption{AUC By Borough and Building Type}\label{fig:AUC by boro and build type}
 \end{figure}
 
-If we rank the classification models' performance for each Borough and
-Building Type, we see that the Spatial models consistently outperform
-the Zip Code models, as shown in Table \ref{tab:ProbModelAUCRank}. From
+If we rank the classification models' performance for each borough and
+building type, we see that the spatial models consistently outperform
+the zip code models, as shown in Table \ref{tab:ProbModelAUCRank}. From
 this (as well as from similar patterns seen in the regression models) we
-can infer that the Spatial data is a superior data engineering
-technique; however, the algorithm used needs to account for potential
-model overfitting. In the next section, we discuss refining the data
-used as well as employing different algorithms to maximize the
-predictive capability of the Spatial features.
+infer that the spatial data is a superior data engineering technique;
+however, the algorithm used needs to account for potential model
+overfitting. In the next section, we discuss refining the data used as
+well as employing different algorithms to maximize the predictive
+capability of the spatial features.
 
 \begin{table}
 
@@ -1909,29 +1908,28 @@ Building
 Types}\label{stage-2-model-comparisons-using-specific-geographies-and-building-types}}
 
 Using the results from the first modeling exercise, we conclude that
-Walk Up Apartments and Elevator Buildings in Manhattan, Brooklyn and the
+walk up apartments and elevator buildings in Manhattan, Brooklyn and the
 Bronx are suitable candidates for prediction using our current
 assumptions. These buildings share the characteristics of being
 residential as well as being reasonably uniform in their geographic
-density. We analyze the performance of four algorithms (GLM, RF, GBM,
-and ANN), using three feature engineering techniques, for both
-classification and regression, making the total number
+density. We analyze the performance of four algorithms (GLM, Random
+Forest, GBM, and ANN), using three feature engineering techniques, for
+both classification and regression, making the total number
 \texttt{4\ x\ 3\ x\ 2\ =\ 24} models.
 
 \hypertarget{regression-model-comparisons}{%
 \subsubsection{Regression Model
 Comparisons}\label{regression-model-comparisons}}
 
-The predictive accuracies of the various regression models were
-evaluated using RMSE, described in detail in the methodology section, as
-well as Mean Absolute Error (MAE), Mean Squared Error (MSE) and
-R-Squared. These four indicators were calculated using the hold-out test
-data, which ensured that the models performed well when predicting sale
-prices into the near future. The comparison metrics are presented in
-Table \ref{tab:RegModelTable} and Figure
-\ref{fig:Model RMSE Comparrison}. We make the following observations
-about Table \ref{tab:RegModelTable} and Figure
-\ref{fig:Model RMSE Comparrison}:
+The predictive accuracy of the various regression models were evaluated
+using RMSE, described in detail in the methodology section, as well as
+Mean Absolute Error (MAE), Mean Squared Error (MSE) and R-Squared. These
+four indicators were calculated using the hold-out test data, which
+ensured that the models performed well when predicting sale prices into
+the near future. The comparison metrics are presented in Table
+\ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}. We
+make the following observations about Table \ref{tab:RegModelTable} and
+Figure \ref{fig:Model RMSE Comparrison}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -1940,22 +1938,22 @@ about Table \ref{tab:RegModelTable} and Figure
   The ANN models perform best in nearly every metric across nearly all
   feature sets, with GBM a close second in some circumstances
 \item
-  ANN and GLM improve linearly in all metrics as you move from Base to
-  Zip to Spatial, with Spatial performing the best. GBM and Random
-  Forest, on the other hand, perform best on the Base and Spatial
-  feature sets and poorly on the Zip features
+  ANN and GLM improve linearly in all metrics as you move from base to
+  zip to spatial, with spatial performing the best. GBM and Random
+  Forest, on the other hand, perform best on the base and spatial
+  feature sets and poorly on the zip features
 \item
   We see a similar pattern in the Random Forest results compared to the
-  previous modeling exercise using the full dataset: Base Features
-  outperform both Spatial and Zip, with Spatial coming in second
+  previous modeling exercise using the full dataset: the base features
+  outperform both spatial and zip, with spatial coming in second
   consistently. This pattern further validates our reasoning that
-  Spatial features are highly predictive but suffer from overfitting and
+  spatial features are highly predictive but suffer from overfitting and
   other algorithm-related reasons
 \item
-  The highest model R-Squared is the ANN using Spatial features at
+  The highest model R-squared is the ANN using spatial features at
   0.494, indicating that this model can account for nearly 50\% of the
-  variance in the test data. Compared to the R-Squared of the more
-  traditional Base GLM at 0.12, this represents a more than 3-fold
+  variance in the test data. Compared to the R-squared of the more
+  traditional base GLM at 0.12, this represents a more than 3-fold
   improvement in predictive accuracy
 \end{enumerate}
 
@@ -1990,9 +1988,9 @@ Data & Model & RMSE & MAE & MSE & R2\\
 \end{figure}
 
 \noindent Figure \ref{fig:reg Models Scatterplot} shows clusters of
-performance across R-Squared and Mean Absolute Error, with the ANN
-models outperforming their peers. This figure also makes clear that the
-marriage of Spatial features with the ANN algorithm results in a
+model performances across R-squared and MAE, with the ANN models
+outperforming their peers. This figure also makes clear that the
+marriage of spatial features with the ANN algorithm results in a
 dramatic reduction in error rate compared to the other techniques.
 
 \begin{figure}[H]
@@ -2011,22 +2009,22 @@ presented in Table \ref{tab:ClassModelTable}. Figure
 \ref{fig:Model AUC Comparrison} shows the ROC curves and corresponding
 AUC for each algorithm/feature set combination.
 
-\noindent We make the following observations of Table
-\ref{tab:ClassModelTable} and Figure \ref{fig:Model AUC Comparrison}:
+\noindent We observe the following of Table \ref{tab:ClassModelTable}
+and Figure \ref{fig:Model AUC Comparrison}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  Unlike the regression models, the GBM algorithm with Spatial features
-  proved to be the best performing classifier. All Spatial models
-  performed relatively well except the GLM Spatial model
+  Unlike the regression models, the GBM algorithm with spatial features
+  proved to be the best performing classifier. All spatial models
+  performed relatively well except the GLM spatial model
 \item
-  Only 3 models have positive R-Squared values: ANN Spatial, RF Spatial,
-  and GLM Base, indicating that these models are adept at predicting
-  positive cases (occurrences of sales) in the test data
+  Only 3 models have positive R-squared values: ANN spatial, Random
+  Forest spatial, and GLM base, indicating that these models are adept
+  at predicting positive cases (occurrences of sales) in the test data
 \item
-  GLM Spatial returned an AUC of less than 0.5, indicating a model that
+  GLM spatial returned an AUC of less than 0.5, indicating a model that
   is conceptually worse than random. This is likely the result of
   overfitting
 \end{enumerate}
@@ -2062,13 +2060,12 @@ Data & Model & AUC & MSE & RMSE & R2\\
 \end{figure}
 
 \noindent Figure \ref{fig:Class Models Scatterplot} plots the individual
-models by AUC and R-Squared. The Spatial models tend to outperform the
+models by AUC and R-squared. The spatial models tend to outperform the
 other models by a significant margin. Interestingly, when compared to
 the regression model scatterplot in Figure
 \ref{fig:reg Models Scatterplot}, the classification models tend to
-cluster in their performance by feature set. In
-\ref{fig:reg Models Scatterplot}, we see the regression models tending
-to cluster by algorithm rather than features.
+cluster by feature set. In \ref{fig:reg Models Scatterplot}, we see the
+regression models clustering by algorithm.
 
 \begin{figure}[H]
 \includegraphics[width=1\linewidth]{Sections/tables and figures/class_model_results_scatterplot} \caption{Scatterplot of Classification Models}\label{fig:Class Models Scatterplot}
@@ -2078,13 +2075,13 @@ to cluster by algorithm rather than features.
 \subsection{Variable Importance Analysis of Top Performing
 Models}\label{variable-importance-analysis-of-top-performing-models}}
 
-We calculated feature importance for each variable as the proportional
-to the average decrease in the squared error after including that
-variable in the model. The most important variable gets a score of 1;
-scores for other variables are derived by standardizing their measured
-reduction in error relative to the largest one. The top 10 variables for
-both the most successful regression and most successful classification
-models are presented in tables \ref{tab:RegVarImp} and
+We calculated the feature importance for each variable as the
+proportional to the average decrease in the squared error after
+including that variable in the model. The most important variable gets a
+score of 1; scores for other variables are derived by standardizing
+their measured reduction in error relative to the largest one. The top
+10 variables for both the most successful regression and most successful
+classification models are presented in Tables \ref{tab:RegVarImp} and
 \ref{tab:ClassVarImp}.
 
 \begin{table}
@@ -2162,9 +2159,9 @@ Conclusions}\label{future-research-and-conclusions}}
 \subsection{Future Research}\label{future-research}}
 
 This research has shown that the addition of spatial lag features can
-meangingfully increase the predictive accuracy of machine learning
-models compared to traditional real estate valuation techniques. There
-are several areas that could be further explored regarding
+meaningfully increase the predictive accuracy of machine learning models
+compared to traditional real estate valuation techniques. There are
+several areas that could be further explored regarding
 spatially-conscious machine learning models, some of which we mention
 below.
 
@@ -2172,8 +2169,7 @@ First, it became apparent in the research that generalization was a
 problem for some of the models, likely due to overfitting of the
 training data. We corrected for this issue by employing more robust
 algorithms; however, further work could be done to create variable
-selection processes or hyperparameter tuning to prevent overfit and
-generally accelerate model training and scoring.
+selection processes or hyperparameter tuning to prevent overfit.
 
 Additionally, the spatial lag features seemed to perform best for
 certain boroughs and residential building types. We hypothesize that
@@ -2182,11 +2178,8 @@ we arbitrarily chose, works best for this type of asset in these areas.
 Fotheringham et al. (2015) used an adaptive bandwidth technique to
 adjust the spatial lag radius based on cross-validation with much
 success. The techniques presented in this paper could be expanded to use
-cross-validation similarly to assign the optimal spatial lag radius for
-each building type and location. Furthermore, additional work could be
-done using cross-validation or a similar technique to refine the spatial
-lags further to include appropriate building types and distance weights
-tailored to each property.
+cross-validation in a similar fashion to assign the optimal spatial lag
+radius for each property.
 
 Finally, this research aimed to predict real estate transactions 1 year
 into the future. While this is a promising start, 1-year of lead time
@@ -2202,20 +2195,20 @@ future.
 
 Societies and communities can benefit materially from gentrification,
 however, the downside should not be overlooked. Displacement causes
-Economic Exclusion, which over time contributes to rising income
+economic exclusion, which over time contributes to rising income
 inequality. Combating displacement allows communities to benefit from
 gentrification without suffering the negative consequences. One way to
 practically combat displacement is to predict gentrification, which this
-paper has attempted to do.
+paper attempts to do.
 
 Spatial lags, typically seen in geographically weighted regression, were
 employed successfully to enhance the predictive power of machine
 learning models. The spatial lag models performed best for particular
 building types and geographies; however, we feel confident that the
 technique could be expanded to work equally as well for all buildings
-with some additional research. Regarding algorithms, Artificial Neural
-Networks performed the best for predicting sale price, while Gradient
-Boosting Machines performed best for predicting sale occurrence.
+with some additional research. Regarding algorithms, artificial neural
+networks performed the best for predicting sale price, while gradient
+boosting machines performed best for predicting sale occurrence.
 
 While this research is not intended to serve as a full early-warning
 system for gentrification and displacement, it is a step in that

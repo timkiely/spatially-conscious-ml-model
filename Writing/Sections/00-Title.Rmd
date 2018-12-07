@@ -19,7 +19,7 @@ Leveraging Spatial Analysis to Boost the Accuracy of Real Estate Sales Predictio
 
 By 
 
-**Tim Kiely**
+Tim Kiely
 
 Thesis Project 
 
@@ -35,8 +35,9 @@ MASTER OF SCIENCE IN DATA SCIENCE
 
 Northwestern University 
 
-
 \  
+
+December, 2018
 
 Nathaniel D. Bastian, Ph.D., First Reader 
 

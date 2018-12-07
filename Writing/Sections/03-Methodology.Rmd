@@ -16,16 +16,16 @@ suppressPackageStartupMessages(library(kableExtra))
 
 ## Methodology Overview
 
-Our goal was to compare "spatially-conscious" machine learning predictive models to traditional feature engineering techniques. To accomplish this comparison, we created three separate modeling datasets: 
+Our goal was to compare _spatially-conscious_ machine learning predictive models to traditional feature engineering techniques. To accomplish this comparison, we created three separate modeling datasets: 
 
 - **Base modeling data:** includes building characteristics such as size, taxable value, usage, and others
-- **Zip code modeling data:** includes the base data as well as aggregations of data at the zip-code level
+- **Zip code modeling data:** includes the base data as well as aggregations of data at the zip code level
 - **Spatial lag modeling data:** includes the base data as well as aggregations of data within 500-meters of each building
 
 \noindent The second and third modeling datasets are incremental variations of the first, using competing feature engineering techniques to extract additional predictive power from the data. We combined three open-source data repositories provided by New York City via [nyc.gov](nyc.gov) and [data.cityofnewyork.us](data.cityofnewyork.us). Our base modeling dataset included all building records and associated sales information from 2003-2017. For each of the three modeling datasets, we also compared two predictive modeling tasks, using a different dependent variable for each: 
 
 1) **Classification task: probability of sale** The probability that a given property will sell in a given year (0,1)
-2) **Regression task: sale-price-per-square-foot** Given that a property sells, how much is the sale price per square foot? ($/SF)
+2) **Regression task: sale-price-per-square-foot** Given that a property sells, how much is the sale-price-per-square-foot? ($/SF)
 
 \noindent Table \ref{tab:modeltable} shows the six distinct modeling task/data combinations. 
 
@@ -46,9 +46,9 @@ We conducted our analysis in a two-stage process. In Stage 1, we used the Random
 
 \noindent \textbf{Stage 1: Random Forest algorithm using all data}
 
-1) Create a "base" modeling dataset by sourcing and combining building characteristic and sales data from open-source New York City repositories
-2) Create a "zip" modeling dataset by aggregating the base data at a Zip-Code level and appending these features to the base data
-3) Create a "spatial lag" modeling dataset by aggregating the base data within 500 meters of each building and appending these features to the base data
+1) Create a base modeling dataset by sourcing and combining building characteristic and sales data from open-source New York City repositories
+2) Create a zip code modeling dataset by aggregating the base data at a zip code level and appending these features to the base data
+3) Create a spatial lag modeling dataset by aggregating the base data within 500 meters of each building and appending these features to the base data
 4) Train a Random Forest model on all three datasets, for both classification (probability of sale) and regression (sale price) tasks
 5) Evaluate the performance of the various Random Forest models on hold-out test data
 6) Analyze the prediction results by building type and geography, identifying those buildings for which our feature-engineering assumptions (e.g., 500-meter radii spatial lags) are most appropriate\newline
@@ -65,7 +65,7 @@ We conducted our analysis in a two-stage process. In Stage 1, we used the Random
 
 ### Data Sources
 
-The New York City government makes available an annual dataset which describes all tax lots in the five boroughs. The Primary Land Use and Tax Lot Output dataset, known as [PLUTO](https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts[year]=0)[^1], contains a single record for every tax lot in the city along with a number of building-related and tax-related attributes such as Year Built, Assessed Value, Square Footage, number of stories, and many more. At the time of this writing, NYC had made this dataset available for all years between 2002-2017, excluding 2008. For convenience, we also exclude the 2002 dataset from our analysis because corresponding sales information is not available for that year. Importantly for our analysis, the latitude and longitude of the tax lots are also made available, allowing us to locate in space each building and to build geospatial features from the data. 
+The New York City government makes available an annual dataset which describes all tax lots in the five boroughs. The Primary Land Use and Tax Lot Output dataset, known as [PLUTO](https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts[year]=0)[^1], contains a single record for every tax lot in the city along with a number of building-related and tax-related attributes such as year built, assessed value, square footage, number of stories, and many more. At the time of this writing, NYC had made this dataset available for all years between 2002-2017, excluding 2008. For convenience, we also exclude the 2002 dataset from our analysis because corresponding sales information is not available for that year. Importantly for our analysis, the latitude and longitude of the tax lots are also made available, allowing us to locate in space each building and to build geospatial features from the data. 
 
 [^1]: https://www1.nyc.gov/site/planning/data-maps/open-data/bytes-archive.page?sorts[year]=0
 
@@ -125,7 +125,7 @@ category_table %>%
 ```
 
 
-The data were further filtered to include only records with equal to or less than 2 buildings per tax lot,  effectively excluding large outliers in the data such as the World Trade Center and Stuyvesant Town. The global filtering of the dataset reduces the base modeling data from 12,012,780 records down to 8,247,499, retaining 68.6%% of the original data.
+The data were further filtered to include only records with equal to or less than 2 buildings per tax lot,  effectively excluding large outliers in the data such as the World Trade Center and Stuyvesant Town. The global filtering of the dataset reduced the base modeling data from 12,012,780 records down to 8,247,499, retaining 68.6% of the original data.
 
 ### Exploratory Data Analysis
 
@@ -138,7 +138,7 @@ by_bt_boro_med_sales <- read_csv("tables and figures/eda_by_bt_by_boro_median_sa
 
 ```
 
-The data contain building and sale records across the five boroughs of New York City for the years 2003-2017. One challenge with creating a predictive model of real estate sales data is the heterogeneity within the data in terms of frequency of sales and sale price. These two metrics (sale occurrence and amount) vary meaningfully across year, borough and building classes (among other attributes). Table \ref{tab:by_year} displays statistics which describe the base dataset (pre-filtered) by year. Note how the frequency of transactions (# of Sales) and the sale amount (Median Sale $/SF) tend to covary, particularly through the downturn of 2009-2012. This covariance may be due to the fact that the relative size of transactions tends to decrease as capital becomes more constrained. 
+The data contain building and sale records across the five boroughs of New York City for the years 2003-2017. One challenge with creating a predictive model of real estate sales data is the heterogeneity within the data in terms of frequency of sales and sale price. These two metrics (sale occurrence and amount) vary meaningfully across year, borough and building class (among other attributes). Table \ref{tab:by_year} displays statistics which describe the base dataset (pre-filtered) by year. Note how the frequency of transactions (# of Sales) and the sale amount (Median Sale $/SF) tend to covary, particularly through the downturn of 2009-2012. This covariance may be due to the fact that the relative size of transactions tends to decrease as capital becomes more constrained. 
 
 ```{r by_year, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
 by_year %>% my_kable(caption = "Sales By Year", label = "by_year", latex_options = "basic")
@@ -152,7 +152,7 @@ by_class %>%
   my_kable(caption = "Sales By Asset Class", label = "by_class", latex_options = "basic")
 ```
 
-Sale price per square foot, in particular, varies considerably across geography and asset class. Table \ref{tab:by_class_boro} shows the breakdown of sales prices by borough and asset class. Manhattan tends to command the highest sale-price-per-square-foot across asset types. "Commercial" asset types such as Office and Elevator Apartments tend to fetch much lower price-per-square foot than do residential classes such as one and two-family dwellings. Table \ref{tab:by_class_boro_num} shows the number of transactions across the same dimensions. 
+Sale-price-per-square-foot, in particular, varies considerably across geography and asset class. Table \ref{tab:by_class_boro} shows the breakdown of sales prices by borough and asset class. Manhattan tends to command the highest sale-price-per-square-foot across asset types. "Commercial" asset types such as Office and Elevator Apartments tend to fetch much lower price-per-square-foot than do residential classes such as one and two-family dwellings. Table \ref{tab:by_class_boro_num} shows the number of transactions across the same dimensions. 
 
 
 ```{r by_class_boro, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -245,7 +245,7 @@ Since the number of operations approaches $N^2$, calculating spatial lags for al
 \end{algorithm}
 
 
-\noindent Each gridded partition of the data is married with a corresponding search space $S$, which is the convex hull of the partition space buffered by the maximum distance $d$. In our case, we buffered the search space by 500 meters. Choosing an appropriate radius for buffering presents an additional challenge in creating spatially-conscious machine learning predictive models. In this paper, we chose an arbitrary radius, and use a two-stage modeling process to test the appropriateness of that assumption. Future work may want to explore implementing an "adaptive bandwidth" technique using cross-validation to determine the optimal radius. 
+Each gridded partition of the data is married with a corresponding search space $S$, which is the convex hull of the partition space buffered by the maximum distance $d$. In our case, we buffered the search space by 500 meters. Choosing an appropriate radius for buffering presents an additional challenge in creating spatially-conscious machine learning predictive models. In this paper, we chose an arbitrary radius, and use a two-stage modeling process to test the appropriateness of that assumption. Future work may want to explore implementing an adaptive bandwidth technique using cross-validation to determine the optimal radius for each property. 
 
 By partitioning the data into spatial grids, we were able to reduce the search space for each operation by an arbitrary number of partitions $G$. This improves the base run-time complexity to:
 
@@ -261,7 +261,7 @@ knitr::include_graphics("Sections/tables and figures/Example Spatial Indexing Te
 
 #### Calculating Spatial Lags
 
-Once we contructed the point-neighbor relational graph, we then used the graph to aggregate the data into spatial lag variables. One advantage of using spatial lags is the abundant number of potential features which can be engineered. Spatial lags can be weighted based on a distance function, e.g., physically closer observations can be given more weight. For our modeling purposes, we created two sets of features: inverse-distance weighted features (denoted with a "_dist" in Table \ref{tab:SpLAgFeats}) and simple average features (denoted with "_basic" in Table \ref{tab:SpLAgFeats}). 
+Once we constructed the point-neighbor relational graph, we then used the graph to aggregate the data into spatial lag variables. One advantage of using spatial lags is the abundant number of potential features which can be engineered. Spatial lags can be weighted based on a distance function, e.g., physically closer observations can be given more weight. For our modeling purposes, we created two sets of features: inverse-distance weighted features (denoted with a "_dist" in Table \ref{tab:SpLAgFeats}) and simple average features (denoted with "_basic" in Table \ref{tab:SpLAgFeats}). 
 
 Temporal and spatial derivatives of the spatial lag features, presented in Table \ref{tab:SpLAgFeats}, were also added to the model, including: variables weighted by Euclidean distance ("dist"), basic averages of the spatial lag radius ("basic mean"), SMA for 2 years, 3 years and 5 years, EMA for 2 years, 3 years and 5 years, and year-over-year percent changes for all variables ("perc change"). In total, the spatial lag feature engineering process input 92 variables and output 194 variables.
 
@@ -300,7 +300,7 @@ We implemented and compared several algorithms across our two-stage process. In 
 
 ### Random Forest
 
-Random Forest was proposed by Breiman @breiman2001random as an ensemble of prediction decision trees iteratively trained across randomly generated subsets of data. Algorithm \ref{alg:RandomForestAlo} outlines the procedure [@hastie01statisticallearning]. 
+Random Forest was proposed by @breiman2001random as an ensemble of prediction decision trees iteratively trained across randomly generated subsets of data. Algorithm \ref{alg:RandomForestAlo} outlines the procedure [@hastie01statisticallearning]. 
 
 
 \begin{algorithm}
@@ -330,7 +330,7 @@ To make a prediction at a new point $x$:
 
 Previous works have found the Random Forest algorithm suitable to prediction tasks involving real estate [@antipov12; @Schernthanner2016]. While algorithms exist that may outperform Random Forest in terms of predictive accuracy (such as neural networks and functional gradient descent algorithms), Random Forest is highly scalable and parallelizable, and is therefore an attractive choice for quickly assessing the predictive power of different feature engineering techniques. For these reasons and more outlined below, we selected Random Forest as the primary algorithm for Stage 1 of our modeling process.
 
-Random Forest, like all predictive algorithms used in this work, suits both classification and regression tasks. The Random Forest algorithm works by generating a large number of independent classification or regression decision trees and then employing  majority voting (for classification) or averaging (for regression) to generate predictions. Over a dataset of N rows by M predictors, a bootstrap sample of the data is chosen (n < N) as well as a subset of the predictors (m < M). Individual decision/regression trees are built on the n by m sample. Because the trees develop independently (and not sequentially, as is the case with most functional gradient descent algorithms), the tree building process can be executed in parallel. With a sufficiently large number of computer cores, the model training time can be significantly reduced.
+Random Forest, like all predictive algorithms used in this work, suits both classification and regression tasks. The Random Forest algorithm works by generating a large number of independent classification or regression decision trees and then employing  majority voting (for classification) or averaging (for regression) to generate predictions. Over a dataset of N rows by M predictors, a bootstrap sample of the data is chosen (n < N) as well as a subset of the predictors (m < M). Individual decision or regression trees are built on the n by m sample. Because the trees develop independently (and not sequentially, as is the case with most functional gradient descent algorithms), the tree building process can be executed in parallel. With a sufficiently large number of computer cores, the model training time can be significantly reduced.
 
 We chose Random Forest as the algorithm for Stage 1 because: 
 
@@ -356,7 +356,7 @@ Several family types of GLM's exist. For a binary independent variable, a binomi
 
 ### Gradient Boosting Machine
 
-Gradient Boosting Machine (GBM) is one of the most popular machine learning algorithms available today. The algorithm uses iteratively refined approximations, obtained through cross-validation, to incrementally increase predictive accuracy. Similar to Random Forest, GBM is well-suited to using regression trees as the base learner. Gradient boosting constructs additive regression models by sequentially fitting a simple parameterized function (a _base learner_, in our case, a regression tree) to pseudo-residuals by least squares at each iteration [@friedman2002stochastic]. The pseudo-residuals are the gradient of the loss function being minimized, with respect to the model values at each training data point evaluated at the current step. The tree-variant of the generic gradient boosting algorithm is outlined in algorithm \ref{alg:GBMAlo} [@hastie01statisticallearning].
+Gradient boosting machine (GBM) is one of the most popular machine learning algorithms available today. The algorithm uses iteratively refined approximations, obtained through cross-validation, to incrementally increase predictive accuracy. Similar to Random Forest, GBM is well-suited to using regression trees as the base learner. Gradient boosting constructs additive regression models by sequentially fitting a simple parameterized function (a _base learner_, in our case, a regression tree) to pseudo-residuals by least squares at each iteration [@friedman2002stochastic]. The pseudo-residuals are the gradient of the loss function being minimized, with respect to the model values at each training data point evaluated at the current step. The tree-variant of the generic gradient boosting algorithm is outlined in algorithm \ref{alg:GBMAlo} [@hastie01statisticallearning].
 
 
 \begin{algorithm}
@@ -385,7 +385,7 @@ Gradient Boosting Machine (GBM) is one of the most popular machine learning algo
 
 ### Feed-Forward Artificial Neural Network
 
-The artificial neural network (ANN) implementation used in this work is a multi-layer feed-forward artificial neural network trained with stochastic gradient descent using back-propagation. Common synonyms for an ANN model are multi-layer perceptron and also deep neural network. The feed-forward ANN is one of the most common neural network algorithms, but other types exist, such as the convolutional neural network (CNN) which performs well on image classification tasks, and the recurrent neural network (RNN) which is well-suited for sequential data such as text and audio [@SCHMIDHUBER201585]. The feed-forward ANN is typically best suited for tabular data. 
+The artificial neural network (ANN) implementation used in this work is a multi-layer feed-forward artificial neural network trained with stochastic gradient descent using back-propagation. Common synonyms for ANN models are multi-layer perceptrons and, more recently, deep neural networks. The feed-forward ANN is one of the most common neural network algorithms, but other types exist, such as the convolutional neural network (CNN) which performs well on image classification tasks, and the recurrent neural network (RNN) which is well-suited for sequential data such as text and audio [@SCHMIDHUBER201585]. The feed-forward ANN is typically best suited for tabular data. 
 
 The neural network model has unknown parameters, often called weights, and we seek values for them that make the model fit the training data well [@hastie01statisticallearning]. We denote the complete set of weights by $\theta$, which consists of $\{\alpha_{0m},\alpha_m;m=1,2,...,M\} M(p+1)$ weights and $\{\beta_{0k},\beta_k;k=1,2,...,K\} K(p+1)$ weights. 
 
@@ -408,7 +408,7 @@ For our implementations, we used the rectifier activation function with 1024 hid
 
 ## Model Validation
 
-The goal of our predictive modeling efforts were to be able to successfully predict both the probability and amount of real estate sales into the near future. As such, trained and evaluated our models using use out-of-time validation to assess performance. As shown in Figure  \ref{fig:Train Test Validate} The models were trained using data from 2003-2015. We used 2016 data during the model training process for model validation purposes. Finally, we scored our models using 2017 data as a hold-out sample. Using out-of-time validation ensured that our models generalized well into the immediate future. 
+Our goal was to be able to successfully predict both the probability and amount of real estate sales into the near future. As such, we trained and evaluated our models using out-of-time validation to assess performance. As shown in Figure  \ref{fig:Train Test Validate} The models were trained using data from 2003-2015. We used 2016 data during the training process for model validation purposes. Finally, we scored our models using 2017 data as a hold-out sample. Using out-of-time validation ensured that our models generalized well into the immediate future. 
 
 
 ```{r Train Test Validate, fig.cap="Out-of-time validation",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
@@ -418,12 +418,12 @@ knitr::include_graphics("Sections/tables and figures/Train Validate Test.png")
 
 ## Evaluation Metrics
 
-We chose evaluation metrics that allowed us to easily compare the performance of the models against other similar models with the same dependent variable. The classification models (Probability of Sale) were compared using Area Under the ROC Curve (AUC). The regression models (Sale Price) were compared using Root Mean Squared Error (RMSE). Both evaluation metrics are common for their respective outcome variable types, and as such were useful for comparing within model-groups. 
+We chose evaluation metrics that allowed us to easily compare the performance of the models against other similar models with the same dependent variable. The classification models (probability of sale) were compared using the area under the ROC curve (AUC). The regression models (sale price) were compared using root mean squared errors (RMSE). Both evaluation metrics are common for their respective outcome variable types, and as such were useful for comparing within model-groups. 
 
 
-### Area Under ROC Curve
+### Area Under the ROC Curve
 
-A classification model typically outputs a probability that a given case in the data belongs to a group. In the case of binary classification, the value falls between 0 and 1. There are many techniques for determining the cut off threshold for classification; a typical method is to assign anything above a 0.5 into the "1" or "positive" class. An ROC curve (receiver operating characteristic curve) plots the True Positive Rate vs. the False Positive rate at different classification thresholds; it is a measurement of the performance of a classification model across all possible thresholds, and therefore sidesteps the need to arbitrarily assign a cutoff. 
+A classification model typically outputs a probability that a given case in the data belongs to a group. In the case of binary classification, the value falls between 0 and 1. There are many techniques for determining the cut off threshold for classification; a typical method is to assign anything above a 0.5 into the 1 or positive class. An ROC curve (receiver operating characteristic curve) plots the True Positive Rate vs. the False Positive rate at different classification thresholds; it is a measurement of the performance of a classification model across all possible thresholds, and therefore sidesteps the need to arbitrarily assign a cutoff. 
 
 AUC measures the entire two-dimensional area underneath the ROC curve. It is the integration of the curve from (0,0) to (1,1), defined as $AUC = \int_{(0,0)}^{(1,1)} f(x)dx$. AUC enumerates the probability that the model ranks a random positive example more highly than a random negative example. A value of 0.5 represents a perfectly random model, while a value of 1.0 represents a model that can perfectly discriminate between the two classes. AUC is useful for comparing classification models against one another because they are both scale and threshold-invariant.
 
@@ -433,6 +433,6 @@ One of the drawbacks to AUC is that it does not describe the trade-offs between 
 
 RMSE is a common measurement of the differences between values predicted by a regression model and the observed values. It is formally defined as $RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }$, where $\hat{y}$ represents the prediction and $y$ represents the observed value at observation $t$. 
 
-Lower RMSE scores are typically more desirable. An RMSE value of 0 would indicate a perfect fit to the data. RMSE can be difficult to interpret on its own; however, it is useful for comparing models with similar outcome variables. In our case, the outcome variables (Sales Price per Square Foot) are consistent across modeling datasets, and therefore can be reasonably compared using RMSE. 
+Lower RMSE scores are typically more desirable. An RMSE value of 0 would indicate a perfect fit to the data. RMSE can be difficult to interpret on its own; however, it is useful for comparing models with similar outcome variables. In our case, the outcome variables (sale-price-per-square-foot) are consistent across modeling datasets, and therefore can be reasonably compared using RMSE. 
 
 

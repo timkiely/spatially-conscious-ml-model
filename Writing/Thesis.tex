@@ -122,12 +122,12 @@
 \titlepage
 \center
 \vspace{4 cm}
-\LARGE
+\normalsize
 
 \bf 
-The Spatially-Conscious Machine Learning Model  
+The Spatially-Conscious Machine Learning Model:  
 
-\Large
+\normalsize
 
 Leveraging Spatial Analysis to Boost the Accuracy of Real Estate Sales
 Predictions
@@ -199,33 +199,34 @@ well-known problem in traditional spatial analysis and is typically
 referred to as \emph{spatial autocorrelation}. In statistics, this is
 said to ``reduce the amount of information'' pertaining to spatially
 proximate observations as they can, in part, be used to predict each
-other. But can spatial features be used in a machine-learning context to
-make better predictions? This work demonstrates that the addition of
-``spatial lag'' features to machine learning models significantly
-increases accuracy when predicting real estate sales and sale prices.
+other (DiMaggio, 2012). But can spatial features be used in a
+machine-learning context to make better predictions? This work
+demonstrates that the addition of ``spatial lag'' features to machine
+learning models significantly increases accuracy when predicting real
+estate sales and sale prices.
 
 \hypertarget{motivation-combating-income-inequality-by-predicting-gentrification}{%
 \subsection{Motivation: Combating Income Inequality by Predicting
 Gentrification}\label{motivation-combating-income-inequality-by-predicting-gentrification}}
 
-Researchers at the Urban Institute (Solomon Greene and Lei 2016)
-recently identified ``Economic Exclusion'' as a powerful contributor to
-income inequality in the United States. ``Economic Exclusion'' can be
-defined as follows: vulnerable populations--disproportionately
-communities of color, immigrants, refugees, and women--who are
-physically displaced by local economic prosperity enter a continuous
-cycle of diminished access to good jobs, good schools, health care
-facilities, public spaces, and other economic and social resources.
-Diminished access leads to more poverty, which leads to more
-displacement. This self-reinforcing cycle of poverty and exclusion
-gradually exacerbates income inequality over the course years and
-generations. What can be done to intervene?
+Researchers at the Urban Institute (Greene, Pendall, Scott, \& Lei,
+2016) recently identified \emph{economic exclusion} as a powerful
+contributor to income inequality in the United States. Economic
+exclusion can be defined as follows: vulnerable
+populations--disproportionately communities of color, immigrants,
+refugees, and women--who are physically displaced by local economic
+prosperity enter a continuous cycle of diminished access to good jobs,
+good schools, health care facilities, public spaces, and other economic
+and social resources. Diminished access leads to more poverty, which
+leads to more displacement. This self-reinforcing cycle of poverty and
+exclusion gradually exacerbates income inequality over the course years
+and generations. What can be done to intervene?
 
-Stopping Economic Exclusion requires preventing displacement. As defined
-by Clay (1979), ``displacement'' can be thought of as the negative
-consequence of gentrification, where affordability pressures force
-vulnerable populations to relocate due to localized economic prosperity.
-Reliably predicting gentrification would be a valuable tool for
+Stopping Economic Exclusion requires preventing displacement.
+\emph{Displacement} can be thought of as the negative consequence of
+gentrification, where affordability pressures force vulnerable
+populations to relocate due to localized economic prosperity (Clay,
+1979). Reliably predicting gentrification would be a valuable tool for
 preventing displacement at an early stage; however, such a task has
 proven difficult historically.
 
@@ -234,32 +235,32 @@ subsequent affordability pressures can lead to voluntary or involuntary
 relocation of low-income families and small businesses. Government
 agencies and nonprofits tend to intervene once displacement is already
 underway, and after-the-fact interventions can be costly and
-ineffective. As explained by Solomon Greene and Lei (2016), several
-preemptive actions exist which can be deployed to stem divestment and
-ensure that existing residents benefit from local prosperity. Potential
-interventions include regulation, affordable housing, micro-financing,
-tax subsidies, vouchers, and more. Not unlike medical treatment, early
-detection is the key to success.
+ineffective. Several preemptive actions exist which can be deployed to
+stem divestment and ensure that existing residents benefit from local
+prosperity. Potential interventions include job training,
+apprenticeships, subsidies, zoning laws, charitable aid, matched savings
+programs, financial literacy coaching, homeowner assistance, housing
+vouchers, and more (Greene et al., 2016). Not unlike medical treatment,
+early detection is the key to success.
 
-Consequently, in 2016, the Urban Institute published a series of essays
+Consequently the Urban Institute published a series of essays in 2016
 outlining the few ways city governments employ ``Big data and
-crowdsourced data'' to ``better identify excluded people and
-communities, connect them to needed services, and improve service
-delivery'', noting that ``much more could be done'' (Solomon Greene and
-Lei 2016). This work seeks to further the research into using free, open
-data, open-source software and cutting-edge techniques to predict trends
-in gentrification, with the aim of identifying high-risk households and
-areas in need of intervention.
+crowdsourced data'' to identify vulnerable individuals and connect them
+with the proper services and resources, noting that ``much more could be
+done'' (Greene et al., 2016). This work seeks to further the research
+into using free, open data, open-source software and cutting-edge
+techniques to predict trends in gentrification, with the aim of
+identifying high-risk households and areas in need of intervention.
 
-Many government agencies have, to date, demonstrated the benefits of
+To date, many government agencies have demonstrated the benefits of
 applied predictive modeling, ranging from prescription drug abuse
-prevention to homelessness intervention to recidivism reduction (Ritter
-2013). However, few, if any, examples exist of large-scale, systematic
+prevention to homelessness intervention to recidivism reduction (Ritter,
+2013). However, few if any examples exist of large-scale, systematic
 applications of data analysis to aid vulnerable populations experiencing
 displacement. This paper belongs to an emerging trend known as the
 ``science of cities'' which aims to use large data sets and advanced
 simulation and modeling techniques to understand and improve urban
-patterns and how cities function (Batty 2013).
+patterns and how cities function (Batty, 2013).
 
 This work explores techniques that can dramatically boost the accuracy
 of existing gentrification prediction models. We use real estate
@@ -271,73 +272,70 @@ geographically-weighted regressions (GWR). We employ a two-step modeling
 process in which we 1) determine the optimal building types and
 geographies suited to our feature engineering assumptions and 2) perform
 a comparative analysis across several state-of-the-art algorithms
-(Generalized Linear Model, Random Forest, Gradient Boosting Machine,
-Artificial Neural Network). We conclude that spatially-conscious machine
+(generalized linear model, random forest, gradient boosting machine, and
+artificial neural network). We conclude that spatially-conscious machine
 learning models consistently outperform traditional real estate
 valuation and predictive modeling techniques.
 
 \hypertarget{literature-review}{%
 \section{Literature Review}\label{literature-review}}
 
-The literature review for this paper discusses the academic study of
-Economic Displacement, primarily as it relates to gentrification. We
-also examine ``mass appraisal techniques,'' which are automated
-analytical techniques used for valuing large numbers of real estate
-properties. Finally, we examine recent applications of machine learning
-as it relates to predicting gentrification.
+This literature review discusses the academic study of economic
+displacement, primarily as it relates to gentrification. We also examine
+\emph{mass appraisal techniques}, which are automated analytical
+techniques used for valuing large numbers of real estate properties.
+Finally, we examine recent applications of machine learning as it
+relates to predicting gentrification.
 
 \hypertarget{what-is-economic-displacement}{%
 \subsection{What is Economic
 Displacement?}\label{what-is-economic-displacement}}
 
-Economic Displacement has been intertwined with the study of
+Economic displacement has been intertwined with the study of
 gentrification since shortly after the latter became academically
-relevant in the 1960s. The term ``gentrification'' was first used by
-Ruth Glass in 1964 to describe the ``gentry'' in low-income
-neighborhoods in London. Originally, academics thought of gentrification
-as a ``tool of revitalization for declining neighborhoods'' (Zuk 2015),
-however, in 1979 Phillip Clay highlighted that gentrification brought
-both positive and negative consequences to local populations and
-described the negative as Economic Exclusion (Clay 1979). Today, the
-term has adopted a more neutral connotation, describing the ``spatial
-organization and re-organization of human dwelling and activity'' (Zuk
-2015). Specific to cities, recent literature defines gentrification as
-``the transformation of a working-class or vacant area of the central
-city into middle-class residential or commercial use'' (Lees 2008).
+relevant in the 1960s. The term gentrification was first used in 1964 to
+describe the \emph{gentry} in low-income neighborhoods in London (Glass,
+1964). Originally, academics described gentrification in predominantly
+positive terms as a ``tool of revitalization'' for declining
+neighborhoods (Zuk et al., 2015). However, by 1979 the negative
+consequences of gentrification became more well understood, especially
+with regards to economic exclusion (Clay, 1979). Today, the term has a
+more neutral connotation, describing the placement and distribution of
+populations (Zuk et al., 2015). Specific to cities, recent literature
+defines gentrification as ``the transformation of a working-class or
+vacant area of the central city into middle-class residential or
+commercial use'' (Lees, Slater, \& Wyly, 2013).
 
 Studies of gentrification and displacement generally take two approaches
 in the literature: supply-side and demand-side, or ``the flows of
-capital versus flows of people to neighborhoods,'' respectively (Zuk
-2015). Supply-side arguments for gentrification tend to focus on
-``private capital investment, public policies, and public investments''
-(Zuk 2015) and are much more often the subject of academic literature on
-Economic Displacement. This kind of research may be more common because
-it has the advantage of being more directly linked to influencing public
-policy (as opposed to controlling the flows of people). According to
-Dreier (2004), public policies that can increase Economic Displacement
-have been, among others, automobile-oriented transportation
-infrastructure spending and mortgage interest tax deductions for
-homeowners. Others that have argued for supply-side gentrification
-include Smith (1979), who stated that the return of capital from the
-suburbs to the city, or the ``political economy of capital flows into
-urban areas'' are what primarily drive both the positive and negative
-consequences of urban gentrification.
+capital versus flows of people to neighborhoods,'' respectively (Zuk et
+al., 2015). Supply-side arguments for gentrification tend to focus on
+investments and policies (Zuk et al., 2015) and are much more often the
+subject of academic literature on economic displacement. This kind of
+research may be more common because it has the advantage of being more
+directly linked to influencing public policy. According to Dreier,
+Mollenkopf, \& Swanstrom (2004), public policies that can increase
+economic displacement have been, among others, automobile-oriented
+transportation infrastructure spending and mortgage interest tax
+deductions for homeowners. Others who have argued for supply-side
+gentrification include Smith (1979), who stated that the return of
+capital from the suburbs to the city, or the ``political economy of
+capital flows into urban areas'' are what primarily drive both the
+positive and negative consequences of urban gentrification.
 
-More recently, researchers have explored Economic Displacement as a
-contributor to income inequality (Reardon 2011); (Watson 2009). For
-example, Reardon (2011) argues that concentrations of wealth allow
-``certain households to sort themselves according to their preferences
--- and control local political processes that continue exclusion.'' The
-exercising of political influence by prosperous residents results in a
-feedback loop producing downward economic pressure on households who
-lack political influence. Gentrification prediction tools could be used
-to help break such feedback loops through early identification and
-intervention.
+More recently, researchers have explored economic displacement as a
+contributor to income inequality (Reardon \& Bischoff, 2011; Watson,
+2009). Wealthy households tend to influence local political processes to
+reinforce exclusionary practices. The exercising of political influence
+by prosperous residents results in a feedback loop producing downward
+economic pressure on households who lack such resources and influence.
+Gentrification prediction tools could be used to help break such
+feedback loops through early identification and intervention.
 
 Many studies conclude that gentrification in most forms leads to
-exclusionary economic displacement; however, Zuk (2015) characterizes
-the results of many recent studies as ``mixed, due in part to
-methodological shortcomings.'' In this paper, we attempt to further the
+exclusionary economic displacement; however, Zuk et al. (2015)
+characterizes the results of many recent studies as ``mixed, due in part
+to methodological shortcomings.'' This work attempts to further the
 understanding of gentrification prediction by demonstrating a technique
 to better predict real estate sales in New York City.
 
@@ -349,167 +347,165 @@ Much research on predicting real estate prices has been in service of
 creating mass appraisal models. Local governments most commonly use mass
 appraisal models to assign taxable values to properties. Mass appraisal
 models share many characteristics with predictive machine learning
-models, in that they are data-driven, standardized methods that employ
-statistical testing (Eckert 1990). A variation on mass appraisal models
-are the ``automated valuation models'' (AVM), which use ``often the same
-methodological framework of mass appraisal\ldots{} a statistical model
-and a large amount of property data to estimate the market value of an
-individual property or portfolio of properties'' (d'Amato 2017).
+models in that they are data-driven, standardized methods that employ
+statistical testing (Eckert, 1990). A variation on mass appraisal models
+are the \emph{automated valuation models} (AVM). Both mass appraisal
+models and AVMs seek to estimate the market value of a single property
+or several properties through data analysis and statistical modeling
+(d'Amato \& Kauko, 2017).
 
 Scientific mass appraisal models date back to 1936 with the reappraisal
-of St.~Paul, Minnesota (Silverherz 1936). Since that time, and
-accelerated with the advent of computers, much statistical research has
-been done relating property values and rent prices to various
-characteristics of those properties, including characteristics of their
-surrounding area. Multiple regression analysis (MRA) has been the most
-common set of statistical tools used in mass appraisal, including
-Maximum Likelihood, Weighted Least Squares, and the most popular,
-Ordinary Least Squares (OLS) (d'Amato 2017). The primary drawbacks of
-MRA techniques are ``excessive multicollinearity among attributes'' and
-``spatial autocorrelation among residuals'' (d'Amato 2017). Another
-group of models that seek to correct for spatial dependence are known as
-Spatial Auto-Regressive models (SAR), chief among them the Spatial Lag
-Model, which aggregates weighted summaries of nearby properties to
-create independent regression variables (d'Amato 2017).
+of St.~Paul, Minnesota (Joseph, n.d.). Since that time, and accelerating
+with the advent of computers, much statistical research has been done
+relating property values and rent prices to various characteristics of
+those properties, including characteristics of their surrounding area.
+Multiple regression analysis (MRA) has been the most common set of
+statistical tools used in mass appraisal, including maximum likelihood,
+weighted least squares, and the most popular, ordinary least squares, or
+\emph{OLS} (d'Amato \& Kauko, 2017). The primary drawbacks of MRA
+techniques are excessive multicollinearity among attributes and spatial
+autocorrelation among residuals (d'Amato \& Kauko, 2017). Another group
+of models that seek to correct for spatial dependence are known as
+spatial auto-regressive models (SAR), chief among them the spatial lag
+model, which aggregates weighted summaries of nearby properties to
+create independent regression variables (d'Amato \& Kauko, 2017).
 
-So-called ``Hedonic'' regression models seek to decompose the price of a
-good based on the intrinsic and extrinsic components. Koschinsky (2012)
-is a recent and thorough discussion of parametric hedonic regression
-techniques. Koschinsky derives some of the variables included in his
-models from nearby properties, similar to the technique used in this
-paper, and he found these spatial variables to be predictive. The basic
-real estate hedonic model as described by e.g., Koschinsky (2012),
-describes the price of a property as:
+So-called \emph{hedonic regression models} seek to decompose the price
+of a good based on the intrinsic and extrinsic components. Koschinsky,
+Lozano-Gracia, \& Piras (2012) is a recent and thorough discussion of
+parametric hedonic regression techniques. Koschinsky derives some of the
+variables included in his models from nearby properties, similar to the
+techniques used in this work, and these spatial variables were found to
+be predictive. The basic real estate hedonic model explains the price of
+a given property as:
 
 \[
 \begin{aligned}
- P_i = P(S_i, N_i, L_i)
+ P_i = P(q_i,S_i, N_i, L_i)
 \end{aligned}
 \]
 
-\noindent where \(P_i\) represents the price of house \(i\), which is
-``a composite good comprised of a vector of structural characteristics
+\noindent where \(P_i\) represents the price of house \(i\), which is a
+``composite good'' made up of a vector of structural characteristics
 \(S\), a vector of social and neighborhood characteristics \(N\), and a
-vector of locational characteristics \(L\).'' Specifically, the model
-calculates spatial lags on properties of interest using neighboring
-properties within 1,000 feet of a sale. The derived variables include
-characteristics like average age, the number of poor condition homes,
-percent of homes with electric heating, construction grades, and more,
-within 1,000 feet of the property in question. Koschinsky found that in
-all cases, ``the relation between a home's price and the average price
-of its neighboring homes is characterized by positive spatial
-autocorrelation'' meaning that homes near each other were typically
-similar to each other and priced accordingly. Koschinsky concluded that
-locational characteristics should be valued at least as much ``if not
-more'' than intrinsic structural characteristics.
+vector of locational characteristics \(L\) (Koschinsky et al., 2012 pg.
+322). Specifically, the model calculates spatial lags on properties of
+interest using neighboring properties within 1,000 feet of a sale. The
+derived variables include characteristics like average age, the number
+of poor condition homes, percent of homes with electric heating,
+construction grades, and more, within 1,000 feet of the property in
+question. Koschinsky found that in all cases homes near each other were
+typically similar to each other and priced accordingly. Koschinsky
+concluded that locational characteristics should be valued at least as
+much ``if not more'' than intrinsic structural characteristics.
 
 As recently as 2015, much research has dealt with mitigating the
 drawbacks of MRA, including the use of multi-level hierarchical models.
-Fotheringham (2015) explored the combination of Geographically Weighted
-Regression (GWR) with time-series forecasting to predict home prices
-over time. GWR is a variation on OLS that allows for ``adaptive
-bandwidths'' of local data to be included, i.e., for each estimate, the
-number of data points included varies and can be optimized using
-cross-validation.
+Fotheringham, Crespo, \& Yao (2015) explored the combination of
+geographically weighted regression (GWR) with time-series forecasting to
+predict home prices over time. GWR is a variation on OLS that allows for
+adaptive bandwidths of local data to be included, i.e., for each
+estimate, the number of data points included varies and can be optimized
+using cross-validation.
 
-\hypertarget{prediction-of-gentrification-using-machine-learning}{%
-\subsection{Prediction of Gentrification Using Machine
-Learning}\label{prediction-of-gentrification-using-machine-learning}}
+\hypertarget{predicting-gentrification-using-machine-learning}{%
+\subsection{Predicting Gentrification Using Machine
+Learning}\label{predicting-gentrification-using-machine-learning}}
 
-Both Mass Appraisal techniques and Automated Valuation Modeling seek to
-predict real estate prices using data and statistical methods; however,
-traditional techniques typically fall short. These techniques fail
-partly because property valuation is inherently a ``chaotic'' process
-that ``does not lend itself to binary or linear analysis'' (Zuk 2015).
-The value of any given property is a complex combination of fungible
-intrinsic characteristics, perceived value, and speculation. The value
-of any building or plot of land belongs to a rich network where
-decisions about and perceptions of neighboring properties influence the
-final market value. Guan et al. (2014) compared traditional MRA
-techniques to alternative ``data mining techniques'' resulting in
-``mixed results.'' However, as Helbich (2013) states, hedonic pricing
-models ``can be improved in two ways: (a) Through novel estimation
-techniques, and (b) by ancillary structural, locational, and
-neighborhood variables on the basis of Geographic Information System.''
-Recent research generally falls into these two buckets: better
-algorithms and better data.
+Both mass appraisal techniques and AVMs seek to predict real estate
+prices using data and statistical methods; however, traditional
+techniques typically fall short. These techniques fail partly because
+property valuation is inherently a ``chaotic'' process that cannot be
+modeled effectively using linear methods (Zuk et al., 2015). The value
+of any given property is a complex combination of fungible intrinsic
+characteristics, perceived value, and speculation. The value of any
+building or plot of land belongs to a rich network where decisions about
+and perceptions of neighboring properties influence the final market
+value. Guan, Shi, Zurada, \& Levitan (2014) compared traditional MRA
+techniques to alternative data mining techniques resulting in mixed
+results. However, as Helbich, Jochem, Mücke, \& Höfle (2013) states,
+hedonic pricing models might be improved upon in two primary ways:
+through novel estimation techniques, and by ancillary structural,
+locational, and neighborhood variables. Recent research generally falls
+into these two buckets: better algorithms and better data.
 
 In the ``better data'' category, researchers have been striving to
 introduce new independent variables to increase the accuracy of
-predictive models. Dietzell (2014) successfully used internet search
-query data provided by Google Trends to serve as a sentiment indicator
-and improve commercial real estate forecasting models. Pivo and Fisher
-(2011) examined the effects of walkability on property values and
-investment returns. Pivo found that on a 100-point scale, a 10-point
-increase in walkability increased property investment values by up to
-9\%.
+predictive models. Alexander Dietzel, Braun, \& Schäfers (2014)
+successfully used internet search query data provided by Google Trends
+to serve as a sentiment indicator and improve commercial real estate
+forecasting models. Pivo \& Fisher (2011) examined the effects of
+walkability on property values and investment returns. Pivo found that
+on a 100-point scale, a 10-point increase in walkability increased
+property investment values by up to 9\%.
 
 Research into better prediction algorithms does not necessarily happen
-at the exclusion of ``better data.'' For example, Fu (2014) created a
-prediction algorithm, called ``ClusRanking,'' for real estate in
+at the exclusion of better data. For example, Fu et al. (2014) created a
+prediction algorithm, called \emph{ClusRanking}, for real estate in
 Beijing, China. ClusRanking first estimates neighborhood characteristics
-using taxi cab traffic vector data, inlcuding relative access to
-``business areas.'' Then, the algorithm performs a rank-ordered
-prediction of investment returns segmented into five categories. Similar
-to Koschinsky (2012), though less formally stated, Fu (2014) thought of
-a property's value as a composite of individual, peer and zone
-characteristics. In their predictive modeling, Fu included
+using taxi cab traffic vector data, including relative access to
+business areas. Then, the algorithm performs a rank-ordered prediction
+of investment returns segmented into five categories. Similar to
+Koschinsky et al. (2012), though less formally stated, Fu et al. (2014)
+thought of a property's value as a composite of individual, peer and
+zone characteristics. In their predictive modeling, Fu included
 characteristics of the neighborhood (individual), the values of nearby
 properties (peer), and the prosperity of the affiliated latent business
-area (zone) based on taxi cab data (Fu 2014).
+area (zone) based on taxi cab data (Fu et al., 2014).
 
-Several other recent studies compare various ``advanced'' statistical
+Several other recent studies compare various advanced statistical
 techniques and algorithms either to other advanced techniques or to
 traditional ones. Most studies conclude that the advanced,
 non-parametric techniques outperform traditional parametric techniques,
 while several conclude that the Random Forest algorithm is particularly
 well-suited to predicting real estate values.
 
-Kontrimasa (2011) compares the accuracy of linear regression against the
-SVM technique and found the latter to outperform. Schernthanner H.
-(2016) compared traditional linear regression techniques to several
-techniques such as kriging (stochastic interpolation) and Random Forest.
-They concluded that the more advanced techniques, particularly Random
-Forest, are sound and more accurate when compared to traditional
-statistical methods. Antipov and Pokryshevskaya (2012) came to a similar
-conclusion about the superiority of Random Forest for real estate
-valuation after comparing 10 algorithms: multiple regression, CHAID,
-Exhaustive CHAID, CART, 2 types of k-Nearest Neighbors, Multilayer
-Perceptron artificial neural network, Radial Basis Function neural
-network, Boosted Trees and finally Random Forest.
+Kontrimas \& Verikas (2011) compares the accuracy of linear regression
+against the SVM technique and found the latter to outperform.
+Schernthanner, Asche, Gonschorek, \& Scheele (2016) compared traditional
+linear regression techniques to several techniques such as kriging
+(stochastic interpolation) and Random Forest. They concluded that the
+more advanced techniques, particularly Random Forest, are sound and more
+accurate when compared to traditional statistical methods. Antipov \&
+Pokryshevskaya (2012) came to a similar conclusion about the superiority
+of Random Forest for real estate valuation after comparing 10
+algorithms: multiple regression, CHAID, exhaustive CHAID, CART, 2 types
+of k-nearest neighbors, multilayer perceptron artificial neural network,
+radial basis function neural network, boosted trees and finally Random
+Forest.
 
 Guan et al. (2014) compared three different approaches to defining
 spatial neighbors: a simple radius technique, a k-nearest neighbors
 technique using only distance and a k-nearest neighbors technique using
 all attributes. Interestingly, the location-only KNN models performed
-best, although by a slight margin. Park (2015) developed several
+best, although by a slight margin. Park \& Bae (2015) developed several
 housing-price prediction models based on machine learning algorithms
-including C4.5, RIPPER, Naive Bayesian, and AdaBoost, finding that the
-RIPPER algorithm consistently outperformed the other models. Rafiei
-(2016) employed a restricted Boltzmann machine (neural network with back
-propagation) to predict the sale price of residential condos in Tehran,
-Iran, using a non-mating genetic algorithm for dimensionality reduction
-with a focus on computational efficiency. The paper concludes that two
-primary strategies help in this regard: weighting property sales by
-temporal proximity (i.e., sales which happened closer in time are more
-alike), and also using a learner to accelerate the recognition of
-important features. The paper compares this technique to several other
-common neural network approaches and finds that while not necessarily
-the only way to get the best answer, it is an efficient and fast way to
-get to the best answer.
+including C4.5, RIPPER, naive Bayesian, and AdaBoost, finding that the
+RIPPER algorithm consistently outperformed the other models. Rafiei \&
+Adeli (2015) employed a restricted Boltzmann machine (neural network
+with back propagation) to predict the sale price of residential condos
+in Tehran, Iran, using a non-mating genetic algorithm for dimensionality
+reduction with a focus on computational efficiency. The paper concludes
+that two primary strategies help in this regard: weighting property
+sales by temporal proximity (i.e., sales which happened closer in time
+are more alike), and also using a learner to accelerate the recognition
+of important features. The paper compares this technique to several
+other common neural network approaches and finds that while not
+necessarily the only way to get the best answer, it is an efficient and
+fast way to get to the best answer.
 
 Finally, we note that many studies, whether exploring advanced
 techniques, new data, or both, rely on aggregation of data by some
-arbitrary boundary. For example, Turner and Snow (2001) predicted
-gentrification in the Washington, D.C. metro area by ranking census
-tracts in terms of development. Chapple (2009) created a gentrification
-``early warning system'' by identifying low-income census tracts in
-central city locations. Barry Bluestone \& Chase Billingham (2010)
-analyzed 42 census block groups near rail stations in 12 metro areas
-across the United States, studying changes between 1990 and 2000 for
-neighborhood socioeconomic and housing characteristics. All of these
-studies, and many more, relied on the aggregation of data at the
-census-tract or census-block level. In contrast, this paper compares
+arbitrary boundary. For example, Turner (2001) predicted gentrification
+in the Washington, D.C. metro area by ranking census tracts in terms of
+development. Chapple (2009) created a gentrification early warning
+system by identifying low-income census tracts in central city
+locations. Pollack, Bluestone, \& Billingham (2010) analyzed 42 census
+block groups near rail stations in 12 metro areas across the United
+States, studying changes between 1990 and 2000 for neighborhood
+socioeconomic and housing characteristics. All of these studies, and
+many more, relied on the aggregation of data at the census-tract or
+census-block level. In contrast, this paper compares
 boundary-aggregation techniques (specifically, aggregating by Zip Codes)
 to spatial lag techniques and finds the spatial lag techniques to
 generally outperform.
@@ -530,10 +526,10 @@ accomplish this comparison, we created three separate modeling datasets:
   \textbf{Base modeling data:} includes building characteristics such as
   size, taxable value, usage, and others
 \item
-  \textbf{Zip Code modeling data:} includes the base data as well as
+  \textbf{Zip code modeling data:} includes the base data as well as
   aggregations of data at the zip-code level
 \item
-  \textbf{Spatial Lag modeling data:} includes the base data as well as
+  \textbf{Spatial lag modeling data:} includes the base data as well as
   aggregations of data within 500-meters of each building
 \end{itemize}
 
@@ -551,10 +547,10 @@ each:
 \def\labelenumi{\arabic{enumi})}
 \tightlist
 \item
-  \textbf{Classification task: Probability of Sale} The probability that
+  \textbf{Classification task: probability of sale} The probability that
   a given property will sell in a given year (0,1)
 \item
-  \textbf{Regression task: Sale Price per square foot} Given that a
+  \textbf{Regression task: sale-price-per-square-foot} Given that a
   property sells, how much is the sale price per square foot? (\$/SF)
 \end{enumerate}
 
@@ -572,10 +568,10 @@ task/data combinations.
 \midrule
 1 & Probability of Sale & Classification & Base & Building Sold & Binary & AUC\\
 2 & Probability of Sale & Classification & Zip Code & Building Sold & Binary & AUC\\
-3 & Probability of Sale & Classification & Spatial Lags & Building Sold & Binary & AUC\\
-4 & Sale Price & Regression & Base & Sale Price per SF & Continuous & RMSE\\
-5 & Sale Price & Regression & Zip Code & Sale Price per SF & Continuous & RMSE\\
-6 & Sale Price & Regression & Spatial Lag & Sale Price per SF & Continuous & RMSE\\
+3 & Probability of Sale & Classification & Spatial Lag & Building Sold & Binary & AUC\\
+4 & Sale Price & Regression & Base & Sale-Price-per-SF & Continuous & RMSE\\
+5 & Sale Price & Regression & Zip Code & Sale-Price-per-SF & Continuous & RMSE\\
+6 & Sale Price & Regression & Spatial Lag & Sale-Price-per-SF & Continuous & RMSE\\
 \bottomrule
 \end{tabular}}
 \end{table}
@@ -792,8 +788,8 @@ ZoneDist2 & Character & 12,012,780 & NA & NA & NA & NA & NA & NA & 11,715,653\\
 \end{table}
 
 \hypertarget{global-filtering-of-the-data}{%
-\subsubsection{Global filtering of the
-data}\label{global-filtering-of-the-data}}
+\subsubsection{Global Filtering of the
+Data}\label{global-filtering-of-the-data}}
 
 We only included building categories of significant interest in our
 initial modeling data. Generally speaking, by significant interest we
@@ -1033,25 +1029,25 @@ Percent\_Change\_EMA\_5 & -1 & 0.06 & 308.05 & 5,341,901.60\\
 \end{tabular}}
 \end{table}
 
-Importantly, two variables were created from the Sale Prices: A
-price-per-square-foot-figure (``Sale\_Price'') and a total Sale Price
-(``Sale\_Price\_Total''). Sale Price per square foot eventually became
-the outcome variable in one of the predictive models. We then create a
+Importantly, two variables were created from the sale prices: A
+price-per-square-foot-figure (``Sale\_Price'') and a total sale price
+(``Sale\_Price\_Total''). Sale-price-per-square-foot eventually became
+the outcome variable in one of the predictive models. We then created a
 feature to carry forward the previous sale price of a tax lot, if there
-was one, through successive years. Previous Sale Price was then used to
-create Simple Moving Averages (SMA), Exponential Moving Averages (EMA),
-and percent change measurements between the moving averages. In total,
-69 variables were input to the feature engineering process and 92
+was one, through successive years. The previous sale price was then used
+to create simple moving averages (SMA), exponential moving averages
+(EMA), and percent change measurements between the moving averages. In
+total, 69 variables were input to the feature engineering process and 92
 variables were output. The final base modeling dataset was 92 variables
 by 8,247,499 rows.
 
 \hypertarget{zip-code-modeling-data}{%
 \subsubsection{Zip Code Modeling Data}\label{zip-code-modeling-data}}
 
-The first of the two comparative modeling datasets was the Zip Code
+The first of the two comparative modeling datasets was the zip code
 modeling data. Using the base data as a starting point, several features
-were generated to describe characteristics of the Zip Code where each
-tax lot resides. A summary table of the Zip Code level features is
+were generated to describe characteristics of the zip code where each
+tax lot resides. A summary table of the zip code level features is
 presented in \ref{tab:zipcodemodelfeats}.
 
 \begin{table}
@@ -1102,12 +1098,12 @@ Percent Change EMA 5 bt only & -0.34 & 0.06 & 335.17 & 178,947.30\\
 \end{tabular}}
 \end{table}
 
-In general, the base model data features were aggregated to a Zip Code
+In general, the base model data features were aggregated to a zip code
 level and appended, including the SMA, EMA and percent change
 calculations. Additionally, a second set of features were added, denoted
 as ``bt\_only'', which aggregated the data in a similar fashion but only
 included tax lots of the same building type in the calculations. In
-total, the Zip Code feature engineering process input 92 variables and
+total, the zip code feature engineering process input 92 variables and
 output 122 variables.
 
 \hypertarget{spatial-lag-modeling-data}{%
@@ -1121,7 +1117,7 @@ spatial lags presents both advantages and disadvantages in the modeling
 process. Spatial lags allow for much more fine-tuned measurements of a
 building's surrounding area. Intuitively, knowing the average sale price
 of all buildings within 500 meters of a building can be more informative
-than knowing the sale prices of all buildings in the same Zip Code.
+than knowing the sale prices of all buildings in the same zip code.
 However, creating spatial lags is computationally expensive. In
 addition, it can be challenging to set a proper radius for the spatial
 lag calculation; in a city, 500 meters may be appropriate (for certain
@@ -1137,9 +1133,7 @@ Graph}\label{creating-the-point-neighbor-relational-graph}}
 To build our spatial lags, for each point in the data, we must identify
 which of all other points in the data fall within a specified radius.
 This neighbor identification process requires iteratively running
-point-in-polygon operations, i.e., ``given polygon P and an arbitrary
-point q, determine whether point q is enclosed by the edges of the
-polygon'' (Huang 1996). This process is conceptually illustrated in
+point-in-polygon operations. This process is conceptually illustrated in
 figure \ref{fig:Spatial Lag Feataure Process}.
 
 \begin{figure}[H]
@@ -1231,7 +1225,7 @@ inverse-distance weighted features (denoted with a "\_dist" in Table
 \ref{tab:SpLAgFeats}) and simple average features (denoted with
 "\_basic" in Table \ref{tab:SpLAgFeats}).
 
-Temporal and spatial derivatives of the Spatial Lag features, presented
+Temporal and spatial derivatives of the spatial lag features, presented
 in Table \ref{tab:SpLAgFeats}, were also added to the model, including:
 variables weighted by Euclidean distance (``dist''), basic averages of
 the spatial lag radius (``basic mean''), SMA for 2 years, 3 years and 5
@@ -1366,7 +1360,7 @@ classification and a continuous variable for regression:
   \textbf{Binary: Sold} whether a tax lot sold in a given year. Used in
   the Probability of Sale classification model.
 \item
-  \textbf{Continuous: Sale Price per SF} The price-per-square-foot
+  \textbf{Continuous: Sale-Price-per-SF} The price-per-square-foot
   associated with a transaction, if a sale took place. Used in the Sale
   Price Regression model.
 \end{enumerate}
@@ -1399,19 +1393,19 @@ We implemented and compared several algorithms across our two-stage
 process. In Stage 1, the Random Forest algorithm was used to identify
 the optimal subset of building types and geographies for our spatial lag
 aggregation assumptions. In Stage 2, we analyzed the hold-out test
-performance of several algorithms including Random Forest, Generalized
-Linear Model (GLM), Gradient Boosting Machine (GBM), and Feed-Forward
-Artificial Neural Network (ANN). Each algorithm was run over the three
+performance of several algorithms including Random Forest, generalized
+linear model (GLM), gradient boosting machine (GBM), and feed-forward
+artificial neural network (ANN). Each algorithm was run over the three
 competing feature engineering datasets and for both the classification
 and regression tasks.
 
 \hypertarget{random-forest}{%
 \subsubsection{Random Forest}\label{random-forest}}
 
-Leo Breiman proposed the Random Forest concept in 2001 as an ensemble of
+Random Forest was proposed by Breiman Breiman (2001) as an ensemble of
 prediction decision trees iteratively trained across randomly generated
-subsets of data (Breiman 2001). Algorithm \ref{alg:RandomForestAlo}
-outlines the procedure (Hastie, Tibshirani, and Friedman 2001).
+subsets of data. Algorithm \ref{alg:RandomForestAlo} outlines the
+procedure (Hastie, Tibshirani, \& Friedman, 2001).
 
 \begin{algorithm}
   \caption{Random Forest for Regression or Classification}\label{alg:RandomForestAlo}
@@ -1438,18 +1432,18 @@ To make a prediction at a new point $x$:
 
 \end{algorithm}
 
-Previous works (see: Antipov and Pokryshevskaya (2012); also
-Schernthanner H. (2016)) have found the Random Forest algorithm suitable
-to prediction tasks involving real estate. While algorithms exist that
-may outperform Random Forest in terms of predictive accuracy (such as
-neural networks and functional gradient descent algorithms), Random
-Forest is highly scalable and parallelizable, and is therefore an
-attractive choice for quickly assessing the predictive power of
-different feature engineering techniques. For these reasons and more
-outlined below, we selected Random Forest as the primary algorithm for
-Stage 1 of our modeling process.
+Previous works have found the Random Forest algorithm suitable to
+prediction tasks involving real estate (Antipov \& Pokryshevskaya, 2012;
+Schernthanner et al., 2016). While algorithms exist that may outperform
+Random Forest in terms of predictive accuracy (such as neural networks
+and functional gradient descent algorithms), Random Forest is highly
+scalable and parallelizable, and is therefore an attractive choice for
+quickly assessing the predictive power of different feature engineering
+techniques. For these reasons and more outlined below, we selected
+Random Forest as the primary algorithm for Stage 1 of our modeling
+process.
 
-Random Forest, like all predictive algorithms used in this paper, suits
+Random Forest, like all predictive algorithms used in this work, suits
 both classification and regression tasks. The Random Forest algorithm
 works by generating a large number of independent classification or
 regression decision trees and then employing majority voting (for
@@ -1491,7 +1485,7 @@ We chose Random Forest as the algorithm for Stage 1 because:
   appear in individual trees less often, and therefore, their influence
   is curtailed. Real estate data, especially with regards to pricing,
   tends to contain outliers. For example, the dependent variable in one
-  of our models, Sale Price, shows a clear divergence in median and
+  of our models, sale price, shows a clear divergence in median and
   mean, as well as a maximum significantly higher than the third
   quartile.
 \item
@@ -1518,7 +1512,7 @@ linear predictor taking the form
 \(\eta_i = \beta_0+\beta_1x_{i1}+...+\beta_{p}x_{ip}\), a link function
 that describes how the mean, \(E(Y_i)=\mu_i\) depends on the linear
 predictor, and a variance function that describes how the variance,
-var\((Y_i)\) depends on the mean (Hoffmann 2004). The observed value of
+var\((Y_i)\) depends on the mean (Hoffmann, 2004). The observed value of
 the dependent variable \(y\) for observation \(i\)
 \((i = 1, 2, ..., n)\) is modeled as a linear function of \((p - 1)\)
 independent variables \(x1, x2,... ,xp-1\) as
@@ -1543,13 +1537,13 @@ refined approximations, obtained through cross-validation, to
 incrementally increase predictive accuracy. Similar to Random Forest,
 GBM is well-suited to using regression trees as the base learner.
 Gradient boosting constructs additive regression models by sequentially
-fitting a simple parameterized function (a ``base learner,'' in our
-case, a regression tree) to ``pseudo''-residuals by least squares at
-each iteration (Friedman 2002). The pseudo-residuals are the gradient of
-the loss function being minimized, with respect to the model values at
-each training data point evaluated at the current step. The tree-variant
-of the generic Gradient Boosting Algorithm is outlined in algorithm
-\ref{alg:GBMAlo} (Hastie, Tibshirani, and Friedman 2001).
+fitting a simple parameterized function (a \emph{base learner}, in our
+case, a regression tree) to pseudo-residuals by least squares at each
+iteration (Friedman, 2002). The pseudo-residuals are the gradient of the
+loss function being minimized, with respect to the model values at each
+training data point evaluated at the current step. The tree-variant of
+the generic gradient boosting algorithm is outlined in algorithm
+\ref{alg:GBMAlo} (Hastie et al., 2001).
 
 \begin{algorithm}
   \caption{Gradient Tree Boosting Algorithm}\label{alg:GBMAlo}
@@ -1577,21 +1571,21 @@ of the generic Gradient Boosting Algorithm is outlined in algorithm
 \subsubsection{Feed-Forward Artificial Neural
 Network}\label{feed-forward-artificial-neural-network}}
 
-The Artificial Neural Network (ANN) implementation used in this paper is
+The artificial neural network (ANN) implementation used in this work is
 a multi-layer feed-forward artificial neural network trained with
 stochastic gradient descent using back-propagation. Common synonyms for
-an ANN model are ``multi-layer perceptron'' and ``deep neural network.''
+an ANN model are multi-layer perceptron and also deep neural network.
 The feed-forward ANN is one of the most common neural network
-algorithms, but other types exist, such as the Convolutional Neural
-Network (CNN) which performs well on image classification tasks, and the
-Recurrent Neural Network (RNN) which is well-suited for sequential data
-such as text and audio (Schmidhuber 2015). The feed-forward ANN is
+algorithms, but other types exist, such as the convolutional neural
+network (CNN) which performs well on image classification tasks, and the
+recurrent neural network (RNN) which is well-suited for sequential data
+such as text and audio (Schmidhuber, 2015). The feed-forward ANN is
 typically best suited for tabular data.
 
 The neural network model has unknown parameters, often called weights,
 and we seek values for them that make the model fit the training data
-well (Hastie, Tibshirani, and Friedman 2001). We denote the complete set
-of weights by \(\theta\), which consists of
+well (Hastie et al., 2001). We denote the complete set of weights by
+\(\theta\), which consists of
 \(\{\alpha_{0m},\alpha_m;m=1,2,...,M\} M(p+1)\) weights and
 \(\{\beta_{0k},\beta_k;k=1,2,...,K\} K(p+1)\) weights.
 
@@ -1601,12 +1595,12 @@ our measure of fit (error function)
 \[
 R(\theta)=\sum_{k=1}^K\sum_{i=1}^N(y_{ik}-f_{k}(x_i))^2
 \] The generic approach to minimizing \(R(\theta)\) is by gradient
-descent, called back-propagation in this setting (Hastie, Tibshirani,
-and Friedman 2001). Because of the compositional form of the model, the
-gradient can be derived using the chain rule for differentiation. This
-can be computed by a forward and backward sweep over the network,
-keeping track only of quantities local to each unit. Here is
-back-propagation in detail for squared error loss:
+descent, called back-propagation in this setting (Hastie et al., 2001).
+Because of the compositional form of the model, the gradient can be
+derived using the chain rule for differentiation. This can be computed
+by a forward and backward sweep over the network, keeping track only of
+quantities local to each unit. Here is back-propagation in detail for
+squared error loss:
 
 \[
 R(\theta) = \sum_{i=1}^NR_i
@@ -2185,9 +2179,9 @@ Additionally, the spatial lag features seemed to perform best for
 certain boroughs and residential building types. We hypothesize that
 using a 500-meter radius to build spatial lag features, a distance which
 we arbitrarily chose, works best for this type of asset in these areas.
-Fotheringham (2015) used an ``Adaptive Bandwidth'' technique to adjust
-the spatial lag radius based on cross-validation with much success. The
-techniques presented in this paper could be expanded to use
+Fotheringham et al. (2015) used an adaptive bandwidth technique to
+adjust the spatial lag radius based on cross-validation with much
+success. The techniques presented in this paper could be expanded to use
 cross-validation similarly to assign the optimal spatial lag radius for
 each building type and location. Furthermore, additional work could be
 done using cross-validation or a similar technique to refine the spatial
@@ -2238,204 +2232,205 @@ help ensure equality of opportunity for all.
 \addcontentsline{toc}{section}{References}
 
 \hypertarget{refs}{}
+\leavevmode\hypertarget{ref-Dietzell2014}{}%
+Alexander Dietzel, M., Braun, N., \& Schäfers, W. (2014).
+Sentiment-based commercial real estate forecasting with google search
+volume data. \emph{Journal of Property Investment \& Finance},
+\emph{32}(6), 540--569.
+
 \leavevmode\hypertarget{ref-Almanie2015}{}%
-Almanie, R.; Lor, T.; Mirza. 2015. ``Crime Prediction Based on Crime
-Types and Using Spatial and Temporal Criminal Hotspots.''
+Almanie, T., Mirza, R., \& Lor, E. (2015). Crime prediction based on
+crime types and using spatial and temporal criminal hotspots.
 \emph{International Journal of Data Mining \& Knowledge Management
-Process (IJDKP)} 5 (4).
+Process}, \emph{5}. \url{https://doi.org/10.5121/ijdkp.2015.5401}
 
 \leavevmode\hypertarget{ref-antipov12}{}%
-Antipov, Evgeny A., and Elena B. Pokryshevskaya. 2012. ``Mass Appraisal
-of Residential Apartments: An Application of Random Forest for Valuation
-and a Cart-Based Approach for Model Diagnostics.'' \emph{Expert Systems
+Antipov, E. A., \& Pokryshevskaya, E. B. (2012). Mass appraisal of
+residential apartments: An application of random forest for valuation
+and a cart-based approach for model diagnostics. \emph{Expert Systems
 with Applications}.
 
-\leavevmode\hypertarget{ref-Pollack2010}{}%
-Barry Bluestone \& Chase Billingham, Stephanie Pollack \&. 2010.
-``Maintaining Diversity in America's Transit-Rich Neighborhoods: Tools
-for Equitable Neighborhood Change.'' \emph{New England Community
-Developments, Federal Reserve Bank of Boston}, 1--6.
-
 \leavevmode\hypertarget{ref-Batty2013}{}%
-Batty, Michael. 2013. ``The New Science of Cities.'' \emph{MIT Press}.
+Batty, M. (2013). The new science of cities. \emph{MIT Press}.
 
 \leavevmode\hypertarget{ref-breiman2001random}{}%
-Breiman, Leo. 2001. ``Random Forests.'' \emph{Machine Learning} 45 (1).
-Springer: 5--32.
-
-\leavevmode\hypertarget{ref-Chapple2009}{}%
-Chapple, Karen. 2009. ``Mapping Susceptibility to Gentrification: The
-Early Warning Toolkit.'' \emph{Berkeley, CA: Center for Community
-Innovation.}
-
-\leavevmode\hypertarget{ref-Chapple2016}{}%
-Chapple, Miriam, Karen; Zuk. 2016. ``Forewarned: The Use of Neighborhood
-Early Warning Systems for Gentrification and Displacement.''
-\emph{Cityscape: A Journal of Policy Development and Research} 18 (3).
-
-\leavevmode\hypertarget{ref-Clay1979}{}%
-Clay, Phillip L. 1979. \emph{Neighborhood Renewal: Middle-Class
-Resettlement and Incumbent Upgrading in American Neighborhoods}.
-Lexington Books.
-
-\leavevmode\hypertarget{ref-Springer2017}{}%
-d'Amato, Tom, Maurizio; Kauko, ed. 2017. \emph{Advances in Automated
-Valuation Modeling}. Springer International Publishing.
-
-\leavevmode\hypertarget{ref-Dietzell2014}{}%
-Dietzell, Nicole; Schäfers, Marian Alexander; Braun. 2014.
-``Sentiment-Based Commercial Real Estate Forecasting with Google Search
-Volume Data.'' \emph{Journal of Property Investment \& Finance,} 32 (6):
-540--69.
-
-\leavevmode\hypertarget{ref-Dreier2004}{}%
-Dreier, John; Swanstrom, Peter; Mollenkopf. 2004. \emph{Place Matters:
-Metropolitics for the Twenty-First Century.} University Press of Kansas.
-
-\leavevmode\hypertarget{ref-Eckert1990}{}%
-Eckert, J. K. 1990. \emph{Property Appraisal and Assessment
-Administration}. Chicago, IL.: International Association of Assessing
-Officers.
-
-\leavevmode\hypertarget{ref-Fotheringham2015}{}%
-Fotheringham, R; Yao, A.S.; Crespo. 2015. ``Exploring, Modelling and
-Predicting Spatiotemporal Variations in House Prices.'' \emph{The Annals
-of Regional Science} 54.
-
-\leavevmode\hypertarget{ref-friedman2002stochastic}{}%
-Friedman, Jerome H. 2002. ``Stochastic Gradient Boosting.''
-\emph{Computational Statistics \& Data Analysis} 38 (4). Elsevier:
-367--78.
-
-\leavevmode\hypertarget{ref-Fu2014}{}%
-Fu, Yanjie; et al. 2014. \emph{Exploiting Geographic Dependencies for
-Real Estate Appraisal: A Mutual Perspective of Ranking and Clustering}.
-Proceedings of the 20th ACM SIGKDD international conference on Knowledge
-discovery; data mining.
-
-\leavevmode\hypertarget{ref-Geltner2017}{}%
-Geltner, David, and Alex Van de Minne. 2017. ``Do Different Price Points
-Exhibit Different Investment Risk and Return Commercial Real Estate.''
-Real Estate Research Institute.
-
-\leavevmode\hypertarget{ref-Guan2014}{}%
-Guan, Jian, Donghui Shi, Jozef M. Zurada, and Alan S. Levitan. 2014.
-``Analyzing Massive Data Sets: An Adaptive Fuzzy Neural Approach for
-Prediction, with a Real Estate Illustration.'' \emph{Journal of
-Organizational Computing and Electronic Commerce} 24 (1). Taylor \&
-Francis: 94--112. \url{https://doi.org/10.1080/10919392.2014.866505}.
-
-\leavevmode\hypertarget{ref-hastie01statisticallearning}{}%
-Hastie, Trevor, Robert Tibshirani, and Jerome Friedman. 2001. \emph{The
-Elements of Statistical Learning}. Springer Series in Statistics. New
-York, NY, USA: Springer New York Inc.
-
-\leavevmode\hypertarget{ref-Helbich2013}{}%
-Helbich, et al., Marco. 2013. ``Boosting the Predictive Accuracy of
-Urban Hedonic House Price Models Through Airborne Laser Scanning.''
-\emph{Computers, Environment and Urban Systems} 39: 81--92.
-
-\leavevmode\hypertarget{ref-hoffmann2004generalized}{}%
-Hoffmann, John Patrick. 2004. \emph{Generalized Linear Models: An
-Applied Approach}. Pearson College Division.
-
-\leavevmode\hypertarget{ref-Huang1996}{}%
-Huang, Chong-Wei. 1996. ``On the Complexity of Point-in-Polygon
-Algorithms.'' \emph{Computers and Geosciences} 23.
-
-\leavevmode\hypertarget{ref-Johnson2007}{}%
-Johnson, Ken, Justin Benefield, and Jonathan Wiley. 2007. ``The
-Probability of Sale for Residential Real Estate.'' \emph{Journal of
-Housing Research} 16 (2): 131--42.
-\url{https://doi.org/10.5555/jhor.16.2.0234g75800h5k8x6}.
-
-\leavevmode\hypertarget{ref-Kontrimasa2011}{}%
-Kontrimasa, Antanas, Vilius; Verikasb. 2011. ``The Mass Appraisal of the
-Real Estate by Computational Intelligence.'' \emph{Applied Soft
-Computing}.
-
-\leavevmode\hypertarget{ref-Koschinsky2012}{}%
-Koschinsky, J. et al. 2012. ``The Welfare Benefit of a Home's Location:
-An Empirical Comparison of Spatial and Non-Spatial Model Estimates.''
-\emph{Journal of Geographical Systems} 10109.
-
-\leavevmode\hypertarget{ref-Lees2008}{}%
-Lees, Tom; Wyly, Loretta; Slater. 2008. ``Gentrification.'' \emph{Growth
-and Change} 39 (3): 536--39.
-\url{https://doi.org/10.1111/j.1468-2257.2008.00443.x}.
-
-\leavevmode\hypertarget{ref-Miller2015}{}%
-Miller, J.; Aspinall, J.; Franklin. 2007. ``Incorporating Spatial
-Dependence in Predictive Vegetation Models.'' \emph{Ecological
-Modelling} 202 (3): 225--42.
-
-\leavevmode\hypertarget{ref-Park2015}{}%
-Park, Jae Kwon, Byeonghwa; Bae. 2015. ``Using Machine Learning
-Algorithms for Housing Price Prediction: The Case of Fairfax County,
-Virginia Housing Data.'' \emph{Expert Systems with Applications} 42 (6):
-2928--34.
-
-\leavevmode\hypertarget{ref-Pivo2011}{}%
-Pivo, Gary, and Jeffrey D. Fisher. 2011. ``The Walkability Premium in
-Commercial Real Estate Investments.'' \emph{Real Estate Economics} 39
-(2): 185--219. \url{https://doi.org/10.1111/j.1540-6229.2010.00296.x}.
+Breiman, L. (2001). Random forests. \emph{Machine Learning},
+\emph{45}(1), 5--32.
 
 \leavevmode\hypertarget{ref-Quintos2013}{}%
-Quintos, Carmela. 2013. ``Estimating Latent Effects in Commercial
-Property Models.'' \emph{Journal of Property Tax Assessment \&
-Administration} 12 (2).
+Carmela Quintos PHD, M. (2015). Estimating latent effects in commercial
+property models. \emph{Journal of Property Tax Assessment \&
+Administration}, \emph{12}(2), 37.
 
-\leavevmode\hypertarget{ref-Rafiei2016}{}%
-Rafiei, Hojjat, Mohammad Hossein; Adeli. 2016. ``A Novel Machine
-Learning Model for Estimation of Sale Prices of Real Estate Units.''
-\emph{Journal of Construction Engineering and Management} 142 (2).
+\leavevmode\hypertarget{ref-Chapple2009}{}%
+Chapple, K. (2009). Mapping susceptibility to gentrification: The early
+warning toolkit. \emph{Berkeley, CA: Center for Community Innovation}.
 
-\leavevmode\hypertarget{ref-Reardon2011}{}%
-Reardon, Kendra, Sean F.; Bischoff. 2011. ``Income Inequality and Income
-Segregation.'' \emph{American Journal of Sociology}.
+\leavevmode\hypertarget{ref-Chapple2016}{}%
+Chapple, K., \& Zuk, M. (2016). Forewarned: The use of neighborhood
+early warning systems for gentrification and displacement.
+\emph{Cityscape}, \emph{18}(3), 109--130.
 
-\leavevmode\hypertarget{ref-Ritter2013}{}%
-Ritter, Nancy. 2013. ``Predicting Recidivism Risk: New Tool in
-Philadelphia Shows Great Promise.'' \emph{National Institute of Justice
-Journal} 271.
+\leavevmode\hypertarget{ref-Clay1979}{}%
+Clay, P. L. (1979). \emph{Neighborhood renewal: Middle-class
+resettlement and incumbent upgrading in american neighborhoods}. Free
+Press.
 
-\leavevmode\hypertarget{ref-Schernthanner2016}{}%
-Schernthanner H., Gonschorek J., Asche H. 2016. ``Spatial Modeling and
-Geovisualization of Rental Prices for Real Estate Portals.''
-\emph{Computational Science and Its Applications} 9788.
+\leavevmode\hypertarget{ref-Springer2017}{}%
+d'Amato, M., \& Kauko, T. (2017). \emph{Advances in automated valuation
+modeling}. Springer.
 
-\leavevmode\hypertarget{ref-SCHMIDHUBER201585}{}%
-Schmidhuber, Jürgen. 2015. ``Deep Learning in Neural Networks: An
-Overview.'' \emph{Neural Networks} 61: 85--117.
-\url{https://doi.org/https://doi.org/10.1016/j.neunet.2014.09.003}.
+\leavevmode\hypertarget{ref-dimaggio2012spatial}{}%
+DiMaggio, C. (2012). Spatial epidemiology notes: Applications and
+vignettes in r. Columbia University press.
 
-\leavevmode\hypertarget{ref-Silverherz1936}{}%
-Silverherz, J. D. 1936. ``The Assessment of Real Property in the United
-States.'' \emph{Albany: J.B. Lyon Co. Printers}.
+\leavevmode\hypertarget{ref-Dreier2004}{}%
+Dreier, P., Mollenkopf, J. H., \& Swanstrom, T. (2004). \emph{Place
+matters: Metropolitics for the twenty-first century}. University Press
+of Kansas.
 
-\leavevmode\hypertarget{ref-Smith1979}{}%
-Smith, Neil. 1979. ``Toward a Theory of Gentrification a Back to the
-City Movement by Capital, Not People.'' \emph{Journal of the American
-Planning Association} 45 (4). Routledge: 538--48.
-\url{https://doi.org/10.1080/01944367908977002}.
+\leavevmode\hypertarget{ref-Eckert1990}{}%
+Eckert, J. K. (1990). \emph{Property appraisal and assessment
+administration}. International Association of Assessing Officers.
+
+\leavevmode\hypertarget{ref-Fotheringham2015}{}%
+Fotheringham, A. S., Crespo, R., \& Yao, J. (2015). Exploring, modelling
+and predicting spatiotemporal variations in house prices. \emph{The
+Annals of Regional Science}, \emph{54}(2), 417--436.
+
+\leavevmode\hypertarget{ref-friedman2002stochastic}{}%
+Friedman, J. H. (2002). Stochastic gradient boosting.
+\emph{Computational Statistics \& Data Analysis}, \emph{38}(4),
+367--378.
+
+\leavevmode\hypertarget{ref-Fu2014}{}%
+Fu, Y., Xiong, H., Ge, Y., Yao, Z., Zheng, Y., \& Zhou, Z.-H. (2014).
+Exploiting geographic dependencies for real estate appraisal: A mutual
+perspective of ranking and clustering. In \emph{Proceedings of the 20th
+acm sigkdd international conference on knowledge discovery and data
+mining} (pp. 1047--1056). ACM.
+
+\leavevmode\hypertarget{ref-Geltner2017}{}%
+Geltner, D., \& Van de Minne, A. (2017). Do different price points
+exhibit different investment risk and return commercial real estate.
+
+\leavevmode\hypertarget{ref-glass1964}{}%
+Glass, R. (1964). \emph{Aspects of change}. London: MacGibbon \& Kee,
+1964.
 
 \leavevmode\hypertarget{ref-urban2016}{}%
-Solomon Greene, Molly Scott, Rolf Pendall, and Serena Lei. 2016. ``Open
-Cities: From Economic Exclusion to Urban Inclusion.'' \emph{Urban
-Institue Brief}. Urban Institue Brief.
+Greene, S., Pendall, R., Scott, M., \& Lei, S. (2016). Open cities: From
+economic exclusion to urban inclusion. \emph{Urban Institue Brief}.
+
+\leavevmode\hypertarget{ref-Guan2014}{}%
+Guan, J., Shi, D., Zurada, J., \& Levitan, A. (2014). Analyzing massive
+data sets: An adaptive fuzzy neural approach for prediction, with a real
+estate illustration. \emph{Journal of Organizational Computing and
+Electronic Commerce}, \emph{24}(1), 94--112.
+
+\leavevmode\hypertarget{ref-hastie01statisticallearning}{}%
+Hastie, T., Tibshirani, R., \& Friedman, J. (2001). \emph{The elements
+of statistical learning}. New York, NY, USA: Springer New York Inc.
+
+\leavevmode\hypertarget{ref-Helbich2013}{}%
+Helbich, M., Jochem, A., Mücke, W., \& Höfle, B. (2013). Boosting the
+predictive accuracy of urban hedonic house price models through airborne
+laser scanning. \emph{Computers, Environment and Urban Systems},
+\emph{39}, 81--92.
+
+\leavevmode\hypertarget{ref-hoffmann2004generalized}{}%
+Hoffmann, J. P. (2004). \emph{Generalized linear models: An applied
+approach}. Pearson College Division.
+
+\leavevmode\hypertarget{ref-Johnson2007}{}%
+Johnson, K., Benefield, J., \& Wiley, J. (2007). The probability of sale
+for residential real estate. \emph{Journal of Housing Research},
+\emph{16}(2), 131--142.
+
+\leavevmode\hypertarget{ref-Silverherz1936}{}%
+Joseph, D. S. (n.d.). The assessment of real property in the united
+states. \emph{Special Report of the State Tax Commission, New York},
+(10).
+
+\leavevmode\hypertarget{ref-Kontrimasa2011}{}%
+Kontrimas, V., \& Verikas, A. (2011). The mass appraisal of the real
+estate by computational intelligence. \emph{Applied Soft Computing},
+\emph{11}(1), 443--448.
+
+\leavevmode\hypertarget{ref-Koschinsky2012}{}%
+Koschinsky, J., Lozano-Gracia, N., \& Piras, G. (2012). The welfare
+benefit of a home's location: An empirical comparison of spatial and
+non-spatial model estimates. \emph{Journal of Geographical Systems},
+\emph{14}(3), 319--356.
+
+\leavevmode\hypertarget{ref-Lees2008}{}%
+Lees, L., Slater, T., \& Wyly, E. (2013). \emph{Gentrification}.
+Routledge.
+
+\leavevmode\hypertarget{ref-Miller2015}{}%
+Miller, J., Franklin, J., \& Aspinall, R. (2007). Incorporating spatial
+dependence in predictive vegetation models. \emph{Ecological Modelling},
+\emph{202}(3), 225--242.
+
+\leavevmode\hypertarget{ref-Park2015}{}%
+Park, B., \& Bae, J. K. (2015). Using machine learning algorithms for
+housing price prediction: The case of fairfax county, virginia housing
+data. \emph{Expert Systems with Applications}, \emph{42}(6), 2928--2934.
+
+\leavevmode\hypertarget{ref-Pivo2011}{}%
+Pivo, G., \& Fisher, J. D. (2011). The walkability premium in commercial
+real estate investments. \emph{Real Estate Economics}, \emph{39}(2),
+185--219.
+
+\leavevmode\hypertarget{ref-Pollack2010}{}%
+Pollack, S., Bluestone, B., \& Billingham, C. (2010). Maintaining
+diversity in america's transit-rich neighborhoods: Tools for equitable
+neighborhood change.
+
+\leavevmode\hypertarget{ref-Rafiei2016}{}%
+Rafiei, M. H., \& Adeli, H. (2015). A novel machine learning model for
+estimation of sale prices of real estate units. \emph{Journal of
+Construction Engineering and Management}, \emph{142}(2), 04015066.
+
+\leavevmode\hypertarget{ref-Reardon2011}{}%
+Reardon, S. F., \& Bischoff, K. (2011). Income inequality and income
+segregation. \emph{American Journal of Sociology}, \emph{116}(4),
+1092--1153.
+
+\leavevmode\hypertarget{ref-Ritter2013}{}%
+Ritter, N. (2013). Predicting recidivism risk: New tool in philadelphia
+shows great promise. \emph{National Institute of Justice Journal},
+\emph{271}.
+
+\leavevmode\hypertarget{ref-Schernthanner2016}{}%
+Schernthanner, H., Asche, H., Gonschorek, J., \& Scheele, L. (2016).
+Spatial modeling and geovisualization of rental prices for real estate
+portals. \emph{Computational Science and Its Applications}, \emph{9788}.
+
+\leavevmode\hypertarget{ref-SCHMIDHUBER201585}{}%
+Schmidhuber, J. (2015). Deep learning in neural networks: An overview.
+\emph{Neural Networks}, \emph{61}, 85--117.
+\url{https://doi.org/https://doi.org/10.1016/j.neunet.2014.09.003}
+
+\leavevmode\hypertarget{ref-Smith1979}{}%
+Smith, N. (1979). Toward a theory of gentrification a back to the city
+movement by capital, not people. \emph{Journal of the American Planning
+Association}, \emph{45}(4), 538--548.
 
 \leavevmode\hypertarget{ref-Turner2001}{}%
-Turner, Margery Austin, and Christopher Snow. 2001. \emph{Leading
-Indicators of Gentrification in D.c. Neighborhoods}.
+Turner, M. A. (2001). Leading indicators of gentrification in dc
+neighborhoods: DC policy forum.
 
 \leavevmode\hypertarget{ref-Watson2009}{}%
-Watson, Tara. 2009. ``Inequality and the Measurement of Residential
-Segregation by Income in American Neighborhoods.'' \emph{Review of
-Income and Wealth}.
+Watson, T. (2009). Inequality and the measurement of residential
+segregation by income in american neighborhoods. \emph{Review of Income
+and Wealth}, \emph{55}(3), 820--844.
 
 \leavevmode\hypertarget{ref-Zuk2015}{}%
-Zuk, Miriam; et al. 2015. ``Gentrification, Displacement and the Role of
-Public Investment: A Literature Review.''
+Zuk, M., Bierbaum, A. H., Chapple, K., Gorska, K., Loukaitou-Sideris,
+A., Ong, P., \& Thomas, T. (2015). Gentrification, displacement and the
+role of public investment: A literature review. In \emph{Federal reserve
+bank of san francisco} (Vol. 79).
 
 
 \end{document}

@@ -7,11 +7,11 @@ output: pdf_document
 \titlepage
 \center
 \vspace{4 cm}
-\LARGE
+\normalsize
 \bf 
-The Spatially-Conscious Machine Learning Model  
+The Spatially-Conscious Machine Learning Model:  
 
-\Large
+\normalsize
 Leveraging Spatial Analysis to Boost the Accuracy of Real Estate Sales Predictions
 
 \rm

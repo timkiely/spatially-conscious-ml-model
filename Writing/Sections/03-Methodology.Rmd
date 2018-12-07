@@ -19,13 +19,13 @@ suppressPackageStartupMessages(library(kableExtra))
 Our goal was to compare "spatially-conscious" machine learning predictive models to traditional feature engineering techniques. To accomplish this comparison, we created three separate modeling datasets: 
 
 - **Base modeling data:** includes building characteristics such as size, taxable value, usage, and others
-- **Zip Code modeling data:** includes the base data as well as aggregations of data at the zip-code level
-- **Spatial Lag modeling data:** includes the base data as well as aggregations of data within 500-meters of each building
+- **Zip code modeling data:** includes the base data as well as aggregations of data at the zip-code level
+- **Spatial lag modeling data:** includes the base data as well as aggregations of data within 500-meters of each building
 
 \noindent The second and third modeling datasets are incremental variations of the first, using competing feature engineering techniques to extract additional predictive power from the data. We combined three open-source data repositories provided by New York City via [nyc.gov](nyc.gov) and [data.cityofnewyork.us](data.cityofnewyork.us). Our base modeling dataset included all building records and associated sales information from 2003-2017. For each of the three modeling datasets, we also compared two predictive modeling tasks, using a different dependent variable for each: 
 
-1) **Classification task: Probability of Sale** The probability that a given property will sell in a given year (0,1)
-2) **Regression task: Sale Price per square foot** Given that a property sells, how much is the sale price per square foot? ($/SF)
+1) **Classification task: probability of sale** The probability that a given property will sell in a given year (0,1)
+2) **Regression task: sale-price-per-square-foot** Given that a property sells, how much is the sale price per square foot? ($/SF)
 
 \noindent Table \ref{tab:modeltable} shows the six distinct modeling task/data combinations. 
 
@@ -34,11 +34,11 @@ tribble(
   ~`#`, ~Model, ~`Model Task`, ~Data, ~`Outcome Var`, ~`Outcome Type`, ~`Eval Metric`
   , 1, "Probability of Sale", "Classification", "Base", "Building Sold", "Binary", "AUC"
   , 2, "Probability of Sale", "Classification", "Zip Code", "Building Sold", "Binary", "AUC"
-  , 3, "Probability of Sale", "Classification", "Spatial Lags", "Building Sold", "Binary", "AUC"
+  , 3, "Probability of Sale", "Classification", "Spatial Lag", "Building Sold", "Binary", "AUC"
   
-  , 4, "Sale Price", "Regression", "Base", "Sale Price per SF", "Continuous", "RMSE"
-  , 5, "Sale Price", "Regression", "Zip Code", "Sale Price per SF", "Continuous", "RMSE"
-  , 6, "Sale Price", "Regression", "Spatial Lag", "Sale Price per SF", "Continuous", "RMSE"
+  , 4, "Sale Price", "Regression", "Base", "Sale-Price-per-SF", "Continuous", "RMSE"
+  , 5, "Sale Price", "Regression", "Zip Code", "Sale-Price-per-SF", "Continuous", "RMSE"
+  , 6, "Sale Price", "Regression", "Spatial Lag", "Sale-Price-per-SF", "Continuous", "RMSE"
   ) %>% my_kable(caption = "Six Predictive Models", label =  "modeltable")
 ```
 
@@ -100,7 +100,7 @@ read_csv("tables and figures/desc_table.csv") %>%
 ```
 
 
-### Global filtering of the data
+### Global Filtering of the Data
 
 We only included building categories of significant interest in our initial modeling data. Generally speaking, by significant interest we are referring to building types that are regularly bought and sold on the free market. These include residences, office buildings and industrial buildings, and exclude things like government-owned buildings and hospitals. We also excluded hotels as they tend to be comparatively rare in the data and exhibit unique sales characteristics. The included building types are displayed in Table \ref{tab:categoryTable}.
 
@@ -187,12 +187,12 @@ readr::read_rds("tables and figures/table1.rds") %>%
 
 
 
-Importantly, two variables were created from the Sale Prices: A price-per-square-foot-figure ("Sale_Price") and a total Sale Price ("Sale_Price_Total"). Sale Price per square foot eventually became the outcome variable in one of the predictive models. We then create a feature to carry forward the previous sale price of a tax lot, if there was one, through successive years. Previous Sale Price was then used to create Simple Moving Averages (SMA), Exponential Moving Averages (EMA), and percent change measurements between the moving averages. In total, 69 variables were input to the feature engineering process and 92 variables were output. The final base modeling dataset was 92 variables by 8,247,499 rows. 
+Importantly, two variables were created from the sale prices: A price-per-square-foot-figure ("Sale_Price") and a total sale price ("Sale_Price_Total"). Sale-price-per-square-foot eventually became the outcome variable in one of the predictive models. We then created a feature to carry forward the previous sale price of a tax lot, if there was one, through successive years. The previous sale price was then used to create simple moving averages (SMA), exponential moving averages (EMA), and percent change measurements between the moving averages. In total, 69 variables were input to the feature engineering process and 92 variables were output. The final base modeling dataset was 92 variables by 8,247,499 rows. 
 
 
 ### Zip Code Modeling Data
 
-The first of the two comparative modeling datasets was the Zip Code modeling data. Using the base data as a starting point, several features were generated to describe characteristics of the Zip Code where each tax lot resides. A summary table of the Zip Code level features is presented in \ref{tab:zipcodemodelfeats}. 
+The first of the two comparative modeling datasets was the zip code modeling data. Using the base data as a starting point, several features were generated to describe characteristics of the zip code where each tax lot resides. A summary table of the zip code level features is presented in \ref{tab:zipcodemodelfeats}. 
 
 
 ```{r Table 2, fig.cap= "Zip Code Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -204,16 +204,16 @@ my_kable(caption = "Zip Code Modeling Data Features", label = "zipcodemodelfeats
 
 ```
 
-In general, the base model data features were aggregated to a Zip Code level and appended, including the SMA, EMA and percent change calculations. Additionally, a second set of features were added, denoted as "bt_only", which aggregated the data in a similar fashion but only included tax lots of the same building type in the calculations. In total, the Zip Code feature engineering process input 92 variables and output 122 variables. 
+In general, the base model data features were aggregated to a zip code level and appended, including the SMA, EMA and percent change calculations. Additionally, a second set of features were added, denoted as "bt_only", which aggregated the data in a similar fashion but only included tax lots of the same building type in the calculations. In total, the zip code feature engineering process input 92 variables and output 122 variables. 
 
 
 ### Spatial Lag Modeling Data
 
-Spatial lags are variables created from physically proximate observations. For example, calculating the average age of all buildings within 100 meters of a tax lot constitutes a spatial lag. Creating spatial lags presents both advantages and disadvantages in the modeling process. Spatial lags allow for much more fine-tuned measurements of a building's surrounding area. Intuitively, knowing the average sale price of all buildings within 500 meters of a building can be more informative than knowing the sale prices of all buildings in the same Zip Code. However, creating spatial lags is computationally expensive. In addition, it can be challenging to set a proper radius for the spatial lag calculation; in a city, 500 meters may be appropriate (for certain building types), whereas several kilometers or more may be  appropriate for less densely populated areas. In this paper, we present a solution for the computational challenges and suggest a potential approach to solving the radius-choice problem.
+Spatial lags are variables created from physically proximate observations. For example, calculating the average age of all buildings within 100 meters of a tax lot constitutes a spatial lag. Creating spatial lags presents both advantages and disadvantages in the modeling process. Spatial lags allow for much more fine-tuned measurements of a building's surrounding area. Intuitively, knowing the average sale price of all buildings within 500 meters of a building can be more informative than knowing the sale prices of all buildings in the same zip code. However, creating spatial lags is computationally expensive. In addition, it can be challenging to set a proper radius for the spatial lag calculation; in a city, 500 meters may be appropriate (for certain building types), whereas several kilometers or more may be  appropriate for less densely populated areas. In this paper, we present a solution for the computational challenges and suggest a potential approach to solving the radius-choice problem.
 
 #### Creating the Point-Neighbor Relational Graph
 
-To build our spatial lags, for each point in the data, we must identify which of all other points in the data fall within a specified radius. This neighbor identification process requires iteratively running point-in-polygon operations, i.e., "given polygon P and an arbitrary point q, determine whether point q is enclosed by the edges of the polygon" [@Huang1996]. This process is conceptually illustrated in figure \ref{fig:Spatial Lag Feataure Process}. 
+To build our spatial lags, for each point in the data, we must identify which of all other points in the data fall within a specified radius. This neighbor identification process requires iteratively running point-in-polygon operations. This process is conceptually illustrated in figure \ref{fig:Spatial Lag Feataure Process}. 
 
 ```{r Spatial Lag Feataure Process, fig.cap="Spatial Lag Feature Creation Process",  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
 knitr::include_graphics("Sections/tables and figures/Spatial Lag Creation.png")
@@ -263,7 +263,7 @@ knitr::include_graphics("Sections/tables and figures/Example Spatial Indexing Te
 
 Once we contructed the point-neighbor relational graph, we then used the graph to aggregate the data into spatial lag variables. One advantage of using spatial lags is the abundant number of potential features which can be engineered. Spatial lags can be weighted based on a distance function, e.g., physically closer observations can be given more weight. For our modeling purposes, we created two sets of features: inverse-distance weighted features (denoted with a "_dist" in Table \ref{tab:SpLAgFeats}) and simple average features (denoted with "_basic" in Table \ref{tab:SpLAgFeats}). 
 
-Temporal and spatial derivatives of the Spatial Lag features, presented in Table \ref{tab:SpLAgFeats}, were also added to the model, including: variables weighted by Euclidean distance ("dist"), basic averages of the spatial lag radius ("basic mean"), SMA for 2 years, 3 years and 5 years, EMA for 2 years, 3 years and 5 years, and year-over-year percent changes for all variables ("perc change"). In total, the spatial lag feature engineering process input 92 variables and output 194 variables.
+Temporal and spatial derivatives of the spatial lag features, presented in Table \ref{tab:SpLAgFeats}, were also added to the model, including: variables weighted by Euclidean distance ("dist"), basic averages of the spatial lag radius ("basic mean"), SMA for 2 years, 3 years and 5 years, EMA for 2 years, 3 years and 5 years, and year-over-year percent changes for all variables ("perc change"). In total, the spatial lag feature engineering process input 92 variables and output 194 variables.
 
 ```{r SpLagFeats, fig.cap= "Spatial Lag Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, out.width = '100%'}
 
@@ -279,7 +279,7 @@ readr::read_rds("tables and figures/table3.rds") %>%
 The final step in creating the modeling data was to define the dependent variables reflective of the prediction tasks; a binary variable for classification and a continuous variable for regression:
 
 1) **Binary: Sold** whether a tax lot sold in a given year. Used in the Probability of Sale classification model.
-2) **Continuous: Sale Price per SF** The price-per-square-foot associated with a transaction, if a sale took place. Used in the Sale Price Regression model. 
+2) **Continuous: Sale-Price-per-SF** The price-per-square-foot associated with a transaction, if a sale took place. Used in the Sale Price Regression model. 
 
 \noindent Table \ref{tab:OutcomeDistro} describes the distributions of both outcome variables.
 
@@ -296,11 +296,11 @@ The final step in creating the modeling data was to define the dependent variabl
 
 ## Algorithms Comparison
 
-We implemented and compared several algorithms across our two-stage process. In Stage 1, the Random Forest algorithm was used to identify the optimal subset of building types and geographies for our spatial lag aggregation assumptions. In Stage 2, we analyzed the hold-out test performance of several algorithms including Random Forest, Generalized Linear Model (GLM), Gradient Boosting Machine (GBM), and Feed-Forward Artificial Neural Network (ANN). Each algorithm was run over the three competing feature engineering datasets and for both the classification and regression tasks. 
+We implemented and compared several algorithms across our two-stage process. In Stage 1, the Random Forest algorithm was used to identify the optimal subset of building types and geographies for our spatial lag aggregation assumptions. In Stage 2, we analyzed the hold-out test performance of several algorithms including Random Forest, generalized linear model (GLM), gradient boosting machine (GBM), and feed-forward artificial neural network (ANN). Each algorithm was run over the three competing feature engineering datasets and for both the classification and regression tasks. 
 
 ### Random Forest
 
-Leo Breiman proposed the Random Forest concept in 2001 as an ensemble of prediction decision trees iteratively trained across randomly generated subsets of data [@breiman2001random]. Algorithm \ref{alg:RandomForestAlo} outlines the procedure [@hastie01statisticallearning]. 
+Random Forest was proposed by Breiman @breiman2001random as an ensemble of prediction decision trees iteratively trained across randomly generated subsets of data. Algorithm \ref{alg:RandomForestAlo} outlines the procedure [@hastie01statisticallearning]. 
 
 
 \begin{algorithm}
@@ -328,16 +328,16 @@ To make a prediction at a new point $x$:
 
 \end{algorithm}
 
-Previous works (see: @antipov12; also @Schernthanner2016) have found the Random Forest algorithm suitable to prediction tasks involving real estate. While algorithms exist that may outperform Random Forest in terms of predictive accuracy (such as neural networks and functional gradient descent algorithms), Random Forest is highly scalable and parallelizable, and is therefore an attractive choice for quickly assessing the predictive power of different feature engineering techniques. For these reasons and more outlined below, we selected Random Forest as the primary algorithm for Stage 1 of our modeling process.
+Previous works have found the Random Forest algorithm suitable to prediction tasks involving real estate [@antipov12; @Schernthanner2016]. While algorithms exist that may outperform Random Forest in terms of predictive accuracy (such as neural networks and functional gradient descent algorithms), Random Forest is highly scalable and parallelizable, and is therefore an attractive choice for quickly assessing the predictive power of different feature engineering techniques. For these reasons and more outlined below, we selected Random Forest as the primary algorithm for Stage 1 of our modeling process.
 
-Random Forest, like all predictive algorithms used in this paper, suits both classification and regression tasks. The Random Forest algorithm works by generating a large number of independent classification or regression decision trees and then employing  majority voting (for classification) or averaging (for regression) to generate predictions. Over a dataset of N rows by M predictors, a bootstrap sample of the data is chosen (n < N) as well as a subset of the predictors (m < M). Individual decision/regression trees are built on the n by m sample. Because the trees develop independently (and not sequentially, as is the case with most functional gradient descent algorithms), the tree building process can be executed in parallel. With a sufficiently large number of computer cores, the model training time can be significantly reduced.
+Random Forest, like all predictive algorithms used in this work, suits both classification and regression tasks. The Random Forest algorithm works by generating a large number of independent classification or regression decision trees and then employing  majority voting (for classification) or averaging (for regression) to generate predictions. Over a dataset of N rows by M predictors, a bootstrap sample of the data is chosen (n < N) as well as a subset of the predictors (m < M). Individual decision/regression trees are built on the n by m sample. Because the trees develop independently (and not sequentially, as is the case with most functional gradient descent algorithms), the tree building process can be executed in parallel. With a sufficiently large number of computer cores, the model training time can be significantly reduced.
 
 We chose Random Forest as the algorithm for Stage 1 because: 
 
 1) The algorithm can be parallelized and is relatively fast compared to neural networks and functional gradient descent algorithms 
 2) Can accommodate categorical variables with many levels. Real estate data often contains information describing the location of the property, or the property itself, as one of a large set of possible choices, such as neighborhood, county, census tract, district, property type, and zoning information. Because factors need to be recoded as individual dummy variables in the model building process, factors with many levels will quickly encounter the curse of dimensionality in multiple regression techniques.
 3) Appropriately handles missing data. Predictions can be made with the parts of the tree which are successfully built, and therefore, there is no need to filter out incomplete observations or impute missing values. Since much real estate data is self-reported, incomplete fields are common in the data.
-4) Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, their influence is curtailed. Real estate data, especially with regards to pricing, tends to contain outliers. For example, the dependent variable in one of our models, Sale Price, shows a clear divergence in median and mean, as well as a maximum significantly higher than the third quartile.
+4) Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, their influence is curtailed. Real estate data, especially with regards to pricing, tends to contain outliers. For example, the dependent variable in one of our models, sale price, shows a clear divergence in median and mean, as well as a maximum significantly higher than the third quartile.
 5) Can recognize non-linear relationships in data, which is useful when modeling spatial relationships. 
 6) Is not affected by co-linearity in the data. This is highly valuable as real estate data can be highly correlated. 
 
@@ -356,7 +356,7 @@ Several family types of GLM's exist. For a binary independent variable, a binomi
 
 ### Gradient Boosting Machine
 
-Gradient Boosting Machine (GBM) is one of the most popular machine learning algorithms available today. The algorithm uses iteratively refined approximations, obtained through cross-validation, to incrementally increase predictive accuracy. Similar to Random Forest, GBM is well-suited to using regression trees as the base learner. Gradient boosting constructs additive regression models by sequentially fitting a simple parameterized function (a "base learner," in our case, a regression tree) to "pseudo"-residuals by least squares at each iteration [@friedman2002stochastic]. The pseudo-residuals are the gradient of the loss function being minimized, with respect to the model values at each training data point evaluated at the current step. The tree-variant of the generic Gradient Boosting Algorithm is outlined in algorithm \ref{alg:GBMAlo} [@hastie01statisticallearning].
+Gradient Boosting Machine (GBM) is one of the most popular machine learning algorithms available today. The algorithm uses iteratively refined approximations, obtained through cross-validation, to incrementally increase predictive accuracy. Similar to Random Forest, GBM is well-suited to using regression trees as the base learner. Gradient boosting constructs additive regression models by sequentially fitting a simple parameterized function (a _base learner_, in our case, a regression tree) to pseudo-residuals by least squares at each iteration [@friedman2002stochastic]. The pseudo-residuals are the gradient of the loss function being minimized, with respect to the model values at each training data point evaluated at the current step. The tree-variant of the generic gradient boosting algorithm is outlined in algorithm \ref{alg:GBMAlo} [@hastie01statisticallearning].
 
 
 \begin{algorithm}
@@ -385,7 +385,7 @@ Gradient Boosting Machine (GBM) is one of the most popular machine learning algo
 
 ### Feed-Forward Artificial Neural Network
 
-The Artificial Neural Network (ANN) implementation used in this paper is a multi-layer feed-forward artificial neural network trained with stochastic gradient descent using back-propagation. Common synonyms for an ANN model are "multi-layer perceptron" and "deep neural network." The feed-forward ANN is one of the most common neural network algorithms, but other types exist, such as the Convolutional Neural Network (CNN) which performs well on image classification tasks, and the Recurrent Neural Network (RNN) which is well-suited for sequential data such as text and audio [@SCHMIDHUBER201585]. The feed-forward ANN is typically best suited for tabular data. 
+The artificial neural network (ANN) implementation used in this work is a multi-layer feed-forward artificial neural network trained with stochastic gradient descent using back-propagation. Common synonyms for an ANN model are multi-layer perceptron and also deep neural network. The feed-forward ANN is one of the most common neural network algorithms, but other types exist, such as the convolutional neural network (CNN) which performs well on image classification tasks, and the recurrent neural network (RNN) which is well-suited for sequential data such as text and audio [@SCHMIDHUBER201585]. The feed-forward ANN is typically best suited for tabular data. 
 
 The neural network model has unknown parameters, often called weights, and we seek values for them that make the model fit the training data well [@hastie01statisticallearning]. We denote the complete set of weights by $\theta$, which consists of $\{\alpha_{0m},\alpha_m;m=1,2,...,M\} M(p+1)$ weights and $\{\beta_{0k},\beta_k;k=1,2,...,K\} K(p+1)$ weights. 
 

@@ -65,8 +65,8 @@ knitr::include_graphics("Sections/tables and figures/RMSE by boro and build type
 Figure \ref{fig:RMSE by boro and build type} displays test RMSE by model, faceted by borough on the y-axis and building type on the x-axis (See Table \ref{tab:categoryTable} and Table \ref{tab:by_class} for a description of building type codes). We make the following observations from Figure \ref{fig:RMSE by boro and build type}:
 
 - The spatial modeling data outperforms both base and zip code in 6 cases, notably for type A buildings (one family dwellings) and type L buildings (lofts) in Manhattan as well as type O buildings (offices) in Queens
-- The "residential" building types A (one-family dwellings), B (two-family dwellings), C (walk up apartments) and D (elevator apartments) have generally lower RMSE scores compared to the non-residential types
-- Spatial features perform best in Brooklyn, Bronx and Manhattan and for residential building types
+- The "residential" building types A (one-family dwellings), B (two-family dwellings), C (walk up apartments) and D (elevator apartments) have lower RMSE scores compared to the non-residential types
+- Spatial features perform best in Brooklyn, the Bronx, and Manhattan and for residential building types
 
 
 ### Probability of Sale Classification Models
@@ -85,7 +85,7 @@ Figure \ref{fig:AUC by boro and build type} shows a breakdown of model AUC facet
 
 - The spatial models outperform all other models for elevator buildings (type D) and walk up apartments (type C), particularly in Brooklyn, the Bronx, and Manhattan
 - Classification tends to perform poorly in Manhattan vs. other Boroughs
-- The spatial models perform well in Manhattan for the residential building types (A, B, C and D)
+- The spatial models perform well in Manhattan for the residential building types (A, B, C, and D)
 
 
 ```{r AUC by boro and build type, echo=FALSE, fig.cap="AUC By Borough and Building Type", message=FALSE, warning=FALSE, out.width='100%', paged.print=FALSE}
@@ -117,7 +117,7 @@ Using the results from the first modeling exercise, we conclude that walk up apa
 
 ### Regression Model Comparisons
 
-The predictive accuracy of the various regression models were evaluated using RMSE, described in detail in the methodology section, as well as Mean Absolute Error (MAE), Mean Squared Error (MSE) and R-Squared. These four indicators were calculated using the hold-out test data, which ensured that the models performed well when predicting sale prices into the near future. The comparison metrics are presented in Table \ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}. We make the following observations about Table \ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}: 
+The predictive accuracies of the various regression models were evaluated using RMSE, described in detail in the methodology section, as well as Mean Absolute Error (MAE), Mean Squared Error (MSE) and R-Squared. These four indicators were calculated using the hold-out test data, which ensured that the models performed well when predicting sale prices into the near future. The comparison metrics are presented in Table \ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}. We make the following observations about Table \ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}: 
 
 1) The ANN models perform best in nearly every metric across nearly all feature sets, with GBM a close second in some circumstances
 2) ANN and GLM improve linearly in all metrics as you move from base to zip to spatial, with spatial performing the best. GBM and Random Forest, on the other hand, perform best on the base and spatial feature sets and poorly on the zip features 
@@ -219,7 +219,7 @@ read.csv("tables and figures/classification_feat_impo_w_descr.csv"
 
 We observe that the regression model has a much higher dispersion of feature importances compared to the classification model. The top variable in the regression model, BuiltFAR, which is a measure of how much of a building's floor to area ratio has been used (a proxy for overall building size) contributes only 1.8% of the reduction in the error rate in the overall model. Conversely, in the classification model, we see the top variable, "Percent_Neighbors_Sold" (a measure of how many buildings within 500 meters were sold in the past year) contributes 21.9% of the total reduction in squared error. 
 
-Variable importance analysis of the regression model indicates that the model favors variables which reflect building size (BuiltFAR, FacilFAR, BldgDepth) as well as approximations for previous sale prices (Last_Sale_Price and Last_Sale_Date). The classification model tends to favor spatial lag features, such as how many buildings were sold in the past year within 500 meters (Percent_Neighbors_Sold and Radius_Res_Units_Sold_In_Year) as well as characteristics of the building function (Percent_Office, Percent_Storage, etc.). 
+Variable importance analysis of the regression model indicates that the model favors variables which reflect building size (BuiltFAR, FacilFAR, BldgDepth) as well as approximations for previous sale prices (Last_Sale_Price and Last_Sale_Date). The classification model tends to favor spatial lag features, such as how many buildings were sold in the past year within 500 meters (Percent_Neighbors_Sold and Radius_Res_Units_Sold_In_Year) as well as characteristics of the building function, for example, Percent_Office, and Percent_Storage. 
 
 
 

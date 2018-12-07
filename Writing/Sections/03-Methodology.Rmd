@@ -1,9 +1,10 @@
 ---
 title: "Data and Methodology"
-output: pdf_document
+header-includes: \usepackage{amsmath}
+output:
+  word_document: default
+  pdf_document: default
 bibliography: bib/bibliography.bib
-header-includes:
-  - \usepackage{amsmath}
 ---
 
 ```{r method load package, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -73,7 +74,7 @@ Ultimately, we were interested in both the occurrence and the amount of real est
 
 [^2]: http://www1.nyc.gov/site/finance/taxes/property-annualized-sales-update.page
 
-Prior to mapping to PLUTO, we first had to transform the sales data to include the proper mapping key. New York City uses a standard key of Borough-Block-Lot to identify tax lots in the data. For example, 31 West 27th Street is located in Manhattan, on block 829 and lot 16, therefore, its Borough-Block-Lot (BBL) is 1_829_16 (the 1 represents Manhattan). The sales data contains BBL's at the building level, however, the sales transactions data does not appropriately designate condos as their own BBL's. Mapping the sales data directly to the PLUTO data results in a mapping error rate of 23.1% (mainly due to condos). Therefore, the sales transactions data must first be mapped to another data source, the NYC Property Address Directory, or [PAD](https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data)[^3], which contains an exhaustive list of all BBL's in NYC. After combining the sales data with PAD, the data can then be mapped to PLUTO with an error rate of 0.291% (See: Figure \ref{fig:Data Schema}).
+Prior to mapping to PLUTO, we first had to transform the sales data to include the proper mapping key. New York City uses a standard key of Borough-Block-Lot to identify tax lots in the data. For example, 31 West 27th Street is located in Manhattan, on block 829 and lot 16; therefore, its Borough-Block-Lot (BBL) is 1_829_16 (the 1 represents Manhattan). The sales data contain BBL's at the building level; however, the sales transactions data does not appropriately designate condos as their own BBL's. Mapping the sales data directly to the PLUTO data results in a mapping error rate of 23.1% (mainly due to condos). Therefore, the sales transactions data must first be mapped to another data source, the NYC Property Address Directory, or [PAD](https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data)[^3], which contains an exhaustive list of all BBL's in NYC. After combining the sales data with PAD, the data can then be mapped to PLUTO with an error rate of 0.291% (See: Figure \ref{fig:Data Schema}).
 
 [^3]: https://data.cityofnewyork.us/City-Government/Property-Address-Directory/bc8t-ecyu/data
 
@@ -82,7 +83,7 @@ Prior to mapping to PLUTO, we first had to transform the sales data to include t
 knitr::include_graphics("Sections/tables and figures/Data Schema.png")
 ```
 
-After combining the Sales Transactions data with PAD and PLUTO, the resulting data were filtered so that only BBL's with less than or equal to 1 transactions in a year occur. The final dataset is an exhaustive list of all tax lots in NYC for every year between 2003-2017, whether that building was sold, for what amount, and several other additional variables. A description of all variables can be seen in Table \ref{tab:descripTable}.
+After combining the Sales Transactions data with PAD and PLUTO, we filtered the resulting data for BBL's with less than or equal to 1 transaction per year. The final dataset is an exhaustive list of all tax lots in NYC for every year between 2003-2017, whether that building was sold, for what amount, and several other additional variables. A description of all variables can be seen in Table \ref{tab:descripTable}.
 
 ```{r descripTable,  out.width = '100%', echo=FALSE, message=FALSE, warning=FALSE, eval = T}
 options(scipen = 999)
@@ -102,7 +103,7 @@ read_csv("tables and figures/desc_table.csv") %>%
 
 ### Global Filtering of the Data
 
-We only included building categories of significant interest in our initial modeling data. Generally speaking, by significant interest we are referring to building types that are regularly bought and sold on the free market. These include residences, office buildings and industrial buildings, and exclude things like government-owned buildings and hospitals. We also excluded hotels as they tend to be comparatively rare in the data and exhibit unique sales characteristics. The included building types are displayed in Table \ref{tab:categoryTable}.
+We only included building categories of significant interest in our initial modeling data. Generally speaking, by significant interest we are referring to building types that are regularly bought and sold on the free market. These include residences, office buildings, and industrial buildings, and exclude things like government-owned buildings and hospitals. We also excluded hotels as they tend to be comparatively rare in the data and exhibit unique sales characteristics. The included building types are displayed in Table \ref{tab:categoryTable}.
 
 ```{r echo=FALSE, fig.cap= "Building Types Included in Modeling Data", message=FALSE, warning=FALSE, paged.print=FALSE}
 
@@ -174,7 +175,7 @@ by_bt_boro_num_sales %>%
 
 ### Base Modeling Data
 
-The base modeling dataset was constructed by combining several open-source data repositories, outlined in the Data Sources section. In addition to the data provided by New York City, several additional features were engineered and appended to the base data. A summary table of the additional features is presented in Table \ref{tab:baseModelDataFeats}. A binary variable was created to indicate whether a tax lot had a building on it (i.e., whether it was an empty plot of land). In addition, building types were quantified by what percent of their square footage belonged to the major property types: Commercial, Residential, Office, Retail, Garage, Storage, Factory and Other. 
+We constructed the base modeling dataset by combining several open-source data repositories, outlined in the Data Sources section. In addition to the data provided by New York City, several additional features were engineered and appended to the base data. A summary table of the additional features is presented in Table \ref{tab:baseModelDataFeats}. A binary variable was created to indicate whether a tax lot had a building on it (i.e., whether it was an empty plot of land). In addition, building types were quantified by what percent of their square footage belonged to the major property types: Commercial, Residential, Office, Retail, Garage, Storage, Factory and Other. 
 
 
 ```{r Table 1, fig.cap= "Base Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -187,12 +188,12 @@ readr::read_rds("tables and figures/table1.rds") %>%
 
 
 
-Importantly, two variables were created from the sale prices: A price-per-square-foot-figure ("Sale_Price") and a total sale price ("Sale_Price_Total"). Sale-price-per-square-foot eventually became the outcome variable in one of the predictive models. We then created a feature to carry forward the previous sale price of a tax lot, if there was one, through successive years. The previous sale price was then used to create simple moving averages (SMA), exponential moving averages (EMA), and percent change measurements between the moving averages. In total, 69 variables were input to the feature engineering process and 92 variables were output. The final base modeling dataset was 92 variables by 8,247,499 rows. 
+Importantly, we created two variables from the sale prices: A price-per-square-foot-figure (Sale_Price) and a total sale price (Sale_Price_Total). Sale-price-per-square-foot eventually became the outcome variable in the regression modeling tasks. We then created a feature to carry forward the previous sale price of a tax lot, if there was one, through successive years. The previous sale price was then used to create simple moving averages (SMA), exponential moving averages (EMA), and percent change measurements between the moving averages. In total, 69 variables were input to the feature engineering process, and 92 variables were output. The final base modeling dataset was 92 variables by 8,247,499 rows. 
 
 
 ### Zip Code Modeling Data
 
-The first of the two comparative modeling datasets was the zip code modeling data. Using the base data as a starting point, several features were generated to describe characteristics of the zip code where each tax lot resides. A summary table of the zip code level features is presented in \ref{tab:zipcodemodelfeats}. 
+The first of the two comparative modeling datasets was the zip code modeling data. We aggregated the base data at a zip code level and then generated several features to describe the characteristics of where each tax lot resides. A summary table of the zip code level features is presented in \ref{tab:zipcodemodelfeats}. 
 
 
 ```{r Table 2, fig.cap= "Zip Code Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
@@ -204,12 +205,12 @@ my_kable(caption = "Zip Code Modeling Data Features", label = "zipcodemodelfeats
 
 ```
 
-In general, the base model data features were aggregated to a zip code level and appended, including the SMA, EMA and percent change calculations. Additionally, a second set of features were added, denoted as "bt_only", which aggregated the data in a similar fashion but only included tax lots of the same building type in the calculations. In total, the zip code feature engineering process input 92 variables and output 122 variables. 
+The base model data features were aggregated to a zip code level and appended, including the SMA, EMA and percent change calculations. We then added another set of features, denoted as "bt_only," which again aggregated the base features but only included tax lots of the same building type. In total, the zip code feature engineering process input 92 variables and output 122 variables. 
 
 
 ### Spatial Lag Modeling Data
 
-Spatial lags are variables created from physically proximate observations. For example, calculating the average age of all buildings within 100 meters of a tax lot constitutes a spatial lag. Creating spatial lags presents both advantages and disadvantages in the modeling process. Spatial lags allow for much more fine-tuned measurements of a building's surrounding area. Intuitively, knowing the average sale price of all buildings within 500 meters of a building can be more informative than knowing the sale prices of all buildings in the same zip code. However, creating spatial lags is computationally expensive. In addition, it can be challenging to set a proper radius for the spatial lag calculation; in a city, 500 meters may be appropriate (for certain building types), whereas several kilometers or more may be  appropriate for less densely populated areas. In this paper, we present a solution for the computational challenges and suggest a potential approach to solving the radius-choice problem.
+Spatial lags are variables created from physically proximate observations. For example, calculating the average age of all buildings within 100 meters of a tax lot constitutes a spatial lag. Creating spatial lags presents both advantages and disadvantages in the modeling process. Spatial lags allow for much more fine-tuned measurements of a building's surrounding area. Intuitively, knowing the average sale price of all buildings within 500 meters of a building can be more informative than knowing the sale prices of all buildings in the same zip code. However, creating spatial lags is computationally expensive. Additionally, it can be challenging to set a proper radius for the spatial lag calculation; in a city, 500 meters may be appropriate (for specific building types), whereas several kilometers or more may be  appropriate for less densely populated areas. In this paper, we present a solution for the computational challenges and suggest a potential approach to solving the radius-choice problem.
 
 #### Creating the Point-Neighbor Relational Graph
 
@@ -328,35 +329,37 @@ To make a prediction at a new point $x$:
 
 \end{algorithm}
 
-Previous works have found the Random Forest algorithm suitable to prediction tasks involving real estate [@antipov12; @Schernthanner2016]. While algorithms exist that may outperform Random Forest in terms of predictive accuracy (such as neural networks and functional gradient descent algorithms), Random Forest is highly scalable and parallelizable, and is therefore an attractive choice for quickly assessing the predictive power of different feature engineering techniques. For these reasons and more outlined below, we selected Random Forest as the primary algorithm for Stage 1 of our modeling process.
+Previous works have found the Random Forest algorithm suitable to prediction tasks involving real estate [@antipov12; @Schernthanner2016]. While algorithms exist that may outperform Random Forest in terms of predictive accuracy (such as neural networks and functional gradient descent algorithms), Random Forest is highly scalable and parallelizable, and is, therefore, an attractive choice for quickly assessing the predictive power of different feature engineering techniques. For these reasons and more outlined below, we selected Random Forest as the algorithm for Stage 1 of our modeling process.
 
 Random Forest, like all predictive algorithms used in this work, suits both classification and regression tasks. The Random Forest algorithm works by generating a large number of independent classification or regression decision trees and then employing  majority voting (for classification) or averaging (for regression) to generate predictions. Over a dataset of N rows by M predictors, a bootstrap sample of the data is chosen (n < N) as well as a subset of the predictors (m < M). Individual decision or regression trees are built on the n by m sample. Because the trees develop independently (and not sequentially, as is the case with most functional gradient descent algorithms), the tree building process can be executed in parallel. With a sufficiently large number of computer cores, the model training time can be significantly reduced.
 
 We chose Random Forest as the algorithm for Stage 1 because: 
 
 1) The algorithm can be parallelized and is relatively fast compared to neural networks and functional gradient descent algorithms 
-2) Can accommodate categorical variables with many levels. Real estate data often contains information describing the location of the property, or the property itself, as one of a large set of possible choices, such as neighborhood, county, census tract, district, property type, and zoning information. Because factors need to be recoded as individual dummy variables in the model building process, factors with many levels will quickly encounter the curse of dimensionality in multiple regression techniques.
+2) Can accommodate categorical variables with many levels. Real estate data often contains information describing the location of the property, or the property itself, as one of a large set of possible choices, such as neighborhood, county, census tract, district, property type, and zoning information. Because factors need to be recoded as individual dummy variables in the model building process, factors with many levels quickly encounter the curse of dimensionality in multiple regression techniques.
 3) Appropriately handles missing data. Predictions can be made with the parts of the tree which are successfully built, and therefore, there is no need to filter out incomplete observations or impute missing values. Since much real estate data is self-reported, incomplete fields are common in the data.
-4) Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, their influence is curtailed. Real estate data, especially with regards to pricing, tends to contain outliers. For example, the dependent variable in one of our models, sale price, shows a clear divergence in median and mean, as well as a maximum significantly higher than the third quartile.
+4) Robust against outliers. Because of bootstrap sampling, outliers appear in individual trees less often, and therefore, their influence is curtailed. Real estate data, especially with regards to pricing, tends to contain outliers. For example, the dependent variable in one of our models, sale price, shows a clear divergence in the median and mean, as well as a maximum significantly higher than the third quartile.
 5) Can recognize non-linear relationships in data, which is useful when modeling spatial relationships. 
 6) Is not affected by co-linearity in the data. This is highly valuable as real estate data can be highly correlated. 
 
-To run the model, we chose the h2o.randomForest implementation from the h2o R open source library. The h2o implementation of the Random Forest algorithm is particularly well-suited for high parallelization. For more information, see: [https://www.h2o.ai/](https://www.h2o.ai/).
+To run the model, we chose the h2o.randomForest implementation from the h2o R open source library. The h2o implementation of the Random Forest algorithm is particularly well-suited for high parallelization. For more information, see [https://www.h2o.ai/](https://www.h2o.ai/).
 
 
 ### Generalized Linear Model
 
-A generalized linear model (GLM) is an extension of the general linear model that estimates an independent variable $y$ as the linear combination of one or more predictor variables. A GLM is made up of a linear predictor taking the form $\eta_i = \beta_0+\beta_1x_{i1}+...+\beta_{p}x_{ip}$, a link function that describes how the mean, $E(Y_i)=\mu_i$ depends on the linear predictor, and a variance function that describes how the variance, var$(Y_i)$ depends on the mean [@hoffmann2004generalized]. The observed value of the dependent variable $y$ for observation $i$ $(i = 1, 2, ..., n)$ is modeled as a linear function of $(p - 1)$ independent variables $x1, x2,... ,xp-1$ as
+A generalized linear model (GLM) is an extension of the general linear model that estimates an independent variable $y$ as the linear combination of one or more predictor variables. The dependent variable $y$ for observation $i$ $(i = 1, 2, ..., n)$ is modeled as a linear function of $(p - 1)$ independent variables $x1, x2,... ,xp-1$ as
 
 $$
 y_i = \beta_0+\beta_1x_{i1}+...+\beta_{p-1}x_{i(p-1)}+e_i
 $$
 
+A GLM is composed of three primary parts: a linear model, a link function and a variance function. The linear model takes the form  $\eta_i = \beta_0+\beta_1x_{i1}+...+\beta_{p}x_{ip}$. The link function, $g(\mu)=\eta$ relates the mean to the linear model, and the variance function $Var(Y) = \phi V(\mu)$ relates the model variance to the mean [@turner_2008; @hoffmann2004generalized]. 
+
 Several family types of GLM's exist. For a binary independent variable, a binomial logistic regression is appropriate. For a continuous independent variable, the Gaussian or another distribution is appropriate. For our purposes, the Gaussian family is used for our regression task and binomial for the classification. 
 
 ### Gradient Boosting Machine
 
-Gradient boosting machine (GBM) is one of the most popular machine learning algorithms available today. The algorithm uses iteratively refined approximations, obtained through cross-validation, to incrementally increase predictive accuracy. Similar to Random Forest, GBM is well-suited to using regression trees as the base learner. Gradient boosting constructs additive regression models by sequentially fitting a simple parameterized function (a _base learner_, in our case, a regression tree) to pseudo-residuals by least squares at each iteration [@friedman2002stochastic]. The pseudo-residuals are the gradient of the loss function being minimized, with respect to the model values at each training data point evaluated at the current step. The tree-variant of the generic gradient boosting algorithm is outlined in algorithm \ref{alg:GBMAlo} [@hastie01statisticallearning].
+Gradient boosting machine (GBM) is one of the most popular machine learning algorithms available today. The algorithm uses iteratively refined approximations, obtained through cross-validation, to incrementally increase predictive accuracy. Similar to Random Forest, GBM is an ensemble technique that builds and averages many regression models together. Unlike Random Forest, GBM incrementally improves each successive iteration by following the gradient of the loss function at each step [@Friedman99stochasticgradient]. The algorithm we used, which is the tree-variant of the generic gradient boosting algorithm, is outlined in algorithm \ref{alg:GBMAlo} [@hastie01statisticallearning pg. 361].
 
 
 \begin{algorithm}
@@ -385,25 +388,18 @@ Gradient boosting machine (GBM) is one of the most popular machine learning algo
 
 ### Feed-Forward Artificial Neural Network
 
-The artificial neural network (ANN) implementation used in this work is a multi-layer feed-forward artificial neural network trained with stochastic gradient descent using back-propagation. Common synonyms for ANN models are multi-layer perceptrons and, more recently, deep neural networks. The feed-forward ANN is one of the most common neural network algorithms, but other types exist, such as the convolutional neural network (CNN) which performs well on image classification tasks, and the recurrent neural network (RNN) which is well-suited for sequential data such as text and audio [@SCHMIDHUBER201585]. The feed-forward ANN is typically best suited for tabular data. 
+The artificial neural network (ANN) implementation used in this work is a multi-layer feed-forward artificial neural network. Common synonyms for ANN models are multi-layer perceptrons and, more recently, deep neural networks. The feed-forward ANN is one of the most common neural network algorithms, but other types exist, such as the convolutional neural network (CNN) which performs well on image classification tasks, and the recurrent neural network (RNN) which is well-suited for sequential data such as text and audio [@SCHMIDHUBER201585]. The feed-forward ANN is typically best suited for tabular data. 
 
-The neural network model has unknown parameters, often called weights, and we seek values for them that make the model fit the training data well [@hastie01statisticallearning]. We denote the complete set of weights by $\theta$, which consists of $\{\alpha_{0m},\alpha_m;m=1,2,...,M\} M(p+1)$ weights and $\{\beta_{0k},\beta_k;k=1,2,...,K\} K(p+1)$ weights. 
+A neural network model is made up of an input layer made up of raw data, one or more hidden layers used for transformations, and an output layer. At each hidden layer, the input variables are combined using varying weights with all other input variables. The output from one hidden layer is then used as the input to the next layer, and so on. Tuning a neural network is the process of refining the weights to minimize a loss function and make the model fit the training data well [@hastie01statisticallearning]. 
 
-For both classification and regression, we use sum-of-squared errors as our measure of fit (error function)
+For both our classification and regression tasks, we use sum-of-squared errors as our error function, and we tune the set of weights $\theta$ to minimize: 
 
 $$
 R(\theta)=\sum_{k=1}^K\sum_{i=1}^N(y_{ik}-f_{k}(x_i))^2
 $$
-The generic approach to minimizing $R(\theta)$ is by gradient descent, called back-propagation in this setting [@hastie01statisticallearning]. Because of the compositional form of the model, the gradient can be derived using the chain rule for differentiation. This can be computed by a forward and backward sweep over the network, keeping track only of quantities local to each unit. Here is back-propagation in detail for squared error loss:
+A typical approach to minimizing $R(\theta)$ is by gradient descent, called back-propagation in this setting [@hastie01statisticallearning]. The algorithm iteratively tunes weighting values back and forth across the hidden layers in accordance with the gradient descent of the loss function until material improvement can no longer happen or the algorithm reaches a user-defined limit. 
 
-$$
-R(\theta) = \sum_{i=1}^NR_i
-$$
-$$
-\sum_{i=1}^N\sum_{k=1}^K(y_{ik}-f_{k}(x_i))^2
-$$
-
-For our implementations, we used the rectifier activation function with 1024 hidden layers, 100 epochs and L1 regularization set to 0.00001. The implementation we chose was the h2o.deeplearning open source R library. For more information, see: [https://www.h2o.ai/](https://www.h2o.ai/).
+For our implementation, we used the rectifier activation function with 1024 hidden layers, 100 epochs and L1 regularization set to 0.00001. The implementation we chose was the h2o.deeplearning open source R library. For more information, see [https://www.h2o.ai/](https://www.h2o.ai/).
 
 
 ## Model Validation
@@ -423,15 +419,15 @@ We chose evaluation metrics that allowed us to easily compare the performance of
 
 ### Area Under the ROC Curve
 
-A classification model typically outputs a probability that a given case in the data belongs to a group. In the case of binary classification, the value falls between 0 and 1. There are many techniques for determining the cut off threshold for classification; a typical method is to assign anything above a 0.5 into the 1 or positive class. An ROC curve (receiver operating characteristic curve) plots the True Positive Rate vs. the False Positive rate at different classification thresholds; it is a measurement of the performance of a classification model across all possible thresholds, and therefore sidesteps the need to arbitrarily assign a cutoff. 
+A classification model typically outputs a probability that a given case in the data belongs to a group. In the case of binary classification, the value falls between 0 and 1. There are many techniques for determining the cut off threshold for classification; a typical method is to assign anything above a 0.5 into the 1 or positive class. An ROC curve (receiver operating characteristic curve) plots the True Positive Rate vs. the False Positive rate at different classification thresholds; it is a measurement of the performance of a classification model across all possible thresholds and therefore sidesteps the need to assign a cutoff arbitrarily. 
 
-AUC measures the entire two-dimensional area underneath the ROC curve. It is the integration of the curve from (0,0) to (1,1), defined as $AUC = \int_{(0,0)}^{(1,1)} f(x)dx$. AUC enumerates the probability that the model ranks a random positive example more highly than a random negative example. A value of 0.5 represents a perfectly random model, while a value of 1.0 represents a model that can perfectly discriminate between the two classes. AUC is useful for comparing classification models against one another because they are both scale and threshold-invariant.
+AUC is the integration of the ROC curve from (0,0) to (1,1), or $AUC = \int_{(0,0)}^{(1,1)} f(x)dx$. A value of 0.5 represents a perfectly random model, while a value of 1.0 represents a model that can perfectly discriminate between the two classes. AUC is useful for comparing classification models against one another because they are both scale and threshold-invariant.
 
 One of the drawbacks to AUC is that it does not describe the trade-offs between false positives and false negatives. In certain circumstances, a false positive might be considerably less desirable than a false negative, or vice-versa. For our purposes, we rank false positives and false negatives as equally undesirable outcomes.
 
 ### Root Mean Squared Error
 
-RMSE is a common measurement of the differences between values predicted by a regression model and the observed values. It is formally defined as $RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }$, where $\hat{y}$ represents the prediction and $y$ represents the observed value at observation $t$. 
+RMSE is a common measurement of the differences between regression model predicted values and observed values. It is formally defined as $RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }$, where $\hat{y}$ represents the prediction and $y$ represents the observed value at observation $t$. 
 
 Lower RMSE scores are typically more desirable. An RMSE value of 0 would indicate a perfect fit to the data. RMSE can be difficult to interpret on its own; however, it is useful for comparing models with similar outcome variables. In our case, the outcome variables (sale-price-per-square-foot) are consistent across modeling datasets, and therefore can be reasonably compared using RMSE. 
 

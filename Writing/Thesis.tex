@@ -155,7 +155,7 @@ Northwestern University
 
 ~
 
-December, 2018
+December 2018
 
 Nathaniel D. Bastian, Ph.D., First Reader
 
@@ -249,7 +249,7 @@ Consequently, the Urban Institute published a series of essays in 2016
 outlining the few ways city governments employ ``Big data and
 crowdsourced data'' to identify vulnerable individuals and connect them
 with the proper services and resources, noting that ``much more could be
-done'' (Greene et al., 2016). It it our hope that this work furthers the
+done'' (Greene et al., 2016). It is our hope that this work furthers the
 research behind gentrification prediction by combining open data,
 open-source software and cutting-edge techniques with the aim of
 identifying high-risk households and areas in need of intervention.
@@ -295,26 +295,25 @@ Displacement?}\label{what-is-economic-displacement}}
 
 Economic displacement has been intertwined with the study of
 gentrification since shortly after the latter became academically
-relevant in the 1960s. The term gentrification was first used in 1964 to
-describe the \emph{gentry} in low-income neighborhoods in London (Glass,
-1964). Originally, academics described gentrification in predominantly
-positive terms as a ``tool of revitalization'' for declining
-neighborhoods (Zuk et al., 2015). However, by 1979 the negative
-consequences of gentrification became more well understood, especially
-with regards to economic exclusion (Clay, 1979). Today, the term has a
-more neutral connotation, describing the placement and distribution of
-populations (Zuk et al., 2015). Specific to cities, recent literature
-defines gentrification as ``the transformation of a working-class or
-vacant area of the central city into middle-class residential or
-commercial use'' (Lees, Slater, \& Wyly, 2013).
+relevant in the 1960s. The term gentrification was first introduced in
+1964 to describe the \emph{gentry} in low-income neighborhoods in London
+(Glass, 1964). Initially, academics described gentrification in
+predominantly favorable terms as a ``tool of revitalization'' for
+declining neighborhoods (Zuk et al., 2015). However, by 1979 the
+negative consequences of gentrification became better understood,
+especially with regards to economic exclusion (Clay, 1979). Today, the
+term has a more neutral connotation, describing the placement and
+distribution of populations (Zuk et al., 2015). Specific to cities,
+recent literature defines gentrification as the process of transforming
+vacant and working-class areas into middle-class, residential or
+commercial areas (Chapple \& Zuk, 2016; Lees, Slater, \& Wyly, 2013).
 
 Studies of gentrification and displacement generally take two approaches
-in the literature: supply-side and demand-side, or ``the flows of
-capital versus flows of people to neighborhoods,'' respectively (Zuk et
-al., 2015). Supply-side arguments for gentrification tend to focus on
-investments and policies and are much more often the subject of academic
-literature on economic displacement. This kind of research may be more
-common because it has the advantage of being more directly linked to
+in the literature: supply-side and demand-side (Zuk et al., 2015).
+Supply-side arguments for gentrification tend to focus on investments
+and policies and are much more often the subject of academic literature
+on economic displacement. This kind of research may be more common
+because it has the advantage of being more directly linked to
 influencing public policy. According to Dreier, Mollenkopf, \& Swanstrom
 (2004), public policies that can increase economic displacement have
 been, among others, automobile-oriented transportation infrastructure
@@ -364,7 +363,7 @@ those properties, including their surrounding area. Multiple regression
 analysis (MRA) has been the most common set of statistical tools used in
 mass appraisal, including maximum likelihood, weighted least squares,
 and the most popular, ordinary least squares, or OLS (d'Amato \& Kauko,
-2017). MRA techniques in particular are susceptible to spatial
+2017). MRA techniques, in particular, are susceptible to spatial
 autocorrelation among residuals. Another group of models that seek to
 correct for spatial dependence are known as spatial auto-regressive
 models (SAR), chief among them the spatial lag model, which aggregates
@@ -386,11 +385,11 @@ of a given property as:
 \end{aligned}
 \]
 
-\noindent where \(P_i\) represents the price of house \(i\), which is a
-``composite good'' made up of a vector of structural characteristics
-\(S\), a vector of social and neighborhood characteristics \(N\), and a
-vector of locational characteristics \(L\) (Koschinsky et al., 2012 pg.
-322). Specifically, the model calculates spatial lags on properties of
+\noindent where \(P_i\) represents the price of house \(i\), \(q_i\)
+represents specific environmental factors, \(S_i\) are structural
+characteristics, \(N_i\) are neighborhood characteristics, and \(L_i\)
+are locational characteristics (Koschinsky et al., 2012 pg. 322).
+Specifically, the model calculates spatial lags on properties of
 interest using neighboring properties within 1,000 feet of a sale. The
 derived variables include characteristics like average age, the number
 of poor condition homes, percent of homes with electric heating,
@@ -398,16 +397,17 @@ construction grades, and more. Koschinsky found that in all cases homes
 near each other were typically similar to each other and priced
 accordingly, concluding that locational characteristics should be valued
 at least as much ``if not more'' than intrinsic structural
-characteristics.
+characteristics (Koschinsky et al., 2012).
 
 As recently as 2015, much research has dealt with mitigating the
-drawbacks of MRA, including the use of multi-level hierarchical models.
-Fotheringham, Crespo, \& Yao (2015) explored the combination of
-geographically weighted regression (GWR) with time-series forecasting to
-predict home prices over time. GWR is a variation on OLS that allows for
-adaptive bandwidths of local data to be included, i.e., for each
-estimate, the number of data points included varies and can be optimized
-using cross-validation.
+drawbacks of MRA. Fotheringham, Crespo, \& Yao (2015) explored the
+combination of geographically weighted regression (GWR) with time-series
+forecasting to predict home prices over time. GWR is a variation on OLS
+that assigns weights to observations based on a distance metric.
+Fotheringham et al. (2015) successfully used cross-validation to
+implement adaptive bandwidths in GWR, i.e., for each observation, the
+number of neighboring data points included in its spatial radius were
+varied to optimize performance.
 
 \hypertarget{predicting-gentrification-using-machine-learning}{%
 \subsection{Predicting Gentrification Using Machine
@@ -438,7 +438,7 @@ indicator and improve commercial real estate forecasting models. Pivo \&
 Fisher (2011) examined the effects of walkability on property values and
 investment returns. Pivo found that on a 100-point scale, a 10-point
 increase in walkability increased property investment values by up to
-9\%.
+9\% (Pivo \& Fisher, 2011).
 
 Research into better prediction algorithms and employing better data are
 not mutually exclusive. For example, Fu et al. (2014) created a
@@ -448,11 +448,10 @@ using taxi cab traffic vector data, including relative access to
 business areas. Then, the algorithm performs a rank-ordered prediction
 of investment returns segmented into five categories. Similar to
 Koschinsky et al. (2012), though less formally stated, Fu et al. (2014)
-thought of a property's value as a composite of individual, peer and
-zone characteristics. In their predictive modeling, Fu included
-characteristics of the neighborhood (individual), the values of nearby
-properties (peer), and the prosperity of the affiliated latent business
-area (zone) based on taxi cab data (Fu et al., 2014).
+modeled a property's value as a composite of individual, peer and zone
+characteristics by including characteristics of the neighborhood, the
+values of nearby properties, and the prosperity of the affiliated latent
+business area based on taxi cab data (Fu et al., 2014).
 
 Several other recent studies compare various advanced statistical
 techniques and algorithms either to other advanced techniques or to
@@ -472,7 +471,7 @@ Pokryshevskaya (2012) came to a similar conclusion about the superiority
 of Random Forest for real estate valuation after comparing 10
 algorithms: multiple regression, CHAID, exhaustive CHAID, CART, 2 types
 of k-nearest neighbors, multilayer perceptron artificial neural network,
-radial basis function neural network, boosted trees and finally Random
+radial basis functional neural network, boosted trees and finally Random
 Forest.
 
 Guan et al. (2014) compared three different approaches to defining
@@ -489,8 +488,8 @@ in Tehran, Iran, using a non-mating genetic algorithm for dimensionality
 reduction with a focus on computational efficiency. The paper concluded
 that two primary strategies help in this regard: weighting property
 sales by temporal proximity (i.e., sales which happened closer in time
-are more alike), and also using a learner to accelerate the recognition
-of important features.
+are more alike), and using a learner to accelerate the recognition of
+important features.
 
 Finally, we note that many studies, whether exploring advanced
 techniques, new data, or both, rely on aggregation of data by some
@@ -505,7 +504,7 @@ socioeconomic and housing characteristics. All of these studies, and
 many more, relied on the aggregation of data at the census-tract or
 census-block level. In contrast, this paper compares
 boundary-aggregation techniques (specifically, aggregating by zip codes)
-to a boundary-agnositc spatial lag techniques and finds the latter to
+to a boundary-agnostic spatial lag technique and finds the latter to
 outperform.
 
 \hypertarget{data-and-methodology}{%
@@ -666,9 +665,9 @@ geospatial analysis without first mapping the sales data to PLUTO.
 Prior to mapping to PLUTO, we first had to transform the sales data to
 include the proper mapping key. New York City uses a standard key of
 Borough-Block-Lot to identify tax lots in the data. For example, 31 West
-27th Street is located in Manhattan, on block 829 and lot 16, therefore,
+27th Street is located in Manhattan, on block 829 and lot 16; therefore,
 its Borough-Block-Lot (BBL) is 1\_829\_16 (the 1 represents Manhattan).
-The sales data contains BBL's at the building level, however, the sales
+The sales data contain BBL's at the building level; however, the sales
 transactions data does not appropriately designate condos as their own
 BBL's. Mapping the sales data directly to the PLUTO data results in a
 mapping error rate of 23.1\% (mainly due to condos). Therefore, the
@@ -683,12 +682,12 @@ error rate of 0.291\% (See: Figure \ref{fig:Data Schema}).
 \includegraphics[width=1\linewidth]{Sections/tables and figures/Data Schema} \caption{Overview of Data Sources}\label{fig:Data Schema}
 \end{figure}
 
-After combining the Sales Transactions data with PAD and PLUTO, the
-resulting data were filtered so that only BBL's with less than or equal
-to 1 transactions in a year occur. The final dataset is an exhaustive
-list of all tax lots in NYC for every year between 2003-2017, whether
-that building was sold, for what amount, and several other additional
-variables. A description of all variables can be seen in Table
+After combining the Sales Transactions data with PAD and PLUTO, we
+filtered the resulting data for BBL's with less than or equal to 1
+transaction per year. The final dataset is an exhaustive list of all tax
+lots in NYC for every year between 2003-2017, whether that building was
+sold, for what amount, and several other additional variables. A
+description of all variables can be seen in Table
 \ref{tab:descripTable}.
 
 \begin{table}
@@ -792,7 +791,7 @@ Data}\label{global-filtering-of-the-data}}
 We only included building categories of significant interest in our
 initial modeling data. Generally speaking, by significant interest we
 are referring to building types that are regularly bought and sold on
-the free market. These include residences, office buildings and
+the free market. These include residences, office buildings, and
 industrial buildings, and exclude things like government-owned buildings
 and hospitals. We also excluded hotels as they tend to be comparatively
 rare in the data and exhibit unique sales characteristics. The included
@@ -976,7 +975,7 @@ Walk Up Apartments & 63,552 & 18,075 & 19,824 & 31,932 & 1,820\\
 \hypertarget{base-modeling-data}{%
 \subsubsection{Base Modeling Data}\label{base-modeling-data}}
 
-The base modeling dataset was constructed by combining several
+We constructed the base modeling dataset by combining several
 open-source data repositories, outlined in the Data Sources section. In
 addition to the data provided by New York City, several additional
 features were engineered and appended to the base data. A summary table
@@ -1027,24 +1026,24 @@ Percent\_Change\_EMA\_5 & -1 & 0.06 & 308.05 & 5,341,901.60\\
 \end{tabular}}
 \end{table}
 
-Importantly, two variables were created from the sale prices: A
-price-per-square-foot-figure (``Sale\_Price'') and a total sale price
-(``Sale\_Price\_Total''). Sale-price-per-square-foot eventually became
-the outcome variable in one of the predictive models. We then created a
+Importantly, we created two variables from the sale prices: A
+price-per-square-foot-figure (Sale\_Price) and a total sale price
+(Sale\_Price\_Total). Sale-price-per-square-foot eventually became the
+outcome variable in the regression modeling tasks. We then created a
 feature to carry forward the previous sale price of a tax lot, if there
 was one, through successive years. The previous sale price was then used
 to create simple moving averages (SMA), exponential moving averages
 (EMA), and percent change measurements between the moving averages. In
-total, 69 variables were input to the feature engineering process and 92
-variables were output. The final base modeling dataset was 92 variables
-by 8,247,499 rows.
+total, 69 variables were input to the feature engineering process, and
+92 variables were output. The final base modeling dataset was 92
+variables by 8,247,499 rows.
 
 \hypertarget{zip-code-modeling-data}{%
 \subsubsection{Zip Code Modeling Data}\label{zip-code-modeling-data}}
 
 The first of the two comparative modeling datasets was the zip code
-modeling data. Using the base data as a starting point, several features
-were generated to describe characteristics of the zip code where each
+modeling data. We aggregated the base data at a zip code level and then
+generated several features to describe the characteristics of where each
 tax lot resides. A summary table of the zip code level features is
 presented in \ref{tab:zipcodemodelfeats}.
 
@@ -1096,13 +1095,12 @@ Percent Change EMA 5 bt only & -0.34 & 0.06 & 335.17 & 178,947.30\\
 \end{tabular}}
 \end{table}
 
-In general, the base model data features were aggregated to a zip code
-level and appended, including the SMA, EMA and percent change
-calculations. Additionally, a second set of features were added, denoted
-as ``bt\_only'', which aggregated the data in a similar fashion but only
-included tax lots of the same building type in the calculations. In
-total, the zip code feature engineering process input 92 variables and
-output 122 variables.
+The base model data features were aggregated to a zip code level and
+appended, including the SMA, EMA and percent change calculations. We
+then added another set of features, denoted as ``bt\_only,'' which again
+aggregated the base features but only included tax lots of the same
+building type. In total, the zip code feature engineering process input
+92 variables and output 122 variables.
 
 \hypertarget{spatial-lag-modeling-data}{%
 \subsubsection{Spatial Lag Modeling
@@ -1116,13 +1114,13 @@ process. Spatial lags allow for much more fine-tuned measurements of a
 building's surrounding area. Intuitively, knowing the average sale price
 of all buildings within 500 meters of a building can be more informative
 than knowing the sale prices of all buildings in the same zip code.
-However, creating spatial lags is computationally expensive. In
-addition, it can be challenging to set a proper radius for the spatial
-lag calculation; in a city, 500 meters may be appropriate (for certain
-building types), whereas several kilometers or more may be appropriate
-for less densely populated areas. In this paper, we present a solution
-for the computational challenges and suggest a potential approach to
-solving the radius-choice problem.
+However, creating spatial lags is computationally expensive.
+Additionally, it can be challenging to set a proper radius for the
+spatial lag calculation; in a city, 500 meters may be appropriate (for
+specific building types), whereas several kilometers or more may be
+appropriate for less densely populated areas. In this paper, we present
+a solution for the computational challenges and suggest a potential
+approach to solving the radius-choice problem.
 
 \hypertarget{creating-the-point-neighbor-relational-graph}{%
 \paragraph{Creating the Point-Neighbor Relational
@@ -1435,11 +1433,10 @@ prediction tasks involving real estate (Antipov \& Pokryshevskaya, 2012;
 Schernthanner et al., 2016). While algorithms exist that may outperform
 Random Forest in terms of predictive accuracy (such as neural networks
 and functional gradient descent algorithms), Random Forest is highly
-scalable and parallelizable, and is therefore an attractive choice for
+scalable and parallelizable, and is, therefore, an attractive choice for
 quickly assessing the predictive power of different feature engineering
 techniques. For these reasons and more outlined below, we selected
-Random Forest as the primary algorithm for Stage 1 of our modeling
-process.
+Random Forest as the algorithm for Stage 1 of our modeling process.
 
 Random Forest, like all predictive algorithms used in this work, suits
 both classification and regression tasks. The Random Forest algorithm
@@ -1470,8 +1467,8 @@ We chose Random Forest as the algorithm for Stage 1 because:
   choices, such as neighborhood, county, census tract, district,
   property type, and zoning information. Because factors need to be
   recoded as individual dummy variables in the model building process,
-  factors with many levels will quickly encounter the curse of
-  dimensionality in multiple regression techniques.
+  factors with many levels quickly encounter the curse of dimensionality
+  in multiple regression techniques.
 \item
   Appropriately handles missing data. Predictions can be made with the
   parts of the tree which are successfully built, and therefore, there
@@ -1483,7 +1480,7 @@ We chose Random Forest as the algorithm for Stage 1 because:
   appear in individual trees less often, and therefore, their influence
   is curtailed. Real estate data, especially with regards to pricing,
   tends to contain outliers. For example, the dependent variable in one
-  of our models, sale price, shows a clear divergence in median and
+  of our models, sale price, shows a clear divergence in the median and
   mean, as well as a maximum significantly higher than the third
   quartile.
 \item
@@ -1497,7 +1494,7 @@ We chose Random Forest as the algorithm for Stage 1 because:
 To run the model, we chose the h2o.randomForest implementation from the
 h2o R open source library. The h2o implementation of the Random Forest
 algorithm is particularly well-suited for high parallelization. For more
-information, see: \url{https://www.h2o.ai/}.
+information, see \url{https://www.h2o.ai/}.
 
 \hypertarget{generalized-linear-model}{%
 \subsubsection{Generalized Linear
@@ -1505,19 +1502,21 @@ Model}\label{generalized-linear-model}}
 
 A generalized linear model (GLM) is an extension of the general linear
 model that estimates an independent variable \(y\) as the linear
-combination of one or more predictor variables. A GLM is made up of a
-linear predictor taking the form
-\(\eta_i = \beta_0+\beta_1x_{i1}+...+\beta_{p}x_{ip}\), a link function
-that describes how the mean, \(E(Y_i)=\mu_i\) depends on the linear
-predictor, and a variance function that describes how the variance,
-var\((Y_i)\) depends on the mean (Hoffmann, 2004). The observed value of
-the dependent variable \(y\) for observation \(i\)
-\((i = 1, 2, ..., n)\) is modeled as a linear function of \((p - 1)\)
-independent variables \(x1, x2,... ,xp-1\) as
+combination of one or more predictor variables. The dependent variable
+\(y\) for observation \(i\) \((i = 1, 2, ..., n)\) is modeled as a
+linear function of \((p - 1)\) independent variables
+\(x1, x2,... ,xp-1\) as
 
 \[
 y_i = \beta_0+\beta_1x_{i1}+...+\beta_{p-1}x_{i(p-1)}+e_i
 \]
+
+A GLM is composed of three primary parts: a linear model, a link
+function and a variance function. The linear model takes the form
+\(\eta_i = \beta_0+\beta_1x_{i1}+...+\beta_{p}x_{ip}\). The link
+function, \(g(\mu)=\eta\) relates the mean to the linear model, and the
+variance function \(Var(Y) = \phi V(\mu)\) relates the model variance to
+the mean (Hoffmann, 2004; Turner, 2008).
 
 Several family types of GLM's exist. For a binary independent variable,
 a binomial logistic regression is appropriate. For a continuous
@@ -1533,15 +1532,12 @@ Gradient boosting machine (GBM) is one of the most popular machine
 learning algorithms available today. The algorithm uses iteratively
 refined approximations, obtained through cross-validation, to
 incrementally increase predictive accuracy. Similar to Random Forest,
-GBM is well-suited to using regression trees as the base learner.
-Gradient boosting constructs additive regression models by sequentially
-fitting a simple parameterized function (a \emph{base learner}, in our
-case, a regression tree) to pseudo-residuals by least squares at each
-iteration (Friedman, 2002). The pseudo-residuals are the gradient of the
-loss function being minimized, with respect to the model values at each
-training data point evaluated at the current step. The tree-variant of
-the generic gradient boosting algorithm is outlined in algorithm
-\ref{alg:GBMAlo} (Hastie et al., 2001).
+GBM is an ensemble technique that builds and averages many regression
+models together. Unlike Random Forest, GBM incrementally improves each
+successive iteration by following the gradient of the loss function at
+each step (Friedman, 1999). The algorithm we used, which is the
+tree-variant of the generic gradient boosting algorithm, is outlined in
+algorithm \ref{alg:GBMAlo} (Hastie et al., 2001 pg. 361).
 
 \begin{algorithm}
   \caption{Gradient Tree Boosting Algorithm}\label{alg:GBMAlo}
@@ -1570,46 +1566,41 @@ the generic gradient boosting algorithm is outlined in algorithm
 Network}\label{feed-forward-artificial-neural-network}}
 
 The artificial neural network (ANN) implementation used in this work is
-a multi-layer feed-forward artificial neural network trained with
-stochastic gradient descent using back-propagation. Common synonyms for
-ANN models are multi-layer perceptrons and, more recently, deep neural
-networks. The feed-forward ANN is one of the most common neural network
-algorithms, but other types exist, such as the convolutional neural
-network (CNN) which performs well on image classification tasks, and the
-recurrent neural network (RNN) which is well-suited for sequential data
-such as text and audio (Schmidhuber, 2015). The feed-forward ANN is
-typically best suited for tabular data.
+a multi-layer feed-forward artificial neural network. Common synonyms
+for ANN models are multi-layer perceptrons and, more recently, deep
+neural networks. The feed-forward ANN is one of the most common neural
+network algorithms, but other types exist, such as the convolutional
+neural network (CNN) which performs well on image classification tasks,
+and the recurrent neural network (RNN) which is well-suited for
+sequential data such as text and audio (Schmidhuber, 2015). The
+feed-forward ANN is typically best suited for tabular data.
 
-The neural network model has unknown parameters, often called weights,
-and we seek values for them that make the model fit the training data
-well (Hastie et al., 2001). We denote the complete set of weights by
-\(\theta\), which consists of
-\(\{\alpha_{0m},\alpha_m;m=1,2,...,M\} M(p+1)\) weights and
-\(\{\beta_{0k},\beta_k;k=1,2,...,K\} K(p+1)\) weights.
+A neural network model is made up of an input layer made up of raw data,
+one or more hidden layers used for transformations, and an output layer.
+At each hidden layer, the input variables are combined using varying
+weights with all other input variables. The output from one hidden layer
+is then used as the input to the next layer, and so on. Tuning a neural
+network is the process of refining the weights to minimize a loss
+function and make the model fit the training data well (Hastie et al.,
+2001).
 
-For both classification and regression, we use sum-of-squared errors as
-our measure of fit (error function)
+For both our classification and regression tasks, we use sum-of-squared
+errors as our error function, and we tune the set of weights \(\theta\)
+to minimize:
 
 \[
 R(\theta)=\sum_{k=1}^K\sum_{i=1}^N(y_{ik}-f_{k}(x_i))^2
-\] The generic approach to minimizing \(R(\theta)\) is by gradient
+\] A typical approach to minimizing \(R(\theta)\) is by gradient
 descent, called back-propagation in this setting (Hastie et al., 2001).
-Because of the compositional form of the model, the gradient can be
-derived using the chain rule for differentiation. This can be computed
-by a forward and backward sweep over the network, keeping track only of
-quantities local to each unit. Here is back-propagation in detail for
-squared error loss:
+The algorithm iteratively tunes weighting values back and forth across
+the hidden layers in accordance with the gradient descent of the loss
+function until material improvement can no longer happen or the
+algorithm reaches a user-defined limit.
 
-\[
-R(\theta) = \sum_{i=1}^NR_i
-\] \[
-\sum_{i=1}^N\sum_{k=1}^K(y_{ik}-f_{k}(x_i))^2
-\]
-
-For our implementations, we used the rectifier activation function with
+For our implementation, we used the rectifier activation function with
 1024 hidden layers, 100 epochs and L1 regularization set to 0.00001. The
 implementation we chose was the h2o.deeplearning open source R library.
-For more information, see: \url{https://www.h2o.ai/}.
+For more information, see \url{https://www.h2o.ai/}.
 
 \hypertarget{model-validation}{%
 \subsection{Model Validation}\label{model-validation}}
@@ -1651,18 +1642,15 @@ is to assign anything above a 0.5 into the 1 or positive class. An ROC
 curve (receiver operating characteristic curve) plots the True Positive
 Rate vs.~the False Positive rate at different classification thresholds;
 it is a measurement of the performance of a classification model across
-all possible thresholds, and therefore sidesteps the need to arbitrarily
-assign a cutoff.
+all possible thresholds and therefore sidesteps the need to assign a
+cutoff arbitrarily.
 
-AUC measures the entire two-dimensional area underneath the ROC curve.
-It is the integration of the curve from (0,0) to (1,1), defined as
-\(AUC = \int_{(0,0)}^{(1,1)} f(x)dx\). AUC enumerates the probability
-that the model ranks a random positive example more highly than a random
-negative example. A value of 0.5 represents a perfectly random model,
-while a value of 1.0 represents a model that can perfectly discriminate
-between the two classes. AUC is useful for comparing classification
-models against one another because they are both scale and
-threshold-invariant.
+AUC is the integration of the ROC curve from (0,0) to (1,1), or
+\(AUC = \int_{(0,0)}^{(1,1)} f(x)dx\). A value of 0.5 represents a
+perfectly random model, while a value of 1.0 represents a model that can
+perfectly discriminate between the two classes. AUC is useful for
+comparing classification models against one another because they are
+both scale and threshold-invariant.
 
 One of the drawbacks to AUC is that it does not describe the trade-offs
 between false positives and false negatives. In certain circumstances, a
@@ -1673,8 +1661,8 @@ false negatives as equally undesirable outcomes.
 \hypertarget{root-mean-squared-error}{%
 \subsubsection{Root Mean Squared Error}\label{root-mean-squared-error}}
 
-RMSE is a common measurement of the differences between values predicted
-by a regression model and the observed values. It is formally defined as
+RMSE is a common measurement of the differences between regression model
+predicted values and observed values. It is formally defined as
 \(RMSE = \sqrt{ \frac{\sum_{1}^{T} (\hat{y}_t - y_t)^2}{T} }\), where
 \(\hat{y}\) represents the prediction and \(y\) represents the observed
 value at observation \(t\).
@@ -1823,11 +1811,11 @@ from Figure \ref{fig:RMSE by boro and build type}:
 \item
   The ``residential'' building types A (one-family dwellings), B
   (two-family dwellings), C (walk up apartments) and D (elevator
-  apartments) have generally lower RMSE scores compared to the
-  non-residential types
+  apartments) have lower RMSE scores compared to the non-residential
+  types
 \item
-  Spatial features perform best in Brooklyn, Bronx and Manhattan and for
-  residential building types
+  Spatial features perform best in Brooklyn, the Bronx, and Manhattan
+  and for residential building types
 \end{itemize}
 
 \hypertarget{probability-of-sale-classification-models}{%
@@ -1870,7 +1858,7 @@ observed the following from Figure \ref{fig:AUC by boro and build type}:
   Classification tends to perform poorly in Manhattan vs.~other Boroughs
 \item
   The spatial models perform well in Manhattan for the residential
-  building types (A, B, C and D)
+  building types (A, B, C, and D)
 \end{itemize}
 
 \begin{figure}[H]
@@ -1921,15 +1909,16 @@ both classification and regression, making the total number
 \subsubsection{Regression Model
 Comparisons}\label{regression-model-comparisons}}
 
-The predictive accuracy of the various regression models were evaluated
-using RMSE, described in detail in the methodology section, as well as
-Mean Absolute Error (MAE), Mean Squared Error (MSE) and R-Squared. These
-four indicators were calculated using the hold-out test data, which
-ensured that the models performed well when predicting sale prices into
-the near future. The comparison metrics are presented in Table
-\ref{tab:RegModelTable} and Figure \ref{fig:Model RMSE Comparrison}. We
-make the following observations about Table \ref{tab:RegModelTable} and
-Figure \ref{fig:Model RMSE Comparrison}:
+The predictive accuracies of the various regression models were
+evaluated using RMSE, described in detail in the methodology section, as
+well as Mean Absolute Error (MAE), Mean Squared Error (MSE) and
+R-Squared. These four indicators were calculated using the hold-out test
+data, which ensured that the models performed well when predicting sale
+prices into the near future. The comparison metrics are presented in
+Table \ref{tab:RegModelTable} and Figure
+\ref{fig:Model RMSE Comparrison}. We make the following observations
+about Table \ref{tab:RegModelTable} and Figure
+\ref{fig:Model RMSE Comparrison}:
 
 \begin{enumerate}
 \def\labelenumi{\arabic{enumi})}
@@ -2149,7 +2138,7 @@ BldgDepth) as well as approximations for previous sale prices
 to favor spatial lag features, such as how many buildings were sold in
 the past year within 500 meters (Percent\_Neighbors\_Sold and
 Radius\_Res\_Units\_Sold\_In\_Year) as well as characteristics of the
-building function (Percent\_Office, Percent\_Storage, etc.).
+building function, for example, Percent\_Office, and Percent\_Storage.
 
 \hypertarget{future-research-and-conclusions}{%
 \section{Future Research and
@@ -2160,16 +2149,16 @@ Conclusions}\label{future-research-and-conclusions}}
 
 This research has shown that the addition of spatial lag features can
 meaningfully increase the predictive accuracy of machine learning models
-compared to traditional real estate valuation techniques. There are
-several areas that could be further explored regarding
-spatially-conscious machine learning models, some of which we mention
-below.
+compared to traditional real estate valuation techniques. Several areas
+regarding spatially-conscious machine learning models merit further
+exploration, some of which we mention below.
 
 First, it became apparent in the research that generalization was a
 problem for some of the models, likely due to overfitting of the
 training data. We corrected for this issue by employing more robust
 algorithms; however, further work could be done to create variable
-selection processes or hyperparameter tuning to prevent overfit.
+selection processes or hyperparameter tuning to prevent data
+overfitting.
 
 Additionally, the spatial lag features seemed to perform best for
 certain boroughs and residential building types. We hypothesize that
@@ -2184,11 +2173,10 @@ radius for each property.
 Finally, this research aimed to predict real estate transactions 1 year
 into the future. While this is a promising start, 1-year of lead time
 may not be sufficient to respond to growing gentrification challenges.
-In addition, modeling at the annual level could be improved to quarterly
-or monthly, given that the sales data contains date information down to
-the day. To make this system practical for combating displacement, it
-may be helpful to predict at a more granular level and further into the
-future.
+Also, modeling at the annual level could be improved to quarterly or
+monthly, given that the sales data contains date information down to the
+day. To make a system practical for combating displacement, prediction
+at a more granular level and further into the future would be helpful.
 
 \hypertarget{conclusion}{%
 \subsection{Conclusion}\label{conclusion}}
@@ -2291,10 +2279,9 @@ Fotheringham, A. S., Crespo, R., \& Yao, J. (2015). Exploring, modelling
 and predicting spatiotemporal variations in house prices. \emph{The
 Annals of Regional Science}, \emph{54}(2), 417--436.
 
-\leavevmode\hypertarget{ref-friedman2002stochastic}{}%
-Friedman, J. H. (2002). Stochastic gradient boosting.
-\emph{Computational Statistics \& Data Analysis}, \emph{38}(4),
-367--378.
+\leavevmode\hypertarget{ref-Friedman99stochasticgradient}{}%
+Friedman, J. H. (1999). Stochastic gradient boosting.
+\emph{Computational Statistics and Data Analysis}, \emph{38}, 367--378.
 
 \leavevmode\hypertarget{ref-Fu2014}{}%
 Fu, Y., Xiong, H., Ge, Y., Yao, Z., Zheng, Y., \& Zhou, Z.-H. (2014).
@@ -2409,6 +2396,12 @@ Schmidhuber, J. (2015). Deep learning in neural networks: An overview.
 Smith, N. (1979). Toward a theory of gentrification a back to the city
 movement by capital, not people. \emph{Journal of the American Planning
 Association}, \emph{45}(4), 538--548.
+
+\leavevmode\hypertarget{ref-turner_2008}{}%
+Turner, H. (2008). Gnm: A package for generalized nonlinear models.
+\emph{Department of Statistics University of Warwick, UK}. University of
+Warwick, UK. Retrieved from
+\url{http://statmath.wu.ac.at/research/friday/resources_WS0708_SS08/gnmTalk.pdf}
 
 \leavevmode\hypertarget{ref-Turner2001}{}%
 Turner, M. A. (2001). Leading indicators of gentrification in dc

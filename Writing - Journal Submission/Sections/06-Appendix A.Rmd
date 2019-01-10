@@ -1,0 +1,19 @@
+---
+title: "Appendix A"
+output: pdf_document
+---
+
+```{r Appendix A, fig.cap= "Spatial Lag Modeling Features", echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE, out.width = '100%'}
+
+suppressPackageStartupMessages(library(tidyverse))
+
+# pander::pander(readr::read_rds("tables and figures/table3.rds") %>% select(Feature)%>% 
+#                  mutate(Feature = gsub("_"," ",Feature))
+#                , caption = "Appendix A: All Spatial Lag Features"
+#                , split.table = Inf
+#                , style = "rmarkdown"
+#                , justify = "left")
+
+readr::read_rds("tables and figures/table3.rds") %>%
+  my_kable(caption = "Appendix A: All Spatial Lag Features", label = "AppendixA")
+```

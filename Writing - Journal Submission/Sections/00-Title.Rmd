@@ -1,0 +1,45 @@
+---
+output: rticles::ieee_article
+---
+
+\pagenumbering{gobble}
+
+\titlepage
+\center
+\vspace{4 cm}
+\normalsize
+\bf 
+The Spatially-Conscious Machine Learning Model:  
+
+\normalsize
+Leveraging Spatial Analysis to Boost the Accuracy of Real Estate Sales Predictions
+
+\rm
+\normalsize
+
+By 
+
+Tim Kiely
+
+Thesis Project 
+
+Submitted in partial fulfillment of the 
+
+requirements for the degree of 
+
+\  
+
+MASTER OF SCIENCE IN DATA SCIENCE
+
+\  
+
+Northwestern University 
+
+\  
+
+December 2018
+
+Nathaniel D. Bastian, Ph.D., First Reader 
+
+Candice Bradley, Second Reader
+

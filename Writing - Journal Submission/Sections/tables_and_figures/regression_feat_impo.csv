@@ -1,0 +1,11 @@
+Variable,Scaled Importance (Max = 1),Cumulative %
+BuiltFAR,1,1.8%
+FacilFAR,0.922,3.4%
+Last_Sale_Price_Total,0.901,5.1%
+Last_Sale_Date,0.893,6.7%
+Last_Sale_Price,0.87,8.2%
+Years_Since_Last_Sale,0.823,9.7%
+ResidFAR,0.814,11.2%
+lon,0.773,12.6%
+Year,0.759,13.9%
+BldgDepth,0.758,15.3%

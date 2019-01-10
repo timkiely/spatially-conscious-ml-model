@@ -1,0 +1,11 @@
+Variable,Scaled Importance (Max = 1),Cumulative %
+Percent_Neighbords_Sold,1,21.9%
+Percent_Office,0.698,37.2%
+Percent_Garage,0.634,51.1%
+Percent_Storage,0.518,62.4%
+Building_Age,0.225,67.4%
+Last_Sale_Price,0.165,71.0%
+Percent_Retail,0.147,74.2%
+Years_Since_Last_Sale,0.121,76.9%
+ExemptTot,0.069,78.4%
+Radius_Res_Units_Sold_In_Year,0.056,79.6%

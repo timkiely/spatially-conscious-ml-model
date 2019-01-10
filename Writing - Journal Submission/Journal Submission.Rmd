@@ -1,0 +1,132 @@
+---
+bibliography: Sections/bib/bibliography.bib
+csl: Sections/bib/apa.csl
+title: The Spatially-Conscious Machine Learning Model
+subtitle: Leveraging Spatial Analysis to Boost the Accuracy of Real Estate Sales Predictions
+affiliation:
+  institution-columnar: true  ## one column per institution (multiple autors eventually)
+  institution:
+    - name: Northwestern University
+      department: School of Professional Studies
+      location: Chicago, IL
+      email: timothy.j.kiely@gmail.com
+      mark: 1
+      author:
+        - name: Tim Kiely
+    - name: Northwestern University
+      department: School of Professional Studies
+      location: Chicago, IL
+      email: ndbastian@northwestern.edu
+      mark: 2
+      author:
+        - name: Dr. Nathaniel Bastian 
+        
+abstract: |
+  Successfully predicting gentrification could have many social and commercial applications, however, real estate sales are difficult to predict because they belong to a chaotic system comprised of intrinsic and extrinsic characteristics, perceived value, and market speculation. Using New York City real estate as our subject, we combine modern techniques of data science and machine learning with traditional spatial analysis to create robust real estate prediction models for both classification and regression tasks. We compare several cutting edge machine learning algorithms across spatial, semi-spatial and non-spatial feature engineering techniques, and we empirically show that spatially-conscious machine learning models outperform non-spatial models when married with advanced prediction techniques such as feed-forward artificial neural networks and gradient boosting machine models. 
+
+keywords: |
+  Real estate, Artificial neural networks, Machine learning, Recommender systems, Supervised learning, Predictive modeling 
+
+output: rticles::ieee_article
+header-includes:
+- \setlength{\parindent}{2em}
+- \setlength{\parskip}{0em}
+- \usepackage{placeins}
+- \usepackage{fancyhdr}
+- \usepackage{setspace}
+- \usepackage{chngcntr}
+- \usepackage{microtype}
+- \usepackage{ragged2e}
+- \usepackage{amsmath}
+- \usepackage{indentfirst}
+- \usepackage{longtable}
+- \usepackage{algorithm}
+- \usepackage{algpseudocode}
+- \usepackage{float}
+- \usepackage{enumitem}
+- \onehalfspacing
+- \counterwithin{figure}{section}
+- \counterwithin{table}{section}
+- \usepackage{amsmath}
+- \usepackage{graphicx}
+---
+
+
+```{r global_options 1, include=FALSE}
+knitr::opts_chunk$set(fig.pos = "H")
+source("Sections/tables and figures/my_kable.R")
+```
+
+
+```{r title, child = 'Sections/00-Title.Rmd', eval = F}
+```
+
+# Introduction
+
+```{r child = 'Sections/01-Introduction.Rmd'}
+```
+
+# Literature Review
+
+```{r child = 'Sections/02-Literature Review.Rmd'}
+```
+
+# Data and Methodology
+
+```{r child = 'Sections/03-Methodology.Rmd'}
+```
+
+# Results
+
+```{r child = 'Sections/04-Results.Rmd'}
+```
+
+
+# Future Research and Conclusions
+
+```{r child = 'Sections/05-Conclusions.Rmd'}
+```
+
+
+\newpage
+
+# References
+
+---
+metadata references not mentioned in paper:
+nocite: | 
+  @Johnson2007
+  @Geltner2017
+  @Almanie2015
+  @Chapple2009
+  @Chapple2016
+  @Clay1979
+  @Dietzell2014
+  @Eckert1990
+  @Fotheringham2015
+  @Fu2014
+  @Geltner2017
+  @Guan2014
+  @Helbich2013
+  @Johnson2007
+  @Kontrimasa2011
+  @Koschinsky2012
+  @Lees2008
+  @Miller2015
+  @Park2015
+  @Pivo2011
+  @Pollack2010
+  @Quintos2013
+  @Rafiei2016
+  @Reardon2011
+  @Schernthanner2016
+  @Silverherz1936
+  @Smith1979
+  @Springer2017
+  @Turner2001
+  @urban2016
+  @Watson2009
+  @Zuk2015
+  
+...
+

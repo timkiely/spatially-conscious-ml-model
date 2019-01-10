@@ -1,0 +1,28 @@
+---
+title: "Conclusions"
+output: rticles::ieee_article
+bibliography: bib/bibliography.bib
+---
+
+## Future Research
+
+This research has shown that the addition of spatial lag features can meaningfully increase the predictive accuracy of machine learning models compared to traditional real estate valuation techniques. Several areas regarding spatially-conscious machine learning models merit further exploration, some of which we mention below. 
+
+First, it became apparent in the research that generalization was a problem for some of the models, likely due to overfitting of the training data. We corrected for this issue by employing more robust algorithms; however, further work could be done to create variable selection processes or hyperparameter tuning to prevent data overfitting. 
+
+Additionally, the spatial lag features seemed to perform best for certain boroughs and residential building types. We hypothesize that using a 500-meter radius to build spatial lag features, a distance which we arbitrarily chose, works best for this type of asset in these areas. @Fotheringham2015 used an adaptive bandwidth technique to adjust the spatial lag radius based on cross-validation with much success. The techniques presented in this paper could be expanded to use cross-validation in a similar fashion to assign the optimal spatial lag radius for each property. 
+
+Finally, this research aimed to predict real estate transactions 1 year into the future. While this is a promising start, 1-year of lead time may not be sufficient to respond to growing gentrification challenges. Also, modeling at the annual level could be improved to quarterly or monthly, given that the sales data contains date information down to the day. To make a system practical for combating displacement, prediction at a more granular level and further into the future would be helpful. 
+
+## Conclusion
+
+Societies and communities can benefit materially from gentrification, however, the downside should not be overlooked. Displacement causes economic exclusion, which over time contributes to rising income inequality. Combating displacement allows communities to benefit from gentrification without suffering the negative consequences. One way to practically combat displacement is to predict gentrification, which this paper attempts to do.  
+
+Spatial lags, typically seen in geographically weighted regression, were employed successfully to enhance the predictive power of machine learning models. The spatial lag models performed best for particular building types and geographies; however, we feel confident that the technique could be expanded to work equally as well for all buildings with some additional research. Regarding algorithms, artificial neural networks performed the best for predicting sale price, while gradient boosting machines performed best for predicting sale occurrence.  
+
+While this research is not intended to serve as a full early-warning system for gentrification and displacement, it is a step in that direction. More research is needed to help address the challenges faced by city planners and governments trying to help incumbent residents reap the benefits of local investments. Income inequality is a complicated and grave issue, but new tools and techniques to inform and prevent will help ensure equality of opportunity for all. 
+
+
+
+
+

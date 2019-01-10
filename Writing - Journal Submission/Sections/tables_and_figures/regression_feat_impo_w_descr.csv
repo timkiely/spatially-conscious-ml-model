@@ -1,0 +1,11 @@
+Variable,Description,Scaled Importance (Max = 1),Cumulative %
+BuiltFAR,Floor area ratio built,1,1.80%
+FacilFAR,Maximum Allowable Floor Area Ratio,0.922,3.40%
+Last_Sale_Price_Total,The previous sale price,0.901,5.10%
+Last_Sale_Date,Date of last sale,0.893,6.70%
+Last_Sale_Price,The previous sale price,0.87,8.20%
+Years_Since_Last_Sale,Number of years since last sale,0.823,9.70%
+ResidFAR,Floor Area Ratio not yet built,0.814,11.20%
+lon,Longitude,0.773,12.60%
+Year,Year of record,0.759,13.90%
+BldgDepth,Square feet from font to back,0.758,15.30%

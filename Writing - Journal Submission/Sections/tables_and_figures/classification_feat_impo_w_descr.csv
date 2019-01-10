@@ -1,0 +1,11 @@
+Variable,Description,Scaled Importance (Max = 1),Cumulative %
+Percent_Neighbords_Sold,Percent of Nearby Properties Sold in the Previous Year,1,21.90%
+Percent_Office,Percent of the build which is Office,0.698,37.20%
+Percent_Garage,Percent of the build which is Garage,0.634,51.10%
+Percent_Storage,Percent of the build which is Storage,0.518,62.40%
+Building_Age,The Age of the building,0.225,67.40%
+Last_Sale_Price,Price of building last time is was sold,0.165,71.00%
+Percent_Retail,Percent of the build which is Retail,0.147,74.20%
+Years_Since_Last_Sale,Year since building last sold,0.121,76.90%
+ExemptTot,Total tax exempted value of the building,0.069,78.40%
+Radius_Res_Units_Sold_In_Year,Residential units within 500 meters sold in past year,0.056,79.60%

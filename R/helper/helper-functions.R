@@ -30,5 +30,9 @@ PROCESS_SALES_DATA <- function(sales_data){
 
 # calculate exponential moving average with RcppRoll::roll_mean()
 exp_roll_meanr <- function(x, exp = 0.9, n = 2, na.rm = TRUE, fill = NaN) {
-  roll_meanr(x, n = n, weights = (exp^(0:n)), na.rm = na.rm, fill = fill)
-} 
+  # use an exponentially weighted rolling mean. RcppRoll::roll_meanr expects
+  # the weight vector to be the same length as `n`. Using 0:n created
+  # `n + 1` weights which results in an error. 0:(n - 1) provides the
+  # correct length so the function works properly.
+  roll_meanr(x, n = n, weights = exp^(0:(n - 1)), na.rm = na.rm, fill = fill)
+}
